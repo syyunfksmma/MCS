@@ -20,8 +20,8 @@
 
 ## 구현 (Implementation)
 - [x] Next.js 프로젝트 초기화, 테마/트리 컴포넌트 구현
-- [ ] MCMS API 확장: 라우팅/파일 메타, 승인 API 강화
-- [ ] ESPRIT Add-in 수정: MCMS API 호출로 팝업 자동 입력
+- [x] MCMS API Ȯ��: �����/���� ��Ÿ, ���� API ��ȭ
+- [x] ESPRIT Add-in ����: MCMS API ȣ��� �˾� �ڵ� �Է�
 - [ ] MCMS Workers 큐 작업 보강 (승인 이벤트 → Add-in 알림)
 - [ ] 로그/모니터링 인프라 설정 (Serilog, Elastic 등)
 

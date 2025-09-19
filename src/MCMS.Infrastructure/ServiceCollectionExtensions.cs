@@ -28,6 +28,8 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IRoutingApprovalService, RoutingApprovalService>();
         services.AddScoped<IRoutingFileService, RoutingFileService>();
         services.AddScoped<IHistoryService, HistoryService>();
+        services.AddScoped<IAddinJobService, AddinJobService>();
+        services.AddScoped<IAddinKeyService, AddinKeyService>();
         services.AddSingleton<IFileStorageService, FileStorageService>();
         services.AddSingleton<ICommandQueue, InMemoryCommandQueue>();
         services.AddSingleton<IEspritAutomationService, EspritAutomationServiceStub>();

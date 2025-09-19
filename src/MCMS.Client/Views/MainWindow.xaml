@@ -94,6 +94,32 @@
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Routing" Binding="{Binding RoutingCode}" Width="*" />
                             <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="120" />
+                            <DataGridTemplateColumn Header="Add-in" Width="120">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Border Padding="6 2" CornerRadius="6" ToolTip="{Binding AddinMessage}">
+                                            <Border.Style>
+                                                <Style TargetType="Border">
+                                                    <Setter Property="Background" Value="#FFE2E2E2" />
+                                                    <Setter Property="HorizontalAlignment" Value="Center" />
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding AddinStatus}" Value="완료">
+                                                            <Setter Property="Background" Value="#FFC9F4B1" />
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding AddinStatus}" Value="실패">
+                                                            <Setter Property="Background" Value="#FFF7C4C4" />
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding AddinStatus}" Value="오류">
+                                                            <Setter Property="Background" Value="#FFFCECC2" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Border.Style>
+                                            <TextBlock Text="{Binding AddinStatus}" FontWeight="SemiBold" HorizontalAlignment="Center" />
+                                        </Border>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
                             <DataGridTextColumn Header="CAM Rev" Binding="{Binding CamRevision}" Width="120" />
                             <DataGridTextColumn Header="Updated" Binding="{Binding UpdatedAt, StringFormat=yyyy-MM-dd HH:mm}" Width="160" />
                             <DataGridTextColumn Header="By" Binding="{Binding UpdatedBy}" Width="120" />

@@ -13,6 +13,8 @@ public class McmsDbContext(DbContextOptions<McmsDbContext> options) : DbContext(
     public DbSet<HistoryEntry> HistoryEntries => Set<HistoryEntry>();
     public DbSet<SolidWorksLink> SolidWorksLinks => Set<SolidWorksLink>();
     public DbSet<MachinePackage> MachinePackages => Set<MachinePackage>();
+    public DbSet<AddinKey> AddinKeys => Set<AddinKey>();
+    public DbSet<AddinJob> AddinJobs => Set<AddinJob>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -70,6 +72,18 @@ public class McmsDbContext(DbContextOptions<McmsDbContext> options) : DbContext(
             builder.Property(x => x.MachineProjectPath).HasMaxLength(512);
             builder.Property(x => x.FixturePath).HasMaxLength(512);
         });
+
+        modelBuilder.Entity<AddinKey>(builder =>
+        {
+            builder.Property(x => x.Value).HasMaxLength(256);
+            builder.HasIndex(x => x.ExpiresAt);
+        });
+
+        modelBuilder.Entity<AddinJob>(builder =>
+        {
+            builder.HasIndex(x => new { x.Status, x.CreatedAt });
+            builder.Property(x => x.ParametersJson).HasColumnType("nvarchar(max)");
+            builder.Property(x => x.ResultStatus).HasMaxLength(64);
+        });
     }
 }
-

@@ -4,6 +4,13 @@ info:
   version: 0.2.0
   description: |
     Routing approval and file metadata endpoints for MCMS.
+tags:
+  - name: Routings
+    description: Routing lifecycle operations
+  - name: RoutingFiles
+    description: Managed file metadata attached to routings
+  - name: Addin
+    description: ESPRIT Add-in integrations
 paths:
   /api/routings/{routingId}/request-approval:
     post:
@@ -172,6 +179,109 @@ paths:
           description: Missing deletedBy value
         '404':
           description: Routing or file not found
+  /api/addin/keys/current:
+    get:
+      tags: [Addin]
+      summary: Get current add-in key
+      responses:
+        ''200'':
+          description: Current key issued for the add-in
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AddinKeyDto"
+        ''404'':
+          description: No active key available
+  /api/addin/keys/renew:
+    post:
+      tags: [Addin]
+      summary: Renew add-in key
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RenewAddinKeyRequest"
+      responses:
+        ''200'':
+          description: Key renewed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AddinKeyDto"
+  /api/addin/jobs:
+    post:
+      tags: [Addin]
+      summary: Enqueue a job for the add-in
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AddinJobCreateRequest"
+      responses:
+        ''201'':
+          description: Job created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AddinJobDto"
+  /api/addin/jobs/{jobId}:
+    get:
+      tags: [Addin]
+      summary: Get add-in job by identifier
+      parameters:
+        - $ref: "#/components/parameters/JobId"
+      responses:
+        ''200'':
+          description: Job information
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AddinJobDto"
+        ''404'':
+          description: Job not found
+  /api/addin/jobs/next:
+    get:
+      tags: [Addin]
+      summary: Dequeue the next pending job
+      parameters:
+        - $ref: "#/components/parameters/AddinKeyHeader"
+      responses:
+        ''200'':
+          description: Pending job returned
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AddinJobDto"
+        ''204'':
+          description: No jobs available
+        ''401'':
+          description: Invalid or missing add-in key
+  /api/addin/jobs/{jobId}/complete:
+    post:
+      tags: [Addin]
+      summary: Complete a job after processing
+      parameters:
+        - $ref: "#/components/parameters/JobId"
+        - $ref: "#/components/parameters/AddinKeyHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AddinJobCompleteRequest"
+      responses:
+        ''200'':
+          description: Job status updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AddinJobDto"
+        ''401'':
+          description: Invalid or missing add-in key
+        ''404'':
+          description: Job not found
 components:
   parameters:
     RoutingId:
@@ -181,6 +291,19 @@ components:
       schema:
         type: string
         format: uuid
+    JobId:
+      name: jobId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    AddinKeyHeader:
+      name: X-Addin-Key
+      in: header
+      required: true
+      schema:
+        type: string
   schemas:
     RoutingDto:
       type: object
@@ -371,3 +494,83 @@ components:
         uploadedAt:
           type: string
           format: date-time
+
+    AddinKeyDto:
+      type: object
+      required: [keyId, value, expiresAt]
+      properties:
+        keyId:
+          type: string
+          format: uuid
+        value:
+          type: string
+        expiresAt:
+          type: string
+          format: date-time
+    AddinJobDto:
+      type: object
+      required: [jobId, routingId, status, createdAt, parameters]
+      properties:
+        jobId:
+          type: string
+          format: uuid
+        routingId:
+          type: string
+          format: uuid
+        status:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        startedAt:
+          type: string
+          format: date-time
+          nullable: true
+        completedAt:
+          type: string
+          format: date-time
+          nullable: true
+        parameters:
+          type: object
+          additionalProperties:
+            type: string
+        resultStatus:
+          type: string
+          nullable: true
+        message:
+          type: string
+          nullable: true
+    AddinJobCreateRequest:
+      type: object
+      required: [routingId, parameters, createdBy]
+      properties:
+        routingId:
+          type: string
+          format: uuid
+        parameters:
+          type: object
+          additionalProperties:
+            type: string
+        createdBy:
+          type: string
+    AddinJobCompleteRequest:
+      type: object
+      required: [resultStatus]
+      properties:
+        resultStatus:
+          type: string
+          enum: [completed, failed]
+        message:
+          type: string
+          nullable: true
+          maxLength: 1024
+    RenewAddinKeyRequest:
+      type: object
+      properties:
+        requestedBy:
+          type: string
+        validDays:
+          type: integer
+          minimum: 1
+          maximum: 365
+
