@@ -1,0 +1,69 @@
+﻿<Window x:Class="CAM_API.Setup.UI.Views.ProgramInfoSetupWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:CAM_API.Setup.UI.ViewModels"
+        Title="Program Info" Height="450" Width="340"
+        WindowStartupLocation="CenterScreen" ResizeMode="CanResizeWithGrip">
+    <Window.DataContext>
+        <vm:ProgramInfoSetupViewModel />
+    </Window.DataContext>
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="40"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="100"/>
+            <ColumnDefinition Width="200"/>
+        </Grid.ColumnDefinitions>
+
+        <Label Grid.Row="0" Grid.Column="0" Content="PART CODE" VerticalAlignment="Center" Margin="0,4,5,4"/>
+        <TextBox Grid.Row="0" Grid.Column="1" Height="26" Margin="0,4,0,4"
+                 Text="{Binding PartCode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+        <Label Grid.Row="1" Grid.Column="0" Content="REV." VerticalAlignment="Center" Margin="0,4,5,4"/>
+        <TextBox Grid.Row="1" Grid.Column="1" Height="26" Margin="0,4,0,4"
+                 Text="{Binding Rev, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+        <Label Grid.Row="2" Grid.Column="0" Content="MACHINE" VerticalAlignment="Center" Margin="0,4,5,4"/>
+        <TextBox Grid.Row="2" Grid.Column="1" Height="26" Margin="0,4,0,4"
+                 Text="{Binding Machine, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+        <Label Grid.Row="3" Grid.Column="0" Content="OP. INFO." VerticalAlignment="Center" Margin="0,4,5,4"/>
+        <TextBox Grid.Row="3" Grid.Column="1" Height="26" Margin="0,4,0,4"
+                 Text="{Binding OpInfo, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+        <Label Grid.Row="4" Grid.Column="0" Content="JAW INFO." VerticalAlignment="Center" Margin="0,4,5,4"/>
+        <TextBox Grid.Row="4" Grid.Column="1" Height="26" Margin="0,4,0,4"
+                 Text="{Binding JawInfo, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+        <Label Grid.Row="5" Grid.Column="0" Content="JAW FIXTURE" VerticalAlignment="Center" Margin="0,4,5,4"/>
+        <TextBox Grid.Row="5" Grid.Column="1" Height="26" Margin="0,4,0,4"
+                 Text="{Binding JawFixture, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+        <Label Grid.Row="6" Grid.Column="0" Content="COORDINATE" VerticalAlignment="Center" Margin="0,4,5,4"/>
+        <TextBox Grid.Row="6" Grid.Column="1" Height="26" Margin="0,4,0,4"
+                 Text="{Binding Coordinate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+        <Label Grid.Row="7" Grid.Column="0" Content="RUN TIME" VerticalAlignment="Center" Margin="0,4,5,4"/>
+        <TextBox Grid.Row="7" Grid.Column="1" Height="26" Margin="0,4,0,4"
+                 Text="{Binding RunTime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+        <Label Grid.Row="8" Grid.Column="0" Content="DATE" VerticalAlignment="Center" Margin="0,4,5,4"/>
+        <TextBox Grid.Row="8" Grid.Column="1" Height="26" Margin="0,4,0,4"
+                 Text="{Binding Date, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+        <StackPanel Grid.Row="9" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,-10">
+            <Button Width="80" Height="30" Margin="5" Content="적용" Command="{Binding ApplyCommand}"/>
+            <Button Width="80" Height="30" Margin="5" Content="취소" Command="{Binding CancelCommand}"/>
+        </StackPanel>
+    </Grid>
+</Window>

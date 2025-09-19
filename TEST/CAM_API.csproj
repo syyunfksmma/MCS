@@ -1,0 +1,347 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x64</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{9C3A87C5-F19E-4A6A-9907-6722EAB80F5F}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>CAM_API</RootNamespace>
+    <AssemblyName>CAM_API</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>..\..\..\..\..\Public\Documents\Hexagon\ESPRIT EDGE\Data\Extensions\FKSM API\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <RegisterForComInterop>false</RegisterForComInterop>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <StartAction>Program</StartAction>
+    <StartProgram>"$(ProgramW6432)\Hexagon\ESPRIT EDGE\Prog\ESPRITEDGE.exe"</StartProgram>
+    <Optimize>false</Optimize>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>$(Public)\Documents\Hexagon\ESPRIT EDGE\Data\Extensions\FKSM API\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <RegisterForComInterop>false</RegisterForComInterop>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <StartAction>Program</StartAction>
+    <StartProgram>"$(ProgramW6432)\Hexagon\ESPRIT EDGE\Prog\ESPRITEDGE.exe"</StartProgram>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ReferencePath>$(ProgramW6432)\Hexagon\ESPRIT EDGE\Prog\</ReferencePath>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <PlatformTarget>x86</PlatformTarget>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <PlatformTarget>x86</PlatformTarget>
+    <OutputPath>bin\x86\Release\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM64'">
+    <PlatformTarget>ARM64</PlatformTarget>
+    <OutputPath>bin\ARM64\Debug\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|ARM64'">
+    <PlatformTarget>ARM64</PlatformTarget>
+    <OutputPath>bin\ARM64\Release\</OutputPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EditNC">
+      <HintPath>..\..\..\..\..\Public\Documents\Hexagon\ESPRIT EDGE\Data\Extensions\EditNC\EditNC.dll</HintPath>
+    </Reference>
+    <Reference Include="ESPRIT.CadFeatureReader, Version=2025.1.2508.2605, Culture=neutral, processorArchitecture=AMD64" />
+    <Reference Include="ESPRIT.CadFeatureTree, Version=2025.1.2445.2178, Culture=neutral, processorArchitecture=AMD64" />
+    <Reference Include="ESPRIT.CommonInterfaces, Version=2025.1.2508.2605, Culture=neutral, processorArchitecture=AMD64" />
+    <Reference Include="ESPRIT.Features, Version=2025.1.2508.2605, Culture=neutral, processorArchitecture=AMD64" />
+    <Reference Include="Esprit.Features.CLI, Version=0.0.0.0, Culture=neutral, processorArchitecture=AMD64" />
+    <Reference Include="ESPRIT.KBMAccess, Version=2025.1.2445.2178, Culture=neutral, processorArchitecture=AMD64" />
+    <Reference Include="ESPRIT.KBMDAL, Version=2025.1.2445.2178, Culture=neutral, processorArchitecture=AMD64" />
+    <Reference Include="ESPRIT.KBMDALComInterop, Version=2025.1.2445.2178, Culture=neutral, processorArchitecture=AMD64" />
+    <Reference Include="ESPRIT.KBMExtension, Version=2025.1.2445.2178, Culture=neutral, processorArchitecture=AMD64" />
+    <Reference Include="ESPRIT.KBMImportExportEngine, Version=2025.1.2445.2178, Culture=neutral, processorArchitecture=AMD64" />
+    <Reference Include="ESPRIT.KBMManagerUI, Version=2025.1.2445.2178, Culture=neutral, processorArchitecture=AMD64" />
+    <Reference Include="ESPRIT.KBMModules, Version=2025.1.2445.2178, Culture=neutral, processorArchitecture=AMD64" />
+    <Reference Include="ESPRIT.KBMProcedures, Version=2025.1.2445.2178, Culture=neutral, processorArchitecture=AMD64" />
+    <Reference Include="ESPRIT.KBMRuleProcessor, Version=2025.1.2445.2178, Culture=neutral, processorArchitecture=AMD64" />
+    <Reference Include="ESPRIT.KBMToolBrowser, Version=2025.1.2445.2178, Culture=neutral, processorArchitecture=AMD64" />
+    <Reference Include="ESPRIT.MachineOperationManager, Version=2025.1.2508.2605, Culture=neutral, processorArchitecture=AMD64" />
+    <Reference Include="ESPRIT.NetApi, Version=2025.1.2508.2605, Culture=neutral, processorArchitecture=AMD64" />
+    <Reference Include="ESPRIT.OperationManager, Version=2025.1.2445.2178, Culture=neutral, processorArchitecture=AMD64" />
+    <Reference Include="ESPRIT.Options, Version=2025.1.2508.2605, Culture=neutral, processorArchitecture=AMD64" />
+    <Reference Include="ESPRIT.PartOperations, Version=2025.1.2508.2605, Culture=neutral, processorArchitecture=AMD64" />
+    <Reference Include="Esprit.PartOperations.CLI, Version=0.0.0.0, Culture=neutral, processorArchitecture=AMD64" />
+    <Reference Include="ESPRIT.Parts, Version=2025.1.2508.2605, Culture=neutral, processorArchitecture=AMD64" />
+    <Reference Include="Esprit.Parts.CLI, Version=0.0.0.0, Culture=neutral, processorArchitecture=AMD64" />
+    <Reference Include="Esprit.ToolAssembly.CLI, Version=0.0.0.0, Culture=neutral, processorArchitecture=AMD64" />
+    <Reference Include="Esprit.ToolAssembly.DataExchange, Version=0.0.0.0, Culture=neutral, processorArchitecture=AMD64" />
+    <Reference Include="Esprit.ToolAssembly.Gdml, Version=0.0.0.0, Culture=neutral, processorArchitecture=AMD64" />
+    <Reference Include="ESPRIT.ToolAssemblyManager, Version=2025.1.2445.2178, Culture=neutral, processorArchitecture=AMD64" />
+    <Reference Include="ESPRIT.ToolChangeIntermediatePoint, Version=2025.1.2445.2178, Culture=neutral, processorArchitecture=AMD64" />
+    <Reference Include="ESPRIT.ToolingImages, Version=2025.1.2445.2178, Culture=neutral, processorArchitecture=AMD64" />
+    <Reference Include="ESPRIT.ToolListManager, Version=2025.1.2445.2178, Culture=neutral, processorArchitecture=AMD64" />
+    <Reference Include="ESPRIT.Tools, Version=2025.1.2508.2605, Culture=neutral, processorArchitecture=AMD64" />
+    <Reference Include="ESPRIT.Utilities, Version=2025.1.2508.2605, Culture=neutral, PublicKeyToken=4d92b16088784fb5, processorArchitecture=AMD64" />
+    <Reference Include="ESPRIT.Wpf, Version=2025.1.2508.2605, Culture=neutral, processorArchitecture=AMD64" />
+    <Reference Include="HxGN.HPM.CustomUI, Version=2025.1.2449.203, Culture=neutral, processorArchitecture=AMD64" />
+    <Reference Include="Interop.Esprit, Version=20.0.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="Interop.EspritComBase, Version=20.0.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="Interop.EspritConstants, Version=20.0.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="Interop.EspritFeatures, Version=20.0.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="Interop.EspritGeometry, Version=20.0.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="Interop.EspritGeometryBase, Version=20.0.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="Interop.EspritGraphicsIO, Version=20.0.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="Interop.EspritProperties, Version=20.0.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="Interop.EspritSolids, Version=20.0.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="Interop.EspritSolidsHoles, Version=20.0.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="Interop.EspritTechnology, Version=20.0.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="Interop.EspritTools, Version=20.0.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="Interop.EspritUtils, Version=20.0.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="Interop.Gp, Version=20.0.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="Interop.Gpc, Version=20.0.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
+    <Reference Include="WindowsFormsIntegration" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Common\Converters\EnumToBooleanConverter.cs" />
+    <Compile Include="Common\Converters\EqualityConverter.cs" />
+    <Compile Include="Common\Converters\EqualityMultiConverter.cs" />
+    <Compile Include="Common\DTO\OperationToolInfo.cs" />
+    <Compile Include="Common\Helpers\DuplicateToolOpsHelper.cs" />
+    <Compile Include="Common\Helpers\SelectionSetHelper.cs" />
+    <Compile Include="Common\ViewModels\BaseViewModel.cs" />
+    <Compile Include="Common\Commands\RelayCommand.cs" />
+    <Compile Include="FaceColorChanger.cs" />
+    <Compile Include="Feature\CadFeaturesManager.cs" />
+    <Compile Include="Feature\CreateHoleFeatures.cs" />
+    <Compile Include="Feature\CreatePocketFeatures.cs" />
+    <Compile Include="Feature\Services\CreateTurningFeatures.cs" />
+    <Compile Include="Feature\CustomPropConditions.cs" />
+    <Compile Include="Feature\Model\CustomPropCondition.cs" />
+    <Compile Include="Feature\Model\DescriptionOption.cs" />
+    <Compile Include="Feature\Model\FacilityFeatureMapper.cs" />
+    <Compile Include="Feature\Services\CadFeaturesManager.cs" />
+    <Compile Include="Feature\Services\ComFaultHandler.cs" />
+    <Compile Include="Feature\Services\FeatureManager.cs" />
+    <Compile Include="Feature\Services\FeatureGenerationService.cs" />
+    <Compile Include="Feature\Services\FeatureGeneratorFactory.cs" />
+    <Compile Include="Feature\Services\Generator\TurnGen.cs" />
+    <Compile Include="Feature\Services\Generator\IDdrillGen.cs" />
+    <Compile Include="Feature\Services\Generator\ScallopGen.cs" />
+    <Compile Include="Feature\Services\Generator\VoluteGen.cs" />
+    <Compile Include="Feature\Services\Generator\PipeTapSlotGen.cs" />
+    <Compile Include="Feature\Services\Generator\AngleHoleGen.cs" />
+    <Compile Include="Feature\Services\Generator\PipeTapGen.cs" />
+    <Compile Include="Feature\Services\Generator\ReamGen.cs" />
+    <Compile Include="Feature\Services\Generator\TapGen.cs" />
+    <Compile Include="Feature\Services\Generator\HoleGen.cs" />
+    <Compile Include="Feature\Services\Generator\IFeatureGenerator.cs" />
+    <Compile Include="Feature\Services\PropertyConditionEvaluator.cs" />
+    <Compile Include="Feature\UI\ViewModels\FeatureSelectionViewModel.cs" />
+    <Compile Include="Feature\UI\ViewModels\TagSelectedFacesViewModel.cs" />
+    <Compile Include="Feature\UI\Views\FeatureSelectionView.xaml.cs">
+      <DependentUpon>FeatureSelectionView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Feature\UI\Views\TagSelectedFacesView.xaml.cs">
+      <DependentUpon>TagSelectedFacesView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="KBM\UI\Views\DuplicateToolOpsWindow.xaml.cs">
+      <DependentUpon>DuplicateToolOpsWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Setup\Services\ImportCadService.cs" />
+    <Compile Include="Setup\UI\ViewModels\MachineTemplateEditViewModel.cs" />
+    <Compile Include="Setup\UI\ViewModels\ProgramInfoSetupViewModel.cs" />
+    <Compile Include="Setup\UI\ViewModels\SetupWindowViewModel.cs" />
+    <Compile Include="Setup\UI\Views\SetupWindow.xaml.cs">
+      <DependentUpon>SetupWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="test.cs" />
+    <Compile Include="Setup\workplan.cs" />
+    <Compile Include="KBM\KBMProcessManager.cs" />
+    <Compile Include="Setup\UI\Views\MachineTemplateEditWindow.xaml.cs">
+      <DependentUpon>MachineTemplateEditWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Common\Helpers\FileFinder.cs" />
+    <Compile Include="Setup\Model\MachineTemplates.cs" />
+    <Compile Include="Setup\Services\MachinePackageManger.cs" />
+    <Compile Include="Setup\UI\Views\ProgramInfoSetupWindow.xaml.cs">
+      <DependentUpon>ProgramInfoSetupWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Main.cs" />
+    <Compile Include="AddinUi.cs" />
+    <Compile Include="Volute\VoluteDrawer.cs" />
+    <Compile Include="Volute\VoluteWindow.xaml.cs">
+      <DependentUpon>VoluteWindow.xaml</DependentUpon>
+    </Compile>
+    <None Include="app.manifest" />
+    <None Include="ClassDiagram1.cd" />
+    <None Include="packages.config" />
+    <None Include="uml\MCMSdatabase.mdpuml" />
+    <None Include="uml\MCMS.mdpuml" />
+    <None Include="uml\Class.mdpuml" />
+    <None Include="uml\KBM.mdpuml" />
+    <None Include="uml\SpecialFeatures.mdpuml" />
+    <None Include="uml\ScanFeatures.mdpuml" />
+    <None Include="uml\PartSetup.mdpuml" />
+    <None Include="t.mdpuml" />
+    <None Include="TEST_Large.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="TEST_Small.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <Compile Include="Images\ImageManager.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Images\Square.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Images\partsetup.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Images\kbm.ico" />
+    <EmbeddedResource Include="Images\scan.ico" />
+    <EmbeddedResource Include="Images\setup.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Feature\UI\Views\FeatureSelectionView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Feature\UI\Views\TagSelectedFacesView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="KBM\UI\Views\DuplicateToolOpsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Setup\UI\Views\SetupWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Setup\UI\Views\MachineTemplateEditWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Setup\UI\Views\ProgramInfoSetupWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Volute\VoluteWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\logo.PNG" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\CCW_Image.png" />
+    <Resource Include="Resources\CW_Image.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="KBM\Services\" />
+    <Folder Include="KBM\UI\ViewModels\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

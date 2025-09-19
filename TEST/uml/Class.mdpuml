@@ -1,0 +1,127 @@
+﻿@startuml CAM_API_Sketch
+
+skinparam backgroundColor #FEFEFE
+skinparam monochrome false
+
+' Sketch-style formatting
+skinparam class {
+    BackgroundColor #F5F5DC
+    BorderColor #2F4F4F
+    FontSize 14
+    BorderThickness 2
+    RoundCorner 15
+}
+
+skinparam package {
+    BackgroundColor #E6E6FA
+    BorderColor #4B0082
+    FontSize 16
+    BorderThickness 2
+    RoundCorner 10
+}
+
+skinparam arrow {
+    Thickness 2
+    Color #2F4F4F
+}
+
+skinparam note {
+    BackgroundColor #FFFACD
+    BorderColor #DAA520
+    FontSize 12
+}
+
+title CAM API - Core Architecture
+
+class "UI Controller\n(AddinUi)" as UI {
+    + CreateUI()
+    + ButtonClick()
+    ..
+    Main Controller
+}
+
+package "Setup" {
+    class "CAD Import\n(ImportCad)" as Import {
+        + ImportPart()
+        + FindWorkpiece()
+        ..
+        Load Parts
+    }
+
+    class "Machine Setup\n(MachineManager)" as Machine {
+        + LoadMachine()
+        + SaveSettings()
+        ..
+        Create Machine Templet
+    }
+}
+
+package "Feature" {
+    class "Feature Processing\n(CreateHoleFeature)" as Feature {
+        + CreateHoles()
+        + ProcessFeatures()
+        ..
+        Create Featrue From 3D CAD
+    }
+
+    class "Special Features\n(VoluteDrawer)" as Special {
+        + CreateVolute()
+        + DrawFeature()
+        ..
+        Custom Feature
+    }
+}
+
+package "Toolpath" {
+    class "Path Generation\n(KBMProcessManager)" as KBM {
+        + ApplyProcess()
+        + GeneratePath()
+        ..
+        With KBM DATABASE
+    }
+}
+
+class "Esprit CAM\nSystem" as Esprit #FFE4E1 {
+    + Document
+    + EventWindow
+    ..
+    CAM Engine
+}
+
+
+
+' Spread out relationships with clear directions
+UI -down-> Import : setup
+UI -down-> Machine : config
+UI -right-> Feature : process
+UI -right-> Special : custom
+UI -down-> KBM : generate
+
+' External dependencies with different directions
+Import -left-> Esprit : uses
+Machine -down-> Esprit : uses
+Feature -down-> Esprit : uses
+KBM -right-> Esprit : uses
+
+' Hidden relationships for better positioning
+Setup -[hidden]right-> Feature
+Feature -[hidden]right-> Toolpath
+Import -[hidden]down-> Machine
+
+note right of UI
+Central Control Hub
+end note
+
+note bottom of Setup
+Preparation Phase
+end note
+
+note bottom of Feature  
+Recognition Phase
+end note
+
+note bottom of Toolpath
+Generation Phase
+end note
+
+@enduml

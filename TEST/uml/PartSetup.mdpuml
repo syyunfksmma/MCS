@@ -1,0 +1,115 @@
+﻿@startuml Button1_Window_Initialization
+
+!theme plain
+skinparam backgroundColor #FFFFFF
+skinparam sequenceArrowThickness 2
+skinparam roundcorner 20
+skinparam maxmessagesize 400
+
+skinparam sequence {
+    GroupBackgroundColor #E8F4FD
+    GroupBorderColor #2E86AB
+    GroupBorderThickness 2
+
+    ParticipantFontSize 17
+}
+
+title Button 1 : Part Setup
+
+actor User #87CEEB
+participant "AddinUi" as UI #98FB98
+participant "ImportCadWindow" as ImportWin #FFA07A
+participant "ProgramInfoSetupWindow" as ProgInfo #DDA0DD
+participant "MachineSetupWindow" as MachineWin #FFB6C1
+participant "AddMachineWindow" as AddMachine #FFDAB9
+participant "ImportCad" as Import #E0FFFF
+participant "MachineManager" as MachMgr #FFE4E6
+participant "FindFile" as FindFile #20B2AA
+participant "MachinesetupManger" as MachSetup #F0E68C
+participant "Esprit.Application" as Esprit #D3D3D3
+
+== Program Info Setup ==
+User -> ImportWin : Click "Program Info"
+activate ImportWin #FFA07A
+
+ImportWin -> ProgInfo : new ProgramInfoSetupWindow(app)
+activate ProgInfo #DDA0DD
+
+ProgInfo --> User : Show dialog
+
+User -> ProgInfo : Enter program details
+
+ProgInfo -> Esprit : Update ProgramSettings
+ProgInfo -> ImportWin : ProgramInfoUpdated event
+
+ProgInfo --> User : Show success message
+deactivate ProgInfo
+
+deactivate ImportWin
+
+== CAD Import Process ==
+User -> ImportWin : Select files and click "Load CAD"
+activate ImportWin #FFA07A
+
+ImportWin -> Import : ImportPartAndStock(...)
+activate Import #E0FFFF
+
+Import -> Import : AddPartToWorkpiece()
+
+Import -> Esprit : MergeFile2()
+Import -> Import : CreateBarStock() or CreateFileStock()
+Import -> Esprit : Update Document
+
+Import --> ImportWin : Success
+deactivate Import
+
+ImportWin --> User : Show success message
+deactivate ImportWin
+
+== Machine Setup Process ==
+User -> ImportWin : Click "Machine Change"
+activate ImportWin #FFA07A
+
+ImportWin -> MachineWin : new MachineSetupWindow(app)
+activate MachineWin #FFB6C1
+
+MachineWin -> MachMgr : LoadMachineData()
+activate MachMgr #FFE4E6
+MachMgr -> MachMgr : Read JSON file
+MachMgr --> MachineWin : Machine data loaded
+deactivate MachMgr
+
+alt Add New Machine
+    User -> MachineWin : Click "Add Machine"
+    MachineWin -> AddMachine : new AddMachineWindow(app)
+    activate AddMachine #FFDAB9
+    AddMachine --> User : Show dialog
+    User -> AddMachine : Enter machine details
+    AddMachine -> MachMgr : Save machine data
+    activate MachMgr #FFE4E6
+    MachMgr -> MachMgr : Update JSON file
+    MachMgr --> AddMachine : Data saved
+    deactivate MachMgr
+    deactivate AddMachine
+end
+
+User -> MachineWin : Select machine and click "Apply"
+MachineWin -> FindFile : new FindFile(app)
+activate FindFile #20B2AA
+FindFile -> FindFile : MFilePath() and FFilePath()
+FindFile --> MachineWin : File paths
+deactivate FindFile
+
+MachineWin -> MachSetup : new MachinesetupManger(app)
+activate MachSetup #F0E68C
+MachSetup -> MachSetup : CreateMachineSetup()
+MachSetup -> Esprit : Update InitialMachineSetup
+MachSetup --> MachineWin : Setup complete
+deactivate MachSetup
+
+deactivate MachineWin
+deactivate ImportWin
+
+
+
+@enduml

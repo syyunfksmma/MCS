@@ -1,0 +1,43 @@
+﻿@startuml
+title MCMS Network Drive Structure (Revised)
+
+skinparam folderStyle rectangle
+skinparam shadowing false
+
+folder "MCMS" {
+  
+  folder "Item_A" {
+    folder "Rev01" {
+      folder "Routings" {
+        folder "GT310001" {
+          file "espritfile.esp"
+          file "ncfile.nc"
+          file "wpfile.stl"
+          file "meta.json"
+        }
+        folder "GT310002" {
+          file "espritfile.esp"
+          file "ncfile.nc"
+          file "wpfile.stl"
+          file "meta.json"
+        }
+      }
+    }
+  }
+
+  folder "Machine Package" {
+    folder "Machine" {
+      folder "GT3100" {
+        file "machine.mprj"
+        }
+    }
+    folder "Fixture" {
+      folder "chuck" {
+        file "fixture.gdml"
+        }
+    }
+    
+  }
+
+  
+@enduml

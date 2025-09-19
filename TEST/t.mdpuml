@@ -1,0 +1,45 @@
+﻿@startuml Button7_Test2
+
+!theme plain
+skinparam backgroundColor #FFFFFF
+skinparam sequenceArrowThickness 2
+skinparam roundcorner 20
+skinparam maxmessagesize 60
+
+skinparam sequence {
+    GroupBackgroundColor #F0F8F0
+    GroupBorderColor #2F4F4F
+    GroupBorderThickness 2
+}
+
+title Button 7: Test2 (TEST_Btn7) - Development Testing
+
+actor User #87CEEB
+participant "AddinUi" as UI #98FB98
+participant "CreateHoleFeature" as HoleFeature #FFB6C1
+participant "Esprit.Application" as Esprit #D3D3D3
+
+== Test2 Process ==
+User -> UI : Click "test2" button (TEST_Btn7)
+activate UI #98FB98
+
+group Test Operations [#F5F5F5]
+    UI -> HoleFeature : new CreateHoleFeature(app)
+    activate HoleFeature #FFB6C1
+    
+    HoleFeature -> HoleFeature : CreateHolesFeature()
+    note right of HoleFeature
+        Testing hole feature creation
+        functionality for development
+        and debugging purposes
+    end note
+    
+    HoleFeature -> Esprit : Execute hole feature tests
+    HoleFeature --> UI : Test execution complete
+    deactivate HoleFeature
+end
+
+UI --> User : Test2 process finished
+deactivate UI
+
+@enduml

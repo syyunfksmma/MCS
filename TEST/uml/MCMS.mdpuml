@@ -1,0 +1,41 @@
+﻿@startuml
+title MCMS (Manufacturing CAM Management System) Architecture
+
+skinparam componentStyle rectangle
+skinparam shadowing false
+
+package "MCMS Client" {
+  [메인 윈도우\n(품목/Rev 조회,\nRoutings 관리,\nSolidWorks 매칭)] as MainWindow
+  [Routings 관리 창\n(Routing 정의/편집,\nEsprit 실행 트리거)] as RoutingEditor
+  [이력 뷰어\n(Rev, CAM Rev,\n유효성 날짜 추적)] as HistoryViewer
+}
+
+package "MCMS Server" {
+  [MCMS Backend API\n(데이터 처리/권한 관리)] as Backend
+  [DB (SQL Server/Postgres)\n- Item\n- Routing\n- FileMapper\n- History] as DB
+  [File Storage (네트워크 드라이브)\nEsprit, NC, STL, MPRJ, GDML\n버전/경로 관리] as FileStorage
+}
+
+package "External Systems" {
+  [SolidWorks\n(Part/Rev 관리,\n모델 매칭)] as SolidWorks
+  [Esprit Edge\n(CAM 작성/편집)] as Esprit
+  [Add-In 모듈\n(ProgramInfo,\nMachinePkg,\nFileIO 연동)] as AddIn
+  [CNC Machine\n(NC 실행/검증)] as CNC
+}
+
+' Connections
+MainWindow --> Backend : 품목/Rev 조회/등록
+RoutingEditor --> Backend : Routing 정의/편집
+HistoryViewer --> Backend : 이력 조회
+
+Backend --> DB : 메타데이터 저장/조회
+Backend --> FileStorage : 파일 업로드/다운로드 경로 관리
+
+RoutingEditor --> AddIn : Esprit 실행 요청
+AddIn --> Esprit : ProgramInfo, MachinePkg 적용\n파일 생성/저장
+AddIn --> FileStorage : Esprit/NC/WP/STL 파일 저장
+
+MainWindow --> SolidWorks : 파일 열기/매칭
+Esprit --> CNC : NC 파일 전송/검증 실행
+
+@enduml

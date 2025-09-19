@@ -1,0 +1,373 @@
+openapi: 3.0.1
+info:
+  title: MCMS API
+  version: 0.2.0
+  description: |
+    Routing approval and file metadata endpoints for MCMS.
+paths:
+  /api/routings/{routingId}/request-approval:
+    post:
+      tags: [Routings]
+      summary: Request approval for a routing
+      parameters:
+        - $ref: '#/components/parameters/RoutingId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestRoutingApprovalRequest'
+      responses:
+        '200':
+          description: Approval request accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoutingDto'
+        '404':
+          description: Routing not found
+        '409':
+          description: Approval already pending
+  /api/routings/{routingId}/approve:
+    post:
+      tags: [Routings]
+      summary: Approve a routing
+      parameters:
+        - $ref: '#/components/parameters/RoutingId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApproveRoutingRequest'
+      responses:
+        '200':
+          description: Routing approved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoutingDto'
+        '404':
+          description: Routing not found
+        '409':
+          description: Routing is not pending approval
+  /api/routings/{routingId}/reject:
+    post:
+      tags: [Routings]
+      summary: Reject a routing approval request
+      parameters:
+        - $ref: '#/components/parameters/RoutingId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RejectRoutingRequest'
+      responses:
+        '200':
+          description: Routing rejected
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoutingDto'
+        '404':
+          description: Routing not found
+        '409':
+          description: Routing is not pending approval
+  /api/routings/{routingId}/approval-history:
+    get:
+      tags: [Routings]
+      summary: Retrieve approval history entries for a routing
+      parameters:
+        - $ref: '#/components/parameters/RoutingId'
+      responses:
+        '200':
+          description: Approval history retrieved
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/HistoryEntryDto'
+        '404':
+          description: Routing not found
+  /api/routings/{routingId}/files:
+    get:
+      tags: [RoutingFiles]
+      summary: Get routing file metadata and meta.json manifest
+      parameters:
+        - $ref: '#/components/parameters/RoutingId'
+      responses:
+        '200':
+          description: Routing file metadata
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoutingMetaDto'
+        '404':
+          description: Routing not found
+    post:
+      tags: [RoutingFiles]
+      summary: Upload a routing file and regenerate meta.json
+      parameters:
+        - $ref: '#/components/parameters/RoutingId'
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [file, fileType, uploadedBy]
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: File content to upload
+                fileType:
+                  type: string
+                  description: Logical file type (esprit, nc, meta, etc.)
+                isPrimary:
+                  type: boolean
+                  default: false
+                  description: Flag to mark the file as primary
+                uploadedBy:
+                  type: string
+                  description: User initiating the upload
+      responses:
+        '200':
+          description: File uploaded and meta.json regenerated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoutingMetaDto'
+        '400':
+          description: Invalid payload
+        '404':
+          description: Routing not found
+  /api/routings/{routingId}/files/{fileId}:
+    delete:
+      tags: [RoutingFiles]
+      summary: Delete a routing file and update meta.json
+      parameters:
+        - $ref: '#/components/parameters/RoutingId'
+        - name: fileId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: deletedBy
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: File deleted and meta.json regenerated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoutingMetaDto'
+        '400':
+          description: Missing deletedBy value
+        '404':
+          description: Routing or file not found
+components:
+  parameters:
+    RoutingId:
+      name: routingId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+  schemas:
+    RoutingDto:
+      type: object
+      required: [id, itemRevisionId, routingCode, status, camRevision, isPrimary, approvalStatus, steps, files, history]
+      properties:
+        id:
+          type: string
+          format: uuid
+        itemRevisionId:
+          type: string
+          format: uuid
+        routingCode:
+          type: string
+        status:
+          type: string
+        camRevision:
+          type: string
+        isPrimary:
+          type: boolean
+        approvalStatus:
+          type: string
+        approvalRequestedAt:
+          type: string
+          format: date-time
+          nullable: true
+        approvalRequestedBy:
+          type: string
+          nullable: true
+        steps:
+          type: array
+          items:
+            $ref: '#/components/schemas/RoutingStepDto'
+        files:
+          type: array
+          items:
+            $ref: '#/components/schemas/RoutingFileDto'
+        history:
+          type: array
+          items:
+            $ref: '#/components/schemas/HistoryEntryDto'
+    RoutingStepDto:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        sequence:
+          type: integer
+        machine:
+          type: string
+        processDescription:
+          type: string
+        toolInformation:
+          type: string
+        notes:
+          type: string
+    RoutingFileDto:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        fileType:
+          type: string
+        fileName:
+          type: string
+        relativePath:
+          type: string
+        fileSizeBytes:
+          type: integer
+          format: int64
+        checksum:
+          type: string
+        isPrimary:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+        createdBy:
+          type: string
+    HistoryEntryDto:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        routingId:
+          type: string
+          format: uuid
+        changeType:
+          type: string
+        field:
+          type: string
+          nullable: true
+        previousValue:
+          type: string
+          nullable: true
+        currentValue:
+          type: string
+          nullable: true
+        outcome:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        createdBy:
+          type: string
+        comment:
+          type: string
+          nullable: true
+    RequestRoutingApprovalRequest:
+      type: object
+      required: [routingId, requestedBy]
+      properties:
+        routingId:
+          type: string
+          format: uuid
+        requestedBy:
+          type: string
+        comment:
+          type: string
+          nullable: true
+    ApproveRoutingRequest:
+      type: object
+      required: [routingId, approvedBy, approvedAt]
+      properties:
+        routingId:
+          type: string
+          format: uuid
+        approvedBy:
+          type: string
+        comment:
+          type: string
+          nullable: true
+        approvedAt:
+          type: string
+          format: date-time
+    RejectRoutingRequest:
+      type: object
+      required: [routingId, rejectedBy, reason, rejectedAt]
+      properties:
+        routingId:
+          type: string
+          format: uuid
+        rejectedBy:
+          type: string
+        reason:
+          type: string
+        rejectedAt:
+          type: string
+          format: date-time
+    RoutingMetaDto:
+      type: object
+      required: [routingId, metaPath, files]
+      properties:
+        routingId:
+          type: string
+          format: uuid
+        camRevision:
+          type: string
+          nullable: true
+        metaPath:
+          type: string
+        files:
+          type: array
+          items:
+            $ref: '#/components/schemas/RoutingMetaFileDto'
+        latestHistoryId:
+          type: string
+          format: uuid
+          nullable: true
+    RoutingMetaFileDto:
+      type: object
+      required: [fileName, fileType, relativePath, checksum, uploadedBy, uploadedAt]
+      properties:
+        fileName:
+          type: string
+        fileType:
+          type: string
+        relativePath:
+          type: string
+        checksum:
+          type: string
+        isPrimary:
+          type: boolean
+        uploadedBy:
+          type: string
+        uploadedAt:
+          type: string
+          format: date-time
