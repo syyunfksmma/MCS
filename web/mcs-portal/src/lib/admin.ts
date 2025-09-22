@@ -146,7 +146,11 @@ export const ADMIN_STATUS_META: Record<AdminStatus, { label: string; actionLabel
 
 const delay = (ms = 120) => new Promise(resolve => setTimeout(resolve, ms));
 
-let MOCK_ADMINS: AdminAccount[] = [
+const generateKeyId = () => `key-${Math.random().toString(36).slice(2, 8)}`;
+const generatePlaintextKey = () => `sk_live_${Math.random().toString(36).slice(2, 18)}`;
+const maskApiKey = (key: string) => `${key.slice(0, 8)}****${key.slice(-4)}`;
+
+const MOCK_ADMINS: AdminAccount[] = [
   {
     id: 'admin-1',
     displayName: 'Doyun Kim',
@@ -190,7 +194,7 @@ let MOCK_API_KEYS: AdminApiKey[] = [
     id: 'key-1',
     label: 'Playwright 테스트',
     scope: 'workspace',
-    maskedKey: 'sk_live_18d3????a91b',
+    maskedKey: 'sk_live_18d3****a91b',
     createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
     expiresAt: new Date(Date.now() + 27 * 24 * 60 * 60 * 1000).toISOString(),
     lastUsedAt: new Date(Date.now() - 12 * 60 * 60 * 1000).toISOString(),
@@ -201,7 +205,7 @@ let MOCK_API_KEYS: AdminApiKey[] = [
     id: 'key-2',
     label: 'Lighthouse 모니터링',
     scope: 'ops',
-    maskedKey: 'sk_live_9821????c7d2',
+    maskedKey: 'sk_live_9821****c7d2',
     createdAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
     expiresAt: new Date(Date.now() + 20 * 24 * 60 * 60 * 1000).toISOString(),
     createdBy: 'ops.supervisor',
@@ -417,9 +421,9 @@ export async function issueAdminApiKey({
   createdBy: string;
 }): Promise<{ apiKey: AdminApiKey; plaintextKey: string }> {
   await delay();
-  const id = key-;
-  const plaintextKey = sk_live_;
-  const maskedKey = ${plaintextKey.slice(0, 8)}????;
+  const id = generateKeyId();
+  const plaintextKey = generatePlaintextKey();
+  const maskedKey = maskApiKey(plaintextKey);
   const apiKey: AdminApiKey = {
     id,
     label,
@@ -442,7 +446,7 @@ export async function revokeAdminApiKey({ id, reason }: { id: string; reason?: s
       ? {
           ...key,
           status: 'revoked',
-          maskedKey: ${key.maskedKey.slice(0, 8)}????
+          maskedKey: `${key.maskedKey.slice(0, 8)}****${key.maskedKey.slice(-4)}`
         }
       : key
   );
@@ -575,8 +579,8 @@ const buildAuditCsv = (logs: AuditLogEntry[]): string => {
       log.category,
       log.action,
       log.severity,
-      "",
-      "",
+      actor,
+      summary,
       log.routingId ?? '',
       log.historyEntryId ?? '',
       log.traceId ?? '',
@@ -641,10 +645,10 @@ const computeAuditStatistics = (logs: AuditLogEntry[], fromIso: string, toIso: s
 
   if (criticalEvents > 0) {
     alerts.push({
-      id: critical-,
+      id: 'critical-events',
       title: 'Critical audit events detected',
       severity: 'critical',
-      message: ${criticalEvents} critical events recorded in the selected window.,
+      message: `${criticalEvents} critical events recorded in the selected window.`,
       createdAt: nowIso
     });
   }
@@ -652,36 +656,37 @@ const computeAuditStatistics = (logs: AuditLogEntry[], fromIso: string, toIso: s
   if (totalEvents > 0) {
     const rejectionRate = rejectionEvents / totalEvents;
     if (rejectionRate >= 0.25) {
-      alerts.push({
-        id: ejection-,
-        title: 'High rejection rate',
-        severity: 'warning',
-        message: Rejection rate is % of total audit events.,
-        createdAt: nowIso
+      const rejectionPercentage = Math.round(rejectionRate * 1000) / 10;
+    alerts.push({
+      id: 'high-rejection-rate',
+      title: 'High rejection rate',
+      severity: 'warning',
+      message: `Rejection rate is ${rejectionPercentage}% of total audit events.`,
+      createdAt: nowIso
       });
     }
   }
 
   if (pendingApprovalAverageHours >= 12) {
+    const averageHours = Math.round(pendingApprovalAverageHours * 10) / 10;
     alerts.push({
-      id: sla-,
+      id: 'approval-sla',
       title: 'Approval SLA at risk',
       severity: 'warning',
-      message: Average approval turnaround is h. Target is under 12h.,
+      message: `Average approval turnaround is ${averageHours}h. Target is under 12h.`,
       createdAt: nowIso
     });
   }
 
   if (alerts.length === 0) {
     alerts.push({
-      id: ok-,
+      id: 'all-clear',
       title: 'No anomalies detected',
       severity: 'info',
       message: 'Audit activity within normal thresholds.',
       createdAt: nowIso
     });
   }
-
   return {
     from: fromIso,
     to: toIso,
@@ -726,9 +731,9 @@ export async function fetchAuditLogs(options: AuditLogQueryOptions = {}): Promis
       params.set('page', String(Math.max(1, options.page ?? 1)));
       params.set('pageSize', String(Math.max(1, options.pageSize ?? DEFAULT_AUDIT_PAGE_SIZE)));
 
-      const response = await fetch(${baseUrl}/api/audit-logs?, { cache: 'no-store' });
+      const response = await fetch(`${baseUrl}/api/audit-logs?${params.toString()}`, { cache: 'no-store' });
       if (!response.ok) {
-        throw new Error(Failed to fetch audit logs: );
+        throw new Error(`Failed to fetch audit logs: ${response.status}`);
       }
       const payload = (await response.json()) as Omit<AuditLogSearchResult, 'source'>;
       return { ...payload, source: 'api' };
@@ -755,9 +760,9 @@ export async function exportAuditLogsCsv(options: AuditLogQueryOptions = {}): Pr
       params.set('page', '1');
       params.set('pageSize', String(Math.max(1, options.pageSize ?? 5000)));
 
-      const response = await fetch(${baseUrl}/api/audit-logs/export?, { cache: 'no-store' });
+      const response = await fetch(`${baseUrl}/api/audit-logs/export?${params.toString()}`, { cache: 'no-store' });
       if (!response.ok) {
-        throw new Error(Failed to export audit logs: );
+        throw new Error(`Failed to export audit logs: ${response.status}`);
       }
       return await response.text();
     } catch (error) {
@@ -781,9 +786,9 @@ export async function fetchAuditStatistics(options: AuditLogQueryOptions = {}): 
       if (options.createdBy) params.set('createdBy', options.createdBy);
       if (options.routingId) params.set('routingId', options.routingId);
 
-      const response = await fetch(${baseUrl}/api/audit-logs/statistics?, { cache: 'no-store' });
+      const response = await fetch(`${baseUrl}/api/audit-logs/statistics?${params.toString()}`, { cache: 'no-store' });
       if (!response.ok) {
-        throw new Error(Failed to fetch audit statistics: );
+        throw new Error(`Failed to fetch audit statistics: ${response.status}`);
       }
       const payload = (await response.json()) as Omit<AuditLogStatistics, 'source'>;
       return { ...payload, source: 'api' };
@@ -804,9 +809,9 @@ export async function fetchApprovalHistory(routingId: string): Promise<ApprovalH
   const baseUrl = getApiBaseUrl();
   if (baseUrl) {
     try {
-      const response = await fetch(${baseUrl}/api/routings//approval-history, { cache: 'no-store' });
+      const response = await fetch(`${baseUrl}/api/routings/${routingId}/approval-history`, { cache: 'no-store' });
       if (!response.ok) {
-        throw new Error(Failed to fetch approval history: );
+        throw new Error(`Failed to fetch approval history: ${response.status}`);
       }
       const payload = (await response.json()) as ApprovalHistoryEntry[];
       return payload;
