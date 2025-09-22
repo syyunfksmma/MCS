@@ -1,0 +1,79 @@
+openapi: 3.0.1
+info:
+  title: MCMS Explorer API (Draft)
+  version: 0.1.0
+paths:
+  /api/explorer:
+    get:
+      summary: Explorer 데이터 조회
+      description: CAM Item/Revision/Routing 정보를 반환한다. 실제 MCMS API 연동 시 proxy 된다.
+      responses:
+        '200':
+          description: Explorer 데이터
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExplorerResponse'
+components:
+  schemas:
+    ExplorerResponse:
+      type: object
+      properties:
+        source:
+          type: string
+          enum: [mock, api]
+        generatedAt:
+          type: string
+          format: date-time
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExplorerItem'
+    ExplorerItem:
+      type: object
+      properties:
+        id:
+          type: string
+        code:
+          type: string
+        name:
+          type: string
+        revisions:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExplorerRevision'
+    ExplorerRevision:
+      type: object
+      properties:
+        id:
+          type: string
+        code:
+          type: string
+        routings:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExplorerRouting'
+    ExplorerRouting:
+      type: object
+      properties:
+        id:
+          type: string
+        code:
+          type: string
+        status:
+          type: string
+        camRevision:
+          type: string
+        files:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExplorerFile'
+    ExplorerFile:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        type:
+          type: string
