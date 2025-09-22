@@ -1,4 +1,30 @@
-# Sprint 2 Activity Log — Workspace & Workflow
+# Sprint 2 Activity Log - Workspace & Workflow
 
-> 모든 작업 과정과 로그를 기록한다. 필요 시 다이어그램, 코드 스니펫, API 설명을 추가한다.
+> 모든 작업 활동은 로그로 기록하며, 필요 시 다이어그램/코드/Mock API 예시를 첨부한다.
 
+## 2025-09-22 Codex
+- Task A1 완료: Explorer TreePanel에 drag & drop 지원 추가, 동일 부모 내 순서 조정 허용.
+- Task A1 문서: docs/sprint/Sprint2_DragDropRouting.md에 라이브러리 선정과 재정렬 규칙 정리.
+- Task A2 완료: Ctrl 기반 workspace 키보드 단축키 및 TreePanel selection 동기화 구현.
+- Task A2 문서: docs/sprint/Sprint2_KeyboardShortcuts.md에 단축키 맵과 가드 전략 기록.
+- Task A3 완료: 워크스페이스 undo/redo 스택과 Dirty 상태 배지, 도구 모음 버튼 구현.
+- Task A3 문서: docs/sprint/Sprint2_WorkspaceState.md에 스냅샷/히스토리 구조 정리.
+- Task B1 완료: WorkspaceUploadPanel drag & drop UI와 Mock progress 리스트 추가, routing 선택 의존성 적용.
+- Task B1 문서: docs/sprint/Sprint2_WorkspaceUpload.md에 UX/기술 요약 정리.
+- Task B2 완료: meta.json naming rule/Mock upload·download 패널 구성, Preview/Validation 흐름 제공.
+- Task B2 문서: docs/sprint/Sprint2_MetaJsonRules.md에 규칙 및 처리 전략 정리.
+- Task C1 완료: Add-in 큐 테이블/검색/필터 UI 구현, 연결 상태 배지 및 상단 요약 배치.
+- Task C2 완료: 재시도/취소 액션에 확인 모달을 적용하고 상태 전환 메시지 노출.
+- Task C3 완료: SignalR 모의 이벤트 스트림과 재연결 로직(자동 및 수동)을 구현.
+- Task C1~C3 문서: docs/sprint/Sprint2_AddinControlPanel.md에 큐 UI/액션/SignalR 스텁 설계 기록.
+- Task D1 완료: 승인/반려 모달과 코멘트 검증, Routing 상태 업데이트 및 히스토리 타임라인 구현.
+- Task D2 완료: Add-in 작업 이벤트와 승인 히스토리 동기화, SignalR 전환 시 자동 이벤트 기록.
+- Task D3 완료: workspace/lib/workspace.ts에 승인/작업 관리용 Mock API 추상화 작성 및 ExplorerShell 연동.
+- Task D 문서: docs/sprint/Sprint2_ApprovalWorkflow.md에 승인 흐름 설계 및 후속 과제 정리.
+- Task E1 완료: Playwright `workspace-approval.spec.ts` 시나리오 초안 작성(현재 skip, 추후 서버 연동 예정).
+- Task E2 완료: React Profiler 측정 계획 문서화 및 개선 체크리스트 정리.
+- Task E 문서: docs/sprint/Sprint2_ProfilerPlan.md에 프로파일링 절차/지표 기록.
+- Task F1 완료: Workspace Swimlane 다이어그램(mermaid) 작성.
+- Task F2 완료: Sprint2_Log.md에 전체 단계 로그/결과 기록 유지.
+- Task F 문서: docs/sprint/Sprint2_Swimlane.md에 역할별 Swimlane 정의.
+- npm run lint 재실행, 경고/오류 없음.

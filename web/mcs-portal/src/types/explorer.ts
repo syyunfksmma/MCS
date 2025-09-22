@@ -34,3 +34,30 @@ export interface ExplorerResponse {
   generatedAt: string;
   source: ExplorerSource;
 }
+
+export type AddinJobStatus = 'queued' | 'running' | 'succeeded' | 'failed' | 'cancelled';
+
+export interface AddinJob {
+  id: string;
+  routingId: string;
+  routingCode: string;
+  itemName: string;
+  revisionCode: string;
+  status: AddinJobStatus;
+  requestedBy: string;
+  createdAt: string;
+  updatedAt: string;
+  lastMessage?: string;
+}
+
+export type ApprovalDecision = 'pending' | 'approved' | 'rejected';
+
+export interface ApprovalEvent {
+  id: string;
+  routingId: string;
+  decision: ApprovalDecision;
+  actor: string;
+  comment: string;
+  createdAt: string;
+  source: 'user' | 'system' | 'signalr';
+}
