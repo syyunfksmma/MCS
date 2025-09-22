@@ -29,6 +29,7 @@ public class RoutingApprovalService : IRoutingApprovalService
     private readonly IHistoryService _historyService;
     private readonly IRoutingService _routingService;
     private readonly ICommandQueue _commandQueue;
+    private readonly IAuditLogService _auditLogService;
     private readonly RequestRoutingApprovalRequestValidator _requestValidator = new();
     private readonly ApproveRoutingRequestValidator _approveValidator = new();
     private readonly RejectRoutingRequestValidator _rejectValidator = new();
@@ -37,12 +38,14 @@ public class RoutingApprovalService : IRoutingApprovalService
         McmsDbContext dbContext,
         IHistoryService historyService,
         IRoutingService routingService,
-        ICommandQueue commandQueue)
+        ICommandQueue commandQueue,
+        IAuditLogService auditLogService)
     {
         _dbContext = dbContext;
         _historyService = historyService;
         _routingService = routingService;
         _commandQueue = commandQueue;
+        _auditLogService = auditLogService;
     }
 
     public async Task<RoutingDto> RequestApprovalAsync(RequestRoutingApprovalRequest request, CancellationToken cancellationToken = default)
@@ -68,8 +71,9 @@ public class RoutingApprovalService : IRoutingApprovalService
 
         await _dbContext.SaveChangesAsync(cancellationToken);
 
-        await _historyService.RecordAsync(new HistoryEntryDto(
-            Guid.NewGuid(),
+        var historyId = Guid.NewGuid();
+        var historyEntry = new HistoryEntryDto(
+            historyId,
             routing.Id,
             "ApprovalRequested",
             null,
@@ -78,7 +82,25 @@ public class RoutingApprovalService : IRoutingApprovalService
             ApprovalOutcome.Pending,
             requestedAt,
             request.RequestedBy,
-            request.Comment), cancellationToken);
+            request.Comment);
+
+        await _historyService.RecordAsync(historyEntry, cancellationToken);
+
+        var summary = $"Approval requested for routing {routing.RoutingCode}";
+        await _auditLogService.RecordAsync(new AuditLogEntryDto(
+            Guid.NewGuid(),
+            "Approval",
+            "ApprovalRequested",
+            AuditSeverity.Info,
+            summary,
+            request.Comment,
+            routing.Id,
+            historyId,
+            requestedAt,
+            request.RequestedBy,
+            null,
+            null,
+            null), cancellationToken);
 
         return await _routingService.GetRoutingAsync(routing.Id, cancellationToken)
             ?? throw new InvalidOperationException("Routing ??? ??????.");
@@ -105,8 +127,9 @@ public class RoutingApprovalService : IRoutingApprovalService
 
         await _dbContext.SaveChangesAsync(cancellationToken);
 
-        await _historyService.RecordAsync(new HistoryEntryDto(
-            Guid.NewGuid(),
+        var historyId = Guid.NewGuid();
+        var historyEntry = new HistoryEntryDto(
+            historyId,
             routing.Id,
             "RoutingApproved",
             nameof(routing.Status),
@@ -115,7 +138,25 @@ public class RoutingApprovalService : IRoutingApprovalService
             ApprovalOutcome.Approved,
             request.ApprovedAt,
             request.ApprovedBy,
-            request.Comment), cancellationToken);
+            request.Comment);
+
+        await _historyService.RecordAsync(historyEntry, cancellationToken);
+
+        var summary = $"Routing {routing.RoutingCode} approved by {request.ApprovedBy}";
+        await _auditLogService.RecordAsync(new AuditLogEntryDto(
+            Guid.NewGuid(),
+            "Approval",
+            "RoutingApproved",
+            AuditSeverity.Info,
+            summary,
+            request.Comment,
+            routing.Id,
+            historyId,
+            request.ApprovedAt,
+            request.ApprovedBy,
+            null,
+            null,
+            null), cancellationToken);
 
         await _commandQueue.EnqueueAsync(new EspritGenerationCommand(routing.Id), cancellationToken);
 
@@ -144,8 +185,9 @@ public class RoutingApprovalService : IRoutingApprovalService
 
         await _dbContext.SaveChangesAsync(cancellationToken);
 
-        await _historyService.RecordAsync(new HistoryEntryDto(
-            Guid.NewGuid(),
+        var historyId = Guid.NewGuid();
+        var historyEntry = new HistoryEntryDto(
+            historyId,
             routing.Id,
             "RoutingRejected",
             nameof(routing.Status),
@@ -154,7 +196,25 @@ public class RoutingApprovalService : IRoutingApprovalService
             ApprovalOutcome.Rejected,
             request.RejectedAt,
             request.RejectedBy,
-            request.Reason), cancellationToken);
+            request.Reason);
+
+        await _historyService.RecordAsync(historyEntry, cancellationToken);
+
+        var summary = $"Routing {routing.RoutingCode} rejected by {request.RejectedBy}";
+        await _auditLogService.RecordAsync(new AuditLogEntryDto(
+            Guid.NewGuid(),
+            "Approval",
+            "RoutingRejected",
+            AuditSeverity.Warning,
+            summary,
+            request.Reason,
+            routing.Id,
+            historyId,
+            request.RejectedAt,
+            request.RejectedBy,
+            null,
+            null,
+            null), cancellationToken);
 
         return await _routingService.GetRoutingAsync(routing.Id, cancellationToken)
             ?? throw new InvalidOperationException("Routing ??? ??????.");

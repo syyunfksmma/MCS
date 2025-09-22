@@ -22,3 +22,4 @@ export default function MainLayout({ children }: { children: ReactNode }) {
     </Layout>
   );
 }
+
