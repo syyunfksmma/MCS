@@ -1,6 +1,7 @@
 import '../app/globals.css';
 import { ReactNode } from 'react';
 import MainLayout from '../components/MainLayout';
+import ReactQueryProvider from '../components/providers/ReactQueryProvider';
 
 export const metadata = {
   title: 'MCS Portal',
@@ -10,8 +11,10 @@ export const metadata = {
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="ko">
-      <body>
-        <MainLayout>{children}</MainLayout>
+      <body className="bg-slate-50 text-neutral-900">
+        <ReactQueryProvider>
+          <MainLayout>{children}</MainLayout>
+        </ReactQueryProvider>
       </body>
     </html>
   );

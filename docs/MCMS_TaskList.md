@@ -1,91 +1,73 @@
-# MCMS Execution Task List\n\n# 절대 조건\n- 각 단계는 승인 후에만 진행한다.\n- 단계 착수 전 해당 단계 전체 범위를 리뷰하고 오류를 선제적으로 파악한다.\n- 오류가 발견되면 수정 전에 재승인을 득한다.\n- 이전 단계에 오류가 없음을 확인한 뒤 다음 단계 승인을 요청한다.\n- 모든 단계 작업은 백그라운드로 수행한다.\n- 문서나 웹뷰어 점검이 필요한 경우 반드시 승인 후 진행한다.\n- Task list 체크박스를 하나씩 업데이트하면서 문서를 업데이트 한다.\n- 모든 작업은 문서로 남긴다.\n\n> Approval required before starting each phase.\n## Phase 0 - Alignment & Governance
-- [x] Confirm stakeholders, decision cadence, and approval flow for MCMS roadmap
-- [x] Validate PRD scope, success metrics, and pilot item list with stakeholders
-- [x] Define environment constraints (network drive W:\, ESPRIT/SolidWorks versions, user roles)
+# MCMS Web Portal Execution Task List (Next.js Transition)
 
-## Phase 1 - Detailed Requirements & Data Modeling
-- [x] Decompose user journeys (Main, Routing, Mapper, History, Admin) into detailed use cases
-- [x] Elaborate CRUD rules and validation for Item, Routing, FileMapper, History entities
-- [x] Specify permission matrix (view/edit/approve) and escalation paths
-- [x] Finalize network folder taxonomy and metadata schema (align with diagrammed structure)
-- [x] Draft API contracts (REST/gRPC) including payloads for SolidWorks/Esprit integrations
+# 절대 지령
+- 각 단계는 승인 후에만 착수한다.
+- 단계 착수 전 Phase별 PRD를 재확인하고 범위/위험을 명시한다.
+- 선행 단계 산출물에 오류가 있으면 즉시 보고하고 재승인을 득한다.
+- 진행 중 변경 사항은 모두 문서화하고 체크리스트를 갱신한다.
+- 모든 작업 과정과 로그를 문서에 남기며 필요 시 다이어그램을 추가한다.
+- Task List와 체크박스를 유지하며 Sprint 작업에서도 동일하게 준수한다.
+- PoC 기준은 1인 기업(1인 개발) 관점으로 계획한다.
+- 모든 코드와 API 작성은 Codex가 수행한다.
 
-## Phase 2 - Solution Architecture & Infrastructure
-- [x] Decide client architecture (WPF vs. React+Electron) with trade-off analysis
-- [x] Define backend topology (service decomposition, .NET vs. FastAPI boundaries)
-- [x] Select primary DB (SQL Server vs. PostgreSQL) and outline replication/backup plan
-- [x] Design file-storage integration (W:\ mount, caching layer, streaming strategy)
-- [x] Plan deployment model (Windows Server roles, CI/CD pipeline, test environments)
+> 절대 지령은 전체 프로젝트와 각 Sprint 작업에 동일하게 적용된다.
 
-## Phase 3 - Backend Implementation
-- [x] Scaffold backend project(s) and shared libraries
-- [x] Implement authentication/authorization middleware and role enforcement
-- [x] Build Item & Routing service modules with revisioning logic
-- [x] Implement FileMapper service with file path resolution and metadata persistence
-- [x] Add History logging service (automatic change capture, auditing endpoints)
-- [x] Integrate SolidWorks API hooks for item/Rev matching workflows
-- [x] Integrate Esprit API triggers for program generation and status reporting
-- [x] Implement background workers for large-file streaming, caching, and cleanup
-- [x] Create automated tests (unit/integration) for core services and data access
+## Phase 0 - Alignment & Governance
+- [x] 전환 배경 및 기대효과 Executive Deck 작성
+- [x] 이해관계자 RACI, 의사결정 플로우 승인
+- [x] SSO/보안 정책, Node 호스팅 가이드 합의
 
-## Phase 4 - Client Application
-- [x] Establish UI design system (pastel palette, typography, accessibility standards)
-- [x] Build Main window (Item/Rev tree, routing summary, SolidWorks link status)
-- [x] Develop Routing editor (process grid, file upload/download, Esprit launch control)
-- [x] Implement Mapper management UI (link routing IDs to actual filenames)
-- [x] Create History viewer with timeline, filters, and diff views
-- [x] Add permission-aware controls (disabled states, approval workflows)
-- [x] Wire client to backend APIs with error handling and retry policies
-- [x] Implement local caching and progressive loading for large datasets
-- [x] Author UI tests / smoke tests for critical flows
+## Phase 1 - Requirements & Information Architecture
+- [x] 사용자 여정 및 UX 요구사항 재정의
+- [x] IA/내비게이션 다이어그램 승인
+- [x] 접근성·반응형 가이드 초안 배포
 
-## Phase 5 - File & Network Workflow
-- [x] Script automated folder creation per Item/Rev/Routing (W:\ structure)
-- [x] Build file ingestion pipeline (validation, checksum, version tagging)
-- [x] Implement meta.json generation/consumption for routing packages
-- [x] Add machine package handling (mprj, gdml) with storage policies
-- [x] Ensure NC file streaming/downloading respects performance targets
+## Phase 2 - Architecture & Hosting
+- [x] Next.js + .NET 통합 아키텍처 다이어그램 확정
+- [x] IIS Reverse Proxy + Node 서비스 운영 설계 승인
+- [x] CI/CD 파이프라인 설계 문서 리뷰 통과
 
-## Phase 6 - Security & Compliance
-- [x] Conduct threat modeling (file tampering, unauthorized access)
-- [x] Implement secure credential storage and API key management
-- [x] Apply logging/monitoring for access attempts and file operations
-- [x] Validate audit trails meet "no-loss history" requirement
+## Phase 3 - Design System & UI Kit
+- [x] 디자인 토큰 JSON/TS 모듈 작성
+- [x] 핵심 컴포넌트(Button/Table/Modal/Badge) 스캐폴딩
+- [x] Figma → 코드 매핑 가이드 배포
 
-## Phase 7 - Performance & Reliability
-- [x] Benchmark file I/O, caching effectiveness, and Esprit trigger latency
-- [x] Optimize DB queries (indexes, pagination for history)
-- [x] Stress-test NC file streaming and concurrent routing edits
-- [x] Establish fallback/rollback procedures for Esprit or SolidWorks outages
+## Phase 4 - API Contracts & Integrations
+- [x] REST API 소비 가이드(Next.js 관점) 업데이트
+- [x] SignalR/SSE 이벤트 규격 문서화
+- [x] 대용량 파일 업·다운로드 정책 확정
 
-## Phase 8 - Pilot Data & Migration
-- [x] Collect pilot items (2-3) and associated revs/routings
-- [x] Import existing CAM/NC files into MCMS structure with metadata
-- [x] Validate data integrity and history reconstruction for pilot set
+## Phase 5 - Sprint 1 (Explorer & History)
+- [x] Item/Revision/Routing SSR 페이지 구현
+- [x] React Query 캐싱/Prefetch 전략 적용
+- [x] Add-in 배지 & 히스토리 뷰 UI 완료
+
+## Phase 6 - Sprint 2 (Workspace & Workflow)
+- [x] Routing Workspace Drag & Drop 기능 구현
+- [x] Add-in Control Panel(큐 모니터링/재시도) 제공
+- [x] 승인/반려 코멘트 플로우 통합 테스트
+
+## Phase 7 - Admin & Settings
+- [x] API 키·파라미터, AD 롤 매핑 UI 구축
+- [x] 감사 로그/모니터링 뷰 구현
+- [x] Feature Flag/환경변수 관리 화면 배포
+
+## Phase 8 - Performance & Reliability
+- [x] Lighthouse/Web Vitals 측정 및 개선 플랜 수립
+- [x] SSR 서버 부하·회복 테스트 수행
+- [x] 예외/네트워크 장애 대응 UX 설계
 
 ## Phase 9 - QA & UAT
-- [x] Prepare comprehensive test plan (functional, integration, regression)
-- [x] Execute automated and manual test suites; document findings
-- [x] Facilitate UAT sessions with target operators; gather feedback
-- [x] Iterate on usability issues (junior-friendly UI adjustments)
+- [x] E2E 테스트 스위트(Cypress/Playwright) 작성 및 실행
+- [x] UAT 시나리오 수행 및 피드백 반영 계획 수립
+- [x] 접근성/보안/브라우저 호환성 검증 완료
 
 ## Phase 10 - Deployment & Operations
-- [x] Package client for easy deployment (installer/script, dependency checks)
-- [x] Configure production Windows Server, DB instance, and file share permissions
-- [x] Stand up internal-network CMD service host for operations and secure remote commands
-- [x] Document CMD service access controls, monitoring, and fallbacks
-- [x] Set up CI/CD pipeline, release management, and rollback strategy
-- [x] Develop installation/rollback guides for client PCs
-- [x] Train support team; establish incident response playbook
-- [x] Plan post-go-live monitoring and first-week hypercare
+- [x] IIS + Node 배포 스크립트/Runbook 작성
+- [x] 롤백 전략(Blue/Green 또는 Canary) 문서화
+- [x] 모니터링/알람 대시보드 개편 및 검증
 
-## Phase 11 - Documentation & Handoff
-- [x] Document system architecture, API contracts, and data model
-- [x] Produce admin and end-user manuals (routing creation, history review)
-- [x] Record onboarding/tutorial materials for junior operators
-- [x] Finalize maintenance backlog and future enhancement roadmap
-
-
-
-
-
+## Phase 11 - Documentation & Training
+- [x] 사용자/운영 매뉴얼 업데이트 (웹 기준)
+- [x] 교육 자료(동영상, 가이드) 제작 및 세션 진행
+- [x] 전환 결과 보고 및 후속 개선 로드맵 수립
