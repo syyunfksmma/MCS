@@ -18,13 +18,17 @@ export default function MaintenanceGate({ children }: MaintenanceGateProps) {
     if (typeof window === 'undefined') {
       return;
     }
+    const params = new URLSearchParams(window.location.search);
+    setForcedActive(params.get('maintenance') === 'force');
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') {
+      return;
+    }
     const stored = window.localStorage.getItem(STORAGE_KEY);
     if (stored === 'true') {
       setOverride(true);
-    }
-    const params = new URLSearchParams(window.location.search);
-    if (params.get('maintenance') === 'force') {
-      setForcedActive(true);
     }
   }, []);
 

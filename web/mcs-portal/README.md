@@ -54,3 +54,19 @@ src/
 ## 참고 문서
 - Sprint1 API 계약: `docs/sprint/Sprint1_APIContract.md`
 - OpenAPI 발췌: `docs/sprint/Sprint1_OpenAPIExcerpt.yaml`
+## Playwright 내부망 실행 가이드
+1. 사내 표준 브라우저(Edge 또는 Chrome)가 설치되어 있어야 합니다. 기본 채널은 `msedge`입니다. 다른 브라우저를 쓰려면 `PLAYWRIGHT_CHANNEL` 환경 변수를 설정하세요.
+2. 브라우저 다운로드를 건너뛰기 위해 테스트 실행 전에 아래와 같이 환경 변수를 지정합니다.
+   - PowerShell 예시:
+     ```powershell
+     $env:PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD = '1'
+     $env:PLAYWRIGHT_CHANNEL = 'msedge'   # 선택 사항
+     npm run test:e2e
+     ```
+   - 명령 프롬프트 예시:
+     ```cmd
+     set PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
+     set PLAYWRIGHT_CHANNEL=msedge
+     npm run test:e2e
+     ```
+3. CI 혹은 자동화 환경에서도 동일하게 `PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1`을 세팅하면 외부 네트워크 없이 실행할 수 있습니다.

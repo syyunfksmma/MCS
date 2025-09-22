@@ -82,7 +82,7 @@ export default function AddinControlPanel({
         title: '상태',
         dataIndex: 'status',
         key: 'status',
-        render: status => <Tag color={STATUS_TAG[status]}>{STATUS_LABEL[status]}</Tag>
+        render: (status: AddinJobStatus) => <Tag color={STATUS_TAG[status]}>{STATUS_LABEL[status]}</Tag>
       },
       {
         title: '요청자',

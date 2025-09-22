@@ -537,7 +537,7 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
       routingCode: selectedRouting.code,
       itemName: `${context.item.code} · ${context.item.name}`,
       revisionCode: context.revision.code,
-      status: 'queued',
+      status: 'queued' as AddinJobStatus,
       requestedBy: 'operator.mock',
       createdAt: now,
       updatedAt: now,
@@ -566,7 +566,7 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
         job.id === jobId
           ? {
               ...job,
-              status: 'queued',
+              status: 'queued' as AddinJobStatus,
               updatedAt: now,
               lastMessage: '재시도 요청'
             }
@@ -595,7 +595,7 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
         job.id === jobId
           ? {
               ...job,
-              status: 'cancelled',
+              status: 'cancelled' as AddinJobStatus,
               updatedAt: now,
               lastMessage: '사용자 취소'
             }
@@ -627,13 +627,13 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
             index === queuedIndex
               ? {
                   ...job,
-                  status: 'running',
+                  status: 'running' as AddinJobStatus,
                   updatedAt: nextTimestamp,
                   lastMessage: 'SignalR: 작업 시작'
                 }
               : job
           );
-          nextEvent = { job: { ...next[queuedIndex] }, status: 'running' };
+          nextEvent = { job: { ...next[queuedIndex] }, status: 'running' as AddinJobStatus };
           return next;
         }
         const runningIndex = prev.findIndex(job => job.status === 'running');
@@ -655,36 +655,46 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
         }
         return prev;
       });
-      if (nextEvent) {
-        if (nextEvent.status === 'succeeded') {
-          appendApprovalEvent(nextEvent.job.routingId, {
+      const event = nextEvent as { job: AddinJob; status: AddinJobStatus } | null;
+      if (!event) {
+        return;
+      }
+      const job = event.job;
+      const status = event.status as AddinJobStatus;
+
+      switch (status) {
+        case 'succeeded':
+          appendApprovalEvent(job.routingId, {
             decision: 'approved',
             actor: 'signalr.mock',
-            comment: 'SignalR: Add-in 작업이 성공적으로 완료되었습니다.',
+            comment: 'SignalR: Add-in 작업이 원격으로 완료되었습니다.',
             source: 'signalr'
           });
-          updateRoutingStatus(nextEvent.job.routingId, 'Approved');
-          messageApi.success(`${nextEvent.job.routingCode} 작업이 완료되었습니다.`);
-        } else if (nextEvent.status === 'failed') {
-          appendApprovalEvent(nextEvent.job.routingId, {
+          updateRoutingStatus(job.routingId, 'Approved');
+          messageApi.success(`${job.routingCode} 작업이 완료되었습니다.`);
+          break;
+        case 'failed':
+          appendApprovalEvent(job.routingId, {
             decision: 'rejected',
             actor: 'signalr.mock',
             comment: 'SignalR: Add-in 작업이 실패했습니다.',
             source: 'signalr'
           });
-          updateRoutingStatus(nextEvent.job.routingId, 'Rejected');
-          messageApi.error(`${nextEvent.job.routingCode} 작업이 실패했습니다.`);
-        } else if (nextEvent.status === 'running') {
-          appendApprovalEvent(nextEvent.job.routingId, {
+          updateRoutingStatus(job.routingId, 'Rejected');
+          messageApi.error(`${job.routingCode} 작업이 실패했습니다.`);
+          break;
+        case 'running':
+          appendApprovalEvent(job.routingId, {
             decision: 'pending',
             actor: 'signalr.mock',
-            comment: 'SignalR: Add-in 작업이 시작되었습니다.',
+            comment: 'SignalR: Add-in 작업이 진행 중입니다.',
             source: 'signalr'
           });
-          messageApi.info(`${nextEvent.job.routingCode} 작업이 시작되었습니다.`);
-        }
-      }
-    }, 3200);
+          messageApi.info(`${job.routingCode} 작업이 진행 중입니다.`);
+          break;
+        default:
+          break;
+      }    }, 3200);
     return () => window.clearInterval(interval);
   }, [signalRState, messageApi]);
 

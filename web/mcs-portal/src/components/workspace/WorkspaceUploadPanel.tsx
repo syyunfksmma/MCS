@@ -101,11 +101,11 @@ export default function WorkspaceUploadPanel({ routing }: WorkspaceUploadPanelPr
               : entry
           )
         );
-        options.onProgress?.({ percent: percent >= 100 ? 100 : rounded }, file);
+        options.onProgress?.({ percent: percent >= 100 ? 100 : rounded });
         if (percent >= 100) {
           window.clearInterval(timer);
           delete timersRef.current[id];
-          options.onSuccess?.({}, file);
+          options.onSuccess?.({});
         }
       }, 350);
 

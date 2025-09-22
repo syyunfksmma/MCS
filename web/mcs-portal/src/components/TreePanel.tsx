@@ -92,7 +92,7 @@ const buildTreeNodes = (items: ExplorerItem[]): ExplorerTreeNode[] => {
 
 const cloneNode = (node: ExplorerTreeNode): ExplorerTreeNode => ({
   ...node,
-  children: node.children?.map(child => cloneNode(child))
+  children: (node.children as ExplorerTreeNode[] | undefined)?.map(child => cloneNode(child))
 });
 
 interface NodeRef {
@@ -141,17 +141,17 @@ export default function TreePanel({ items, onSelect, onReorder, selectedKey }: T
     }
     const lower = search.toLowerCase();
 
-    const filterNodes = (nodes: ExplorerTreeNode[]): ExplorerTreeNode[] =>
-      nodes
-        .map(node => {
-          const children = node.children ? filterNodes(node.children) : undefined;
-          const matches = node.searchLabel.includes(lower);
-          if (matches || (children && children.length)) {
-            return { ...node, children };
-          }
-          return null;
-        })
-        .filter((node): node is ExplorerTreeNode => Boolean(node));
+    const filterNodes = (nodes: ExplorerTreeNode[]): ExplorerTreeNode[] => {
+      const result: ExplorerTreeNode[] = [];
+      nodes.forEach(node => {
+        const children = node.children ? filterNodes(node.children as ExplorerTreeNode[]) : undefined;
+        const matches = node.searchLabel.includes(lower);
+        if (matches || (children && children.length)) {
+          result.push({ ...node, children });
+        }
+      });
+      return result;
+    };
 
     return filterNodes(treeData);
   }, [treeData, search]);

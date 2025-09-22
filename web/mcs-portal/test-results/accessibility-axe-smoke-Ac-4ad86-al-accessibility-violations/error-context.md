@@ -1,0 +1,581 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e3]:
+      - heading "MCS Portal" [level=4] [ref=e4]
+      - generic [ref=e5]:
+        - button "question-circle 도움말" [ref=e7] [cursor=pointer]:
+          - img "question-circle" [ref=e8] [cursor=pointer]:
+            - img [ref=e9] [cursor=pointer]
+          - generic [ref=e12] [cursor=pointer]: 도움말
+        - button "bell 알림" [ref=e14] [cursor=pointer]:
+          - img "bell" [ref=e15] [cursor=pointer]:
+            - img [ref=e16] [cursor=pointer]
+          - generic [ref=e18] [cursor=pointer]: 알림
+        - button "프로필" [ref=e20] [cursor=pointer]:
+          - generic [ref=e21] [cursor=pointer]: 프로필
+    - generic [ref=e22]:
+      - complementary [ref=e23]:
+        - paragraph [ref=e25]: 메뉴 준비 중
+      - main [ref=e27]:
+        - generic [ref=e29]:
+          - generic [ref=e31]:
+            - generic [ref=e32]:
+              - heading "Admin Console" [level=3] [ref=e33]
+              - generic [ref=e34]: 관리자 계정 상태와 AD 그룹을 관리합니다.
+            - generic [ref=e35]:
+              - generic [ref=e36]:
+                - button "전체" [ref=e38] [cursor=pointer]:
+                  - generic [ref=e39] [cursor=pointer]: 전체
+                - button "활성" [ref=e41] [cursor=pointer]:
+                  - generic [ref=e42] [cursor=pointer]: 활성
+                - button "비활성" [ref=e44] [cursor=pointer]:
+                  - generic [ref=e45] [cursor=pointer]: 비활성
+                - button "잠금" [ref=e47] [cursor=pointer]:
+                  - generic [ref=e48] [cursor=pointer]: 잠금
+              - generic [ref=e50]:
+                - generic [ref=e51]:
+                  - textbox "이름/이메일/부서 검색" [ref=e52]
+                  - button "close-circle" [ref=e54] [cursor=pointer]:
+                    - img "close-circle" [ref=e55] [cursor=pointer]:
+                      - img [ref=e56] [cursor=pointer]
+                - button "search" [ref=e59] [cursor=pointer]:
+                  - img "search" [ref=e60] [cursor=pointer]:
+                    - img [ref=e61] [cursor=pointer]
+              - button "reload 새로고침" [ref=e63] [cursor=pointer]:
+                - img "reload" [ref=e64] [cursor=pointer]:
+                  - img [ref=e65] [cursor=pointer]
+                - generic [ref=e67] [cursor=pointer]: 새로고침
+              - generic [ref=e69]: 3명 표시
+            - generic [ref=e72]:
+              - table [ref=e76]:
+                - rowgroup [ref=e78]:
+                  - row "사용자 부서/역할 상태 AD 그룹 최근 업데이트 액션" [ref=e79]:
+                    - cell "사용자" [ref=e80]
+                    - cell "부서/역할" [ref=e81]
+                    - cell "상태" [ref=e82]
+                    - cell "AD 그룹" [ref=e83]
+                    - cell "최근 업데이트" [ref=e84]
+                    - cell "액션" [ref=e85]
+                - rowgroup [ref=e86]:
+                  - row "Doyun Kim doyun.kim@example.com Production Engineering Workspace Manager 활성 MCMS-Admins MCMS-Workspace 2025. 9. 23. 오전 7:19:16 그룹 지정 down 활성 잠금 비활성" [ref=e87]:
+                    - cell "Doyun Kim doyun.kim@example.com" [ref=e88]:
+                      - generic [ref=e89]:
+                        - strong [ref=e92]: Doyun Kim
+                        - generic [ref=e94]: doyun.kim@example.com
+                    - cell "Production Engineering Workspace Manager" [ref=e95]:
+                      - generic [ref=e96]:
+                        - generic [ref=e98]: Production Engineering
+                        - generic [ref=e100]: Workspace Manager
+                    - cell "활성" [ref=e101]:
+                      - generic [ref=e102]: 활성
+                    - cell "MCMS-Admins MCMS-Workspace" [ref=e103]:
+                      - generic [ref=e104]:
+                        - generic [ref=e106]: MCMS-Admins
+                        - generic [ref=e108]: MCMS-Workspace
+                    - cell "2025. 9. 23. 오전 7:19:16" [ref=e109]
+                    - cell "그룹 지정 down 활성 잠금 비활성" [ref=e110]:
+                      - generic [ref=e111]:
+                        - button "그룹 지정 down" [ref=e113] [cursor=pointer]:
+                          - generic [ref=e114] [cursor=pointer]: 그룹 지정
+                          - img "down" [ref=e115] [cursor=pointer]:
+                            - img [ref=e116] [cursor=pointer]
+                        - button "활성" [ref=e119] [cursor=pointer]:
+                          - generic [ref=e120] [cursor=pointer]: 활성
+                        - button "잠금" [ref=e122] [cursor=pointer]:
+                          - generic [ref=e123] [cursor=pointer]: 잠금
+                        - button "비활성" [ref=e125] [cursor=pointer]:
+                          - generic [ref=e126] [cursor=pointer]: 비활성
+                  - row "Seohyun Lee seohyun.lee@example.com Quality Assurance QA Lead 잠금 MCMS-Admins 2025. 9. 23. 오전 6:19:16 그룹 지정 down 활성 잠금 비활성" [ref=e127]:
+                    - cell "Seohyun Lee seohyun.lee@example.com" [ref=e128]:
+                      - generic [ref=e129]:
+                        - strong [ref=e132]: Seohyun Lee
+                        - generic [ref=e134]: seohyun.lee@example.com
+                    - cell "Quality Assurance QA Lead" [ref=e135]:
+                      - generic [ref=e136]:
+                        - generic [ref=e138]: Quality Assurance
+                        - generic [ref=e140]: QA Lead
+                    - cell "잠금" [ref=e141]:
+                      - generic [ref=e142]: 잠금
+                    - cell "MCMS-Admins" [ref=e143]:
+                      - generic [ref=e146]: MCMS-Admins
+                    - cell "2025. 9. 23. 오전 6:19:16" [ref=e147]
+                    - cell "그룹 지정 down 활성 잠금 비활성" [ref=e148]:
+                      - generic [ref=e149]:
+                        - button "그룹 지정 down" [ref=e151] [cursor=pointer]:
+                          - generic [ref=e152] [cursor=pointer]: 그룹 지정
+                          - img "down" [ref=e153] [cursor=pointer]:
+                            - img [ref=e154] [cursor=pointer]
+                        - button "활성" [ref=e157] [cursor=pointer]:
+                          - generic [ref=e158] [cursor=pointer]: 활성
+                        - button "잠금" [ref=e160] [cursor=pointer]:
+                          - generic [ref=e161] [cursor=pointer]: 잠금
+                        - button "비활성" [ref=e163] [cursor=pointer]:
+                          - generic [ref=e164] [cursor=pointer]: 비활성
+                  - row "Jihoon Park jihoon.park@example.com Operations Ops Supervisor 비활성 MCMS-Ops 2025. 9. 23. 오전 4:19:16 그룹 지정 down 활성 잠금 비활성" [ref=e165]:
+                    - cell "Jihoon Park jihoon.park@example.com" [ref=e166]:
+                      - generic [ref=e167]:
+                        - strong [ref=e170]: Jihoon Park
+                        - generic [ref=e172]: jihoon.park@example.com
+                    - cell "Operations Ops Supervisor" [ref=e173]:
+                      - generic [ref=e174]:
+                        - generic [ref=e176]: Operations
+                        - generic [ref=e178]: Ops Supervisor
+                    - cell "비활성" [ref=e179]:
+                      - generic [ref=e180]: 비활성
+                    - cell "MCMS-Ops" [ref=e181]:
+                      - generic [ref=e184]: MCMS-Ops
+                    - cell "2025. 9. 23. 오전 4:19:16" [ref=e185]
+                    - cell "그룹 지정 down 활성 잠금 비활성" [ref=e186]:
+                      - generic [ref=e187]:
+                        - button "그룹 지정 down" [ref=e189] [cursor=pointer]:
+                          - generic [ref=e190] [cursor=pointer]: 그룹 지정
+                          - img "down" [ref=e191] [cursor=pointer]:
+                            - img [ref=e192] [cursor=pointer]
+                        - button "활성" [ref=e195] [cursor=pointer]:
+                          - generic [ref=e196] [cursor=pointer]: 활성
+                        - button "잠금" [ref=e198] [cursor=pointer]:
+                          - generic [ref=e199] [cursor=pointer]: 잠금
+                        - button "비활성" [ref=e201] [cursor=pointer]:
+                          - generic [ref=e202] [cursor=pointer]: 비활성
+              - list [ref=e203]:
+                - listitem "Previous Page" [ref=e204]:
+                  - button "left" [disabled] [ref=e205]:
+                    - img "left" [ref=e206]:
+                      - img [ref=e207]
+                - listitem "1" [ref=e209]:
+                  - generic [ref=e210]: "1"
+                - listitem "Next Page" [ref=e211]:
+                  - button "right" [disabled] [ref=e212]:
+                    - img "right" [ref=e213]:
+                      - img [ref=e214]
+          - generic [ref=e217]:
+            - generic [ref=e218]:
+              - generic [ref=e219]:
+                - heading "API Key 관리" [level=4] [ref=e220]
+                - generic [ref=e221]: 발급/폐기 이력을 관리하고 만료 일정을 확인하세요.
+              - generic [ref=e222]:
+                - generic [ref=e225]: 활성 1개
+                - button "plus 새 API 키 발급" [ref=e227] [cursor=pointer]:
+                  - img "plus" [ref=e228] [cursor=pointer]:
+                    - img [ref=e229] [cursor=pointer]
+                  - generic [ref=e232] [cursor=pointer]: 새 API 키 발급
+                - button "새로고침" [ref=e234] [cursor=pointer]:
+                  - generic [ref=e235] [cursor=pointer]: 새로고침
+            - alert [ref=e236]:
+              - img "info-circle" [ref=e237]:
+                - img [ref=e238]
+              - generic [ref=e241]: API 키는 발급 직후에만 전체 값이 표시됩니다. 반드시 비밀 저장소에 보관하세요.
+            - generic [ref=e244]:
+              - table [ref=e248]:
+                - rowgroup [ref=e250]:
+                  - row "레이블 스코프 생성/만료 최근 사용 상태 액션" [ref=e251]:
+                    - cell "레이블" [ref=e252]
+                    - cell "스코프" [ref=e253]
+                    - cell "생성/만료" [ref=e254]
+                    - cell "최근 사용" [ref=e255]
+                    - cell "상태" [ref=e256]
+                    - cell "액션" [ref=e257]
+                - rowgroup [ref=e258]:
+                  - 'row "Playwright 테스트 sk_live_18d3****a91b Workspace 2025. 9. 20. 오전 8:19:16 만료: 2025. 10. 20. 12시간 전 활성 copy 폐기" [ref=e259]':
+                    - cell "Playwright 테스트 sk_live_18d3****a91b" [ref=e260]:
+                      - generic [ref=e261]:
+                        - strong [ref=e264]: Playwright 테스트
+                        - generic [ref=e266]: sk_live_18d3****a91b
+                    - cell "Workspace" [ref=e267]:
+                      - generic [ref=e268]: Workspace
+                    - 'cell "2025. 9. 20. 오전 8:19:16 만료: 2025. 10. 20." [ref=e269]':
+                      - generic [ref=e270]:
+                        - generic [ref=e272]: 2025. 9. 20. 오전 8:19:16
+                        - generic [ref=e274]: "만료: 2025. 10. 20."
+                    - cell "12시간 전" [ref=e275]
+                    - cell "활성" [ref=e276]:
+                      - generic [ref=e277]: 활성
+                    - cell "copy 폐기" [ref=e278]:
+                      - generic [ref=e279]:
+                        - button "copy" [ref=e281] [cursor=pointer]:
+                          - img "copy" [ref=e282] [cursor=pointer]:
+                            - img [ref=e283] [cursor=pointer]
+                        - button "폐기" [ref=e286] [cursor=pointer]:
+                          - generic [ref=e287] [cursor=pointer]: 폐기
+                  - 'row "Lighthouse 모니터링 sk_live_9821****c7d2 Ops 2025. 9. 13. 오전 8:19:16 만료: 2025. 10. 13. 사용 이력 없음 폐기됨 copy 폐기" [ref=e288]':
+                    - cell "Lighthouse 모니터링 sk_live_9821****c7d2" [ref=e289]:
+                      - generic [ref=e290]:
+                        - strong [ref=e293]: Lighthouse 모니터링
+                        - generic [ref=e295]: sk_live_9821****c7d2
+                    - cell "Ops" [ref=e296]:
+                      - generic [ref=e297]: Ops
+                    - 'cell "2025. 9. 13. 오전 8:19:16 만료: 2025. 10. 13." [ref=e298]':
+                      - generic [ref=e299]:
+                        - generic [ref=e301]: 2025. 9. 13. 오전 8:19:16
+                        - generic [ref=e303]: "만료: 2025. 10. 13."
+                    - cell "사용 이력 없음" [ref=e304]
+                    - cell "폐기됨" [ref=e305]:
+                      - generic [ref=e306]: 폐기됨
+                    - cell "copy 폐기" [ref=e307]:
+                      - generic [ref=e308]:
+                        - generic [ref=e310]:
+                          - button "copy" [disabled]:
+                            - img "copy":
+                              - img
+                        - generic [ref=e312]:
+                          - button "폐기" [disabled]:
+                            - generic: 폐기
+              - list [ref=e313]:
+                - listitem "Previous Page" [ref=e314]:
+                  - button "left" [disabled] [ref=e315]:
+                    - img "left" [ref=e316]:
+                      - img [ref=e317]
+                - listitem "1" [ref=e319]:
+                  - generic [ref=e320]: "1"
+                - listitem "Next Page" [ref=e321]:
+                  - button "right" [disabled] [ref=e322]:
+                    - img "right" [ref=e323]:
+                      - img [ref=e324]
+          - generic [ref=e327]:
+            - generic [ref=e328]:
+              - generic [ref=e329]:
+                - heading "Feature Flag & 환경 메시지" [level=4] [ref=e330]
+                - generic [ref=e331]: 플래그 토글과 환경 배너 메시지를 관리합니다.
+              - generic [ref=e332]:
+                - generic [ref=e335]: 활성 플래그 2개
+                - button "thunderbolt 데이터 새로고침" [ref=e337] [cursor=pointer]:
+                  - img "thunderbolt" [ref=e338] [cursor=pointer]:
+                    - img [ref=e339] [cursor=pointer]
+                  - generic [ref=e341] [cursor=pointer]: 데이터 새로고침
+            - generic [ref=e342]:
+              - generic [ref=e345]: Feature Flags
+              - generic [ref=e349]:
+                - table [ref=e353]:
+                  - rowgroup [ref=e355]:
+                    - row "플래그 상태 Rollout % 소유자 업데이트" [ref=e356]:
+                      - cell "플래그" [ref=e357]
+                      - cell "상태" [ref=e358]
+                      - cell "Rollout %" [ref=e359]
+                      - cell "소유자" [ref=e360]
+                      - cell "업데이트" [ref=e361]
+                  - rowgroup [ref=e362]:
+                    - row "Admin Console v2 admin.v2 0 25 50 75 100 product.admin 2025. 9. 23. 오전 8:19:16" [ref=e363]:
+                      - cell "Admin Console v2 admin.v2" [ref=e364]:
+                        - generic [ref=e365]:
+                          - strong [ref=e368]: Admin Console v2
+                          - generic [ref=e370]: admin.v2
+                      - cell [ref=e371]:
+                        - switch [checked]
+                      - cell "0 25 50 75 100" [ref=e372]:
+                        - generic [ref=e374]:
+                          - radio "0" [ref=e376]
+                          - radio "25" [ref=e379]
+                          - radio "50" [ref=e382]
+                          - radio "75" [ref=e385]
+                          - radio "100" [checked] [ref=e388]
+                      - cell "product.admin" [ref=e390]
+                      - cell "2025. 9. 23. 오전 8:19:16" [ref=e391]
+                    - row "Maintenance Banner ui.maintenance.banner 0 25 50 75 100 ops.bridge 2025. 9. 23. 오전 8:19:16" [ref=e392]:
+                      - cell "Maintenance Banner ui.maintenance.banner" [ref=e393]:
+                        - generic [ref=e394]:
+                          - strong [ref=e397]: Maintenance Banner
+                          - generic [ref=e399]: ui.maintenance.banner
+                      - cell [ref=e400]:
+                        - switch [checked]
+                      - cell "0 25 50 75 100" [ref=e401]:
+                        - generic [ref=e403]:
+                          - radio "0" [ref=e405]
+                          - radio "25" [ref=e408]
+                          - radio "50" [checked] [ref=e411]
+                          - radio "75" [ref=e414]
+                          - radio "100" [ref=e417]
+                      - cell "ops.bridge" [ref=e419]
+                      - cell "2025. 9. 23. 오전 8:19:16" [ref=e420]
+                - list [ref=e421]:
+                  - listitem "Previous Page" [ref=e422]:
+                    - button "left" [disabled] [ref=e423]:
+                      - img "left" [ref=e424]:
+                        - img [ref=e425]
+                  - listitem "1" [ref=e427]:
+                    - generic [ref=e428]: "1"
+                  - listitem "Next Page" [ref=e429]:
+                    - button "right" [disabled] [ref=e430]:
+                      - img "right" [ref=e431]:
+                        - img [ref=e432]
+            - generic [ref=e434]:
+              - generic [ref=e436]:
+                - generic [ref=e437]: 환경 메시지
+                - generic [ref=e440]:
+                  - radio "전체" [checked] [ref=e442]
+                  - radio "Dev" [ref=e445]
+                  - radio "Stage" [ref=e448]
+                  - radio "Prod" [ref=e451]
+              - generic [ref=e454]:
+                - alert [ref=e456]:
+                  - img "info-circle" [ref=e457]:
+                    - img [ref=e458]
+                  - generic [ref=e461]:
+                    - generic [ref=e463]:
+                      - generic [ref=e465]: DEV
+                      - generic [ref=e466]: "Dev 환경: Mock 데이터가 주기적으로 재설정됩니다."
+                    - generic [ref=e468]:
+                      - generic [ref=e470]: "마지막 수정: 2025. 9. 23. 오전 5:19:16"
+                      - generic [ref=e472]:
+                        - button "편집" [ref=e474] [cursor=pointer]:
+                          - generic [ref=e475] [cursor=pointer]: 편집
+                        - button "테스트 전송" [ref=e477] [cursor=pointer]:
+                          - generic [ref=e478] [cursor=pointer]: 테스트 전송
+                - alert [ref=e480]:
+                  - img "info-circle" [ref=e481]:
+                    - img [ref=e482]
+                  - generic [ref=e485]:
+                    - generic [ref=e487]:
+                      - generic [ref=e489]: STAGE
+                      - generic [ref=e490]: "Stage 환경: 승인 플로우가 QA 검증 중입니다."
+                    - generic [ref=e492]:
+                      - generic [ref=e494]: "마지막 수정: 2025. 9. 23. 오전 2:19:16"
+                      - generic [ref=e496]:
+                        - button "편집" [ref=e498] [cursor=pointer]:
+                          - generic [ref=e499] [cursor=pointer]: 편집
+                        - button "테스트 전송" [ref=e501] [cursor=pointer]:
+                          - generic [ref=e502] [cursor=pointer]: 테스트 전송
+                - alert [ref=e504]:
+                  - img "exclamation-circle" [ref=e505]:
+                    - img [ref=e506]
+                  - generic [ref=e509]:
+                    - generic [ref=e511]:
+                      - generic [ref=e513]: PROD
+                      - generic [ref=e514]: "Production: 긴급 점검 예정 없음."
+                    - generic [ref=e516]:
+                      - generic [ref=e518]: "마지막 수정: 2025. 9. 22. 오후 8:19:16"
+                      - generic [ref=e520]:
+                        - button "편집" [ref=e522] [cursor=pointer]:
+                          - generic [ref=e523] [cursor=pointer]: 편집
+                        - button "테스트 전송" [ref=e525] [cursor=pointer]:
+                          - generic [ref=e526] [cursor=pointer]: 테스트 전송
+          - generic [ref=e528]:
+            - generic [ref=e529]:
+              - heading "Audit Insights & Message Center" [level=3] [ref=e530]
+              - generic [ref=e531]: Surface approval SLAs and alert trends for operations.
+            - generic [ref=e532]:
+              - generic [ref=e534]:
+                - combobox [ref=e537]
+                - img [ref=e540]:
+                  - img [ref=e541]
+              - button "reload 새로고침" [ref=e544] [cursor=pointer]:
+                - img "reload" [ref=e545] [cursor=pointer]:
+                  - img [ref=e546] [cursor=pointer]
+                - generic [ref=e548] [cursor=pointer]: 새로고침
+              - generic [ref=e551]: Mock data
+            - generic [ref=e554]:
+              - generic [ref=e556]:
+                - generic [ref=e557]: 전체 이벤트
+                - generic [ref=e558]:
+                  - img "area-chart" [ref=e560]:
+                    - img [ref=e561]
+                  - generic [ref=e564]: "5"
+              - generic [ref=e566]:
+                - generic [ref=e567]: 승인 이벤트
+                - generic [ref=e570]: "3"
+              - generic [ref=e572]:
+                - generic [ref=e573]: 반려 이벤트
+                - generic [ref=e576]: "1"
+              - generic [ref=e578]:
+                - generic [ref=e579]: 평균 승인시간(시간)
+                - generic [ref=e581]:
+                  - generic [ref=e582]: "3"
+                  - generic [ref=e583]: ".0"
+            - generic [ref=e584]:
+              - generic [ref=e588]:
+                - img "alert" [ref=e590]:
+                  - img [ref=e591]
+                - generic [ref=e594]: Alert Center
+              - alert [ref=e598]:
+                - img "info-circle" [ref=e599]:
+                  - img [ref=e600]
+                - generic [ref=e603]:
+                  - generic [ref=e604]: No anomalies detected
+                  - generic [ref=e606]:
+                    - generic [ref=e608]: Audit activity within normal thresholds.
+                    - generic [ref=e610]: 2025. 9. 23. 오전 8:19:16
+          - generic [ref=e612]:
+            - generic [ref=e613]:
+              - heading "Audit Log" [level=3] [ref=e614]
+              - generic [ref=e615]: Review audit events alongside linked approval timelines.
+            - group "Audit log filters" [ref=e616]:
+              - generic [ref=e617]:
+                - generic [ref=e618]: Time range
+                - combobox "Time range" [ref=e619]:
+                  - option "Last 24 hours"
+                  - option "Last 7 days" [selected]
+                  - option "Last 30 days"
+              - generic [ref=e620]:
+                - generic [ref=e621]: Category
+                - combobox "Category" [ref=e622]:
+                  - option "All categories" [selected]
+                  - option "Approval"
+                  - option "Security"
+                  - option "Integration"
+              - generic [ref=e623]:
+                - generic [ref=e624]: Action
+                - combobox "Action" [ref=e625]:
+                  - option "All actions" [selected]
+                  - option "ApprovalRequested"
+                  - option "RoutingApproved"
+                  - option "RoutingRejected"
+                  - option "AdminLoginFailure"
+                  - option "GrafanaEmbedViewed"
+              - generic [ref=e626]:
+                - generic [ref=e627]: Actor
+                - textbox "Actor" [ref=e628]
+              - generic [ref=e629]:
+                - generic [ref=e630]: Routing ID
+                - textbox "Routing ID" [ref=e631]
+              - generic [ref=e632]:
+                - button "reload Refresh" [ref=e633] [cursor=pointer]:
+                  - img "reload" [ref=e634] [cursor=pointer]:
+                    - img [ref=e635] [cursor=pointer]
+                  - generic [ref=e637] [cursor=pointer]: Refresh
+                - button "file-text Export CSV" [ref=e638] [cursor=pointer]:
+                  - img "file-text" [ref=e639] [cursor=pointer]:
+                    - img [ref=e640] [cursor=pointer]
+                  - generic [ref=e642] [cursor=pointer]: Export CSV
+                - generic [ref=e644]: Mock data
+            - generic [ref=e647]:
+              - table [ref=e651]:
+                - rowgroup [ref=e660]:
+                  - row "Timestamp Category Action Summary Severity Actor Links" [ref=e661]:
+                    - cell "Timestamp" [ref=e662]
+                    - cell "Category" [ref=e663]
+                    - cell "Action" [ref=e664]
+                    - cell "Summary" [ref=e665]
+                    - cell "Severity" [ref=e666]
+                    - cell "Actor" [ref=e667]
+                    - cell "Links" [ref=e668]
+                - rowgroup [ref=e669]:
+                  - 'row "2025. 9. 23. 오전 7:49:16 DASH Integration GrafanaEmbedViewed Embedded dashboard viewed (Production KPI) Admin console monitoring card viewed for 3 minutes Info doyun.kim stock Trace: trace-grafana-0027" [ref=e670]':
+                    - cell "2025. 9. 23. 오전 7:49:16" [ref=e671]
+                    - cell "DASH Integration" [ref=e672]:
+                      - generic [ref=e673]:
+                        - generic [ref=e675]: DASH
+                        - generic [ref=e677]: Integration
+                    - cell "GrafanaEmbedViewed" [ref=e678]
+                    - cell "Embedded dashboard viewed (Production KPI) Admin console monitoring card viewed for 3 minutes" [ref=e679]:
+                      - generic [ref=e680]:
+                        - strong [ref=e683]: Embedded dashboard viewed (Production KPI)
+                        - generic [ref=e685]: Admin console monitoring card viewed for 3 minutes
+                    - cell "Info" [ref=e686]:
+                      - generic [ref=e687]: Info
+                    - cell "doyun.kim" [ref=e688]
+                    - 'cell "stock Trace: trace-grafana-0027" [ref=e689]':
+                      - generic [ref=e690]:
+                        - generic [ref=e692]:
+                          - button "stock" [disabled]:
+                            - img "stock":
+                              - img
+                        - generic [ref=e694]: "Trace: trace-grafana-0027"
+                  - 'row "2025. 9. 23. 오전 6:49:16 LOCK Security AdminLoginFailure Login failure for ops.supervisor MFA challenge timed out after 90 seconds Warning ops.supervisor stock Trace: trace-login-4821" [ref=e695]':
+                    - cell "2025. 9. 23. 오전 6:49:16" [ref=e696]
+                    - cell "LOCK Security" [ref=e697]:
+                      - generic [ref=e698]:
+                        - generic [ref=e700]: LOCK
+                        - generic [ref=e702]: Security
+                    - cell "AdminLoginFailure" [ref=e703]
+                    - cell "Login failure for ops.supervisor MFA challenge timed out after 90 seconds" [ref=e704]:
+                      - generic [ref=e705]:
+                        - strong [ref=e708]: Login failure for ops.supervisor
+                        - generic [ref=e710]: MFA challenge timed out after 90 seconds
+                    - cell "Warning" [ref=e711]:
+                      - generic [ref=e712]: Warning
+                    - cell "ops.supervisor" [ref=e713]
+                    - 'cell "stock Trace: trace-login-4821" [ref=e714]':
+                      - generic [ref=e715]:
+                        - generic [ref=e717]:
+                          - button "stock" [disabled]:
+                            - img "stock":
+                              - img
+                        - generic [ref=e719]: "Trace: trace-login-4821"
+                  - row "2025. 9. 23. 오전 6:19:16 REJ Approval RoutingRejected Routing SH2001 rejected Collision detected at machine SH-01 step 4 Warning qa.lead stock" [ref=e720]:
+                    - cell "2025. 9. 23. 오전 6:19:16" [ref=e721]
+                    - cell "REJ Approval" [ref=e722]:
+                      - generic [ref=e723]:
+                        - generic [ref=e725]: REJ
+                        - generic [ref=e727]: Approval
+                    - cell "RoutingRejected" [ref=e728]
+                    - cell "Routing SH2001 rejected Collision detected at machine SH-01 step 4" [ref=e729]:
+                      - generic [ref=e730]:
+                        - strong [ref=e733]: Routing SH2001 rejected
+                        - generic [ref=e735]: Collision detected at machine SH-01 step 4
+                    - cell "Warning" [ref=e736]:
+                      - generic [ref=e737]: Warning
+                    - cell "qa.lead" [ref=e738]
+                    - cell "stock" [ref=e739]:
+                      - button "stock" [ref=e742] [cursor=pointer]:
+                        - img "stock" [ref=e743] [cursor=pointer]:
+                          - img [ref=e744] [cursor=pointer]
+                  - row "2025. 9. 23. 오전 3:19:16 APP Approval RoutingApproved Routing GT310001 approved QA supervisor approved with no conditions Info seohyun.lee stock" [ref=e746]:
+                    - cell "2025. 9. 23. 오전 3:19:16" [ref=e747]
+                    - cell "APP Approval" [ref=e748]:
+                      - generic [ref=e749]:
+                        - generic [ref=e751]: APP
+                        - generic [ref=e753]: Approval
+                    - cell "RoutingApproved" [ref=e754]
+                    - cell "Routing GT310001 approved QA supervisor approved with no conditions" [ref=e755]:
+                      - generic [ref=e756]:
+                        - strong [ref=e759]: Routing GT310001 approved
+                        - generic [ref=e761]: QA supervisor approved with no conditions
+                    - cell "Info" [ref=e762]:
+                      - generic [ref=e763]: Info
+                    - cell "seohyun.lee" [ref=e764]
+                    - cell "stock" [ref=e765]:
+                      - button "stock" [ref=e768] [cursor=pointer]:
+                        - img "stock" [ref=e769] [cursor=pointer]:
+                          - img [ref=e770] [cursor=pointer]
+                  - row "2025. 9. 23. 오전 12:19:16 REQ Approval ApprovalRequested Routing GT310001 approval requested Shift lead submitted for QA review Info doyun.kim stock" [ref=e772]:
+                    - cell "2025. 9. 23. 오전 12:19:16" [ref=e773]
+                    - cell "REQ Approval" [ref=e774]:
+                      - generic [ref=e775]:
+                        - generic [ref=e777]: REQ
+                        - generic [ref=e779]: Approval
+                    - cell "ApprovalRequested" [ref=e780]
+                    - cell "Routing GT310001 approval requested Shift lead submitted for QA review" [ref=e781]:
+                      - generic [ref=e782]:
+                        - strong [ref=e785]: Routing GT310001 approval requested
+                        - generic [ref=e787]: Shift lead submitted for QA review
+                    - cell "Info" [ref=e788]:
+                      - generic [ref=e789]: Info
+                    - cell "doyun.kim" [ref=e790]
+                    - cell "stock" [ref=e791]:
+                      - button "stock" [ref=e794] [cursor=pointer]:
+                        - img "stock" [ref=e795] [cursor=pointer]:
+                          - img [ref=e796] [cursor=pointer]
+              - list [ref=e798]:
+                - listitem "Previous Page" [ref=e799]:
+                  - button "left" [disabled] [ref=e800]:
+                    - img "left" [ref=e801]:
+                      - img [ref=e802]
+                - listitem "1" [ref=e804]:
+                  - generic [ref=e805]: "1"
+                - listitem "Next Page" [ref=e806]:
+                  - button "right" [disabled] [ref=e807]:
+                    - img "right" [ref=e808]:
+                      - img [ref=e809]
+                - listitem [ref=e811]:
+                  - generic "Page Size" [ref=e812]:
+                    - combobox "Page Size" [ref=e815]
+                    - img [ref=e818]:
+                      - img [ref=e819]
+          - generic [ref=e822]:
+            - generic [ref=e823]:
+              - heading "Monitoring Dashboard" [level=3] [ref=e824]
+              - generic [ref=e825]: Embed the live KPI dashboard directly inside the admin console.
+            - generic [ref=e826]:
+              - button "reload Refresh" [ref=e832] [cursor=pointer]:
+                - img "reload" [ref=e833] [cursor=pointer]:
+                  - img [ref=e834] [cursor=pointer]
+                - generic [ref=e836] [cursor=pointer]: Refresh
+              - generic [ref=e838]:
+                - img [ref=e840]
+                - generic [ref=e853]:
+                  - strong [ref=e856]: Embed URL is not configured.
+                  - generic [ref=e858]: Configure NEXT_PUBLIC_GRAFANA_EMBED_URL to render the dashboard.
+  - alert [ref=e859]
+```
