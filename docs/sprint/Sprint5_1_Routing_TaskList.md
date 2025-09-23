@@ -1,0 +1,56 @@
+# Sprint 5.1 Routing Task List (Search Readiness)
+
+## 절대 지령
+- 본 문서는 1인 개발팀 운영 원칙을 따르며, 모든 실행 주체는 Codex이다.
+- 모든 코드와 API 작성은 Codex가 수행하며, 자동화 작업 역시 Codex가 직접 검토한다.
+- 작업 전후 활동은 영어 로그와 주석으로 남겨 추적성을 확보한다.
+- 각 단계는 승인 후에만 착수한다.
+- 단계 착수 전 Task 범위를 재확인하고 오류를 식별하고 이상 없을시에만 해당 task를 [x] 표시한다.
+- 작업 중 변경 사항과 로그(스크린샷, 다이어그램 포함)를 모두 문서화한다.
+- Task List와 체크박스를 유지하고 신규 생성된 작업에서도 절대 지령을 동일하게 준수한다.
+- 오류 개선을 위해 신규 TASK가 발생하면 TASK LIST를 새로 작성하거나 기존 LIST에 업데이트 한다.
+- PoC 기준은 1인 기업 관점으로 계획한다.
+
+## 1. 개요
+- 목적: FR-9 검색/필터 요구사항을 출시 전 검증한다.
+- 기간: Sprint 5.1 (2025-10-05 ~ 2025-10-11) 가정.
+- 산출물: 타입어헤드 검색, 필터 패널, SLA 검증, feature flag fallback.
+- 로그 지침: 모든 활동은 docs/sprint/Sprint5_1_Routing_Log.md에 영어로 서술하고, 관련 코드에는 검색 성능/UX 의도 주석을 남긴다.
+
+## 2. 작업 흐름 및 체크리스트
+### Flow D. 검색 엔드포인트 연동
+- [ ] D1. `/search` API 클라이언트 훅 구현 및 캐싱 정책 정의.
+  - Log: Describe debounce window, cache key format.
+  - Comment: Explain fallback behavior when API throttles.
+- [ ] D2. Typeahead UI + 키보드 네비게이션.
+  - UX: Use ribbon-aligned chips and iconography inspired by Teamcenter chat assistant.
+  - Log: Outline accessibility handling and highlight tests.
+  - Comment: Document highlight algorithm near render loop.
+
+### Flow E. 필터 및 결과 화면
+- [ ] E1. Facet Filter Panel (product code, routing group, file type, author, updated date).
+  - Log: Capture filter state model and URL sync decision.
+  - Comment: Explain hooking to React Context vs props.
+- [ ] E2. Search Results Table with quick actions (open modal, download bundle).
+  - Log: Summarize column definitions, virtualization choice.
+  - Comment: Note security check before enabling download.
+
+### Flow F. SLA & Feature Flag
+- [ ] F1. 성능 측정 (첫 50건 1.5s 이하) 및 로그 저장.
+  - Log: Include raw timings and tooling (e.g., WebPageTest).
+  - Comment: Document instrumentation snippet for metrics.
+- [ ] F2. `feature.search-routing` 토글 + 레거시 뷰 폴백 구현.
+  - Log: Detail flag evaluation path and rollout plan.
+  - Comment: Explain conditional rendering branch.
+
+## 3. 검증
+- E2E 테스트 케이스(검색 입력, 필터 조합)를 작성하고 로그에 테스트 경로와 결과 첨부.
+- SLA 실패 시 대응 플랜(캐싱 조정, API 튜닝) 기록.
+
+## 4. 승인 조건
+- 모든 체크 리스트 완료 + 로그 및 주석 검증.
+- PM/QA와 기능 플래그 동의 후 배포 준비.
+
+
+
+

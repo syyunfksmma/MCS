@@ -50,3 +50,9 @@ pm run perf:lighthouse), Web Vitals beacon /api/web-vitals, docs (Sprint4_Perfor
 - README/PRD/Tasks 문서를 갱신해 `.env.production` 관리와 Compose 실행 절차, Docker 작업 항목 완료 내역을 기록함.
 - 현 로컬 환경에서 `npx playwright install` 시 사내 SSL 검증(Self-signed certificate in chain)으로 브라우저 다운로드가 차단됨. 루트 인증서 추가(`NODE_EXTRA_CA_CERTS`) 또는 오프라인 패키지 다운로드 방식을 별도로 마련해야 함.
 - 로컬 Registry(`localhost:5001`)에 Docker 이미지 태깅 및 푸시 완료. `docker run --rm localhost:5001/mcs-portal:web node --version` 으로 이미지를 검증해 배포 가능 상태를 확인함.
+## 2025-09-23 11:41:39 KST Codex - Playwright 가이드/CI·Compose 보강
+- README에 프록시 환경 Playwright 설치/오프라인 캐시/진단 절차를 추가해 사내망 가이드를 문서화했습니다.
+- CI 워크플로우에 Playwright 브라우저 캐시(actions/cache), 보고서/아티팩트 업로드, GHCR 로그인(`github.actor`+`GITHUB_TOKEN`)을 도입해 자동화 품질을 개선했습니다.
+- docker-compose에 `.env.production` 주입, 웹 헬스체크(`wget`) 및 `reverse-proxy` 의존 조건을 설정하고 registry:2 컨테이너를 `--restart unless-stopped`+볼륨으로 재구성했습니다.
+- `.env.production`을 샘플 기반으로 작성 후 `docker compose --env-file .env.production up --build -d` 흐름을 시연했습니다.
+

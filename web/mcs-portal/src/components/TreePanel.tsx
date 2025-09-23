@@ -5,7 +5,7 @@ import type { DataNode, TreeProps } from 'antd/es/tree';
 import { useEffect, useMemo, useState } from 'react';
 import { ExplorerItem } from '@/types/explorer';
 
-type ExplorerNodeType = 'item' | 'revision' | 'routing' | 'file';
+type ExplorerNodeType = 'item' | 'revision' | 'group' | 'routing' | 'file';
 
 type ExplorerTreeNode = DataNode & {
   key: string;
@@ -38,7 +38,7 @@ const ROUTING_STATUS_COLOR: Record<string, string> = {
 
 const buildTreeNodes = (items: ExplorerItem[]): ExplorerTreeNode[] => {
   const buildFileNode = (
-    file: ExplorerItem['revisions'][number]['routings'][number]['files'][number],
+    file: ExplorerItem['revisions'][number]['routingGroups'][number]['routings'][number]['files'][number],
     parentKey: string
   ): ExplorerTreeNode => ({
     title: file.name,
@@ -49,7 +49,7 @@ const buildTreeNodes = (items: ExplorerItem[]): ExplorerTreeNode[] => {
   });
 
   const buildRoutingNode = (
-    routing: ExplorerItem['revisions'][number]['routings'][number],
+    routing: ExplorerItem['revisions'][number]['routingGroups'][number]['routings'][number],
     parentKey: string
   ): ExplorerTreeNode => ({
     title: (
@@ -65,6 +65,18 @@ const buildTreeNodes = (items: ExplorerItem[]): ExplorerTreeNode[] => {
     children: routing.files.map(file => buildFileNode(file, routing.id))
   });
 
+  const buildGroupNode = (
+    group: ExplorerItem['revisions'][number]['routingGroups'][number],
+    parentKey: string
+  ): ExplorerTreeNode => ({
+    title: group.name,
+    key: group.id,
+    parentKey,
+    nodeType: 'group',
+    searchLabel: group.name.toLowerCase(),
+    children: group.routings.map(routing => buildRoutingNode(routing, group.id))
+  });
+
   const buildRevisionNode = (
     revision: ExplorerItem['revisions'][number],
     parentKey: string
@@ -74,7 +86,9 @@ const buildTreeNodes = (items: ExplorerItem[]): ExplorerTreeNode[] => {
     parentKey,
     nodeType: 'revision',
     searchLabel: revision.code.toLowerCase(),
-    children: revision.routings.map(routing => buildRoutingNode(routing, revision.id))
+    children: [...revision.routingGroups]
+      .sort((a, b) => a.displayOrder - b.displayOrder)
+      .map(group => buildGroupNode(group, revision.id))
   });
 
   return items.map(item => ({
@@ -209,7 +223,7 @@ export default function TreePanel({ items, onSelect, onReorder, selectedKey }: T
   return (
     <Card style={{ width: 320, maxHeight: 640, overflow: 'hidden' }} title="Explorer" bordered>
       <Input.Search
-        placeholder="Search Item / Revision / Routing"
+        placeholder="Search Item / Revision / Group / Routing"
         value={search}
         onChange={event => setSearch(event.target.value)}
         style={{ marginBottom: 12 }}
@@ -230,7 +244,8 @@ export default function TreePanel({ items, onSelect, onReorder, selectedKey }: T
           const key = info.node.key as string;
           const found = items
             .flatMap(item => item.revisions)
-            .flatMap(revision => revision.routings)
+            .flatMap(revision => revision.routingGroups)
+            .flatMap(group => group.routings)
             .find(routing => routing.id === key);
           if (found) {
             onSelect(key);

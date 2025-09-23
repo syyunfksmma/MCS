@@ -365,3 +365,5 @@ FodyWeavers.xsd
 # Performance reports
 web/mcs-portal/reports/*.json
 web/mcs-portal/reports/*.jsonl
+
+web/mcs-portal/.env.production

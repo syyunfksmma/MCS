@@ -14,10 +14,18 @@ export interface ExplorerRouting {
   files: ExplorerFile[];
 }
 
+export interface ExplorerRoutingGroup {
+  id: string;
+  name: string;
+  description?: string;
+  displayOrder: number;
+  routings: ExplorerRouting[];
+}
+
 export interface ExplorerRevision {
   id: string;
   code: string;
-  routings: ExplorerRouting[];
+  routingGroups: ExplorerRoutingGroup[];
 }
 
 export interface ExplorerItem {
@@ -27,13 +35,7 @@ export interface ExplorerItem {
   revisions: ExplorerRevision[];
 }
 
-export type ExplorerSource = "mock" | "api";
-
-export interface ExplorerResponse {
-  items: ExplorerItem[];
-  generatedAt: string;
-  source: ExplorerSource;
-}
+export type ExplorerSource = 'mock' | 'api';
 
 export type AddinJobStatus = 'queued' | 'running' | 'succeeded' | 'failed' | 'cancelled';
 
@@ -52,6 +54,8 @@ export interface AddinJob {
 
 export type ApprovalDecision = 'pending' | 'approved' | 'rejected';
 
+export type ApprovalEventSource = 'user' | 'system' | 'signalr';
+
 export interface ApprovalEvent {
   id: string;
   routingId: string;
@@ -59,5 +63,15 @@ export interface ApprovalEvent {
   actor: string;
   comment: string;
   createdAt: string;
-  source: 'user' | 'system' | 'signalr';
+  source: ApprovalEventSource;
+}
+
+export type ApprovalEventMap = Record<string, ApprovalEvent[]>;
+
+export interface ExplorerResponse {
+  items: ExplorerItem[];
+  generatedAt: string;
+  source: ExplorerSource;
+  addinJobs?: AddinJob[];
+  approvalEvents?: ApprovalEventMap;
 }

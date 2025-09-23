@@ -1,0 +1,646 @@
+To Infinity and Beyond!
+New Features, Improvements, and Changes
+
+Active Workspace 2312+
+
+Active Workspace
+
+• Active Workspace is a web-based client and user 
+interface for Teamcenter that can run on any device with a 
+web browser, such as a mobile phone, tablet, or laptop. 
+
+It helps you create and manage data in your enterprise's 
+
+•
+product lifecycle management (PLM) system.
+
+• The web interface shows you everything you need to get 
+your work done quickly and easily.
+
+• The image shows you the main work area and how it is 
+tailored to fit your needs.
+
+Fundamentals
+
+• Navigation is easy and straightforward.
+
+• The Home Page contains tiles that launch various 
+commands, such as viewing your schedules, opening 
+your Inbox, and managing your changes, as well as links 
+to commonly-used functions and the search box.
+
+Workflows
+
+• Workflows are a series of required tasks, such as 
+approvals (signoffs) and reviews, performed on an object, 
+such as a part, document, or change.
+
+• The workflow contains tasks related to the type of 
+workflow launched for the object. 
+
+• These tasks are automatically sent to the responsible 
+participant’s Inbox.
+
+• Once all the work is complete, the object is released 
+from the workflow.
+
+Change Management
+
+• When a change is requested for an object, usually due to 
+a problem found with it, it must go through a series of 
+design revisions and approvals before the change is 
+released.
+
+• When you create a new change and submit it, a workflow 
+is triggered that starts the process of tracking the work on 
+the requested change.
+
+User Interface
+
+• For Teamcenter 2312, the Active Workspace user 
+interface underwent several significant changes in 
+terms of form and function.
+• This includes changes in the Home page and global 
+navigation, the primary toolbar, page headers and 
+layouts, folders, and design and behavior changes for 
+some UI elements.
+• Accordingly, we have revised the documentation to 
+include updated graphics and videos to orient you to the 
+interface changes.
+
+User Interface
+
+A Complete Redesign
+
+Home Page
+
+• Global Header
+• Global Navigation
+• Tiles
+• Global Search
+• Session Controls
+
+Search Page
+
+• Results Panel
+• Filters Panel
+• Results Panel Toolbar
+• In-context Panel
+• Results Panel
+• Object Information
+• Tabs
+
+Suggestions
+
+• Throughout a product's life cycle, 
+you need to keep track of multiple 
+drawings, attachments, and item 
+revisions.
+• There is no need to remember 
+folders or directories where this data 
+is located because you can use 
+several search and filter options to 
+locate any data stored in Teamcenter.
+
+Object Page
+
+• Object information and options
+• Primary Toolbar
+• Work Area Toolbar
+• Work Area
+• Tabs
+
+Breadcrumbs
+
+• he search Results page displays the 
+filters that are applied to search 
+results.
+• Related filter values are grouped 
+together in the breadcrumb, 
+regardless of the order in which you 
+choose them.
+• Search criteria entered in Find in 
+this content appear in the 
+breadcrumb.
+
+Folders
+
+• Top-level Folder
+• Favorites
+• Active Folders
+• Home
+• Project Data
+• Overview
+• Contents
+
+Renamed Explorer
+
+User Environment
+
+• The properties displayed in the pop-
+up can vary depending on your group 
+and role.
+• For example, if only one workspace 
+is configured for your role, the 
+Workspace property is not present.
+
+Memberships
+
+• Your user profile page enables you 
+to provide information about yourself 
+that other users can see and set 
+several defaults and preferences that 
+are applied when you work in Active 
+Workspace.
+• This topic explains how to access 
+the page and describes the most 
+common settings that new users may 
+want to adjust.
+
+Task Panel
+
+• Some commands open a 
+task panel. Typically, these 
+panels display over the top 
+of the information in the 
+work area. Examples 
+include Add panel, Create 
+Change panel, and Trace 
+Link panel.
+
+Move and Resize 
+Panels
+
+• As you work with data objects, you may 
+open panels to perform your task.
+• Some panels, such as the Information 
+panel, can be undocked and moved 
+around the browser window.
+• When undocked they can also be 
+resized.
+• When you re-dock a panel to return it to 
+its default location, the next time you 
+undock the panel, it returns to its last 
+undocked size and position.
+
+Table Columns
+
+• Create, save, and open different column 
+arrangements to control which columns 
+appear in tables and trees. When viewing 
+a table or tree, the default column 
+arrangement appears if you have not 
+previously viewed the table. If you viewed 
+the table previously, you see the last 
+column arrangement used. You can open 
+a different column arrangement, or add 
+more columns to a table you are currently 
+viewing to create a new column 
+arrangement.
+
+3D viewer
+
+Measurement
+
+Context Menu
+
+• Access various commands in the 
+context of the items that you are 
+working with by right-clicking the 
+items.
+
+Section
+
+Part
+
+Markup
+
+Layout Manager
+
+• Since the 2312 release and continuing in this 
+release, page layout information is stored locally.
+
+• The default layout configured on the server is 
+applied if your browser or device does not have 
+local page layout information stored.
+
+• Once you select a layout, it is displayed each 
+time you return to the same page until you select 
+a different layout.
+
+If you open that same page's URL in a different 
+
+•
+browser or device, the default layout is applied, 
+and new local layout information is stored for that 
+URL.
+
+LOV as Table
+
+• Previously, dropdown lists of values (LOVs) 
+showed only the Value.
+
+• Some drop-down lists now appear as a table 
+rather than as a list of single values. 
+
+• You can search for values in these tables.
+
+• As an administrator, to configure this option, a 
+new renderingHint named lovTable must be 
+appended in the stylesheet to a property that has 
+an LOV attached to it.
+
+• <property name="aw2+LongString_LOV" 
+renderingHint="lovTable"/>
+
+Toolbar
+
+• Starting in 2406, properties and 
+details other than the name of the 
+revision may not appear on the toolbar 
+when the Active Workspace window is 
+not in full-screen mode or if the space 
+preceding the breadcrumbs area has 
+shrunken in size.
+
+• Depending on the size of your 
+browser window and display resolution, 
+the More... command may be 
+displayed on the toolbar.
+
+• By clicking this command, the 
+additional properties and details of the 
+object appear.
+
+Banner
+
+• You can now create a banner along the top 
+of the Active Workspace user interface. Use 
+this banner to alert your users of future 
+downtime, alert them of potential issues, 
+and so on.
+
+• You must set values of the AWC_Banner 
+site preference and specify the message 
+text, type, and beginning date and time. You 
+can optionally set an ending time or a 
+duration.
+
+• There are three types of messages that 
+you can create.
+
+XRT Editor
+
+• Before, the editor did not navigate 
+injected style sheets.
+• You needed to manually search for 
+them and edit them separately. 
+• Now, when modifying style sheets 
+using the XRT Editor you can navigate 
+a tree which represents the main style 
+sheet and all of the injected style 
+sheets automatically.
+
+Commands
+
+• 2406, Several common 
+commands previously 
+found only on the primary 
+toolbar are now also 
+available in more areas of 
+the user interface where 
+they are contextually 
+relevant.
+
+Content
+
+• The Content tab displays the content of a 
+structure. The following diagram shows the 
+configurable parts of the Content tab.
+
+Revert
+
+• The revert functionality applies to those ECNs 
+that include redline changes.
+
+• When a user is authoring a BOM in the context 
+of an ECN and has either replaced, removed, or 
+added a new line item, sometimes unintentional 
+changes can occur.
+
+• An incorrect entry might unintentionally be 
+made.
+
+• The revert functionality lets you return a redline 
+change back to its original impacted version.
+
+• You can revert items in BOMs with and without 
+effectivity dates applied.
+
+Compare 
+Elements
+
+Compare 
+Properties
+
+• You can compare common properties of 
+
+objects.
+
+• Select multiple objects from the list.
+
+Merge
+
+• You can compare and merge 
+unincorporated changes to existing 
+designs.
+• Through this process, you can 
+integrate an emergency released ECN 
+into an in-progress ECN by viewing 
+both structures side-by-side and 
+selecting updated items to merge.
+
+Excel 
+Round Trip
+
+• When exporting to Excel, you 
+can now choose to use the existing 
+columns displayed in the structure 
+window or specify your own with 
+the standard Arrange user 
+interface.
+
+• This is done by selecting a 
+Custom template from the Export 
+to Excel drop down and following 
+the Arrange user interface.
+
+• You can continue to select from 
+the preconfigured list of Excel 
+export templates.
+
+Reports
+
+• You can create a dashboard report for 
+structure readiness to gather data about 
+the components of the selected structure.
+
+• The following is an example of how to 
+create a structure readiness report.
+
+• After creating the report definition, you 
+can search and select a product structure, 
+and generate a report.
+
+• This report traverses the selected 
+structure to display information about its 
+components, such as, their release 
+status, how many of them are in process, 
+the date released, and the date modified.
+
+Dashboard
+
+• Once a report is open, you can drill 
+down to view more specific data.
+
+My 
+Dashboard
+
+My Dashboard is a personalized list of 
+your favorite reports. It contains Active 
+Summary reports.
+
+To open the report, hover over the report 
+title until a link appears, and click the title 
+link to open it.
+
+Default Template
+
+• In case users from different groups 
+want to see a different default 
+template for an object, you can define 
+groups/subgroups for a template.
+• You can use the existing preference 
+WorkspaceObject_default_workflow
+_template. This preference can be 
+enhanced to support multiple values 
+with the format 
+GroupName::Template Name or 
+Subgroup.Group::TemplateName.
+
+Workflows
+
+In a workflow, if a task's Start action fails 
+due to an error, the parent task appears in 
+the Inbox. You must then complete the 
+task after resolving the issue.
+
+Starting in 2406, in such cases, the error is 
+displayed on the parent task and identifies 
+the child task that includes the error.
+
+The child task opens automatically in the 
+Diagram's graphical view on the 
+Workflow tab.
+
+Auto Layout
+
+Fixed Layout
+
+Show Children
+
+Inbox
+
+To help you reassign tasks, manage 
+surrogates, or see if someone is out of 
+the office, you can view their profile 
+page.
+
+For example, if a workflow is not 
+progressing because a particular user 
+has not responded, you can view 
+whether that user is out of the office.
+
+As a privileged user, you can also 
+access their inbox to reassign a task.
+
+Guided 
+Navigation
+
+• The Teamcenter Assistant suggests the 
+next possible actions to perform and 
+provides the relevant data required to 
+perform them.
+• These suggestions are based on the 
+context, history, and usage frequency of 
+actions performed by other previous users 
+belonging to the same role and group.
+• You can use the Tutor Mode to train the 
+Assistant to learn a preferred way to 
+complete a task.
+
+3D Tab
+
+• Earlier, to display a model in the 
+viewer, you had to click the 3D tab.
+• Now, to display the model in the 
+viewer, you must switch to 3D from 
+Details by clicking 3D in the list of 
+available views.
+
+Universal 
+Viewer
+
+• Use the universal viewer 
+to view object 
+attachments.
+• The universal viewer 
+appears in an object's 
+Overview tab if there are 
+attachments for the 
+object, or in a workflow 
+task's Overview tab if 
+there is an associated 
+attachment.
+
+3D Viewer
+
+• Earlier, you could move or resize only a 
+few panels in the 3D viewer.
+• Now, you can undock and move all 
+panels around the browser window to your 
+desired location. They can also be resized 
+to take up less space. This helps you get 
+the best screen layout for your working 
+style.
+• Parts in the exploded view in the 3D 
+viewer can be captured in context, with 
+the 3D data, within snapshots.
+
+Viewer Options
+
+• After opening an assembly, without 
+opening the 3D viewer, you can access 
+and alter available properties in 
+Viewer Options.
+• You can therefore change viewer 
+settings before opening the 3D viewer, 
+especially if the settings are likely to 
+relaunch or reload the viewer.
+
+Unpin to dismiss
+
+notification
+
+Cannot unpin
+
+error
+
+Notifications
+
+The system displays 
+notification messages.
+You can pin a message 
+so that it continues to 
+appear in the window, 
+and you can refer to the 
+message text later 
+during your work 
+session.
+
+Next Steps
+
+Current Features, Future 
+Features, and Beyond!
+
+Roadmap (current)
+
+Active Workspace 6.3
+
+Teamcenter 2312
+
+Page-level toolbar
+
+Details header (preview)
+
+Layout Chooser
+
+Session controls
+
+Details header
+
+View switcher
+
+Card styling
+
+Three-view layout
+
+Roadmap (future)
+
+Teamcenter 2406
+
+Teamcenter 2412
+
+Selection indicator
+
+Layout slot styling
+
+Splitable context bar
+
+Open object header
+
+Layout manager
+
+Command efficiency for opened objects
+
+Layout manager for collection pages
+
+Combined section & objectSet
+
+Command separators
+
+And Beyond!
+
+• Multiple opened objects
+
+• Consolidated settings
+
+• Multiple details view
+
+• 3D viewer without structure tree
+
+• Enhanced narrow/embedded 
+
+mode
+
+Active Workspace User 
+Interface
+
+• You’ve seen...
+
+• The new user interface in Tc2312.
+
+• Final UI changes are expected in 
+
+Tc2406.
+
+• Branding opportunities.
+
+• Multiple “theme” entries are no 
+longer supported (one only).
+
+• Roadmap
+
+• AW 6.3, Tc2312, Tc2406, Tc2412, 
+
+and beyond.
+
+References
+
+• https://blogs.sw.siemens.com/teamce
+nter/whats-new-in-teamcenter-2312/
+
+• https://blogs.sw.siemens.com/teamce
+nter/2024-teamcenter-beta-testing/
+
+

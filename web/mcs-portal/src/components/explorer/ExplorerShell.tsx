@@ -9,6 +9,7 @@ import AddinBadge from '@/components/explorer/AddinBadge';
 import WorkspaceUploadPanel from '@/components/workspace/WorkspaceUploadPanel';
 import WorkspaceMetaPanel from '@/components/workspace/WorkspaceMetaPanel';
 import { manageAddinJob, submitApprovalDecision } from '@/lib/workspace';
+import { orderRoutingGroups } from '@/lib/routingGroups';
 import ApprovalPanel from '@/components/workspace/ApprovalPanel';
 import {
   AddinJob,
@@ -34,7 +35,14 @@ type WorkspaceSnapshot = ExplorerItem[];
 interface RoutingContext {
   item: ExplorerItem;
   revision: ExplorerItem['revisions'][number];
+  group: ExplorerItem['revisions'][number]['routingGroups'][number];
   routing: ExplorerRouting;
+}
+
+interface GroupContext {
+  item: ExplorerItem;
+  revision: ExplorerItem['revisions'][number];
+  group: ExplorerItem['revisions'][number]['routingGroups'][number];
 }
 
 const isEditableElement = (element: EventTarget | null): boolean => {
@@ -50,9 +58,12 @@ const cloneExplorerItems = (items: ExplorerItem[]): WorkspaceSnapshot =>
     ...item,
     revisions: item.revisions.map(revision => ({
       ...revision,
-      routings: revision.routings.map(routing => ({
-        ...routing,
-        files: routing.files.map(file => ({ ...file }))
+      routingGroups: revision.routingGroups.map(group => ({
+        ...group,
+        routings: group.routings.map(routing => ({
+          ...routing,
+          files: routing.files.map(file => ({ ...file }))
+        }))
       }))
     }))
   }));
@@ -61,8 +72,10 @@ const flattenRoutingContexts = (items: ExplorerItem[]): RoutingContext[] => {
   const contexts: RoutingContext[] = [];
   items.forEach(item => {
     item.revisions.forEach(revision => {
-      revision.routings.forEach(routing => {
-        contexts.push({ item, revision, routing });
+      revision.routingGroups.forEach(group => {
+        group.routings.forEach(routing => {
+          contexts.push({ item, revision, group, routing });
+        });
       });
     });
   });
@@ -72,9 +85,44 @@ const flattenRoutingContexts = (items: ExplorerItem[]): RoutingContext[] => {
 const findRoutingContext = (items: ExplorerItem[], routingId: string): RoutingContext | null => {
   for (const item of items) {
     for (const revision of item.revisions) {
-      const routing = revision.routings.find(current => current.id === routingId);
-      if (routing) {
-        return { item, revision, routing };
+      for (const group of revision.routingGroups) {
+        const routing = group.routings.find(current => current.id === routingId);
+        if (routing) {
+          return { item, revision, group, routing };
+        }
+      }
+    }
+  }
+  return null;
+};
+
+const findGroupContext = (items: ExplorerItem[], groupId: string): GroupContext | null => {
+  for (const item of items) {
+    for (const revision of item.revisions) {
+      const group = revision.routingGroups.find(current => current.id === groupId);
+      if (group) {
+        return { item, revision, group };
+      }
+    }
+  }
+  return null;
+};
+
+const routingExistsInItems = (items: ExplorerItem[], routingId: string): boolean => {
+  return items.some(item =>
+    item.revisions.some(revision =>
+      revision.routingGroups.some(group => group.routings.some(routing => routing.id === routingId))
+    )
+  );
+};
+
+const getFirstRoutingFromItems = (items: ExplorerItem[]): ExplorerRouting | null => {
+  for (const item of items) {
+    for (const revision of item.revisions) {
+      for (const group of revision.routingGroups) {
+        if (group.routings.length > 0) {
+          return group.routings[0];
+        }
       }
     }
   }
@@ -161,6 +209,51 @@ const seedApprovalEvents = (items: ExplorerItem[]): Record<string, ApprovalEvent
   return seed;
 };
 
+const cloneAddinJobs = (jobs: AddinJob[]): AddinJob[] => jobs.map(job => ({ ...job }));
+
+const createAddinJobState = (items: ExplorerItem[], incoming?: AddinJob[]): AddinJob[] => {
+  const fallback = seedAddinJobs(items);
+  const source = incoming && incoming.length ? incoming : fallback;
+  return cloneAddinJobs(source);
+};
+
+const createApprovalEventState = (
+  items: ExplorerItem[],
+  incoming?: Record<string, ApprovalEvent[]>
+): Record<string, ApprovalEvent[]> => {
+  const fallback = seedApprovalEvents(items);
+  const merged: Record<string, ApprovalEvent[]> = {};
+  const contexts = flattenRoutingContexts(items);
+  contexts.forEach(ctx => {
+    const routingId = ctx.routing.id;
+    const source = incoming?.[routingId] ?? fallback[routingId] ?? [];
+    merged[routingId] = source.map(event => ({ ...event }));
+  });
+  if (incoming) {
+    Object.keys(incoming).forEach(routingId => {
+      if (!merged[routingId]) {
+        merged[routingId] = incoming[routingId].map(event => ({ ...event }));
+      }
+    });
+  }
+  return merged;
+};
+
+// Flow C telemetry bridge: surface mock events for audit/SignalR flows.
+const logTelemetry = (event: {
+  channel: 'approval' | 'addin-job' | 'routing' | 'group';
+  action: string;
+  routingId?: string;
+  payload?: Record<string, unknown>;
+}) => {
+  console.info('[ExplorerTelemetry]', {
+    channel: event.channel,
+    action: event.action,
+    routingId: event.routingId,
+    payload: event.payload
+  });
+};
+
 const reorderWithinArray = <T extends { id: string }>(
   list: T[],
   dragKey: string,
@@ -198,21 +291,36 @@ const applyReorder = (items: ExplorerItem[], payload: TreePanelReorderPayload): 
     }
 
     for (const revision of item.revisions) {
-      if (payload.entityType === 'routing') {
-        const routings = revision.routings;
-        if (routings.some(routing => routing.id === payload.dragKey || routing.id === payload.dropKey)) {
-          revision.routings = reorderWithinArray(routings, payload.dragKey, payload.dropKey, payload.position);
+      if (payload.entityType === 'group') {
+        const groups = revision.routingGroups;
+        if (groups.some(group => group.id === payload.dragKey || group.id === payload.dropKey)) {
+          const reordered = reorderWithinArray(groups, payload.dragKey, payload.dropKey, payload.position).map((group, index) => ({
+            ...group,
+            displayOrder: index + 1
+          }));
+          revision.routingGroups = reordered;
           return cloned;
         }
         continue;
       }
 
-      if (payload.entityType === 'file') {
-        for (const routing of revision.routings) {
-          const files = routing.files;
-          if (files.some(file => file.id === payload.dragKey || file.id === payload.dropKey)) {
-            routing.files = reorderWithinArray(files, payload.dragKey, payload.dropKey, payload.position);
+      for (const group of revision.routingGroups) {
+        if (payload.entityType === 'routing') {
+          const routings = group.routings;
+          if (routings.some(routing => routing.id === payload.dragKey || routing.id === payload.dropKey)) {
+            group.routings = reorderWithinArray(routings, payload.dragKey, payload.dropKey, payload.position);
             return cloned;
+          }
+          continue;
+        }
+
+        if (payload.entityType === 'file') {
+          for (const routing of group.routings) {
+            const files = routing.files;
+            if (files.some(file => file.id === payload.dragKey || file.id === payload.dropKey)) {
+              routing.files = reorderWithinArray(files, payload.dragKey, payload.dropKey, payload.position);
+              return cloned;
+            }
           }
         }
       }
@@ -220,6 +328,35 @@ const applyReorder = (items: ExplorerItem[], payload: TreePanelReorderPayload): 
   }
 
   return cloned;
+};
+
+const applyServerGroupOrder = (
+  items: ExplorerItem[],
+  revisionId: string,
+  orderedGroupIds: string[]
+): WorkspaceSnapshot => {
+  const draft = cloneExplorerItems(items);
+  for (const item of draft) {
+    const revision = item.revisions.find(current => current.id === revisionId);
+    if (!revision) {
+      continue;
+    }
+    const idToGroup = new Map(revision.routingGroups.map(group => [group.id, group]));
+    const sorted = orderedGroupIds
+      .map(id => idToGroup.get(id))
+      .filter((group): group is typeof revision.routingGroups[number] => Boolean(group));
+    revision.routingGroups.forEach(group => {
+      if (!orderedGroupIds.includes(group.id)) {
+        sorted.push(group);
+      }
+    });
+    revision.routingGroups = sorted.map((group, index) => ({
+      ...group,
+      displayOrder: index + 1
+    }));
+    break;
+  }
+  return draft;
 };
 
 const mapJobStatusToBadge = (status: AddinJobStatus): 'idle' | 'queued' | 'running' | 'failed' | 'completed' => {
@@ -241,7 +378,7 @@ const mapJobStatusToBadge = (status: AddinJobStatus): 'idle' | 'queued' | 'runni
 export default function ExplorerShell({ initialData }: ExplorerShellProps) {
   const { data, isFetching, isError, error } = useExplorerData(initialData);
   const resolved = data ?? initialData;
-  const { items, generatedAt, source } = resolved;
+  const { items, generatedAt, source, addinJobs: resolvedAddinJobs, approvalEvents: resolvedApprovalEvents } = resolved;
 
   const [messageApi, contextHolder] = message.useMessage();
 
@@ -251,36 +388,34 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
   const [selectedRoutingId, setSelectedRoutingId] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<TabKey>('summary');
 
-  const [addinJobs, setAddinJobs] = useState<AddinJob[]>(() => seedAddinJobs(items));
+  const [addinJobs, setAddinJobs] = useState<AddinJob[]>(() => createAddinJobState(items, resolvedAddinJobs));
   const [signalRState, setSignalRState] = useState<SignalRConnectionState>('connected');
-  const [approvalEvents, setApprovalEvents] = useState<Record<string, ApprovalEvent[]>>(() => seedApprovalEvents(items));
+  const [approvalEvents, setApprovalEvents] = useState<Record<string, ApprovalEvent[]>>(() =>
+    createApprovalEventState(items, resolvedApprovalEvents)
+  );
+
+  const groupOrderRequestRef = useRef(0);
 
   useEffect(() => {
     setWorkspaceItems(cloneExplorerItems(items));
     setUndoStack([]);
     setRedoStack([]);
-    setAddinJobs(seedAddinJobs(items));
-    setApprovalEvents(seedApprovalEvents(items));
+    setAddinJobs(createAddinJobState(items, resolvedAddinJobs));
+    setApprovalEvents(createApprovalEventState(items, resolvedApprovalEvents));
     setSelectedRoutingId(prev => {
       if (!prev) {
         return prev;
       }
-      const exists = items
-        .flatMap(item => item.revisions)
-        .flatMap(revision => revision.routings)
-        .some(routing => routing.id === prev);
+      const exists = routingExistsInItems(items, prev);
       return exists ? prev : null;
     });
-  }, [items]);
+  }, [items, resolvedAddinJobs, resolvedApprovalEvents]);
 
   useEffect(() => {
     if (!selectedRoutingId) {
       return;
     }
-    const exists = workspaceItems
-      .flatMap(item => item.revisions)
-      .flatMap(revision => revision.routings)
-      .some(routing => routing.id === selectedRoutingId);
+    const exists = routingExistsInItems(workspaceItems, selectedRoutingId);
     if (!exists) {
       setSelectedRoutingId(null);
     }
@@ -290,15 +425,8 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
     if (!selectedRoutingId) {
       return null;
     }
-    for (const item of workspaceItems) {
-      for (const revision of item.revisions) {
-        const routing = revision.routings.find(r => r.id === selectedRoutingId);
-        if (routing) {
-          return routing;
-        }
-      }
-    }
-    return null;
+    const context = findRoutingContext(workspaceItems, selectedRoutingId);
+    return context ? context.routing : null;
   }, [workspaceItems, selectedRoutingId]);
 
   const selectedApprovalEvents = useMemo(() => {
@@ -308,16 +436,7 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
     return approvalEvents[selectedRoutingId] ?? [];
   }, [approvalEvents, selectedRoutingId]);
 
-  const firstRouting = useMemo(() => {
-    for (const item of workspaceItems) {
-      for (const revision of item.revisions) {
-        if (revision.routings.length > 0) {
-          return revision.routings[0];
-        }
-      }
-    }
-    return null;
-  }, [workspaceItems]);
+  const firstRouting = useMemo(() => getFirstRoutingFromItems(workspaceItems), [workspaceItems]);
 
   useEffect(() => {
     const handler = (event: KeyboardEvent) => {
@@ -442,6 +561,16 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
       ...prev,
       [routingId]: [event, ...(prev[routingId] ?? [])]
     }));
+    logTelemetry({
+      channel: 'approval',
+      action: 'append',
+      routingId,
+      payload: {
+        decision: event.decision,
+        source: event.source,
+        actor: event.actor
+      }
+    });
     return event;
   };
 
@@ -451,14 +580,22 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
       let updated = false;
       for (const item of draft) {
         for (const revision of item.revisions) {
-          const routing = revision.routings.find(r => r.id === routingId);
-          if (routing) {
-            if (routing.status !== nextStatus) {
-              routing.status = nextStatus;
-              updated = true;
+          for (const group of revision.routingGroups) {
+            const routing = group.routings.find(r => r.id === routingId);
+            if (routing) {
+              if (routing.status !== nextStatus) {
+                routing.status = nextStatus;
+                updated = true;
+              }
+              break;
             }
+          }
+          if (updated) {
             break;
           }
+        }
+        if (updated) {
+          break;
         }
       }
       if (!updated) {
@@ -471,15 +608,58 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
   };
 
   const handleReorder = (payload: TreePanelReorderPayload) => {
-    setWorkspaceItems(current => {
-      const next = applyReorder(current, payload);
-      if (JSON.stringify(next) === JSON.stringify(current)) {
-        return current;
+    const previousSnapshot = cloneExplorerItems(workspaceItems);
+    const nextSnapshot = applyReorder(workspaceItems, payload);
+    if (JSON.stringify(nextSnapshot) === JSON.stringify(workspaceItems)) {
+      return;
+    }
+
+    setWorkspaceItems(nextSnapshot);
+    setUndoStack(prev => [...prev, previousSnapshot]);
+    setRedoStack([]);
+
+    if (payload.entityType === 'group') {
+      const context =
+        findGroupContext(nextSnapshot, payload.dragKey) ?? findGroupContext(nextSnapshot, payload.dropKey);
+      if (!context) {
+        messageApi.error('Routing group context를 찾을 수 없어 정렬을 복구합니다.');
+        setWorkspaceItems(previousSnapshot);
+        setUndoStack(prev => prev.slice(0, -1));
+        return;
       }
-      setUndoStack(prev => [...prev, cloneExplorerItems(current)]);
-      setRedoStack([]);
-      return next;
-    });
+
+      const orderedGroupIds = [...context.revision.routingGroups]
+        .sort((a, b) => a.displayOrder - b.displayOrder)
+        .map(group => group.id);
+
+      const requestId = groupOrderRequestRef.current + 1;
+      groupOrderRequestRef.current = requestId;
+
+      // Optimistic update: rollback if the mock API responds with error.
+      orderRoutingGroups({ revisionId: context.revision.id, orderedGroupIds })
+        .then(response => {
+          if (groupOrderRequestRef.current !== requestId) {
+            return;
+          }
+          const appliedOrder = response.appliedOrder ?? orderedGroupIds;
+          setWorkspaceItems(current => applyServerGroupOrder(current, context.revision.id, appliedOrder));
+          logTelemetry({
+            channel: 'group',
+            action: 'reorder-synced',
+            routingId: undefined,
+            payload: { revisionId: context.revision.id, orderedGroupIds: appliedOrder }
+          });
+        })
+        .catch(() => {
+          if (groupOrderRequestRef.current !== requestId) {
+            return;
+          }
+          messageApi.error('Routing group 정렬을 저장하지 못했습니다. 변경사항을 복구합니다.');
+          setWorkspaceItems(previousSnapshot);
+          setUndoStack(prev => prev.slice(0, -1));
+          setRedoStack([]);
+        });
+    }
   };
 
   const handleUndo = () => {
@@ -511,6 +691,12 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
     }
     const nextStatus: ExplorerRouting['status'] = decision === 'approved' ? 'Approved' : 'Rejected';
     updateRoutingStatus(selectedRouting.id, nextStatus);
+    logTelemetry({
+      channel: 'routing',
+      action: 'status-updated',
+      routingId: selectedRouting.id,
+      payload: { status: nextStatus, actor: 'workspace.user' }
+    });
     appendApprovalEvent(selectedRouting.id, {
       decision,
       actor: 'workspace.user',
@@ -544,6 +730,12 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
       lastMessage: '수동 큐잉 완료'
     };
     setAddinJobs(prev => [newJob, ...prev]);
+    logTelemetry({
+      channel: 'addin-job',
+      action: 'queue',
+      routingId: selectedRouting.id,
+      payload: { jobId: newJob.id }
+    });
     appendApprovalEvent(selectedRouting.id, {
       decision: 'pending',
       actor: 'operator.mock',
@@ -573,6 +765,12 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
           : job
       )
     );
+    logTelemetry({
+      channel: 'addin-job',
+      action: 'retry',
+      routingId: target.routingId,
+      payload: { jobId, previousStatus: target.status }
+    });
     appendApprovalEvent(target.routingId, {
       decision: 'pending',
       actor: 'operator.mock',
@@ -602,6 +800,12 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
           : job
       )
     );
+    logTelemetry({
+      channel: 'addin-job',
+      action: 'cancel',
+      routingId: target.routingId,
+      payload: { jobId }
+    });
     appendApprovalEvent(target.routingId, {
       decision: 'rejected',
       actor: 'operator.mock',
@@ -671,6 +875,18 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
             source: 'signalr'
           });
           updateRoutingStatus(job.routingId, 'Approved');
+          logTelemetry({
+            channel: 'addin-job',
+            action: 'status-change',
+            routingId: job.routingId,
+            payload: { jobId: job.id, status }
+          });
+          logTelemetry({
+            channel: 'routing',
+            action: 'status-updated',
+            routingId: job.routingId,
+            payload: { status: 'Approved', actor: 'signalr.mock' }
+          });
           messageApi.success(`${job.routingCode} 작업이 완료되었습니다.`);
           break;
         case 'failed':
@@ -681,6 +897,18 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
             source: 'signalr'
           });
           updateRoutingStatus(job.routingId, 'Rejected');
+          logTelemetry({
+            channel: 'addin-job',
+            action: 'status-change',
+            routingId: job.routingId,
+            payload: { jobId: job.id, status }
+          });
+          logTelemetry({
+            channel: 'routing',
+            action: 'status-updated',
+            routingId: job.routingId,
+            payload: { status: 'Rejected', actor: 'signalr.mock' }
+          });
           messageApi.error(`${job.routingCode} 작업이 실패했습니다.`);
           break;
         case 'running':
@@ -689,6 +917,12 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
             actor: 'signalr.mock',
             comment: 'SignalR: Add-in 작업이 진행 중입니다.',
             source: 'signalr'
+          });
+          logTelemetry({
+            channel: 'addin-job',
+            action: 'status-change',
+            routingId: job.routingId,
+            payload: { jobId: job.id, status }
           });
           messageApi.info(`${job.routingCode} 작업이 진행 중입니다.`);
           break;
