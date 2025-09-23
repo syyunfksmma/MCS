@@ -1,7 +1,8 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Alert, Badge, Button, Card, Col, Empty, Row, Select, Space, Statistic, Typography, message } from 'antd';
+import { Alert, Badge, Button, Card, Col, Empty, Row, Space, Statistic, Typography, message } from 'antd';
+import AccessibleSelect from '../common/AccessibleSelect';
 import { AlertOutlined, AreaChartOutlined, ReloadOutlined } from '@ant-design/icons';
 import { AuditLogStatistics, fetchAuditStatistics } from '@/lib/admin';
 
@@ -74,11 +75,14 @@ export default function AdminAuditSummaryPanel() {
         <Text type="secondary">Surface approval SLAs and alert trends for operations.</Text>
       </div>
       <Space align="center" wrap className="gap-3">
-        <Select
+        <AccessibleSelect
+          id="audit-range-select"
           style={{ width: 160 }}
           value={timeRange}
           options={timeRangeOptions}
           onChange={value => setTimeRange(value)}
+          labelText="감사 기간 범위 선택"
+          optionTextOverride={timeRangeOptions.map(option => option.label)}
         />
         <Button icon={<ReloadOutlined />} onClick={() => loadStats()}>
           새로고침

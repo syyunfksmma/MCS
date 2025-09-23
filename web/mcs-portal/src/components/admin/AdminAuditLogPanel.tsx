@@ -245,12 +245,23 @@ export default function AdminAuditLogPanel() {
     }
   ], [openTimeline]);
 
+  useEffect(() => {
+    const containers = document.querySelectorAll<HTMLElement>('.admin-audit-table .ant-table-content');
+    containers.forEach(container => {
+      if (!container.hasAttribute('tabindex')) {
+        container.setAttribute('tabindex', '0');
+        container.setAttribute('role', 'region');
+        container.setAttribute('aria-label', 'Audit log scroll area');
+      }
+    });
+  }, [result, loading]);
+
   const tablePagination = useMemo(
     () => ({
       current: result?.page ?? queryOptions.page ?? 1,
       pageSize: result?.pageSize ?? queryOptions.pageSize ?? 25,
       total: result?.totalCount ?? 0,
-      showSizeChanger: true,
+      showSizeChanger: false,
       pageSizeOptions: [10, 25, 50, 100]
     }),
     [result, queryOptions]
@@ -353,6 +364,7 @@ export default function AdminAuditLogPanel() {
       </div>
       <Table<AuditLogEntry>
         rowKey="id"
+        className="admin-audit-table"
         columns={columns}
         dataSource={result?.items}
         loading={loading}

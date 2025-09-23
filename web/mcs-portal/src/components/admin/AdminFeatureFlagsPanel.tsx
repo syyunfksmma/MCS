@@ -108,7 +108,11 @@ export default function AdminFeatureFlagsPanel({ environments }: AdminFeatureFla
         dataIndex: 'enabled',
         key: 'enabled',
         render: (_, record) => (
-          <Switch checked={record.enabled} onChange={checked => toggleFlag(record, checked)} />
+          <Switch
+            checked={record.enabled}
+            onChange={checked => toggleFlag(record, checked)}
+            aria-label={`${record.name} 기능 토글`}
+          />
         )
       },
       {

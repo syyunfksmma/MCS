@@ -28,3 +28,25 @@ pm run perf:lighthouse), Web Vitals beacon /api/web-vitals, docs (Sprint4_Perfor
 - 오류 재현 자료: `web/mcs-portal/test-results/` 폴더에 Playwright error-context가 저장됨.
 - 후속 작업: Sprint4_TaskList.md F1~F3 신규 작업으로 반영.
 
+
+## 2025-09-23 09:44:02 KST Codex - Accessibility & Maintenance Regression Fix
+- Admin 페이지 `AccessibleSelect` 래퍼를 추가해 Ant Design Select의 ARIA 속성을 보정하고, Feature Flag Switch에 `aria-label`을 부여함.
+- Admin Audit Log 테이블의 스크롤 영역에 `tabindex=0`과 `role=region`을 지정해 키보드 포커스 문제를 해결함.
+- MaintenanceGate가 `?maintenance=force` 쿼리를 즉시 반영하도록 `useSearchParams` 기반 상태 동기화 및 결과 헤더를 명시적 heading 요소로 교체함.
+- 부분 회귀 검증: `npx playwright test tests/e2e/accessibility/axe-smoke.spec.ts`, `npx playwright test tests/e2e/maintenance-override.spec.ts`.
+- 전체 회귀 검증: `npm run test:e2e` (5 skipped / 3 passed).
+
+## 2025-09-23 10:22:32 KST Codex - Playwright 자동 기동 & Docker 배포 초안
+- Playwright `webServer`를 `npm run build && npm run start`로 구성해 E2E 실행 시 자동으로 서버를 기동/정리하도록 개선.
+- Admin 페이지 접근성 잔여 이슈 정비: `AccessibleSelect`와 Feature Flag Switch, Audit Log 스크롤 영역의 ARIA/키보드 대응 완료.
+- `npm run test:e2e` 재실행으로 회귀 통과(5 skipped / 3 passed).
+- Next.js 용 멀티스테이지 `Dockerfile`, `.dockerignore`, `docker-compose.yml`, `docker/nginx/default.conf`를 추가해 Nginx 역프록시 구조를 문서 전략과 일치시킴.
+- CI 워크플로우를 Ubuntu 기반으로 전환하고 Playwright 브라우저 설치, Docker 이미지 빌드를 포함시켰음.
+
+## 2025-09-23 10:50:41 KST Codex - Docker Compose 시연 및 CI 푸시 준비
+- `docker compose up --build -d`로 웹(`3000`)과 Nginx 역프록시(`8080`) 컨테이너를 기동하고, 헬스 확인 후 `docker compose down`으로 정리함.
+- Dockerfile 멀티스테이지 빌드(Next.js build → 런타임)와 `public/.gitkeep`, `.env.production.example` 등을 추가해 빌드 안정성을 확보함.
+- `.github/workflows/ci.yml`에 Playwright 브라우저 설치와 Docker Build, 선택적 레지스트리 로그인/푸시 스텝을 포함시켜 CI에서 이미지 배포가 가능하도록 구성.
+- README/PRD/Tasks 문서를 갱신해 `.env.production` 관리와 Compose 실행 절차, Docker 작업 항목 완료 내역을 기록함.
+- 현 로컬 환경에서 `npx playwright install` 시 사내 SSL 검증(Self-signed certificate in chain)으로 브라우저 다운로드가 차단됨. 루트 인증서 추가(`NODE_EXTRA_CA_CERTS`) 또는 오프라인 패키지 다운로드 방식을 별도로 마련해야 함.
+- 로컬 Registry(`localhost:5001`)에 Docker 이미지 태깅 및 푸시 완료. `docker run --rm localhost:5001/mcs-portal:web node --version` 으로 이미지를 검증해 배포 가능 상태를 확인함.

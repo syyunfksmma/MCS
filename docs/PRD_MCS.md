@@ -65,6 +65,11 @@ Next.js 기반 MCMS 웹 포털을 구축하여 CAM 데이터와 ESPRIT Add-in �
 | Admin Console | API 키, AD 롤 매핑, Feature Flag, 환경 변수 설정 |
 | 모니터링 | KPI/알람 대시보드, 오류 이벤트 확인 |
 
+### Docker 기반 배포 고려 사항
+- Next.js 프런트엔드를 `node:20-alpine` 기반 멀티스테이지 Dockerfile로 빌드/배포한다. (build stage: `npm ci && npm run build`, runtime stage: `next start`).
+- 컨테이너 런타임 환경 변수는 `.env.production` (예: `NEXT_PUBLIC_API_BASE_URL`) 파일 또는 Compose override 파일에서 관리한다.
+- Docker Compose로 `web`(Next.js) + `reverse-proxy`(IIS/NGINX) 조합을 구성하고, CI 파이프라인에서 이미지 태깅/푸시 후 배포 파이프라인을 자동화한다.
+
 ## 6. UX & 디자인 가이드
 - 반응형 레이아웃 (Desktop 기본, 1024px 이상 최적화, Tablet 대응)
 - 디자인 토큰: Tailwind 기반 Primary #2F6FED, Secondary #22B8CF, Accent #FACC15

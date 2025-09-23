@@ -70,3 +70,17 @@ src/
      npm run test:e2e
      ```
 3. CI 혹은 자동화 환경에서도 동일하게 `PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1`을 세팅하면 외부 네트워크 없이 실행할 수 있습니다.
+
+## E2E 테스트
+- `npm run test:e2e` : Playwright 테스트 (실행 시 자동으로 production build + server 기동)
+- 개별 시나리오는 `npx playwright test <spec>` 로 실행 가능. 서버를 별도 기동할 필요는 없으나 사전에 `npm run build`가 병행됨.
+
+## Docker 배포
+- `Dockerfile` : node:20-alpine 기반 멀티스테이지 이미지(빌드/런타임 분리).
+- `docker-compose.yml` : `web`(Next.js) + `reverse-proxy`(Nginx) 서비스 예시.
+- 실행 예시
+```bash
+docker compose up --build
+```
+- 환경 변수는 `.env.production` 또는 compose 환경 섹션에서 주입할 수 있습니다.
+

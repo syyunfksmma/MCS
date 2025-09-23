@@ -72,9 +72,9 @@
 - [x] E2. Sprint4_Log.md에 로그 및 차트 링크 기록 (2025-09-22 Codex)
 
 ### F. 런타임 회귀 대응
-- [ ] F1. Admin Dashboard 접근성 위반(ARIA 속성) 보정
-- [ ] F2. Maintenance 강제 모드 헤더 미표시 원인 분석 및 수정
-- [ ] F3. 수정 후 Playwright 회귀/접근성 테스트 재실행
+- [x] F1. Admin Dashboard 접근성 위반(ARIA 속성) 보정 (2025-09-23 Codex)
+- [x] F2. Maintenance 강제 모드 헤더 미표시 원인 분석 및 수정 (2025-09-23 Codex)
+- [x] F3. 수정 후 Playwright 회귀/접근성 테스트 재실행 (2025-09-23 Codex)
 
 ## 로그 기록
 - (작성 예정)
