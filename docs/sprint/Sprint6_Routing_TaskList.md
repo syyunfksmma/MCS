@@ -23,18 +23,18 @@
   - UX: Match Teamcenter ribbon + selection indicators in the routing tree.
   - Log: Sprint6_Routing_Log.md -> 2025-09-23 G1 entry (mock API payload & rollback notes).
   - Comment: ExplorerShell.tsx handleReorder 주석으로 optimistic update + rollback 전략 명시.
-- [ ] G2. Inline edit & soft delete 패턴 도입.
-  - Log: Describe modal/inline validations.
-  - Comment: Explain soft delete state flags.
+- [x] G2. Inline edit & soft delete 패턴 도입.
+  - Log: Sprint6_Routing_Log.md -> 2025-09-24 G2 항목에 inline edit/soft delete 전략 기록.
+  - Comment: ExplorerShell.tsx mutateGroup 주석으로 soft delete state flag 처리 문서화.
 
 ### Flow H. 라우팅 생성 플로우
-- [ ] H1. Routing Creation Wizard (name, owner, status, notes, shared-drive check).
-  - Log: Outline multi-step UI and API handshake.
-  - Comment: Note concurrency handling for folder creation.
-- [ ] H2. Routing Detail Modal (Overview/File Assets/History 탭).
-  - Layout: Maintain three-pane structure (tree, detail, preview) consistent with Teamcenter X.
-  - Log: Summarize component structure and state segregation.
-  - Comment: Document tab prefetch strategy.
+- [x] H1. Routing Creation Wizard (name, owner, status, notes, shared-drive check).
+  - Log: Sprint6_Routing_Log.md -> 2025-09-24 H1 entry (modal wiring, success/error messaging).
+  - Comment: ExplorerShell.tsx handleRoutingCreateSubmit 주석에 shared-drive 경로/rollback 메모 기록.
+- [x] H2. Routing Detail Modal (Overview/File Assets/History 탭).
+  - Layout: Modal skeleton + 탭 구조 확립, Flow I uploader 연계를 위한 placeholder 유지.
+  - Log: Sprint6_Routing_Log.md -> 2025-09-24 H2 entry (RoutingDetailModal contract).
+  - Comment: RoutingDetailModal.tsx 상단 주석에 telemetry stub/탭 구조 설명 기록.
 
 ### Flow I. 파일 업로드 및 버전 관리
 - [ ] I1. Allowlisted drag/drop uploader with chunking + progress.

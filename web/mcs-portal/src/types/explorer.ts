@@ -11,6 +11,12 @@ export interface ExplorerRouting {
   code: string;
   status: RoutingStatus;
   camRevision: string;
+  owner?: string;
+  notes?: string;
+  sharedDrivePath?: string;
+  sharedDriveReady?: boolean;
+  createdAt?: string;
+  updatedAt?: string;
   files: ExplorerFile[];
 }
 
@@ -19,6 +25,10 @@ export interface ExplorerRoutingGroup {
   name: string;
   description?: string;
   displayOrder: number;
+  isDeleted?: boolean;
+  updatedAt?: string;
+  updatedBy?: string;
+  sharedDrivePath?: string;
   routings: ExplorerRouting[];
 }
 
@@ -74,4 +84,33 @@ export interface ExplorerResponse {
   source: ExplorerSource;
   addinJobs?: AddinJob[];
   approvalEvents?: ApprovalEventMap;
+}
+
+export interface RoutingHistoryEvent {
+  id: string;
+  timestamp: string;
+  actor: string;
+  action: string;
+  description?: string;
+}
+
+export type RoutingUploadStatusState = 'pending' | 'uploading' | 'completed' | 'failed';
+
+export interface RoutingUploadStatus {
+  fileId: string;
+  fileName: string;
+  progress: number;
+  state: RoutingUploadStatusState;
+  checksum?: string;
+  sizeBytes?: number;
+  updatedAt?: string;
+}
+
+export interface RoutingDetailResponse {
+  routing: ExplorerRouting;
+  history: RoutingHistoryEvent[];
+  uploads: RoutingUploadStatus[];
+  generatedAt: string;
+  source: ExplorerSource | 'mock';
+  slaMs?: number;
 }

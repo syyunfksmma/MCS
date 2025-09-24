@@ -30,10 +30,11 @@ const STATUS_COLORS: Record<ExplorerRouting["status"], string> = {
 
 // Distribute routings into pseudo-groups so the Teamcenter-style columns have consistent width without altering backend data.
 const createColumns = (revision: ExplorerRevision): RoutedColumn[] => {
-  if (!revision.routingGroups.length) {
+  const activeGroups = revision.routingGroups.filter(group => !group.isDeleted);
+  if (!activeGroups.length) {
     return [];
   }
-  return [...revision.routingGroups]
+  return [...activeGroups]
     .sort((a, b) => a.displayOrder - b.displayOrder)
     .map(group => ({
       id: group.id,

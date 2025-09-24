@@ -8,6 +8,8 @@ import AddinControlPanel, { SignalRConnectionState } from '@/components/explorer
 import AddinBadge from '@/components/explorer/AddinBadge';
 import WorkspaceUploadPanel from '@/components/workspace/WorkspaceUploadPanel';
 import WorkspaceMetaPanel from '@/components/workspace/WorkspaceMetaPanel';
+import RoutingCreationWizard, { RoutingCreationInput } from '@/components/explorer/RoutingCreationWizard';
+import RoutingDetailModal from '@/components/explorer/RoutingDetailModal';
 import { manageAddinJob, submitApprovalDecision } from '@/lib/workspace';
 import { orderRoutingGroups } from '@/lib/routingGroups';
 import ApprovalPanel from '@/components/workspace/ApprovalPanel';
@@ -18,6 +20,7 @@ import {
   ApprovalEvent,
   ExplorerItem,
   ExplorerRouting,
+  ExplorerRoutingGroup,
   ExplorerResponse
 } from '@/types/explorer';
 import { useExplorerData } from '@/hooks/useExplorerData';
@@ -393,8 +396,9 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
   const [approvalEvents, setApprovalEvents] = useState<Record<string, ApprovalEvent[]>>(() =>
     createApprovalEventState(items, resolvedApprovalEvents)
   );
+  const [creationContext, setCreationContext] = useState<GroupContext | null>(null);\r\n  const [isRoutingDetailOpen, setRoutingDetailOpen] = useState(false);\r\n  const [lastDetailFetch, setLastDetailFetch] = useState<{ ms: number; source: 'api' | 'mock' } | null>(null);
 
-  const groupOrderRequestRef = useRef(0);
+  const detailFetchStartedAtRef = useRef<number | null>(null);\r\n  const groupOrderRequestRef = useRef(0);
 
   useEffect(() => {
     setWorkspaceItems(cloneExplorerItems(items));
@@ -428,6 +432,12 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
     const context = findRoutingContext(workspaceItems, selectedRoutingId);
     return context ? context.routing : null;
   }, [workspaceItems, selectedRoutingId]);
+
+  useEffect(() => {
+    if (!selectedRouting) {
+      setRoutingDetailOpen(false);
+    }
+  }, [selectedRouting]);
 
   const selectedApprovalEvents = useMemo(() => {
     if (!selectedRoutingId) {
@@ -504,7 +514,7 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
         key: 'summary',
         label: 'Summary',
         children: selectedRouting ? (
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-3">
             <Paragraph>
               <Text strong>Routing Code:</Text> {selectedRouting.code}
             </Paragraph>
@@ -514,6 +524,11 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
             <Paragraph>
               <Text strong>CAM Revision:</Text> {selectedRouting.camRevision}
             </Paragraph>
+            <Space>
+              <Button type="primary" onClick={handleRoutingDetailOpen}>
+                Routing Detail 열기
+              </Button>
+            </Space>
           </div>
         ) : (
           <Empty description="Select a routing to view details" />
@@ -605,6 +620,210 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
       setRedoStack([]);
       return draft;
     });
+  };
+
+// Flow G2: inline group edit + soft delete helper.
+const mutateGroup = (
+    groupId: string,
+    mutator: (group: ExplorerRoutingGroup) => boolean,
+    options?: {
+      message?: string;
+      telemetryAction?: string;
+      telemetryPayload?: Record<string, unknown>;
+    }
+  ) => {
+    setWorkspaceItems(current => {
+      const draft = cloneExplorerItems(current);
+      let updated = false;
+      outer: for (const item of draft) {
+        for (const revision of item.revisions) {
+          for (const group of revision.routingGroups) {
+            if (group.id === groupId) {
+              const changed = mutator(group);
+              if (changed) {
+                group.updatedAt = new Date().toISOString();
+                group.updatedBy = 'workspace.user';
+                updated = true;
+              }
+              break outer;
+            }
+          }
+        }
+      }
+      if (!updated) {
+        return current;
+      }
+      setUndoStack(prev => [...prev, cloneExplorerItems(current)]);
+      setRedoStack([]);
+      if (options?.message) {
+        messageApi.success(options.message);
+      }
+      if (options?.telemetryAction) {
+        logTelemetry({
+          channel: 'group',
+          action: options.telemetryAction,
+          routingId: undefined,
+          payload: { groupId, ...(options.telemetryPayload ?? {}) }
+        });
+      }
+      return draft;
+    });
+  };
+
+  const handleGroupRename = (groupId: string, nextName: string) => {
+    const trimmed = nextName.trim();
+    if (!trimmed) {
+      messageApi.warning('Please provide a group name.');
+      return;
+    }
+    mutateGroup(
+      groupId,
+      group => {
+        if (group.name === trimmed) {
+          return false;
+        }
+        group.name = trimmed;
+        return true;
+      },
+      {
+        message: `Group name updated: ${trimmed}`,
+        telemetryAction: 'rename',
+        telemetryPayload: { name: trimmed }
+      }
+    );
+  };
+
+  const handleGroupCreateRouting = (groupId: string) => {
+    const context = findGroupContext(workspaceItems, groupId);
+    if (!context) {
+      messageApi.error('Unable to locate the selected group.');
+      return;
+    }
+    setCreationContext(context);
+  };
+
+  const handleWizardCancel = () => {
+    if (creationContext) {
+      logTelemetry({
+        channel: 'routing',
+        action: 'create-cancelled',
+        routingId: undefined,
+        payload: { groupId: creationContext.group.id }
+      });
+    }
+    setCreationContext(null);
+  };
+
+  const handleRoutingDetailOpen = () => {\r\n    if (!selectedRouting) {\r\n      return;\r\n    }\r\n    detailFetchStartedAtRef.current = typeof performance !== 'undefined' ? performance.now() : null;\r\n    setRoutingDetailOpen(true);
+    logTelemetry({
+      channel: 'routing-detail',
+      action: 'open',
+      routingId: selectedRouting.id,
+      payload: { tab: 'overview' }
+    });
+  };
+
+  const handleRoutingDetailClose = () => {
+    if (selectedRouting) {
+      logTelemetry({
+        channel: 'routing-detail',
+        action: 'close',
+        routingId: selectedRouting.id
+      });
+    }
+    setRoutingDetailOpen(false);
+  };
+
+  const handleRoutingDetailTabChange = (tabKey: string) => {
+    if (!selectedRouting) {
+      return;
+    }
+    logTelemetry({
+      channel: 'routing-detail',
+      action: 'tab-change',
+      routingId: selectedRouting.id,
+      payload: { tab: tabKey }
+    });
+  };
+
+  const handleRoutingCreateSubmit = async (input: RoutingCreationInput) => {
+    if (!creationContext) {
+      messageApi.error('Routing wizard context가 유효하지 않습니다. 다시 시도해주세요.');
+      throw new Error('Missing routing creation context');
+    }
+
+    try {
+      const newRoutingId = createId('routing');
+      // Flow H1: derive the target shared-drive path once so folder provisioning remains idempotent while the API callback is mocked.
+      const sharedDrivePath = creationContext.group.sharedDrivePath
+        ? `${creationContext.group.sharedDrivePath}\ROUTING_${input.code}`
+        : `\\MCMS_SHARE\Routing\${creationContext.item.code}\REV_${creationContext.revision.id}\GROUP_${creationContext.group.id}\ROUTING_${input.code}`;
+
+      mutateGroup(
+        creationContext.group.id,
+        group => {
+          group.routings = [
+            {
+              id: newRoutingId,
+              code: input.code,
+              status: input.status,
+              camRevision: '0.0.1',
+              owner: input.owner,
+              notes: input.notes,
+              sharedDrivePath,
+              sharedDriveReady: input.sharedDriveReady,
+              createdAt: new Date().toISOString(),
+              files: []
+            },
+            ...group.routings
+          ];
+          return true;
+        },
+        {
+          telemetryAction: 'routing-create',
+          telemetryPayload: { routingCode: input.code, sharedDriveReady: input.sharedDriveReady }
+        }
+      );
+
+      messageApi.success(`${input.code} routing이 생성되었습니다.`);
+      setSelectedRoutingId(newRoutingId);
+      logTelemetry({
+        channel: 'routing',
+        action: 'created',
+        routingId: newRoutingId,
+        payload: { groupId: creationContext.group.id, status: input.status, owner: input.owner }
+      });
+      setCreationContext(null);
+    } catch (error) {
+      const description = error instanceof Error ? error.message : 'unknown-error';
+      console.error('[handleRoutingCreateSubmit] failed to create routing', error);
+      logTelemetry({
+        channel: 'routing',
+        action: 'create-error',
+        routingId: undefined,
+        payload: { groupId: creationContext.group.id, description }
+      });
+      messageApi.error('Routing 생성 중 오류가 발생했습니다. 입력을 확인한 뒤 다시 시도하세요.');
+      throw error;
+    }
+  };
+
+  const handleGroupSoftDelete = (groupId: string, isDeleted: boolean) => {
+    mutateGroup(
+      groupId,
+      group => {
+        if (!!group.isDeleted === isDeleted) {
+          return false;
+        }
+        group.isDeleted = isDeleted;
+        return true;
+      },
+      {
+        message: isDeleted ? 'Group marked as deleted.' : 'Group restored.',
+        telemetryAction: isDeleted ? 'soft-delete' : 'restore',
+        telemetryPayload: { isDeleted }
+      }
+    );
   };
 
   const handleReorder = (payload: TreePanelReorderPayload) => {
@@ -1006,6 +1225,8 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
           items={workspaceItems}
           selectedKey={selectedRoutingId}
           onReorder={handleReorder}
+          onGroupRename={handleGroupRename}
+          onGroupSoftDelete={handleGroupSoftDelete}
           onSelect={routingId => {
             if (!routingId) {
               setSelectedRoutingId(null);
@@ -1083,7 +1304,38 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
           </Card>
         </div>
       </div>
+      {creationContext ? (
+        <RoutingCreationWizard
+          open
+          item={creationContext.item}
+          revision={creationContext.revision}
+          group={creationContext.group}
+          onCancel={handleWizardCancel}
+          onSubmit={handleRoutingCreateSubmit}
+        />
+      ) : null}
+      <RoutingDetailModal
+        open={isRoutingDetailOpen && Boolean(selectedRouting)}
+        routing={selectedRouting}
+        onClose={handleRoutingDetailClose}
+        onTabChange={handleRoutingDetailTabChange}
+      />
     </>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

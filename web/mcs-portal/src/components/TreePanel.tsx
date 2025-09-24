@@ -1,8 +1,9 @@
 'use client';
 
-import { Card, Input, Tag, Tree } from 'antd';
+import { Button, Card, Input, Space, Tag, Tooltip, Tree } from 'antd';
 import type { DataNode, TreeProps } from 'antd/es/tree';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { EditOutlined, DeleteOutlined, RollbackOutlined, CheckOutlined, CloseOutlined, PlusOutlined } from '@ant-design/icons';
 import { ExplorerItem } from '@/types/explorer';
 
 type ExplorerNodeType = 'item' | 'revision' | 'group' | 'routing' | 'file';
@@ -24,9 +25,12 @@ export type TreePanelReorderPayload = {
 
 interface TreePanelProps {
   items: ExplorerItem[];
+  selectedKey?: string | null;
   onSelect?: (routingId: string | null) => void;
   onReorder?: (payload: TreePanelReorderPayload) => void;
-  selectedKey?: string | null;
+  onGroupRename?: (groupId: string, nextName: string) => void;
+  onGroupSoftDelete?: (groupId: string, isDeleted: boolean) => void;
+  onGroupCreateRouting?: (groupId: string) => void;
 }
 
 const ROUTING_STATUS_COLOR: Record<string, string> = {
@@ -34,74 +38,6 @@ const ROUTING_STATUS_COLOR: Record<string, string> = {
   PendingApproval: 'gold',
   Rejected: 'red',
   Draft: 'default'
-};
-
-const buildTreeNodes = (items: ExplorerItem[]): ExplorerTreeNode[] => {
-  const buildFileNode = (
-    file: ExplorerItem['revisions'][number]['routingGroups'][number]['routings'][number]['files'][number],
-    parentKey: string
-  ): ExplorerTreeNode => ({
-    title: file.name,
-    key: file.id,
-    parentKey,
-    nodeType: 'file',
-    searchLabel: file.name.toLowerCase()
-  });
-
-  const buildRoutingNode = (
-    routing: ExplorerItem['revisions'][number]['routingGroups'][number]['routings'][number],
-    parentKey: string
-  ): ExplorerTreeNode => ({
-    title: (
-      <span>
-        {routing.code}{' '}
-        <Tag color={ROUTING_STATUS_COLOR[routing.status] ?? 'default'}>{routing.status}</Tag>
-      </span>
-    ),
-    key: routing.id,
-    parentKey,
-    nodeType: 'routing',
-    searchLabel: `${routing.code} ${routing.status} ${routing.camRevision}`.toLowerCase(),
-    children: routing.files.map(file => buildFileNode(file, routing.id))
-  });
-
-  const buildGroupNode = (
-    group: ExplorerItem['revisions'][number]['routingGroups'][number],
-    parentKey: string
-  ): ExplorerTreeNode => ({
-    title: group.name,
-    key: group.id,
-    parentKey,
-    nodeType: 'group',
-    searchLabel: group.name.toLowerCase(),
-    children: group.routings.map(routing => buildRoutingNode(routing, group.id))
-  });
-
-  const buildRevisionNode = (
-    revision: ExplorerItem['revisions'][number],
-    parentKey: string
-  ): ExplorerTreeNode => ({
-    title: revision.code,
-    key: revision.id,
-    parentKey,
-    nodeType: 'revision',
-    searchLabel: revision.code.toLowerCase(),
-    children: [...revision.routingGroups]
-      .sort((a, b) => a.displayOrder - b.displayOrder)
-      .map(group => buildGroupNode(group, revision.id))
-  });
-
-  return items.map(item => ({
-    title: (
-      <span>
-        {item.code} <Tag color="blue">{item.name}</Tag>
-      </span>
-    ),
-    key: item.id,
-    nodeType: 'item',
-    searchLabel: `${item.code} ${item.name}`.toLowerCase(),
-    children: item.revisions.map(revision => buildRevisionNode(revision, item.id))
-  }));
 };
 
 const cloneNode = (node: ExplorerTreeNode): ExplorerTreeNode => ({
@@ -133,7 +69,7 @@ const findNode = (nodes: ExplorerTreeNode[], key: string): NodeRef | null => {
         return { node, parent, siblings, index };
       }
       if (node.children && node.children.length) {
-        stack.push({ parent: node, siblings: node.children });
+        stack.push({ parent: node, siblings: node.children as ExplorerTreeNode[] });
       }
     }
   }
@@ -141,13 +77,212 @@ const findNode = (nodes: ExplorerTreeNode[], key: string): NodeRef | null => {
   return null;
 };
 
-export default function TreePanel({ items, onSelect, onReorder, selectedKey }: TreePanelProps) {
+export default function TreePanel({
+  items,
+  selectedKey,
+  onSelect,
+  onReorder,
+  onGroupRename,
+  onGroupSoftDelete,
+  onGroupCreateRouting
+}: TreePanelProps) {
   const [search, setSearch] = useState('');
-  const [treeData, setTreeData] = useState<ExplorerTreeNode[]>(() => buildTreeNodes(items));
+  const [editingGroupId, setEditingGroupId] = useState<string | null>(null);
+  const [groupDraftName, setGroupDraftName] = useState('');
+  const [treeData, setTreeData] = useState<ExplorerTreeNode[]>([]);
+
+  const stopEditing = useCallback(() => {
+    setEditingGroupId(null);
+    setGroupDraftName('');
+  }, []);
+
+  const commitEditing = useCallback((groupId: string) => {
+    const trimmed = groupDraftName.trim();
+    if (!trimmed) {
+      stopEditing();
+      return;
+    }
+    if (onGroupRename) {
+      onGroupRename(groupId, trimmed);
+    }
+    stopEditing();
+  }, [groupDraftName, onGroupRename, stopEditing]);
+
+
+  const buildTreeNodes = useCallback((source: ExplorerItem[]): ExplorerTreeNode[] => {
+    const buildFileNode = (
+      file: ExplorerItem['revisions'][number]['routingGroups'][number]['routings'][number]['files'][number],
+      parentKey: string
+    ): ExplorerTreeNode => ({
+      title: file.name,
+      key: file.id,
+      parentKey,
+      nodeType: 'file',
+      searchLabel: file.name.toLowerCase()
+    });
+
+    const buildRoutingNode = (
+      routing: ExplorerItem['revisions'][number]['routingGroups'][number]['routings'][number],
+      parentKey: string
+    ): ExplorerTreeNode => ({
+      title: (
+        <span>
+          {routing.code}{' '}
+          <Tag color={ROUTING_STATUS_COLOR[routing.status] ?? 'default'}>{routing.status}</Tag>
+        </span>
+      ),
+      key: routing.id,
+      parentKey,
+      nodeType: 'routing',
+      searchLabel: `${routing.code} ${routing.status} ${routing.camRevision}`.toLowerCase(),
+      children: routing.files.map(file => buildFileNode(file, routing.id))
+    });
+
+    const buildGroupNode = (
+      group: ExplorerItem['revisions'][number]['routingGroups'][number],
+      parentKey: string
+    ): ExplorerTreeNode => {
+      const isEditing = editingGroupId === group.id;
+      const isDeleted = Boolean(group.isDeleted);
+      const title = isEditing ? (
+        <div className="flex items-center gap-2" onClick={event => event.stopPropagation()}>
+          <Input
+            size="small"
+            autoFocus
+            value={groupDraftName}
+            onChange={event => setGroupDraftName(event.target.value)}
+            onPressEnter={() => commitEditing(group.id)}
+            onKeyDown={event => {
+              if (event.key === 'Escape') {
+                stopEditing();
+              }
+            }}
+            onBlur={() => commitEditing(group.id)}
+            style={{ minWidth: 120 }}
+          />
+          <Space size={4}>
+            <Button
+              size="small"
+              type="text"
+              icon={<CheckOutlined />}
+              onMouseDown={event => event.preventDefault()}
+              onClick={event => {
+                event.stopPropagation();
+                commitEditing(group.id);
+              }}
+            />
+            <Button
+              size="small"
+              type="text"
+              icon={<CloseOutlined />}
+              onMouseDown={event => event.preventDefault()}
+              onClick={event => {
+                event.stopPropagation();
+                stopEditing();
+              }}
+            />
+          </Space>
+        </div>
+      ) : (
+        <div className="flex items-center gap-2" onClick={event => event.stopPropagation()}>
+          <span
+            style={
+              isDeleted
+                ? { textDecoration: 'line-through', color: '#94a3b8' }
+                : undefined
+            }
+          >
+            {group.name}
+          </span>
+          {isDeleted ? <Tag color="volcano">Deleted</Tag> : null}
+          <span className="ml-auto flex items-center gap-1">
+            <Tooltip title="New routing">
+              <Button
+                size="small"
+                type="text"
+                icon={<PlusOutlined />}
+                onClick={event => {
+                  event.stopPropagation();
+                  onGroupCreateRouting?.(group.id);
+                }}
+              />
+            </Tooltip>
+            <Tooltip title="Rename group">
+              <Button
+                size="small"
+                type="text"
+                icon={<EditOutlined />}
+                onClick={event => {
+                  event.stopPropagation();
+                  setEditingGroupId(group.id);
+                  setGroupDraftName(group.name);
+                }}
+              />
+            </Tooltip>
+            <Tooltip title={isDeleted ? 'Restore group' : 'Mark group deleted'}>
+              <Button
+                size="small"
+                type="text"
+                icon={isDeleted ? <RollbackOutlined /> : <DeleteOutlined />}
+                onClick={event => {
+                  event.stopPropagation();
+                  onGroupSoftDelete?.(group.id, !isDeleted);
+                }}
+              />
+            </Tooltip>
+          </span>
+        </div>
+      );
+
+      return {
+        title,
+        key: group.id,
+        parentKey,
+        nodeType: 'group',
+        searchLabel: group.name.toLowerCase(),
+        children: group.routings.map(routing => buildRoutingNode(routing, group.id))
+      };
+    };
+
+    const buildRevisionNode = (
+      revision: ExplorerItem['revisions'][number],
+      parentKey: string
+    ): ExplorerTreeNode => ({
+      title: revision.code,
+      key: revision.id,
+      parentKey,
+      nodeType: 'revision',
+      searchLabel: revision.code.toLowerCase(),
+      children: [...revision.routingGroups]
+        .sort((a, b) => a.displayOrder - b.displayOrder)
+        .map(group => buildGroupNode(group, revision.id))
+    });
+
+    return source.map(item => ({
+      title: (
+        <span>
+          {item.code} <Tag color="blue">{item.name}</Tag>
+        </span>
+      ),
+      key: item.id,
+      nodeType: 'item',
+      searchLabel: `${item.code} ${item.name}`.toLowerCase(),
+      children: item.revisions.map(revision => buildRevisionNode(revision, item.id))
+    }));
+  }, [editingGroupId, groupDraftName, onGroupSoftDelete, onGroupCreateRouting, commitEditing, stopEditing]);
 
   useEffect(() => {
     setTreeData(buildTreeNodes(items));
-  }, [items]);
+    if (editingGroupId) {
+      const exists = items
+        .flatMap(item => item.revisions)
+        .flatMap(revision => revision.routingGroups)
+        .some(group => group.id === editingGroupId);
+      if (!exists) {
+        stopEditing();
+      }
+    }
+  }, [items, buildTreeNodes, editingGroupId, stopEditing]);
 
   const filteredData = useMemo(() => {
     if (!search.trim()) {
@@ -221,7 +356,7 @@ export default function TreePanel({ items, onSelect, onReorder, selectedKey }: T
   };
 
   return (
-    <Card style={{ width: 320, maxHeight: 640, overflow: 'hidden' }} title="Explorer" bordered>
+    <Card style={{ width: 340, maxHeight: 640, overflow: 'hidden' }} title="Explorer" bordered>
       <Input.Search
         placeholder="Search Item / Revision / Group / Routing"
         value={search}
@@ -257,6 +392,3 @@ export default function TreePanel({ items, onSelect, onReorder, selectedKey }: T
     </Card>
   );
 }
-
-
-

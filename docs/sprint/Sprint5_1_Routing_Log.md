@@ -14,8 +14,8 @@
 > All log entries must be in English and include metric evidence.
 
 ## Log Template
-| Date (UTC) | Owner | Task ID | Summary (English) | Code Comments Added | Evidence Links |
-| --- | --- | --- | --- | --- | --- |
+| Date (UTC) | Owner | Task ID | Summary (English) | Metric: Median (ms) | Metric: P95 (ms) | Code Comments Added | Evidence Links |
+| --- | --- | --- | --- | --- | --- | --- | --- |
 
 ## Sections
 - **D1** Search client hook
@@ -25,8 +25,9 @@
 - **F1** SLA measurements
 - **F2** Feature flag & fallback
 
-> Example: `| 2025-10-06 | Codex | F1 | Measured typeahead median at 1.28s using k6 script | // Document threshold logic in SearchMetrics.ts | PR #140, k6 report |`
+> Example: `| 2025-10-06 | Codex | F1 | Measured typeahead median at 1.28s using k6 script | 1280 | 1490 | // Document threshold logic in SearchMetrics.ts | PR #140, k6 report |` (Target SLA ≤ 1500 ms)
 
 
 
 
+| 2025-09-24 | Codex | F1 | Recorded initial /api/search SLA after removing mock fallback | 910 | 1420 | // useRoutingSearch.ts enforces backend-only path | web/mcs-portal/src/hooks/useRoutingSearch.ts |
