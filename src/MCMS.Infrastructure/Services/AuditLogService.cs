@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -62,7 +63,7 @@ public class AuditLogService : IAuditLogService
             .ThenByDescending(x => x.CreatedAt)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
-            .Select(MapToDto)
+            .Select(MapToDtoProjection)
             .ToListAsync(cancellationToken);
 
         return new AuditLogSearchResponse(items, totalCount, page, pageSize);
@@ -275,7 +276,7 @@ public class AuditLogService : IAuditLogService
         return (query, page, pageSize);
     }
 
-    private static AuditLogEntryDto MapToDto(AuditLogEntry entity) => new(
+    private static readonly Expression<Func<AuditLogEntry, AuditLogEntryDto>> MapToDtoProjection = entity => new AuditLogEntryDto(
         entity.Id,
         entity.Category,
         entity.Action,
@@ -290,3 +291,4 @@ public class AuditLogService : IAuditLogService
         entity.TraceId,
         entity.RequestId);
 }
+
