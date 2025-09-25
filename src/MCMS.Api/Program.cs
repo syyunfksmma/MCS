@@ -1,6 +1,8 @@
 using System.IO;
 using FluentValidation.AspNetCore;
 using MCMS.Infrastructure;
+using MCMS.Infrastructure.Persistence;
+using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -51,7 +53,21 @@ builder.Services.AddAuthentication(options =>
     options.DefaultChallengeScheme = "Bearer";
 }).AddJwtBearer();
 
+builder.Services.AddHttpLogging(options =>
+{
+    options.LoggingFields = HttpLoggingFields.All;
+    options.RequestBodyLogLimit = 4 * 1024;
+    options.ResponseBodyLogLimit = 4 * 1024;
+    options.MediaTypeOptions.AddText("application/json");
+});
+
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<McmsDbContext>();
+    db.Database.EnsureCreated();
+}
 
 app.UseSwagger();
 app.UseSwaggerUI(options =>
@@ -60,6 +76,7 @@ app.UseSwaggerUI(options =>
     options.DocumentTitle = "MCMS API";
 });
 
+app.UseHttpLogging();
 app.UseHttpsRedirection();
 app.UseCors("Default");
 app.UseAuthentication();

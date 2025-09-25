@@ -3,12 +3,20 @@
 import { InboxOutlined } from '@ant-design/icons';
 import { Button, Empty, List, message, Progress, Typography, Upload } from 'antd';
 import type { RcFile, UploadProps } from 'antd/es/upload/interface';
+
+import { useMemo, useState } from 'react';
+import { uploadRoutingFileChunks } from '@/lib/uploads/uploadRoutingFileChunks';
+
 import { useEffect, useMemo, useRef, useState } from 'react';
+
 import type { ExplorerRouting } from '@/types/explorer';
 
 const { Paragraph, Text } = Typography;
 
+
+type UploadStatus = 'uploading' | 'success' | 'error' | 'cancelled';
 type UploadStatus = 'queued' | 'uploading' | 'success' | 'error';
+
 
 interface UploadEntry {
   id: string;
@@ -19,6 +27,9 @@ interface UploadEntry {
   routingCode: string;
   startedAt: Date;
   completedAt?: Date;
+
+  errorMessage?: string;
+
 }
 
 interface WorkspaceUploadPanelProps {
@@ -35,6 +46,20 @@ const formatSize = (size: number) => {
   return `${size} B`;
 };
 
+
+const inferFileType = (fileName: string): string => {
+  const lowered = fileName.toLowerCase();
+  if (lowered.endsWith('.nc')) return 'nc';
+  if (lowered.endsWith('.esprit') || lowered.endsWith('.esp')) return 'esprit';
+  if (lowered.endsWith('.json')) return 'meta';
+  if (lowered.endsWith('.mprj')) return 'mprj';
+  if (lowered.endsWith('.stl')) return 'stl';
+  return 'other';
+};
+
+export default function WorkspaceUploadPanel({ routing }: WorkspaceUploadPanelProps) {
+  const [entries, setEntries] = useState<UploadEntry[]>([]);
+
 export default function WorkspaceUploadPanel({ routing }: WorkspaceUploadPanelProps) {
   const [entries, setEntries] = useState<UploadEntry[]>([]);
   const timersRef = useRef<Record<string, number>>({});
@@ -46,6 +71,7 @@ export default function WorkspaceUploadPanel({ routing }: WorkspaceUploadPanelPr
     };
   }, []);
 
+
   const clearCompleted = () => {
     setEntries(prev => prev.filter(entry => entry.status !== 'success'));
   };
@@ -55,6 +81,10 @@ export default function WorkspaceUploadPanel({ routing }: WorkspaceUploadPanelPr
     multiple: true,
     showUploadList: false,
     disabled: !routing,
+
+    beforeUpload: () => {
+      if (!routing) {
+        message.warning('Routing을 선택한 뒤 업로드하세요.');
     beforeUpload: _file => {
       void _file;
       if (!routing) {
@@ -63,14 +93,26 @@ export default function WorkspaceUploadPanel({ routing }: WorkspaceUploadPanelPr
       }
       return true;
     },
+
+    customRequest: async options => {
+
     customRequest: options => {
+
       if (!routing) {
         options.onError?.(new Error('Routing not selected'));
         return;
       }
+
+
+      const file = options.file as RcFile;
+      const id = file.uid;
+      const controller = new AbortController();
+      const uploadedBy = 'workspace.user';
+
       const file = options.file as RcFile;
       const id = file.uid;
       const targetRoutingCode = routing.code;
+
 
       setEntries(prev => [
         ...prev,
@@ -80,11 +122,14 @@ export default function WorkspaceUploadPanel({ routing }: WorkspaceUploadPanelPr
           size: file.size,
           status: 'uploading',
           progress: 0,
+          routingCode: routing.code,
           routingCode: targetRoutingCode,
           startedAt: new Date()
         }
       ]);
 
+
+      const updateProgress = (percent: number) => {
       let percent = 0;
       const timer = window.setInterval(() => {
         percent = Math.min(100, percent + 10 + Math.random() * 25);
@@ -94,13 +139,85 @@ export default function WorkspaceUploadPanel({ routing }: WorkspaceUploadPanelPr
             entry.id === id
               ? {
                   ...entry,
+                  progress: percent,
+                  status: percent >= 100 ? 'success' : 'uploading',
+
                   status: percent >= 100 ? 'success' : 'uploading',
                   progress: percent >= 100 ? 100 : rounded,
+
                   completedAt: percent >= 100 ? new Date() : entry.completedAt
                 }
               : entry
           )
         );
+
+        options.onProgress?.({ percent });
+      };
+
+      const abortListener = () => {
+        controller.abort();
+        setEntries(prev =>
+          prev.map(entry =>
+            entry.id === id
+              ? {
+                  ...entry,
+                  status: 'cancelled',
+                  errorMessage: '사용자 취소'
+                }
+              : entry
+          )
+        );
+        message.warning(`업로드 취소됨: ${file.name}`);
+      };
+
+      if (options.signal) {
+        if (options.signal.aborted) {
+          abortListener();
+          return;
+        }
+        options.signal.addEventListener('abort', abortListener, { once: true });
+      }
+
+      try {
+        await uploadRoutingFileChunks({
+          routingId: routing.id,
+          file,
+          fileType: inferFileType(file.name),
+          uploadedBy,
+          isPrimary: false,
+          signal: controller.signal,
+          onProgress: progress => {
+            const percent = Math.round((progress.loadedBytes / progress.totalBytes) * 100);
+            updateProgress(Math.min(100, Math.max(0, percent)));
+          }
+        });
+
+        updateProgress(100);
+        message.success(`업로드 완료: ${file.name}`);
+        options.onSuccess?.({}, file);
+      } catch (err) {
+        if (controller.signal.aborted) {
+          return;
+        }
+        const description = err instanceof Error ? err.message : '알 수 없는 오류';
+        setEntries(prev =>
+          prev.map(entry =>
+            entry.id === id
+              ? {
+                  ...entry,
+                  status: 'error',
+                  errorMessage: description,
+                  completedAt: new Date()
+                }
+              : entry
+          )
+        );
+        message.error(`업로드 실패: ${description}`);
+        options.onError?.(err as Error);
+      } finally {
+        options.signal?.removeEventListener('abort', abortListener);
+      }
+
         options.onProgress?.({ percent: percent >= 100 ? 100 : rounded });
         if (percent >= 100) {
           window.clearInterval(timer);
@@ -110,6 +227,7 @@ export default function WorkspaceUploadPanel({ routing }: WorkspaceUploadPanelPr
       }, 350);
 
       timersRef.current[id] = timer;
+
     }
   }), [routing]);
 
@@ -125,12 +243,18 @@ export default function WorkspaceUploadPanel({ routing }: WorkspaceUploadPanelPr
         </p>
         <p className="ant-upload-text">Drag & drop files here or click to browse</p>
         <p className="ant-upload-hint text-xs text-gray-500">
+          지원 확장자: NC, Esprit, meta.json 등 · 업로드 시 checksum 검증이 수행됩니다.
+=======
           Supported: NC, Esprit, meta.json placeholders (mock upload).
         </p>
       </Upload.Dragger>
       {entries.length ? (
         <>
           <div className="flex items-center justify-between">
+            <Text type="secondary">
+              Active uploads: {entries.filter(entry => entry.status === 'uploading').length}
+            </Text>
+=======
             <Text type="secondary">Active uploads: {entries.filter(entry => entry.status === 'uploading').length}</Text>
             <Button size="small" onClick={clearCompleted} disabled={!entries.some(entry => entry.status === 'success')}>
               Clear completed
@@ -140,6 +264,35 @@ export default function WorkspaceUploadPanel({ routing }: WorkspaceUploadPanelPr
             dataSource={entries}
             renderItem={entry => (
               <List.Item>
+
+                <div className="flex w-full flex-col gap-1">
+                  <div className="flex items-center justify-between gap-4">
+                    <div className="min-w-0">
+                      <Text strong ellipsis className="block">
+                        {entry.name}
+                      </Text>
+                      <Paragraph type="secondary" className="mb-0 text-xs">
+                        {formatSize(entry.size)} · Routing {entry.routingCode} · {entry.status}
+                      </Paragraph>
+                      {entry.errorMessage ? (
+                        <Text type="danger" className="text-xs">
+                          {entry.errorMessage}
+                        </Text>
+                      ) : null}
+                    </div>
+                    <div className="w-40">
+                      <Progress
+                        percent={Math.min(100, Math.max(0, Math.round(entry.progress)))}
+                        status={
+                          entry.status === 'success'
+                            ? 'success'
+                            : entry.status === 'error'
+                            ? 'exception'
+                            : 'active'
+                        }
+                        size="small"
+                      />
+                    </div>
                 <div className="flex w-full items-center justify-between gap-4">
                   <div className="min-w-0">
                     <Text strong ellipsis className="block">
@@ -167,9 +320,4 @@ export default function WorkspaceUploadPanel({ routing }: WorkspaceUploadPanelPr
     </div>
   );
 }
-
-
-
-
-
 

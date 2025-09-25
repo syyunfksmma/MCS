@@ -7,3 +7,8 @@ export const productKeys = {
   all: ["products"] as const,
   dashboard: () => [...productKeys.all, "dashboard"] as const
 };
+
+export const searchKeys = {
+  all: ['routing-search'] as const,
+  execute: () => [...searchKeys.all, 'execute'] as const
+};

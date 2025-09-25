@@ -362,6 +362,18 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 
+# Local storage for chunk upload tests
+.storage/
+# Next.js build artifacts
+web/mcs-portal/.next/
+# Local tooling downloads
+/tools/
+
+# Design reference exports archives
+docs/design/reference/archive/
+
+=======
+
 # Performance reports
 web/mcs-portal/reports/*.json
 web/mcs-portal/reports/*.jsonl
@@ -373,3 +385,4 @@ MCMS Explorer.html
 MCMS Explorer_files/
 web/mcs-portal/.next/
 web/mcs-portal/public/favicon.ico
+

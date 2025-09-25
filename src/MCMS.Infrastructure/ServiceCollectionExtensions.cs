@@ -15,6 +15,7 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddMcmsInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
         services.Configure<FileStorageOptions>(configuration.GetSection("FileStorage"));
+        services.AddMemoryCache();
 
         services.AddDbContext<McmsDbContext>(options =>
         {
@@ -27,6 +28,8 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IRoutingService, RoutingService>();
         services.AddScoped<IRoutingApprovalService, RoutingApprovalService>();
         services.AddScoped<IRoutingFileService, RoutingFileService>();
+        services.AddScoped<IRoutingChunkUploadService, RoutingChunkUploadService>();
+        services.AddScoped<IRoutingSearchService, RoutingSearchService>();
         services.AddScoped<IHistoryService, HistoryService>();
         services.AddScoped<IAuditLogService, AuditLogService>();
         services.AddScoped<IAddinJobService, AddinJobService>();
