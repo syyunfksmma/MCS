@@ -1,6 +1,20 @@
 import { useMemo, useState } from 'react';
-import { Button, Checkbox, Form, Input, Modal, Steps, Typography, Select, Space } from 'antd';
-import type { ExplorerItem, ExplorerRoutingGroup, ExplorerRevision } from '@/types/explorer';
+import {
+  Button,
+  Checkbox,
+  Form,
+  Input,
+  Modal,
+  Steps,
+  Typography,
+  Select,
+  Space
+} from 'antd';
+import type {
+  ExplorerItem,
+  ExplorerRoutingGroup,
+  ExplorerRevision
+} from '@/types/explorer';
 
 const { Step } = Steps;
 const { TextArea } = Input;
@@ -32,13 +46,23 @@ interface RoutingCreationWizardProps {
   onSubmit: (input: RoutingCreationInput) => Promise<void> | void;
 }
 
-export default function RoutingCreationWizard({ open, item, revision, group, onCancel, onSubmit }: RoutingCreationWizardProps) {
+export default function RoutingCreationWizard({
+  open,
+  item,
+  revision,
+  group,
+  onCancel,
+  onSubmit
+}: RoutingCreationWizardProps) {
   const [current, setCurrent] = useState<WizardStep>(0);
   const [submitting, setSubmitting] = useState(false);
   const [form] = Form.useForm<RoutingCreationInput>();
 
   const sharedDrivePath = useMemo(() => {
-    return group.sharedDrivePath ?? \\`\\\\MCMS_SHARE\\\\Routing\\\\${item.code}\\\\REV_${group.id.split('-')[0]}\\\\GROUP_${group.id}\\`;
+    return (
+      group.sharedDrivePath ??
+      `\\\\MCMS_SHARE\\\\Routing\\\\${item.code}\\\\REV_${group.id.split('-')[0]}\\\\GROUP_${group.id}\\`
+    );
   }, [group.sharedDrivePath, group.id, item.code]);
 
   const resetState = () => {
@@ -58,17 +82,17 @@ export default function RoutingCreationWizard({ open, item, revision, group, onC
         current === 0
           ? ['code', 'owner']
           : current === 1
-          ? ['status', 'notes']
-          : ['sharedDriveReady']
+            ? ['status', 'notes']
+            : ['sharedDriveReady']
       );
-      setCurrent(step => (step + 1) as WizardStep);
-    } catch (error) {
+      setCurrent((step) => (step + 1) as WizardStep);
+    } catch {
       // validation handled by antd
     }
   };
 
   const previousStep = () => {
-    setCurrent(step => (step - 1) as WizardStep);
+    setCurrent((step) => (step - 1) as WizardStep);
   };
 
   const handleSubmit = async () => {
@@ -79,7 +103,7 @@ export default function RoutingCreationWizard({ open, item, revision, group, onC
       await onSubmit(values as RoutingCreationInput);
       setSubmitting(false);
       handleClose();
-    } catch (error) {
+    } catch {
       setSubmitting(false);
     }
   };
@@ -93,8 +117,22 @@ export default function RoutingCreationWizard({ open, item, revision, group, onC
       footer={null}
       title={`${group.name} · New Routing`}
     >
-      <Steps current={current} size="small" items={[{ title: 'Basic Info' }, { title: 'Workflow' }, { title: 'Shared Drive' }]} className="mb-6" />
-      <Form form={form} layout="vertical" initialValues={{ status: 'Draft', sharedDriveReady: false }} disabled={submitting}>
+      <Steps
+        current={current}
+        size="small"
+        items={[
+          { title: 'Basic Info' },
+          { title: 'Workflow' },
+          { title: 'Shared Drive' }
+        ]}
+        className="mb-6"
+      />
+      <Form
+        form={form}
+        layout="vertical"
+        initialValues={{ status: 'Draft', sharedDriveReady: false }}
+        disabled={submitting}
+      >
         {current === 0 ? (
           <>
             <Form.Item
@@ -115,12 +153,23 @@ export default function RoutingCreationWizard({ open, item, revision, group, onC
         ) : null}
         {current === 1 ? (
           <>
-            <Form.Item label="Status" name="status" rules={[{ required: true }]}
+            <Form.Item
+              label="Status"
+              name="status"
+              rules={[{ required: true }]}
             >
-              <Select options={ROUTING_STATUSES.map(option => ({ label: option.label, value: option.value }))} />
+              <Select
+                options={ROUTING_STATUSES.map((option) => ({
+                  label: option.label,
+                  value: option.value
+                }))}
+              />
             </Form.Item>
             <Form.Item label="Notes" name="notes">
-              <TextArea placeholder="Routing purpose, tooling notes, etc." autoSize={{ minRows: 3, maxRows: 5 }} />
+              <TextArea
+                placeholder="Routing purpose, tooling notes, etc."
+                autoSize={{ minRows: 3, maxRows: 5 }}
+              />
             </Form.Item>
           </>
         ) : null}
@@ -128,14 +177,27 @@ export default function RoutingCreationWizard({ open, item, revision, group, onC
           <Space direction="vertical" size="large" className="w-full">
             <div>
               <Text strong>Shared drive path</Text>
-              <div className="mt-1 rounded bg-slate-100 px-3 py-2 text-sm font-mono">{sharedDrivePath}</div>
+              <div className="mt-1 rounded bg-slate-100 px-3 py-2 text-sm font-mono">
+                {sharedDrivePath}
+              </div>
             </div>
             <Form.Item
               name="sharedDriveReady"
               valuePropName="checked"
-              rules={[{ validator: (_, value) => (value ? Promise.resolve() : Promise.reject(new Error('공유 드라이브 준비 여부를 확인해 주세요.'))) }]}
+              rules={[
+                {
+                  validator: (_, value) =>
+                    value
+                      ? Promise.resolve()
+                      : Promise.reject(
+                          new Error('공유 드라이브 준비 여부를 확인해 주세요.')
+                        )
+                }
+              ]}
             >
-              <Checkbox>공유 드라이브 폴더가 생성되었으며 접근 권한을 확인했습니다.</Checkbox>
+              <Checkbox>
+                공유 드라이브 폴더가 생성되었으며 접근 권한을 확인했습니다.
+              </Checkbox>
             </Form.Item>
           </Space>
         ) : null}

@@ -1,87 +1,42 @@
-'use client';\r\n\r\nimport { useQuery, type UseQueryResult } from '@tanstack/react-query';
+import { useQuery, type UseQueryResult } from '@tanstack/react-query';
 import { getApiBaseUrl } from '@/lib/env';
 import type { ExplorerRouting, RoutingDetailResponse } from '@/types/explorer';
 
-interface UseRoutingDetailOptions {
-  fallbackRouting?: ExplorerRouting | null;
+export interface UseRoutingDetailOptions {
+  routingId?: string;
   enabled?: boolean;
 }
 
-function buildMockDetail(routing: ExplorerRouting): RoutingDetailResponse {
-  return {
-    routing,
-    history: [
-      {
-        id: `${routing.id}-history-mock`,
-        timestamp: new Date().toISOString(),
-        actor: routing.owner ?? 'workspace.mock',
-        action: 'detail-opened',
-        description: 'Mock detail response because API base URL is not configured.'
-      }
-    ],
-    uploads: routing.files.map(file => ({
-      fileId: file.id,
-      fileName: file.name,
-      progress: 1,
-      state: 'completed',
-      checksum: undefined,
-      sizeBytes: undefined,
-      updatedAt: new Date().toISOString()
-    })),
-    generatedAt: new Date().toISOString(),
-    source: 'mock',
-    slaMs: undefined
-  };
-}
+const DEFAULT_OPTIONS: UseRoutingDetailOptions = {
+  enabled: true
+};
 
-async function fetchRoutingDetail(routingId: string): Promise<RoutingDetailResponse> {
-  const baseUrl = getApiBaseUrl();
-  if (!baseUrl) {
-    throw new Error('API base URL is not configured.');
-  }
-
-  const startedAt = typeof performance !== 'undefined' ? performance.now() : undefined;
-  const response = await fetch(`${baseUrl}/api/routings/${routingId}/detail`, {
-    method: 'GET',
-    headers: { 'Content-Type': 'application/json' }
-  });
-
-  if (!response.ok) {
-    throw new Error(`Routing detail request failed with status ${response.status}`);
-  }
-
-  const payload = (await response.json()) as RoutingDetailResponse;
-  const elapsed =
-    startedAt !== undefined && typeof performance !== 'undefined' ? performance.now() - startedAt : undefined;
-
-  return {
-    ...payload,
-    source: payload.source ?? 'api',
-    slaMs: payload.slaMs ?? (elapsed !== undefined ? Math.round(elapsed) : undefined)
-  };
-}
+const buildEndpoint = (routingId: string) => {
+  const base = getApiBaseUrl();
+  return `${base.replace(/\/$/, '')}/api/routings/${routingId}`;
+};
 
 export function useRoutingDetail(
-  routingId: string | null,
-  options?: UseRoutingDetailOptions
+  routing: ExplorerRouting | null,
+  options: UseRoutingDetailOptions = DEFAULT_OPTIONS
 ): UseQueryResult<RoutingDetailResponse> {
-  return useQuery({
+  const routingId = routing?.id ?? options.routingId;
+  const enabled = Boolean(routingId) && (options.enabled ?? true);
+
+  return useQuery<RoutingDetailResponse>({
     queryKey: ['routing-detail', routingId],
-    enabled: Boolean(routingId) && (options?.enabled ?? true),
+    enabled,
     queryFn: async () => {
       if (!routingId) {
-        throw new Error('Routing id is required');
+        throw new Error('routingId is required to fetch detail.');
       }
-
-      try {
-        return await fetchRoutingDetail(routingId);
-      } catch (error) {
-        if (options?.fallbackRouting) {
-          return buildMockDetail(options.fallbackRouting);
-        }
-        throw error;
+      const response = await fetch(buildEndpoint(routingId), {
+        credentials: 'include'
+      });
+      if (!response.ok) {
+        throw new Error(`Failed to load routing detail (${response.status})`);
       }
+      return (await response.json()) as RoutingDetailResponse;
     }
   });
 }
-

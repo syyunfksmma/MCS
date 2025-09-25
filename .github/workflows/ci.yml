@@ -52,7 +52,6 @@ jobs:
         run: npm run build
 
 
-=======
       - name: End-to-end tests
         working-directory: web/mcs-portal
         run: npm run test:e2e
