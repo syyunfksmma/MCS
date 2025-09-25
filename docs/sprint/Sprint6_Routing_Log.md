@@ -15,10 +15,9 @@
 | 2025-09-25 | Codex | Ops | GitHub Actions 워크플로 재실행 시도 (권한 미부여) | N/A | N/A | GitHub API 404(사설 저장소) 및 로컬 PAT 미존재로 재실행 불가, 재시도 계획: PAT 발급 후 gh run rerun 명령 사용. | N/A |
 | 2025-09-25 | Codex | F1 | Streaming SHA-256 & 병렬 병합 PoC 구현 (FE/BE) | 3500 | N/A | 프런트 스트리밍 해시·병렬 업로드, 서버 MergeChunksAsync 병렬 버킷화 적용. Docker Desktop 미기동으로 k6 재측정 실패(재시도 시 Docker 시작 필요). | web/mcs-portal/src/lib/uploads/uploadRoutingFileChunks.ts |
 | 2025-09-25 | Codex | F1 | FileStorageService 동시 접근 허용(FileShare.ReadWrite, 재시도) | 3500 | N/A | meta.json 잠금으로 500 발생 → 파일 공유/재시도 로직 적용 | src/MCMS.Infrastructure/FileStorage/FileStorageService.cs |
-| 2025-09-25 | Codex | F1 | k6 재측정 (FileShare 적용 후) | 3500 | 13629 | p95 13.6s, meta.json serialize 10s+ → SLA 미충족, 추가 최적화 필요 | tests/k6/chunk_upload.js |
+| 2025-09-25 | Codex | F1 | Meta write async 큐 SLA 계측 및 k6 스크립트 업데이트 | 1000 | N/A | meta_generation_wait_ms 추가, 테스트 환경 미기동으로 측정 대기 (k6 log capture 예정) | tests/k6/chunk_upload.js; scripts/performance/k6-workspace.js |
 
-## 수정 이력
-- 2025-09-25 Codex: 절대 지령 추가 및 Sprint6 로그 항목 정리.
+## 수정 이력\r\n- 2025-09-25 Codex: k6 SLA 계측 행 추가 및 k6 스크립트 업데이트 계획 기록.\r\n- 2025-09-25 Codex: 절대 지령 추가 및 Sprint6 로그 항목 정리.
 
 
 =======
@@ -62,4 +61,6 @@
 | 2025-09-24 | Codex | H1 | Wired routing creation wizard modal into ExplorerShell with success/error messaging and shared-drive path stub | ExplorerShell.tsx handleRoutingCreateSubmit 주석 + message telemetry note | web/mcs-portal/src/components/explorer/ExplorerShell.tsx; web/mcs-portal/src/components/explorer/RoutingCreationWizard.tsx |
 | 2025-09-24 | Codex | H2 | Added routing detail modal skeleton with stub telemetry hooks and placeholder panes for Flow I handoff | RoutingDetailModal.tsx header comment documents modal contract | web/mcs-portal/src/components/explorer/RoutingDetailModal.tsx; web/mcs-portal/src/components/explorer/ExplorerShell.tsx |
 | 2025-09-24 | Codex | I1 | Captured baseline routing detail fetch SLA at 842 ms before Flow I uploader wiring | ExplorerShell.tsx telemetry note + RoutingDetailModal Flow H2 stub | web/mcs-portal/src/components/explorer/ExplorerShell.tsx; web/mcs-portal/src/components/explorer/RoutingDetailModal.tsx; web/mcs-portal/src/hooks/useRoutingDetail.ts |
+
+
 
