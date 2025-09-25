@@ -7,7 +7,15 @@ const { Header } = Layout;
 
 export default function HeaderBar() {
   return (
-    <Header style={{ background: '#ffffff', padding: '0 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+    <Header
+      style={{
+        background: '#ffffff',
+        padding: '0 24px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between'
+      }}
+    >
       <Typography.Title level={4} style={{ margin: 0 }}>
         MCS Portal
       </Typography.Title>
@@ -23,4 +31,3 @@ export default function HeaderBar() {
     </Header>
   );
 }
-

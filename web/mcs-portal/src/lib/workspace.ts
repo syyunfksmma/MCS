@@ -23,7 +23,7 @@ export interface WorkspaceAddinJobResponse {
   updatedAt: string;
 }
 
-const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export async function submitApprovalDecision(
   payload: WorkspaceApprovalPayload
@@ -45,7 +45,12 @@ export async function manageAddinJob(
   return {
     success: true,
     jobId: `job-${routingId}-${operation}-${Date.now().toString(36)}`,
-    status: operation === 'cancel' ? 'cancelled' : operation === 'queue' ? 'queued' : 'running',
+    status:
+      operation === 'cancel'
+        ? 'cancelled'
+        : operation === 'queue'
+          ? 'queued'
+          : 'running',
     updatedAt: new Date().toISOString()
   };
 }

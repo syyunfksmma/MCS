@@ -2,7 +2,11 @@
 
 import { Alert } from 'antd';
 import { useMemo } from 'react';
-import { getMaintenanceConfig, getMaintenanceWindowLabel, isMaintenanceActive } from '@/lib/maintenance';
+import {
+  getMaintenanceConfig,
+  getMaintenanceWindowLabel,
+  isMaintenanceActive
+} from '@/lib/maintenance';
 
 const UPCOMING_THRESHOLD_MS = 24 * 60 * 60 * 1000;
 
@@ -29,7 +33,9 @@ export default function MaintenanceBanner() {
   }
 
   const windowLabel = getMaintenanceWindowLabel();
-  let label = active ? 'Maintenance mode is active' : 'Upcoming maintenance window';
+  let label = active
+    ? 'Maintenance mode is active'
+    : 'Upcoming maintenance window';
   if (windowLabel) {
     label += ' · ' + windowLabel;
   }

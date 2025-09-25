@@ -1,9 +1,25 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Alert, Badge, Button, Card, Col, Empty, Row, Space, Statistic, Typography, message } from 'antd';
+import {
+  Alert,
+  Badge,
+  Button,
+  Card,
+  Col,
+  Empty,
+  Row,
+  Space,
+  Statistic,
+  Typography,
+  message
+} from 'antd';
 import AccessibleSelect from '../common/AccessibleSelect';
-import { AlertOutlined, AreaChartOutlined, ReloadOutlined } from '@ant-design/icons';
+import {
+  AlertOutlined,
+  AreaChartOutlined,
+  ReloadOutlined
+} from '@ant-design/icons';
 import { AuditLogStatistics, fetchAuditStatistics } from '@/lib/admin';
 
 const { Text, Title } = Typography;
@@ -18,16 +34,27 @@ function resolveRange(range: string): { from: string; to: string } {
   const now = new Date();
   switch (range) {
     case '24h':
-      return { from: new Date(now.getTime() - 24 * 60 * 60 * 1000).toISOString(), to: now.toISOString() };
+      return {
+        from: new Date(now.getTime() - 24 * 60 * 60 * 1000).toISOString(),
+        to: now.toISOString()
+      };
     case '7d':
-      return { from: new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString(), to: now.toISOString() };
+      return {
+        from: new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+        to: now.toISOString()
+      };
     case '30d':
     default:
-      return { from: new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString(), to: now.toISOString() };
+      return {
+        from: new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString(),
+        to: now.toISOString()
+      };
   }
 }
 
-function severityToType(severity: string): 'success' | 'info' | 'warning' | 'error' {
+function severityToType(
+  severity: string
+): 'success' | 'info' | 'warning' | 'error' {
   switch (severity) {
     case 'critical':
       return 'error';
@@ -72,7 +99,9 @@ export default function AdminAuditSummaryPanel() {
         <Title level={3} className="mb-0">
           Audit Insights & Message Center
         </Title>
-        <Text type="secondary">Surface approval SLAs and alert trends for operations.</Text>
+        <Text type="secondary">
+          Surface approval SLAs and alert trends for operations.
+        </Text>
       </div>
       <Space align="center" wrap className="gap-3">
         <AccessibleSelect
@@ -80,22 +109,29 @@ export default function AdminAuditSummaryPanel() {
           style={{ width: 160 }}
           value={timeRange}
           options={timeRangeOptions}
-          onChange={value => setTimeRange(value)}
+          onChange={(value) => setTimeRange(value)}
           labelText="감사 기간 범위 선택"
-          optionTextOverride={timeRangeOptions.map(option => option.label)}
+          optionTextOverride={timeRangeOptions.map((option) => option.label)}
         />
         <Button icon={<ReloadOutlined />} onClick={() => loadStats()}>
           새로고침
         </Button>
         {stats && (
-          <Badge status={stats.source === 'api' ? 'processing' : 'default'} text={stats.source === 'api' ? 'API' : 'Mock data'} />
+          <Badge
+            status={stats.source === 'api' ? 'processing' : 'default'}
+            text={stats.source === 'api' ? 'API' : 'Mock data'}
+          />
         )}
       </Space>
       <Card bordered loading={loading}>
         {stats ? (
           <Row gutter={16}>
             <Col xs={24} sm={12} md={6}>
-              <Statistic title="전체 이벤트" value={stats.totalEvents} prefix={<AreaChartOutlined />} />
+              <Statistic
+                title="전체 이벤트"
+                value={stats.totalEvents}
+                prefix={<AreaChartOutlined />}
+              />
             </Col>
             <Col xs={24} sm={12} md={6}>
               <Statistic title="승인 이벤트" value={stats.approvalEvents} />
@@ -104,7 +140,9 @@ export default function AdminAuditSummaryPanel() {
               <Statistic
                 title="반려 이벤트"
                 value={stats.rejectionEvents}
-                valueStyle={{ color: stats.rejectionEvents > 0 ? '#fa8c16' : undefined }}
+                valueStyle={{
+                  color: stats.rejectionEvents > 0 ? '#fa8c16' : undefined
+                }}
               />
             </Col>
             <Col xs={24} sm={12} md={6}>
@@ -112,7 +150,12 @@ export default function AdminAuditSummaryPanel() {
                 title="평균 승인시간(시간)"
                 precision={1}
                 value={stats.pendingApprovalAverageHours}
-                valueStyle={{ color: stats.pendingApprovalAverageHours >= 12 ? '#f5222d' : undefined }}
+                valueStyle={{
+                  color:
+                    stats.pendingApprovalAverageHours >= 12
+                      ? '#f5222d'
+                      : undefined
+                }}
               />
             </Col>
           </Row>
@@ -122,10 +165,18 @@ export default function AdminAuditSummaryPanel() {
           <Empty description="No statistics to display." />
         )}
       </Card>
-      <Card title={<Space><AlertOutlined /> <span>Alert Center</span></Space>} bordered loading={loading}>
+      <Card
+        title={
+          <Space>
+            <AlertOutlined /> <span>Alert Center</span>
+          </Space>
+        }
+        bordered
+        loading={loading}
+      >
         {stats ? (
           <Space direction="vertical" style={{ width: '100%' }}>
-            {stats.alerts.map(alert => (
+            {stats.alerts.map((alert) => (
               <Alert
                 key={alert.id}
                 type={severityToType(alert.severity)}
@@ -133,7 +184,9 @@ export default function AdminAuditSummaryPanel() {
                 description={
                   <Space direction="vertical" size={0}>
                     <Text>{alert.message}</Text>
-                    <Text type="secondary">{new Date(alert.createdAt).toLocaleString()}</Text>
+                    <Text type="secondary">
+                      {new Date(alert.createdAt).toLocaleString()}
+                    </Text>
                   </Space>
                 }
                 showIcon

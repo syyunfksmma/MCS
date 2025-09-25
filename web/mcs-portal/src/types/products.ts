@@ -1,4 +1,4 @@
-export type SolidWorksStatus = "present" | "missing" | "unknown";
+export type SolidWorksStatus = 'present' | 'missing' | 'unknown';
 
 export interface ProductSummary {
   id: string;
@@ -15,7 +15,7 @@ export interface ProductSummary {
 }
 
 export interface ProductDashboardResponse {
-  source: "mock" | "api";
+  source: 'mock' | 'api';
   generatedAt: string;
   total: number;
   items: ProductSummary[];

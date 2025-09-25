@@ -18,7 +18,9 @@ export default async function ExplorerPage() {
   });
 
   const dehydratedState = dehydrate(queryClient);
-  const initialData = queryClient.getQueryData<ExplorerResponse>(explorerKeys.list());
+  const initialData = queryClient.getQueryData<ExplorerResponse>(
+    explorerKeys.list()
+  );
 
   if (!initialData) {
     throw new Error('Failed to load explorer data');

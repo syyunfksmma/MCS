@@ -51,7 +51,12 @@ export function isMaintenanceActive(now: Date = new Date()): boolean {
 
 export function getMaintenanceWindowLabel(): string | undefined {
   const { window } = config;
-  if (!window?.start && !window?.end && !FORCE_WINDOW_START && !FORCE_WINDOW_END) {
+  if (
+    !window?.start &&
+    !window?.end &&
+    !FORCE_WINDOW_START &&
+    !FORCE_WINDOW_END
+  ) {
     return undefined;
   }
   const start = parseTime(FORCE_WINDOW_START ?? window?.start);

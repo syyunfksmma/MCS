@@ -22,14 +22,16 @@ const buildMockMeta = (routing: ExplorerRouting) => ({
   routingCode: routing.code,
   camRevision: routing.camRevision,
   generatedAt: new Date().toISOString(),
-  files: routing.files.map(file => ({
+  files: routing.files.map((file) => ({
     id: file.id,
     name: file.name,
     type: file.type
   }))
 });
 
-export default function WorkspaceMetaPanel({ routing }: WorkspaceMetaPanelProps) {
+export default function WorkspaceMetaPanel({
+  routing
+}: WorkspaceMetaPanelProps) {
   const [preview, setPreview] = useState<MetaPreview | null>(null);
 
   const targetPath = useMemo(() => {
@@ -46,7 +48,11 @@ export default function WorkspaceMetaPanel({ routing }: WorkspaceMetaPanelProps)
     }
     const meta = buildMockMeta(routing);
     const json = JSON.stringify(meta, null, 2);
-    setPreview({ json, source: 'generated', filename: `${routing.code}-meta.json` });
+    setPreview({
+      json,
+      source: 'generated',
+      filename: `${routing.code}-meta.json`
+    });
     message.success('Mock meta.json generated.');
   };
 
@@ -56,7 +62,9 @@ export default function WorkspaceMetaPanel({ routing }: WorkspaceMetaPanelProps)
       return;
     }
     const meta = buildMockMeta(routing);
-    const blob = new Blob([JSON.stringify(meta, null, 2)], { type: 'application/json' });
+    const blob = new Blob([JSON.stringify(meta, null, 2)], {
+      type: 'application/json'
+    });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
@@ -94,7 +102,8 @@ export default function WorkspaceMetaPanel({ routing }: WorkspaceMetaPanelProps)
         <Text strong>Target path:</Text> {targetPath}
       </div>
       <Paragraph type="secondary" className="mb-0 text-sm">
-        Naming rule: <code>Routings/&lt;routingId&gt;/meta.json</code> (routing code mirrored in file name for exports).
+        Naming rule: <code>Routings/&lt;routingId&gt;/meta.json</code> (routing
+        code mirrored in file name for exports).
       </Paragraph>
       <div className="flex flex-wrap gap-2">
         <Button onClick={handleGenerate} disabled={!routing}>
@@ -111,12 +120,17 @@ export default function WorkspaceMetaPanel({ routing }: WorkspaceMetaPanelProps)
         <div className="rounded-md bg-gray-900 p-4 text-sm text-gray-100 overflow-x-auto">
           <div className="mb-2 flex justify-between text-xs text-gray-400">
             <span>{preview.filename}</span>
-            <span>{preview.source === 'generated' ? 'Generated' : 'Uploaded'} preview</span>
+            <span>
+              {preview.source === 'generated' ? 'Generated' : 'Uploaded'}{' '}
+              preview
+            </span>
           </div>
           <pre className="whitespace-pre-wrap">{preview.json}</pre>
         </div>
       ) : (
-        <Paragraph type="secondary">Generate or upload a meta.json to preview its contents.</Paragraph>
+        <Paragraph type="secondary">
+          Generate or upload a meta.json to preview its contents.
+        </Paragraph>
       )}
     </div>
   );

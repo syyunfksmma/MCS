@@ -3,7 +3,11 @@
 import { ReactNode, useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Alert, Button, Result, Space, Typography } from 'antd';
-import { getMaintenanceConfig, getMaintenanceWindowLabel, isMaintenanceActive } from '@/lib/maintenance';
+import {
+  getMaintenanceConfig,
+  getMaintenanceWindowLabel,
+  isMaintenanceActive
+} from '@/lib/maintenance';
 
 const STORAGE_KEY = 'mcs-maintenance-override';
 
@@ -14,7 +18,9 @@ interface MaintenanceGateProps {
 export default function MaintenanceGate({ children }: MaintenanceGateProps) {
   const [override, setOverride] = useState(false);
   const searchParams = useSearchParams();
-  const [forcedActive, setForcedActive] = useState(searchParams?.get('maintenance') === 'force');
+  const [forcedActive, setForcedActive] = useState(
+    searchParams?.get('maintenance') === 'force'
+  );
 
   useEffect(() => {
     if (typeof window === 'undefined') {
@@ -31,7 +37,10 @@ export default function MaintenanceGate({ children }: MaintenanceGateProps) {
   }, [searchParams]);
 
   const config = getMaintenanceConfig();
-  const active = useMemo(() => forcedActive || isMaintenanceActive(), [forcedActive]);
+  const active = useMemo(
+    () => forcedActive || isMaintenanceActive(),
+    [forcedActive]
+  );
 
   if (!active || override) {
     return <>{children}</>;
@@ -47,15 +56,32 @@ export default function MaintenanceGate({ children }: MaintenanceGateProps) {
   };
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f9fafb', padding: '48px' }}>
+    <div
+      style={{
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        background: '#f9fafb',
+        padding: '48px'
+      }}
+    >
       <Result
         status="info"
         title={
-          <Typography.Title level={2} role="heading" aria-level={2} className="!mb-0">
+          <Typography.Title
+            level={2}
+            role="heading"
+            aria-level={2}
+            className="!mb-0"
+          >
             Scheduled maintenance in progress
           </Typography.Title>
         }
-        subTitle={windowLabel ?? 'The portal is temporarily unavailable while maintenance is underway.'}
+        subTitle={
+          windowLabel ??
+          'The portal is temporarily unavailable while maintenance is underway.'
+        }
         extra={
           <Space>
             <Button type="primary" danger onClick={handleBypass}>
@@ -69,11 +95,15 @@ export default function MaintenanceGate({ children }: MaintenanceGateProps) {
           </Space>
         }
       >
-        {config.message && <Typography.Paragraph>{config.message}</Typography.Paragraph>}
-        <Alert type="warning" message="Only proceed with override if you are performing validation." showIcon />
+        {config.message && (
+          <Typography.Paragraph>{config.message}</Typography.Paragraph>
+        )}
+        <Alert
+          type="warning"
+          message="Only proceed with override if you are performing validation."
+          showIcon
+        />
       </Result>
     </div>
   );
 }
-
-
