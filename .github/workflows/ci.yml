@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: [ main, v1 ]
 
+permissions:
+  contents: read
+  packages: write   # ghcr 푸시용
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -13,13 +17,13 @@ jobs:
       PLAYWRIGHT_CHANNEL: chromium
       PLAYWRIGHT_BROWSERS_PATH: 0
       LOCAL_IMAGE: mcs-portal:ci
+      REGISTRY: ghcr.io
       REGISTRY_IMAGE: ghcr.io/${{ github.repository_owner }}/mcs-portal
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
 
-      - name: Set up Node
-        uses: actions/setup-node@v4
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
@@ -51,7 +55,6 @@ jobs:
         working-directory: web/mcs-portal
         run: npm run build
 
-
       - name: End-to-end tests
         working-directory: web/mcs-portal
         run: npm run test:e2e
@@ -78,18 +81,17 @@ jobs:
         working-directory: web/mcs-portal
         run: docker build -t ${{ env.LOCAL_IMAGE }} .
 
-      - name: Log in to registry
-        if: ${{ secrets.REGISTRY_USERNAME != 'syyunfksmma' && secrets.REGISTRY_PASSWORD != '!tndyd2625' }}
+      - name: Log in to GHCR
         uses: docker/login-action@v3
         with:
           registry: ${{ env.REGISTRY }}
-          username: ${{ secrets.REGISTRY_USERNAME }}
-          password: ${{ secrets.REGISTRY_PASSWORD }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Push Docker image
-        if: ${{ secrets.REGISTRY_USERNAME != 'syyunfksmma' && secrets.REGISTRY_PASSWORD != '!tndyd2625' }}
         working-directory: web/mcs-portal
         run: |
           docker tag ${{ env.LOCAL_IMAGE }} ${{ env.REGISTRY_IMAGE }}:${{ github.sha }}
           docker push ${{ env.REGISTRY_IMAGE }}:${{ github.sha }}
+
 

@@ -14,6 +14,8 @@
 | 2025-09-25 | Codex | E1    | 필터 레일·리본·Hover UX 확장안 문서화 | N/A | N/A | docs/design/Sprint6_Explorer_UX_Plan.md 작성, Teamcenter Alignment | docs/design/Sprint6_Explorer_UX_Plan.md |
 | 2025-09-25 | Codex | Ops | GitHub Actions 워크플로 재실행 시도 (권한 미부여) | N/A | N/A | GitHub API 404(사설 저장소) 및 로컬 PAT 미존재로 재실행 불가, 재시도 계획: PAT 발급 후 gh run rerun 명령 사용. | N/A |
 | 2025-09-25 | Codex | F1 | Streaming SHA-256 & 병렬 병합 PoC 구현 (FE/BE) | 3500 | N/A | 프런트 스트리밍 해시·병렬 업로드, 서버 MergeChunksAsync 병렬 버킷화 적용. Docker Desktop 미기동으로 k6 재측정 실패(재시도 시 Docker 시작 필요). | web/mcs-portal/src/lib/uploads/uploadRoutingFileChunks.ts |
+| 2025-09-25 | Codex | F1 | FileStorageService 동시 접근 허용(FileShare.ReadWrite, 재시도) | 3500 | N/A | meta.json 잠금으로 500 발생 → 파일 공유/재시도 로직 적용 | src/MCMS.Infrastructure/FileStorage/FileStorageService.cs |
+| 2025-09-25 | Codex | F1 | k6 재측정 (FileShare 적용 후) | 3500 | 13629 | p95 13.6s, meta.json serialize 10s+ → SLA 미충족, 추가 최적화 필요 | tests/k6/chunk_upload.js |
 
 ## 수정 이력
 - 2025-09-25 Codex: 절대 지령 추가 및 Sprint6 로그 항목 정리.

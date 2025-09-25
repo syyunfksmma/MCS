@@ -166,7 +166,7 @@ public class RoutingFileService : IRoutingFileService
             files,
             latestHistoryId);
 
-        await _fileStorage.WriteJsonAsync(meta.MetaPath, meta, cancellationToken);
+        await _fileStorage.QueueJsonWriteAsync(meta.MetaPath, meta, cancellationToken);
         return meta;
     }
 
