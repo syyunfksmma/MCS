@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -13,6 +14,7 @@ using MCMS.Core.Domain.Enums;
 using MCMS.Core.Validation;
 using MCMS.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace MCMS.Infrastructure.Services;
 
@@ -23,19 +25,24 @@ public class RoutingFileService : IRoutingFileService
         "esprit", "nc", "wp", "stl", "mprj", "gdml", "meta", "solidworks", "other"
     };
 
+    private static readonly TimeSpan MetaGenerationSla = TimeSpan.FromSeconds(1);
+
     private readonly McmsDbContext _dbContext;
     private readonly IFileStorageService _fileStorage;
     private readonly IHistoryService _historyService;
+    private readonly ILogger<RoutingFileService> _logger;
     private readonly UploadRoutingFileRequestValidator _uploadValidator = new();
 
     public RoutingFileService(
         McmsDbContext dbContext,
         IFileStorageService fileStorage,
-        IHistoryService historyService)
+        IHistoryService historyService,
+        ILogger<RoutingFileService> logger)
     {
         _dbContext = dbContext;
         _fileStorage = fileStorage;
         _historyService = historyService;
+        _logger = logger;
     }
 
     public async Task<RoutingMetaDto> GetAsync(Guid routingId, CancellationToken cancellationToken = default)
@@ -142,6 +149,7 @@ public class RoutingFileService : IRoutingFileService
 
     private async Task<RoutingMetaDto> GenerateMetaAsync(Routing routing, CancellationToken cancellationToken)
     {
+        var startTimestamp = Stopwatch.GetTimestamp();
         var metaPath = BuildMetaPath(routing);
         var latestHistoryId = routing.HistoryEntries
             .OrderByDescending(h => h.CreatedAt)
@@ -167,6 +175,17 @@ public class RoutingFileService : IRoutingFileService
             latestHistoryId);
 
         await _fileStorage.QueueJsonWriteAsync(meta.MetaPath, meta, cancellationToken);
+        var elapsed = Stopwatch.GetElapsedTime(startTimestamp);
+
+        if (elapsed > MetaGenerationSla)
+        {
+            _logger.LogWarning("Routing meta generation exceeded SLA ({ElapsedMs} ms) for RoutingId={RoutingId}", elapsed.TotalMilliseconds, routing.Id);
+        }
+        else
+        {
+            _logger.LogDebug("Routing meta generation completed in {ElapsedMs} ms for RoutingId={RoutingId}", elapsed.TotalMilliseconds, routing.Id);
+        }
+
         return meta;
     }
 

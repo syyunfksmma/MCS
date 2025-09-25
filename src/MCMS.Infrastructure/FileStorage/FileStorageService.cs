@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text.Json;
@@ -16,6 +17,7 @@ public sealed class FileStorageService : IFileStorageService, IAsyncDisposable
     private const int MaxRetryCount = 3;
     private const int DefaultBufferSize = 131072;
     private static readonly TimeSpan RetryDelay = TimeSpan.FromMilliseconds(150);
+    private static readonly TimeSpan MetaWriteSla = TimeSpan.FromSeconds(1);
 
     private readonly FileStorageOptions _options;
     private readonly ILogger<FileStorageService> _logger;
@@ -164,7 +166,8 @@ public sealed class FileStorageService : IFileStorageService, IAsyncDisposable
             }, completionSource);
         }
 
-        return new JsonWriteRequest(relativePath, payload, payloadType, cancellationToken, awaitCompletion, completionSource);
+        var enqueuedAt = DateTimeOffset.UtcNow;
+        return new JsonWriteRequest(relativePath, payload, payloadType, cancellationToken, awaitCompletion, completionSource, enqueuedAt);
     }
 
     private async Task EnqueueJsonWriteAsync(JsonWriteRequest request, CancellationToken cancellationToken)
@@ -192,7 +195,34 @@ public sealed class FileStorageService : IFileStorageService, IAsyncDisposable
 
             try
             {
+                var stopwatch = Stopwatch.StartNew();
                 await WriteJsonInternalAsync(request.RelativePath, request.Payload, request.PayloadType, effectiveToken).ConfigureAwait(false);
+                stopwatch.Stop();
+
+                var totalLatency = DateTimeOffset.UtcNow - request.EnqueuedAt;
+                var queueLatency = totalLatency - stopwatch.Elapsed;
+                if (queueLatency < TimeSpan.Zero)
+                {
+                    queueLatency = TimeSpan.Zero;
+                }
+
+                if (stopwatch.Elapsed > MetaWriteSla)
+                {
+                    _logger.LogWarning(
+                        "Meta JSON write exceeded SLA ({WriteMs} ms) for {RelativePath}; queue wait {QueueMs} ms.",
+                        stopwatch.Elapsed.TotalMilliseconds,
+                        request.RelativePath,
+                        queueLatency.TotalMilliseconds);
+                }
+                else
+                {
+                    _logger.LogDebug(
+                        "Meta JSON write completed in {WriteMs} ms (queued {QueueMs} ms) for {RelativePath}.",
+                        stopwatch.Elapsed.TotalMilliseconds,
+                        queueLatency.TotalMilliseconds,
+                        request.RelativePath);
+                }
+
                 request.CompletionSource?.TrySetResult(true);
             }
             catch (OperationCanceledException oce) when (effectiveToken.IsCancellationRequested)
@@ -289,5 +319,6 @@ public sealed class FileStorageService : IFileStorageService, IAsyncDisposable
         Type PayloadType,
         CancellationToken RequestCancellation,
         bool AwaitCompletion,
-        TaskCompletionSource<bool>? CompletionSource);
+        TaskCompletionSource<bool>? CompletionSource,
+        DateTimeOffset EnqueuedAt);
 }
