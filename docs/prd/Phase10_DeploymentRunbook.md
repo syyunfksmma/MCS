@@ -1,6 +1,12 @@
 # Phase 10 산출물 - 배포 Runbook
+## 절대 지령
+- 문서 수정은 기존 내용을 삭제하지 않고 문서 하단 "수정 이력"에 기록한다.
+
 
 ## 1. 사전 준비
+- CI/빌드 머신: .NET Framework 4.8 Developer Pack 필수 (TEST/CAM_API.csproj 빌드)
+- Stage/Prod 서버: .NET Framework 4.8 Runtime 확인 (Developer Pack 불필요)
+
 - Stage 환경에 최신 버전 배포 & Smoke Test 완료
 - Change Request 승인 (Product Owner, Infra Lead)
 - 백업: 기존 Next.js 아티팩트 및 설정 압축 백업
@@ -45,3 +51,5 @@ if ($health.status -ne 'ok') { throw 'Health check failed' }
 - Stage/Prod 환경 변수 관리 자동화 (Secret Manager)
 - 배포 스크립트 idempotent 개선
 - 자동 Smoke Test 스크립트 작성
+## 수정 이력
+- 2025-09-25 Codex: 절대 지령/변경 이력 규칙 반영 및 .NET 4.8 요구사항 정리.

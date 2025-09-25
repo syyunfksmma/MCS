@@ -2,6 +2,7 @@
 
 ## 절대 지령
 - 각 단계는 승인 후에만 착수한다.
+- 문서 수정은 기존 내용을 삭제하지 않고 문서 하단 "수정 이력" 섹션에 추가 기록한다.
 - 단계 착수 전 Task 범위를 재확인하고 오류를 식별한다.
 - 작업 중 변경 사항과 로그(스크린샷, 다이어그램 포함)를 모두 문서화한다.
 - Task List와 체크박스를 유지하고 Sprint 작업에서도 절대 지령을 동일하게 준수한다.
@@ -30,12 +31,16 @@
 - [ ] D1. Sprint7_Log.md에 교육/문서 작업 로그 기록
 
 ## 로그 기록
-- (작성 예정)
+- 2025-09-25: Storybook/Playwright 착수 계획 문서화(docs/testing/Sprint6_UX_TestKickoff.md) 및 Sprint6 UX 플랜 연동.
 ### E. Explorer UX Delivery (Teamcenter)
-- [ ] E1. 좌측 필터 레일 React 컴포넌트 구현 및 Storybook 검증
-- [ ] E2. Ribbon 액션 그룹화 UI 적용 및 접근성 리뷰
-- [ ] E3. Hover Quick Menu 상호작용 ExplorerShell 통합 및 회귀 테스트
+- [ ] E1. 좌측 필터 레일 React 컴포넌트 구현 및 Storybook/접근성 검증
+- [ ] E2. Ribbon 액션 그룹화 UI 적용 및 접근성 리뷰, Add-in CTA 연동
+- [ ] E3. Hover Quick Menu 상호작용 ExplorerShell 통합 및 Playwright 회귀 테스트
 ### F. Chunk Upload Optimisation (Phase 2)
-- [ ] F1. 청크 크기 A/B 테스트(k6) 256KiB/512KiB/1MiB 비교 및 SLA 갱신
+- [ ] F1. 청크 크기 A/B 테스트(k6) 256/512/1024KiB 재측정 및 SLA 3.5s 검증
 - [ ] F2. SSD Warm-up 스크립트 및 배포 단계 점검 체크리스트 작성
-- [ ] F3. Streaming SHA-256 서버 측 도입 후 회귀 테스트
+- [ ] F3. Streaming SHA-256 서버 측 도입 후 회귀 테스트 및 로그 갱신
+## 수정 이력
+- 2025-09-25 Codex: 문서 변경 기록 규칙 추가, UX/Chunk 작업 세부 일정 반영.
+- 2025-09-25 Codex: Storybook/Playwright 로그 계획 기록.
+

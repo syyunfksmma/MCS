@@ -1,11 +1,14 @@
 'use client';
 
-import { Card, Tabs, Empty, Typography, Spin, Alert, Timeline } from 'antd';
-import { useMemo, useState } from 'react';
+import { Card, Tabs, Empty, Typography, Spin, Alert, Timeline, Input, List, Space, Button, message } from 'antd';
+import { useCallback, useMemo, useState } from 'react';
 import TreePanel from '@/components/TreePanel';
-import { ExplorerRouting, ExplorerResponse } from '@/types/explorer';
-import { useExplorerData } from '@/hooks/useExplorerData';
+import WorkspaceUploadPanel from '@/components/workspace/WorkspaceUploadPanel';
 import AddinBadge from './AddinBadge';
+import { useExplorerData } from '@/hooks/useExplorerData';
+import { useRoutingSearch } from '@/hooks/useRoutingSearch';
+import type { ExplorerRouting, ExplorerResponse } from '@/types/explorer';
+import type { RoutingSearchItem, RoutingSearchResult } from '@/types/search';
 
 interface ExplorerShellProps {
   initialData: ExplorerResponse;
@@ -17,17 +20,39 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
   const { data, isFetching, isError, error } = useExplorerData(initialData);
   const resolved = data ?? initialData;
   const { items, generatedAt, source } = resolved;
-  const [selectedRouting, setSelectedRouting] = useState<ExplorerRouting | null>(null);
 
-  const summaryItems = useMemo(
-    () => [
+  const [selectedRouting, setSelectedRouting] = useState<ExplorerRouting | null>(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [searchResult, setSearchResult] = useState<RoutingSearchResult | null>(null);
+  const [lastSearchError, setLastSearchError] = useState<string | null>(null);
+  const searchMutation = useRoutingSearch();
+
+  const findRoutingById = useCallback(
+    (routingId: string) =>
+      items
+        .flatMap(item => item.revisions)
+        .flatMap(revision => revision.routings)
+        .find(routing => routing.id === routingId) ?? null,
+    [items]
+  );
+
+  const summaryItems = useMemo(() => {
+    const base = [
       { label: '데이터 생성 시각', value: new Date(generatedAt).toLocaleString() },
       { label: '아이템 수', value: items.length.toString() },
       { label: '데이터 출처', value: source === 'mock' ? 'Mock' : 'API' },
       { label: '상태', value: isError ? '에러' : isFetching ? '로딩 중' : '정상' }
-    ],
-    [generatedAt, items.length, source, isError, isFetching]
-  );
+    ];
+
+    if (searchResult) {
+      base.push({
+        label: '최근 검색 SLA(ms)',
+        value: `${searchResult.slaMs ?? '서버 미보고'} / ${searchResult.observedClientMs}`
+      });
+    }
+
+    return base;
+  }, [generatedAt, items.length, source, isError, isFetching, searchResult]);
 
   const tabs = [
     {
@@ -41,7 +66,7 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
           <Paragraph>
             <Text strong>Status:</Text> {selectedRouting.status}
           </Paragraph>
-          <Paragraph>
+            <Paragraph>
             <Text strong>CAM Revision:</Text> {selectedRouting.camRevision}
           </Paragraph>
         </div>
@@ -69,10 +94,53 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
     }
   ];
 
+  const handleSearch = useCallback(
+    (rawValue?: string) => {
+      const nextTerm = (rawValue ?? searchTerm).trim();
+      if (!nextTerm) {
+        message.info('검색어를 입력하세요.');
+        return;
+      }
+
+      setSearchTerm(nextTerm);
+      setLastSearchError(null);
+
+      searchMutation.mutate(
+        { term: nextTerm, pageSize: 25, slaTargetMs: 3500 },
+        {
+          onSuccess: result => {
+            setSearchResult(result);
+            message.success(`검색 완료 (${result.total}건)`, 1.2);
+          },
+          onError: err => {
+            const description = err instanceof Error ? err.message : '알 수 없는 오류';
+            setLastSearchError(description);
+            message.error(`검색 실패: ${description}`);
+          }
+        }
+      );
+    },
+    [searchTerm, searchMutation]
+  );
+
+  const handleSelectSearchRouting = useCallback(
+    (routingId: string) => {
+      const next = findRoutingById(routingId);
+      if (!next) {
+        message.warning('탐색 트리에 없는 라우팅입니다.');
+        return;
+      }
+      setSelectedRouting(next);
+    },
+    [findRoutingById]
+  );
+
   const addinBadgeStatus = selectedRouting ? 'queued' : 'idle';
   const addinBadgeMessage = selectedRouting
     ? `${selectedRouting.code} Add-in 처리 대기(Mock)`
     : '라우팅을 선택하면 Add-in 큐 상태가 표시됩니다.';
+
+  const searchItems: RoutingSearchItem[] = searchResult?.items ?? [];
 
   return (
     <div className="flex gap-6">
@@ -83,10 +151,7 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
             setSelectedRouting(null);
             return;
           }
-          const next = items
-            .flatMap(item => item.revisions)
-            .flatMap(rev => rev.routings)
-            .find(routing => routing.id === routingId) || null;
+          const next = findRoutingById(routingId);
           setSelectedRouting(next);
         }}
       />
@@ -118,6 +183,56 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
             <Tabs defaultActiveKey="summary" items={tabs} />
           )}
         </Card>
+        <Card title="Routing Search" bordered>
+          <Space direction="vertical" size="middle" className="w-full">
+            <Input.Search
+              placeholder="Routing 코드 / 품목 / 소유자 검색"
+              value={searchTerm}
+              enterButton="검색"
+              loading={searchMutation.isPending}
+              onChange={event => setSearchTerm(event.target.value)}
+              onSearch={handleSearch}
+              allowClear
+            />
+            {lastSearchError ? <Alert type="error" message={lastSearchError} showIcon /> : null}
+            {searchResult ? (
+              <div className="w-full">
+                <Paragraph type="secondary" className="mb-2 text-sm">
+                  서버 SLA: {searchResult.slaMs ?? '미보고'} ms / 클라이언트 관측: {searchResult.observedClientMs} ms · 총 {searchResult.total}건
+                </Paragraph>
+                <List
+                  dataSource={searchItems}
+                  bordered
+                  renderItem={item => (
+                    <List.Item
+                      actions={[
+                        <Button key="open" type="link" onClick={() => handleSelectSearchRouting(item.routingId)}>
+                          열기
+                        </Button>
+                      ]}
+                    >
+                      <List.Item.Meta
+                        title={`${item.routingCode} · ${item.productCode}`}
+                        description={`Revision ${item.revisionCode} · 상태 ${item.status}`}
+                      />
+                      <Text type="secondary">
+                        {item.groupName}
+                        {item.updatedAt ? ` · ${new Date(item.updatedAt).toLocaleString()}` : ''}
+                      </Text>
+                    </List.Item>
+                  )}
+                />
+              </div>
+            ) : (
+              <Paragraph type="secondary" className="mb-0 text-sm">
+                검색 결과가 여기 표시됩니다. SLA는 Sprint5.1 로그에 누적 기록됩니다.
+              </Paragraph>
+            )}
+          </Space>
+        </Card>
+        <Card title="Workspace Uploads" bordered>
+          <WorkspaceUploadPanel routing={selectedRouting} />
+        </Card>
         <Card title="Add-in 상태" bordered>
           <div className="flex items-center gap-4">
             <AddinBadge status={addinBadgeStatus} message={addinBadgeMessage} />
@@ -132,3 +247,4 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
     </div>
   );
 }
+

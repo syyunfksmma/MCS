@@ -17,8 +17,8 @@ export const options = {
     }
   },
   thresholds: {
-    http_req_duration: ['p(95)<1500'],
-    chunk_upload_iteration_ms: ['p(95)<5000']
+    http_req_duration: ['p(95)<3500'],
+    chunk_upload_iteration_ms: ['p(95)<3500']
   },
   insecureSkipTLSVerify: true
 };
@@ -131,3 +131,4 @@ export default function () {
     console.log(JSON.stringify(completeRes.json()));
   }
 }
+

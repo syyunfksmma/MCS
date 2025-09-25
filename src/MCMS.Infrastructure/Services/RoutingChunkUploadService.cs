@@ -1,4 +1,5 @@
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -18,6 +19,7 @@ namespace MCMS.Infrastructure.Services;
 
 public class RoutingChunkUploadService : IRoutingChunkUploadService
 {
+    private const int MergeParallelBucketSize = 4;
     private readonly McmsDbContext _dbContext;
     private readonly IRoutingFileService _routingFileService;
     private readonly ILogger<RoutingChunkUploadService> _logger;
@@ -198,32 +200,110 @@ public class RoutingChunkUploadService : IRoutingChunkUploadService
         }
     }
 
-    private async Task MergeChunksAsync(SessionState session, string mergedPath, CancellationToken cancellationToken)
+    private async Task<string> MergeChunksAsync(SessionState session, string mergedPath, CancellationToken cancellationToken)
     {
-        await using var output = new FileStream(mergedPath, FileMode.Create, FileAccess.Write, FileShare.None);
+        await using var output = new FileStream(mergedPath, FileMode.Create, FileAccess.Write, FileShare.None, 128 * 1024, FileOptions.Asynchronous | FileOptions.SequentialScan);
+        using var hash = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
+
+        var bucketSize = Math.Max(1, Math.Min(MergeParallelBucketSize, session.TotalChunks));
+        var bucketTasks = new List<Task<ChunkBuffer>>(bucketSize);
+
         for (var index = 0; index < session.TotalChunks; index++)
         {
-            var chunkPath = session.GetChunkPath(index);
-            if (!File.Exists(chunkPath))
-            {
-                throw new FileNotFoundException($"Missing chunk {index} for session {session.SessionId}", chunkPath);
-            }
+            bucketTasks.Add(ReadChunkBufferAsync(session, index, cancellationToken));
 
-            await using var input = new FileStream(chunkPath, FileMode.Open, FileAccess.Read, FileShare.Read);
-            await input.CopyToAsync(output, cancellationToken);
+            if (bucketTasks.Count == bucketSize)
+            {
+                await FlushBucketAsync(bucketTasks, output, hash, cancellationToken);
+                bucketTasks.Clear();
+            }
+        }
+
+        if (bucketTasks.Count > 0)
+        {
+            await FlushBucketAsync(bucketTasks, output, hash, cancellationToken);
+            bucketTasks.Clear();
         }
 
         await output.FlushAsync(cancellationToken);
+        return Convert.ToHexString(hash.GetHashAndReset());
     }
 
     private static async Task<string> ComputeSha256Async(Stream stream, CancellationToken cancellationToken)
     {
-        stream.Position = 0;
-        using var sha = SHA256.Create();
-        var hashBytes = await sha.ComputeHashAsync(stream, cancellationToken);
-        return Convert.ToHexString(hashBytes);
+        var initialPosition = stream.CanSeek ? stream.Position : 0;
+        if (stream.CanSeek)
+        {
+            stream.Position = 0;
+        }
+
+        using var hash = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
+        var buffer = ArrayPool<byte>.Shared.Rent(128 * 1024);
+
+        try
+        {
+            int bytesRead;
+            while ((bytesRead = await stream.ReadAsync(buffer.AsMemory(0, buffer.Length), cancellationToken)) > 0)
+            {
+                hash.AppendData(buffer, 0, bytesRead);
+            }
+        }
+        finally
+        {
+            ArrayPool<byte>.Shared.Return(buffer, clearArray: true);
+        }
+
+        if (stream.CanSeek)
+        {
+            stream.Position = initialPosition;
+        }
+
+        return Convert.ToHexString(hash.GetHashAndReset());
     }
 
+    private static async Task FlushBucketAsync(
+        List<Task<ChunkBuffer>> bucketTasks,
+        FileStream output,
+        IncrementalHash hash,
+        CancellationToken cancellationToken)
+    {
+        var buffers = await Task.WhenAll(bucketTasks);
+
+        foreach (var chunk in buffers.OrderBy(buffer => buffer.Index))
+        {
+            await output.WriteAsync(chunk.Buffer.AsMemory(0, chunk.Length), cancellationToken);
+            hash.AppendData(chunk.Buffer, 0, chunk.Length);
+            ArrayPool<byte>.Shared.Return(chunk.Buffer, clearArray: true);
+        }
+    }
+
+    private static async Task<ChunkBuffer> ReadChunkBufferAsync(
+        SessionState session,
+        int index,
+        CancellationToken cancellationToken)
+    {
+        var chunkPath = session.GetChunkPath(index);
+        if (!File.Exists(chunkPath))
+        {
+            throw new FileNotFoundException($"Missing chunk {index} for session {session.SessionId}", chunkPath);
+        }
+
+        var buffer = ArrayPool<byte>.Shared.Rent(Math.Max(session.ChunkSizeBytes, 1));
+        var totalRead = 0;
+
+        await using (var stream = new FileStream(chunkPath, FileMode.Open, FileAccess.Read, FileShare.Read, 128 * 1024, FileOptions.Asynchronous | FileOptions.SequentialScan))
+        {
+            int bytesRead;
+            while ((bytesRead = await stream.ReadAsync(buffer.AsMemory(totalRead), cancellationToken)) > 0)
+            {
+                totalRead += bytesRead;
+            }
+        }
+
+        return new ChunkBuffer(index, buffer, totalRead);
+    }
+
+    private readonly record struct ChunkBuffer(int Index, byte[] Buffer, int Length);
     private sealed class SessionState
     {
         public SessionState(
@@ -285,5 +365,18 @@ public class RoutingChunkUploadService : IRoutingChunkUploadService
         }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

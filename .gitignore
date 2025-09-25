@@ -360,7 +360,14 @@ MigrationBackup/
 .ionide/
 
 # Fody - auto-generated XML schema
-FodyWeavers.xsd# Local storage for chunk upload tests
+FodyWeavers.xsd
+# Local storage for chunk upload tests
 .storage/
 # Next.js build artifacts
 web/mcs-portal/.next/
+# Local tooling downloads
+/tools/
+
+# Design reference exports archives
+docs/design/reference/archive/
+

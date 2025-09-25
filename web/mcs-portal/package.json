@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@ant-design/icons": "5.3.4",
+    "@noble/hashes": "^1.4.0",
     "@tanstack/react-query": "5.52.0",
     "@tanstack/react-virtual": "^3.13.12",
     "antd": "5.16.3",
