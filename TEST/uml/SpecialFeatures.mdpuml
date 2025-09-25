@@ -1,0 +1,71 @@
+﻿@startuml Button3_Volute_Feature
+
+!theme plain
+skinparam backgroundColor #FFFFFF
+skinparam sequenceArrowThickness 2
+skinparam roundcorner 20
+skinparam maxmessagesize 60
+
+skinparam sequence {
+    GroupBackgroundColor #E8F5E8
+    GroupBorderColor #228B22
+    GroupBorderThickness 2
+}
+
+title Button 3: Volute Feature (TEST_Btn3) - Geometry Creation
+
+actor User #87CEEB
+participant "AddinUi" as UI #98FB98
+participant "VoluteWindow" as VoluteWin #F0E68C
+participant "VoluteDrawer" as Drawer #DDA0DD
+participant "Esprit.Application" as Esprit #D3D3D3
+
+== Volute Feature Process ==
+User -> UI : Click "Volute Feature" button (TEST_Btn3)
+activate UI #98FB98
+UI -> VoluteWin : new VoluteWindow()
+activate VoluteWin #F0E68C
+VoluteWin -> Drawer : new VoluteDrawer(app)
+activate Drawer #DDA0DD
+VoluteWin --> User : Show Volute Window
+
+group Parameter Input [#F0FFF0]
+    User -> VoluteWin : Enter volute parameters
+    note right of User
+        - Start Radius
+        - End Radius  
+        - Start Angle
+        - End Angle
+        - Lead Out Radius
+        - Volute Width
+        - Volute Depth
+        - CW/CCW Direction
+    end note
+    VoluteWin -> VoluteWin : Validate input parameters
+end
+
+group Volute Drawing Process [#E6FFE6]
+    User -> VoluteWin : Click "Draw" button
+    VoluteWin -> Drawer : DrawVolute(parameters...)
+    
+    Drawer -> Drawer : Calculate angle steps and points
+    Drawer -> Esprit : GetPoint() for each position
+    Drawer -> Esprit : Create segments between points
+    Drawer -> Esprit : Add arcs for lead-out
+    
+    Drawer -> Esprit : Create FeatureChain
+    Drawer -> Esprit : Set FeatureChain properties
+    Drawer -> Esprit : Refresh Document
+    
+    Drawer --> VoluteWin : FeatureChain created
+end
+
+VoluteWin --> User : Show success message
+deactivate Drawer
+deactivate VoluteWin
+deactivate UI
+
+@enduml
+
+
+
