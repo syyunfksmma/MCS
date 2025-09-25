@@ -1,0 +1,1 @@
+| 2025-09-25 | Codex | F1 | Collected live /api/routings/{id} response via MCMS.Api local Stage port (routingId=b00a77af-8584-46db-9da6-5a3845709237) | 366 | 366 | // Stage sample seeded via ItemsController/EnsureCreated | https://localhost:7444/api/routings/b00a77af-8584-46db-9da6-5a3845709237 |

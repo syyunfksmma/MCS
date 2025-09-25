@@ -1,6 +1,7 @@
 using System.IO;
 using FluentValidation.AspNetCore;
 using MCMS.Infrastructure;
+using MCMS.Infrastructure.Persistence;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -52,6 +53,12 @@ builder.Services.AddAuthentication(options =>
 }).AddJwtBearer();
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<McmsDbContext>();
+    db.Database.EnsureCreated();
+}
 
 app.UseSwagger();
 app.UseSwaggerUI(options =>

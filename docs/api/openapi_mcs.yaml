@@ -1,17 +1,32 @@
 openapi: 3.0.1
 info:
   title: MCMS API
-  version: 0.2.0
+  version: 0.3.0
   description: |
-    Routing approval and file metadata endpoints for MCMS.
+    Manufacturing CAM Management System API contracts for routing, search, and file upload.
 tags:
   - name: Routings
     description: Routing lifecycle operations
   - name: RoutingFiles
-    description: Managed file metadata attached to routings
-  - name: Addin
-    description: ESPRIT Add-in integrations
+    description: Managed file metadata and uploads
+  - name: Search
+    description: Routing search endpoints
 paths:
+  /api/routings/{routingId}:
+    get:
+      tags: [Routings]
+      summary: Get routing detail
+      parameters:
+        - $ref: '#/components/parameters/RoutingId'
+      responses:
+        '200':
+          description: Routing detail
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoutingDto'
+        '404':
+          description: Routing not found
   /api/routings/{routingId}/request-approval:
     post:
       tags: [Routings]
@@ -101,7 +116,7 @@ paths:
   /api/routings/{routingId}/files:
     get:
       tags: [RoutingFiles]
-      summary: Get routing file metadata and meta.json manifest
+      summary: Get routing file metadata and manifest
       parameters:
         - $ref: '#/components/parameters/RoutingId'
       responses:
@@ -129,159 +144,100 @@ paths:
                 file:
                   type: string
                   format: binary
-                  description: File content to upload
                 fileType:
                   type: string
-                  description: Logical file type (esprit, nc, meta, etc.)
                 isPrimary:
                   type: boolean
-                  default: false
-                  description: Flag to mark the file as primary
                 uploadedBy:
                   type: string
-                  description: User initiating the upload
       responses:
         '200':
-          description: File uploaded and meta.json regenerated
+          description: Updated routing meta
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/RoutingMetaDto'
-        '400':
-          description: Invalid payload
         '404':
           description: Routing not found
-  /api/routings/{routingId}/files/{fileId}:
-    delete:
+  /api/routings/{routingId}/files/chunks/start:
+    post:
       tags: [RoutingFiles]
-      summary: Delete a routing file and update meta.json
+      summary: Start a chunked file upload session
       parameters:
         - $ref: '#/components/parameters/RoutingId'
-        - name: fileId
-          in: path
-          required: true
-          schema:
-            type: string
-            format: uuid
-        - name: deletedBy
-          in: query
-          required: true
-          schema:
-            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StartChunkUploadRequest'
       responses:
         '200':
-          description: File deleted and meta.json regenerated
+          description: Upload session created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChunkUploadSessionDto'
+        '404':
+          description: Routing not found
+  /api/routings/{routingId}/files/chunks/{sessionId}:
+    put:
+      tags: [RoutingFiles]
+      summary: Upload a file chunk
+      parameters:
+        - $ref: '#/components/parameters/RoutingId'
+        - $ref: '#/components/parameters/SessionId'
+      requestBody:
+        required: true
+        content:
+          application/octet-stream:
+            schema:
+              type: string
+              format: binary
+      responses:
+        '204':
+          description: Chunk accepted
+        '404':
+          description: Session or routing not found
+  /api/routings/{routingId}/files/chunks/{sessionId}/complete:
+    post:
+      tags: [RoutingFiles]
+      summary: Complete chunked upload and persist file metadata
+      parameters:
+        - $ref: '#/components/parameters/RoutingId'
+        - $ref: '#/components/parameters/SessionId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CompleteChunkUploadRequest'
+      responses:
+        '200':
+          description: Final routing meta after merge
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/RoutingMetaDto'
-        '400':
-          description: Missing deletedBy value
         '404':
-          description: Routing or file not found
-  /api/addin/keys/current:
-    get:
-      tags: [Addin]
-      summary: Get current add-in key
-      responses:
-        ''200'':
-          description: Current key issued for the add-in
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/AddinKeyDto"
-        ''404'':
-          description: No active key available
-  /api/addin/keys/renew:
+          description: Session or routing not found
+  /api/search:
     post:
-      tags: [Addin]
-      summary: Renew add-in key
+      tags: [Search]
+      summary: Search routings by product, owner, file type, and other filters
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/RenewAddinKeyRequest"
+              $ref: '#/components/schemas/RoutingSearchRequest'
       responses:
-        ''200'':
-          description: Key renewed
+        '200':
+          description: Search results
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/AddinKeyDto"
-  /api/addin/jobs:
-    post:
-      tags: [Addin]
-      summary: Enqueue a job for the add-in
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/AddinJobCreateRequest"
-      responses:
-        ''201'':
-          description: Job created
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/AddinJobDto"
-  /api/addin/jobs/{jobId}:
-    get:
-      tags: [Addin]
-      summary: Get add-in job by identifier
-      parameters:
-        - $ref: "#/components/parameters/JobId"
-      responses:
-        ''200'':
-          description: Job information
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/AddinJobDto"
-        ''404'':
-          description: Job not found
-  /api/addin/jobs/next:
-    get:
-      tags: [Addin]
-      summary: Dequeue the next pending job
-      parameters:
-        - $ref: "#/components/parameters/AddinKeyHeader"
-      responses:
-        ''200'':
-          description: Pending job returned
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/AddinJobDto"
-        ''204'':
-          description: No jobs available
-        ''401'':
-          description: Invalid or missing add-in key
-  /api/addin/jobs/{jobId}/complete:
-    post:
-      tags: [Addin]
-      summary: Complete a job after processing
-      parameters:
-        - $ref: "#/components/parameters/JobId"
-        - $ref: "#/components/parameters/AddinKeyHeader"
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/AddinJobCompleteRequest"
-      responses:
-        ''200'':
-          description: Job status updated
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/AddinJobDto"
-        ''401'':
-          description: Invalid or missing add-in key
-        ''404'':
-          description: Job not found
+                $ref: '#/components/schemas/RoutingSearchResponse'
 components:
   parameters:
     RoutingId:
@@ -291,23 +247,17 @@ components:
       schema:
         type: string
         format: uuid
-    JobId:
-      name: jobId
+    SessionId:
+      name: sessionId
       in: path
       required: true
       schema:
         type: string
         format: uuid
-    AddinKeyHeader:
-      name: X-Addin-Key
-      in: header
-      required: true
-      schema:
-        type: string
   schemas:
     RoutingDto:
       type: object
-      required: [id, itemRevisionId, routingCode, status, camRevision, isPrimary, approvalStatus, steps, files, history]
+      required: [id, itemRevisionId, routingCode, status, camRevision, isPrimary, steps, files, history]
       properties:
         id:
           type: string
@@ -318,13 +268,14 @@ components:
         routingCode:
           type: string
         status:
-          type: string
+          type: integer
         camRevision:
           type: string
         isPrimary:
           type: boolean
         approvalStatus:
-          type: string
+          type: integer
+          nullable: true
         approvalRequestedAt:
           type: string
           format: date-time
@@ -346,6 +297,7 @@ components:
             $ref: '#/components/schemas/HistoryEntryDto'
     RoutingStepDto:
       type: object
+      required: [id, sequence, machine, processDescription]
       properties:
         id:
           type: string
@@ -358,34 +310,37 @@ components:
           type: string
         toolInformation:
           type: string
+          nullable: true
         notes:
           type: string
+          nullable: true
     RoutingFileDto:
       type: object
+      required: [id, fileType, fileName, relativePath, fileSizeBytes, checksum, isPrimary, uploadedAt, uploadedBy]
       properties:
         id:
           type: string
           format: uuid
         fileType:
-          type: string
+          type: integer
         fileName:
           type: string
         relativePath:
           type: string
         fileSizeBytes:
           type: integer
-          format: int64
         checksum:
           type: string
         isPrimary:
           type: boolean
-        createdAt:
+        uploadedAt:
           type: string
           format: date-time
-        createdBy:
+        uploadedBy:
           type: string
     HistoryEntryDto:
       type: object
+      required: [id, routingId, changeType, createdAt, createdBy]
       properties:
         id:
           type: string
@@ -405,7 +360,8 @@ components:
           type: string
           nullable: true
         outcome:
-          type: string
+          type: integer
+          nullable: true
         createdAt:
           type: string
           format: date-time
@@ -414,50 +370,9 @@ components:
         comment:
           type: string
           nullable: true
-    RequestRoutingApprovalRequest:
-      type: object
-      required: [routingId, requestedBy]
-      properties:
-        routingId:
-          type: string
-          format: uuid
-        requestedBy:
-          type: string
-        comment:
-          type: string
-          nullable: true
-    ApproveRoutingRequest:
-      type: object
-      required: [routingId, approvedBy, approvedAt]
-      properties:
-        routingId:
-          type: string
-          format: uuid
-        approvedBy:
-          type: string
-        comment:
-          type: string
-          nullable: true
-        approvedAt:
-          type: string
-          format: date-time
-    RejectRoutingRequest:
-      type: object
-      required: [routingId, rejectedBy, reason, rejectedAt]
-      properties:
-        routingId:
-          type: string
-          format: uuid
-        rejectedBy:
-          type: string
-        reason:
-          type: string
-        rejectedAt:
-          type: string
-          format: date-time
     RoutingMetaDto:
       type: object
-      required: [routingId, metaPath, files]
+      required: [routingId, files]
       properties:
         routingId:
           type: string
@@ -494,83 +409,144 @@ components:
         uploadedAt:
           type: string
           format: date-time
-
-    AddinKeyDto:
+    RequestRoutingApprovalRequest:
       type: object
-      required: [keyId, value, expiresAt]
-      properties:
-        keyId:
-          type: string
-          format: uuid
-        value:
-          type: string
-        expiresAt:
-          type: string
-          format: date-time
-    AddinJobDto:
-      type: object
-      required: [jobId, routingId, status, createdAt, parameters]
-      properties:
-        jobId:
-          type: string
-          format: uuid
-        routingId:
-          type: string
-          format: uuid
-        status:
-          type: string
-        createdAt:
-          type: string
-          format: date-time
-        startedAt:
-          type: string
-          format: date-time
-          nullable: true
-        completedAt:
-          type: string
-          format: date-time
-          nullable: true
-        parameters:
-          type: object
-          additionalProperties:
-            type: string
-        resultStatus:
-          type: string
-          nullable: true
-        message:
-          type: string
-          nullable: true
-    AddinJobCreateRequest:
-      type: object
-      required: [routingId, parameters, createdBy]
-      properties:
-        routingId:
-          type: string
-          format: uuid
-        parameters:
-          type: object
-          additionalProperties:
-            type: string
-        createdBy:
-          type: string
-    AddinJobCompleteRequest:
-      type: object
-      required: [resultStatus]
-      properties:
-        resultStatus:
-          type: string
-          enum: [completed, failed]
-        message:
-          type: string
-          nullable: true
-          maxLength: 1024
-    RenewAddinKeyRequest:
-      type: object
+      required: [requestedBy]
       properties:
         requestedBy:
           type: string
-        validDays:
+        comments:
+          type: string
+          nullable: true
+    ApproveRoutingRequest:
+      type: object
+      required: [approvedBy]
+      properties:
+        approvedBy:
+          type: string
+        comments:
+          type: string
+          nullable: true
+    RejectRoutingRequest:
+      type: object
+      required: [rejectedBy, reason]
+      properties:
+        rejectedBy:
+          type: string
+        reason:
+          type: string
+    StartChunkUploadRequest:
+      type: object
+      required: [fileName, fileType, totalSizeBytes, chunkSizeBytes, uploadedBy]
+      properties:
+        fileName:
+          type: string
+        fileType:
+          type: string
+        totalSizeBytes:
+          type: integer
+        chunkSizeBytes:
+          type: integer
+        uploadedBy:
+          type: string
+    ChunkUploadSessionDto:
+      type: object
+      required: [sessionId, expiresAt, chunkSizeBytes, totalChunks]
+      properties:
+        sessionId:
+          type: string
+          format: uuid
+        expiresAt:
+          type: string
+          format: date-time
+        chunkSizeBytes:
+          type: integer
+        totalChunks:
+          type: integer
+    CompleteChunkUploadRequest:
+      type: object
+      required: [checksum]
+      properties:
+        checksum:
+          type: string
+        isPrimary:
+          type: boolean
+          nullable: true
+    RoutingSearchRequest:
+      type: object
+      required: [term]
+      properties:
+        term:
+          type: string
+        filters:
+          type: object
+          properties:
+            productCode:
+              type: string
+            groupId:
+              type: string
+            fileType:
+              type: string
+            owner:
+              type: string
+            updatedAfter:
+              type: string
+              format: date-time
+            updatedBefore:
+              type: string
+              format: date-time
+        page:
           type: integer
           minimum: 1
-          maximum: 365
-
+          default: 1
+        pageSize:
+          type: integer
+          minimum: 1
+          maximum: 200
+          default: 25
+        slaTargetMs:
+          type: integer
+          default: 1500
+    RoutingSearchResponse:
+      type: object
+      required: [items, total, generatedAt, source]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/RoutingSearchItem'
+        total:
+          type: integer
+        generatedAt:
+          type: string
+          format: date-time
+        source:
+          type: string
+          enum: [mock, api]
+        slaMs:
+          type: integer
+          nullable: true
+    RoutingSearchItem:
+      type: object
+      required: [routingId, routingCode, productCode, revisionCode, groupName, status]
+      properties:
+        routingId:
+          type: string
+          format: uuid
+        routingCode:
+          type: string
+        productCode:
+          type: string
+        revisionCode:
+          type: string
+        groupName:
+          type: string
+        status:
+          type: string
+        updatedAt:
+          type: string
+          format: date-time
+          nullable: true
+        sharedDrivePath:
+          type: string
+          nullable: true
