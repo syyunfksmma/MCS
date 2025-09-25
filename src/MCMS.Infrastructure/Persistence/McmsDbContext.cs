@@ -1,4 +1,5 @@
 using MCMS.Core.Domain.Entities;
+using MCMS.Core.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 
 namespace MCMS.Infrastructure.Persistence;
@@ -15,6 +16,7 @@ public class McmsDbContext(DbContextOptions<McmsDbContext> options) : DbContext(
     public DbSet<MachinePackage> MachinePackages => Set<MachinePackage>();
     public DbSet<AddinKey> AddinKeys => Set<AddinKey>();
     public DbSet<AddinJob> AddinJobs => Set<AddinJob>();
+    public DbSet<AuditLogEntry> AuditLogEntries => Set<AuditLogEntry>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -84,6 +86,19 @@ public class McmsDbContext(DbContextOptions<McmsDbContext> options) : DbContext(
             builder.HasIndex(x => new { x.Status, x.CreatedAt });
             builder.Property(x => x.ParametersJson).HasColumnType("nvarchar(max)");
             builder.Property(x => x.ResultStatus).HasMaxLength(64);
+        });
+
+        modelBuilder.Entity<AuditLogEntry>(builder =>
+        {
+            builder.HasIndex(x => new { x.EventAt, x.Category });
+            builder.HasIndex(x => x.HistoryEntryId);
+            builder.Property(x => x.Category).HasMaxLength(64);
+            builder.Property(x => x.Action).HasMaxLength(64);
+            builder.Property(x => x.Summary).HasMaxLength(256);
+            builder.Property(x => x.Details).HasColumnType("nvarchar(max)");
+            builder.Property(x => x.MetadataJson).HasColumnType("nvarchar(max)");
+            builder.Property(x => x.TraceId).HasMaxLength(128);
+            builder.Property(x => x.RequestId).HasMaxLength(128);
         });
     }
 }

@@ -1,0 +1,606 @@
+VISION
+
+Apply thought leadership to help our 
+
+customers build innovative products 
+
+by leveraging technology 
+
+Teamcenter Active Workspace
+
+1
+
+Teamcenter Overview
+
+Intuitive UI and Search Capability
+
+Manage parts and products
+
+Manage documents
+
+Execute processes
+
+2
+
+Teamcenter Overview
+
+Intuitive UI and Search Capability
+
+Manage parts and products
+
+Manage documents
+
+Execute processes
+
+3
+
+Teamcenter
+
+Intuitive Interface
+
+Eliminate the Learning Curve
+
+Centralized 
+task location
+
+Familiar simple 
+search box
+
+Pin important things to 
+your home page
+
+4
+
+Teamcenter
+Natural language Search
+
+Suggestions and 
+previous searches
+
+Multiword search with focus 
+on specific properties
+
+Pre-filters to focus the search
+
+Familiar shopping cart like 
+filtering 
+
+Search
+
+5
+
+Teamcenter
+Powerful and intuitive search and analysis
+
+Use Images to locate easily
+
+6
+
+Teamcenter
+Powerful and intuitive search and analysis
+
+Compare Search Results
+
+7
+
+Embed or link demo movie (16:9 ratio)
+Set to play full screen
+
+8
+
+Teamcenter Overview
+
+Intuitive UI and Search Capability
+
+Manage parts and products
+
+Manage documents
+
+Execute processes
+
+9
+
+Create New Part/Assy
+
+Standard Part Numbering
+
+Standard Revision Numbering
+
+10
+
+Ensure collection of critical parameters
+
+11
+
+Revision Mgmt. / Cloning
+
+Clone
+
+Revise
+
+Clone
+
+Revise
+
+12
+
+Or Use Native Interface
+
+Revision Mgmt. / Cloning
+
+Clone
+
+Revise
+
+All Revision Together
+
+13
+
+Integration with NX
+
+14
+
+NX Integration - Data Mgmt.
+
+15
+
+BoM Mgmt.
+
+22
+
+Teamcenter
+BoM Mgmt.
+
+Manage BoM
+
+Complete BOM lifecycle in a single environment
+
+BoM 
+Tree
+
+Detailed Information
+
+23
+
+Teamcenter
+BoM Mgmt.
+
+BoM 
+Tree
+
+Visual 3D representation of the product
+
+Zero install structure 
+driven visualization
+
+24
+
+Teamcenter
+BoM Mgmt.
+
+Intuitive
+
+Visual indicators to 
+identify key data
+
+Visual indicators 
+shown in tables
+
+25
+
+Teamcenter
+BoM Mgmt.
+
+Intuitive
+
+Right Click
+
+26
+
+Teamcenter
+BoM Mgmt.
+
+Interactive Duplicate
+
+27
+
+Teamcenter
+BoM Mgmt.
+
+Advanced where-used - facilitate the understanding of change impact 
+
+Where used
+
+Relationship
+
+28
+
+29
+
+Teamcenter
+BoM Mgmt.
+
+Compare 
+structures and 
+Split view and 
+highlight changes
+compare
+
+30
+
+31
+
+Teamcenter Overview
+
+Intuitive UI and Search Capability
+
+Manage parts and products
+
+Manage documents
+
+Execute processes
+
+33
+
+Teamcenter
+Document management and collaboration
+
+Manage documents
+
+Manage documents in conjunction with product development
+
+BoM 
+Tree
+
+Manage in Context: 
+❑ Design data
+❑ Manufacturing data
+❑ Quality/Regulatory data 
+❑ 2D, 3D, PDF, CAM files 
+❑ Work Instructions (PDF etc) 
+❑ PO records, Quality records etc.
+
+In Context Document
+
+34
+
+Document management and collaboration
+
+Access PDM inside Microsoft Office
+
+35
+
+Document management 
+
+Execute document reviews and approvals
+
+Manage with PLM
+
+Participate in processes
+
+Access product data directly
+
+Control and review documents
+
+36
+
+Embed or link demo movie
+Set to play full screen
+
+37
+
+Teamcenter Overview
+
+Intuitive UI and Search Capability
+
+Manage parts and products
+
+Manage documents
+
+Execute processes
+
+43
+
+Teamcenter
+Process management and automation
+
+Active 
+Workspace
+
+• Automating and synchronizing processes
+
+• Out-of-the-box workflows
+
+• Review, comment, approve/reject
+
+44
+
+Teamcenter
+Process management and automation
+
+Singled page 
+task execution
+
+Assign 
+Workflow
+
+45
+
+Teamcenter
+Process management and automation
+
+Simple view with instructions, 
+content, and required actions
+
+Manage tasks for yourself 
+and your teams
+
+46
+
+Released
+
+Release Process
+
+Locked for Editing
+
+47
+
+Embed or link demo movie
+Set to play full screen
+
+48
+
+Easily Create your own Standard Processes
+
+49
+
+50
+
+CMII Change Mgmt.
+
+51
+
+Traceability | Interdependency
+
+PR
+
+ECR
+
+ECN
+
+Implemented by
+
+Implemented by
+
+Problem Items are the items causing the change
+
+Problem Items
+
+Problem Items
+
+Problem Items
+
+Impacted Items are the old revision of items 
+being revised or replaced as part of the change
+
+Part
+
+Doc Req.
+
+Reference Items
+
+Part
+
+Doc Req.
+
+Reference Items
+
+Part
+
+Doc Req.
+
+Reference Items
+
+Solution Items are new revisions of content that 
+are to be released by the Change
+
+Part
+
+Doc Req.
+
+Part
+
+Doc Req.
+
+Impacted Items
+
+Part
+
+Doc Req.
+
+Impacted Items
+
+Plan Items contains schedules that define tasks 
+in a work breakdown structure
+
+Part
+
+Doc Req.
+
+Part
+
+Doc Req.
+
+Plan Items
+
+Solution Items
+
+Implements/Implemented by contains change 
+objects referenced by the change 
+
+Schedule 
+
+Part
+
+Doc Req.
+
+Plan Items
+
+Schedule 
+
+52
+
+Initiate Change
+
+Select multiple 
+objects and create 
+change
+
+Select multiple 
+PRs and derive 
+an ECR
+
+53
+
+Review
+
+ECR impacted items accounted 
+for by Implementing ECN
+
+Change overview
+
+All solutions to be released by 
+implementing ECN
+
+Overview of ECN Process 
+and Sign off History
+
+Change maturity 
+progress bar
+
+Consolidated Change 
+summary
+
+54
+
+Change Mgmt. | Impact Analysis
+
+Embed or link demo movie
+Set to play full screen
+
+56
+
+Change Management in Teamcenter
+
+Sample workflows provided out-of-the-box for change objects and processes
+- CM2 Compliant
+- PR Process, CR Process and CN Process
+
+58
+
+Change Dashboard
+
+Change dashboard with 
+various pie charts 
+
+Table with 
+corresponding detail
+
+59
+
+Teamcenter
+Summary
+
+Intuitive UI and 
+Search Capability
+
+Quickly and easily search designs and related product data
+
+Manage designs
+
+Access PDM without leaving your design environment
+
+Manage documents
+
+Integrate documents with product definition data and processes
+
+Execute processes
+
+Use workflows, change management to automate and simplify 
+tasks 
+
+69
+
+70
+
+Contact PROLIM
+
+USA
+
+INDIA
+
+Detroit, MI
+Cincinnati, OH
+
+Frankfurt
+
+LA, CA
+
+Dallas, TX
+
+Hubli
+Bangalore
+
+Detroit
+PROLIM Corporation
+30445 Northwestern Hwy, Suite 380
+Farmington Hills, MI 48334
+Phone: 248-522-2575
+
+Dallas
+PROLIM Corporation
+6827 Communications Parkway
+Plano, TX 75024
+Phone: 214-945-2557
+
+Cincinnati
+PROLIM Corporation
+1305 Mattec Drive
+Loveland, OH 45140
+Phone: 514-984-0480
+
+California
+PROLIM Corporation
+15510 Minnesota Ave, 
+Paramount, CA 90723
+Phone: 514-984-0480
+
+Bangalore
+PROLIM Solutions India Pvt. Ltd.
+World Trade Center, 20th floor
+Rajajinagar, Bangalore
+Phone: + 91 80 23607685
+
+Hubli
+PROLIM Solutions India Pvt. Ltd.
+Plot No: 7 , Survey No: 89,
+Aryabhatta Tech Park, Navanagar
+Hubli – 580025, India
+
+New Delhi
+PROLIM Solutions India Pvt. Ltd.
+Unit No 511, 5th Floor,
+JMD Pacific Square,
+Gurgaon - 122001, India
+
+EUROPE
+Frankfurt
+PROLIM Solutions GmbH
+Ludwigstrasse 12
+60327 Frankfurt am Main
+Phone. +49 176 31587871
+
+71
+71
+
+
