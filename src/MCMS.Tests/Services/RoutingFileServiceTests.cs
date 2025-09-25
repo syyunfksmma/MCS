@@ -61,7 +61,7 @@ public class RoutingFileServiceTests
         var root = Path.Combine(Path.GetTempPath(), "mcms-tests", Guid.NewGuid().ToString());
         Directory.CreateDirectory(root);
         var storage = new FileStorageService(Options.Create(new FileStorageOptions { RootPath = root }), NullLogger<FileStorageService>.Instance);
-        var service = new RoutingFileService(context, storage, history);
+        var service = new RoutingFileService(context, storage, history, NullLogger<RoutingFileService>.Instance);
         return (service, root, history, context, storage);
     }
 

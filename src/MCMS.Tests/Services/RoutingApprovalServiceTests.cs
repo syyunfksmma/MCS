@@ -24,6 +24,7 @@ public class RoutingApprovalServiceTests
     private static async Task<(RoutingApprovalService Sut, Guid RoutingId)> CreateSutAsync(McmsDbContext context)
     {
         var historyService = new HistoryService(context);
+        var auditLogService = new AuditLogService(context);
         var commandQueue = new InMemoryCommandQueue();
         var routingService = new RoutingService(context, historyService, commandQueue, new EspritAutomationServiceStub(NullLogger<EspritAutomationServiceStub>.Instance));
 
@@ -78,6 +79,7 @@ public class RoutingApprovalServiceTests
     {
         await using var context = CreateContext();
         var historyService = new HistoryService(context);
+        var auditLogService = new AuditLogService(context);
         var commandQueue = new InMemoryCommandQueue();
         var routingService = new RoutingService(context, historyService, commandQueue, new EspritAutomationServiceStub(NullLogger<EspritAutomationServiceStub>.Instance));
         var sut = new RoutingApprovalService(context, historyService, routingService, commandQueue, auditLogService);
