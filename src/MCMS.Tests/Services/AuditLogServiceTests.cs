@@ -1,6 +1,5 @@
 using System;
-using System.Linq;
-using MCMS.Core.Contracts.Dtos;
+using System.Linq;`r`nusing System.Text;`r`nusing MCMS.Core.Contracts.Dtos;
 using MCMS.Core.Contracts.Requests;
 using MCMS.Core.Domain.Enums;
 using MCMS.Infrastructure.Persistence;
@@ -92,7 +91,8 @@ public class AuditLogServiceTests
             null,
             null));
 
-        var csv = await service.ExportCsvAsync(new AuditLogQueryRequest(null, null, null, null, null, null, 1, 25));
+        var csvBytes = await service.ExportCsvAsync(new AuditLogQueryRequest(null, null, null, null, null, null, 1, 25));
+        var csv = Encoding.UTF8.GetString(csvBytes);
 
         Assert.Contains("Timestamp,Category,Action", csv);
         Assert.Contains("RoutingApproved", csv);
@@ -162,3 +162,4 @@ public class AuditLogServiceTests
         Assert.True(report.Alerts.Count >= 1);
     }
 }
+
