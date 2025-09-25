@@ -1,13 +1,32 @@
 'use client';
 
-import { Badge, Button, Empty, Input, Modal, Segmented, Space, Table, Tag, Tooltip, Typography } from 'antd';
+import {
+  Badge,
+  Button,
+  Empty,
+  Input,
+  Modal,
+  Segmented,
+  Space,
+  Table,
+  Tag,
+  Tooltip,
+  Typography
+} from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { useMemo, useState } from 'react';
-import type { AddinJob, AddinJobStatus, ExplorerRouting } from '@/types/explorer';
+import type {
+  AddinJob,
+  AddinJobStatus,
+  ExplorerRouting
+} from '@/types/explorer';
 
 const { Text } = Typography;
 
-export type SignalRConnectionState = 'connected' | 'reconnecting' | 'disconnected';
+export type SignalRConnectionState =
+  | 'connected'
+  | 'reconnecting'
+  | 'disconnected';
 
 type StatusFilter = AddinJobStatus | 'all';
 
@@ -19,7 +38,10 @@ const STATUS_LABEL: Record<AddinJobStatus, string> = {
   cancelled: '취소'
 };
 
-const STATUS_TAG: Record<AddinJobStatus, 'default' | 'processing' | 'success' | 'warning' | 'error'> = {
+const STATUS_TAG: Record<
+  AddinJobStatus,
+  'default' | 'processing' | 'success' | 'warning' | 'error'
+> = {
   queued: 'default',
   running: 'processing',
   succeeded: 'success',
@@ -51,10 +73,17 @@ export default function AddinControlPanel({
 
   const filteredJobs = useMemo(() => {
     const lower = search.toLowerCase();
-    return jobs.filter(job => {
-      const statusMatch = statusFilter === 'all' ? true : job.status === statusFilter;
+    return jobs.filter((job) => {
+      const statusMatch =
+        statusFilter === 'all' ? true : job.status === statusFilter;
       const textMatch = lower
-        ? [job.routingCode, job.itemName, job.revisionCode, job.requestedBy, job.lastMessage ?? '']
+        ? [
+            job.routingCode,
+            job.itemName,
+            job.revisionCode,
+            job.requestedBy,
+            job.lastMessage ?? ''
+          ]
             .join(' ')
             .toLowerCase()
             .includes(lower)
@@ -82,7 +111,9 @@ export default function AddinControlPanel({
         title: '상태',
         dataIndex: 'status',
         key: 'status',
-        render: (status: AddinJobStatus) => <Tag color={STATUS_TAG[status]}>{STATUS_LABEL[status]}</Tag>
+        render: (status: AddinJobStatus) => (
+          <Tag color={STATUS_TAG[status]}>{STATUS_LABEL[status]}</Tag>
+        )
       },
       {
         title: '요청자',
@@ -93,20 +124,22 @@ export default function AddinControlPanel({
         title: '생성',
         dataIndex: 'createdAt',
         key: 'createdAt',
-        render: value => new Date(value).toLocaleString()
+        render: (value) => new Date(value).toLocaleString()
       },
       {
         title: '메시지',
         dataIndex: 'lastMessage',
         key: 'lastMessage',
-        render: value => value ?? '—'
+        render: (value) => value ?? '—'
       },
       {
         title: '액션',
         key: 'actions',
         render: (_, record) => {
-          const retryVisible = record.status === 'failed' || record.status === 'cancelled';
-          const cancelVisible = record.status === 'queued' || record.status === 'running';
+          const retryVisible =
+            record.status === 'failed' || record.status === 'cancelled';
+          const cancelVisible =
+            record.status === 'queued' || record.status === 'running';
           if (!retryVisible && !cancelVisible) {
             return <Text type="secondary">-</Text>;
           }
@@ -174,12 +207,12 @@ export default function AddinControlPanel({
             placeholder="Routing/요청자 검색"
             value={search}
             allowClear
-            onChange={event => setSearch(event.target.value)}
+            onChange={(event) => setSearch(event.target.value)}
             style={{ width: 200 }}
           />
           <Segmented
             value={statusFilter}
-            onChange={value => setStatusFilter(value as StatusFilter)}
+            onChange={(value) => setStatusFilter(value as StatusFilter)}
             options={[
               { label: '전체', value: 'all' },
               { label: STATUS_LABEL.queued, value: 'queued' },
@@ -189,12 +222,25 @@ export default function AddinControlPanel({
               { label: STATUS_LABEL.cancelled, value: 'cancelled' }
             ]}
           />
-          <Tooltip title={connectionState === 'connected' ? '정상 연결 상태입니다.' : 'SignalR 재연결을 시도합니다.'}>
-            <Button onClick={onReconnect} loading={connectionState === 'reconnecting'}>
+          <Tooltip
+            title={
+              connectionState === 'connected'
+                ? '정상 연결 상태입니다.'
+                : 'SignalR 재연결을 시도합니다.'
+            }
+          >
+            <Button
+              onClick={onReconnect}
+              loading={connectionState === 'reconnecting'}
+            >
               재연결 시도
             </Button>
           </Tooltip>
-          <Button type="primary" onClick={onQueueJob} disabled={!selectedRouting}>
+          <Button
+            type="primary"
+            onClick={onQueueJob}
+            disabled={!selectedRouting}
+          >
             Add-in 작업 추가
           </Button>
         </Space>
@@ -208,7 +254,10 @@ export default function AddinControlPanel({
           pagination={{ pageSize: 5, showSizeChanger: false }}
         />
       ) : (
-        <Empty description="표시할 Add-in 작업이 없습니다" image={Empty.PRESENTED_IMAGE_SIMPLE} />
+        <Empty
+          description="표시할 Add-in 작업이 없습니다"
+          image={Empty.PRESENTED_IMAGE_SIMPLE}
+        />
       )}
     </div>
   );

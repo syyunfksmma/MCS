@@ -1,4 +1,4 @@
-import { Divider, Typography, Checkbox } from "antd";
+import { Divider, Typography, Checkbox } from 'antd';
 
 const { Title, Text } = Typography;
 
@@ -10,27 +10,23 @@ interface FilterGroup {
 // NOTE: Static filter metadata keeps Sprint 5 scope focused on styling; actual filtering arrives with FR-9.
 const FILTER_GROUPS: FilterGroup[] = [
   {
-    title: "Category",
+    title: 'Category',
+    options: [{ label: 'Parts' }, { label: 'Documents' }, { label: 'Changes' }]
+  },
+  {
+    title: 'Release Status',
     options: [
-      { label: "Parts" },
-      { label: "Documents" },
-      { label: "Changes" }
+      { label: 'Approved' },
+      { label: 'In Work' },
+      { label: 'Obsolete' }
     ]
   },
   {
-    title: "Release Status",
+    title: 'SolidWorks',
     options: [
-      { label: "Approved" },
-      { label: "In Work" },
-      { label: "Obsolete" }
-    ]
-  },
-  {
-    title: "SolidWorks",
-    options: [
-      { label: "3DM Linked" },
-      { label: "Missing 3DM" },
-      { label: "Unknown", disabled: true }
+      { label: '3DM Linked' },
+      { label: 'Missing 3DM' },
+      { label: 'Unknown', disabled: true }
     ]
   }
 ];
@@ -42,7 +38,10 @@ export default function ProductFilterPanel() {
         <Title level={4} className="!mb-1 text-sky-900">
           Filters
         </Title>
-        <Text type="secondary">Benchmarks Teamcenter left rail styling; functionality lands with FR-9.</Text>
+        <Text type="secondary">
+          Benchmarks Teamcenter left rail styling; functionality lands with
+          FR-9.
+        </Text>
       </header>
       {FILTER_GROUPS.map((group) => (
         <section key={group.title}>
@@ -51,7 +50,11 @@ export default function ProductFilterPanel() {
               {group.title}
             </span>
           </Divider>
-          <Checkbox.Group className="flex flex-col gap-2" options={group.options} disabled />
+          <Checkbox.Group
+            className="flex flex-col gap-2"
+            options={group.options}
+            disabled
+          />
         </section>
       ))}
     </aside>

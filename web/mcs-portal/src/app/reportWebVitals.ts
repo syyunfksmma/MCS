@@ -23,7 +23,7 @@ export function reportWebVitals(metric: NextWebVitalsMetric): void {
       headers: {
         'Content-Type': 'application/json'
       }
-    }).catch(error => {
+    }).catch((error) => {
       if (process.env.NODE_ENV !== 'production') {
         console.warn('[web-vitals] failed to report metric', error);
       }

@@ -123,7 +123,10 @@ export interface ApprovalHistoryEntry {
   comment?: string;
 }
 
-export const ADMIN_STATUS_META: Record<AdminStatus, { label: string; actionLabel: string; description: string; tagColor: string }> = {
+export const ADMIN_STATUS_META: Record<
+  AdminStatus,
+  { label: string; actionLabel: string; description: string; tagColor: string }
+> = {
   active: {
     label: '활성',
     actionLabel: '활성화',
@@ -144,10 +147,11 @@ export const ADMIN_STATUS_META: Record<AdminStatus, { label: string; actionLabel
   }
 };
 
-const delay = (ms = 120) => new Promise(resolve => setTimeout(resolve, ms));
+const delay = (ms = 120) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const generateKeyId = () => `key-${Math.random().toString(36).slice(2, 8)}`;
-const generatePlaintextKey = () => `sk_live_${Math.random().toString(36).slice(2, 18)}`;
+const generatePlaintextKey = () =>
+  `sk_live_${Math.random().toString(36).slice(2, 18)}`;
 const maskApiKey = (key: string) => `${key.slice(0, 8)}****${key.slice(-4)}`;
 
 const MOCK_ADMINS: AdminAccount[] = [
@@ -387,7 +391,8 @@ const AUDIT_ACTION_MARKERS: Record<string, string> = {
 
 const DEFAULT_AUDIT_PAGE_SIZE = 25;
 
-const clone = <T,>(items: T[]): T[] => items.map(item => structuredClone(item));
+const clone = <T>(items: T[]): T[] =>
+  items.map((item) => structuredClone(item));
 
 export async function fetchAdminAccounts(): Promise<AdminAccount[]> {
   await delay();
@@ -399,7 +404,13 @@ export async function fetchDirectoryGroups(): Promise<AdminDirectoryGroup[]> {
   return clone(MOCK_GROUPS);
 }
 
-export async function syncAdGroup({ accountId, groupId }: { accountId: string; groupId: string }): Promise<void> {
+export async function syncAdGroup({
+  accountId,
+  groupId
+}: {
+  accountId: string;
+  groupId: string;
+}): Promise<void> {
   console.info('syncAdGroup', accountId, groupId);
   await delay(80);
 }
@@ -438,10 +449,16 @@ export async function issueAdminApiKey({
   return { apiKey: structuredClone(apiKey), plaintextKey };
 }
 
-export async function revokeAdminApiKey({ id, reason }: { id: string; reason?: string }): Promise<void> {
+export async function revokeAdminApiKey({
+  id,
+  reason
+}: {
+  id: string;
+  reason?: string;
+}): Promise<void> {
   console.info('revokeAdminApiKey', id, reason);
   await delay();
-  MOCK_API_KEYS = MOCK_API_KEYS.map(key =>
+  MOCK_API_KEYS = MOCK_API_KEYS.map((key) =>
     key.id === id
       ? {
           ...key,
@@ -467,7 +484,7 @@ export async function updateFeatureFlag({
   rolloutPercentage: number;
 }): Promise<FeatureFlag> {
   await delay();
-  MOCK_FEATURE_FLAGS = MOCK_FEATURE_FLAGS.map(flag =>
+  MOCK_FEATURE_FLAGS = MOCK_FEATURE_FLAGS.map((flag) =>
     flag.id === id
       ? {
           ...flag,
@@ -477,14 +494,16 @@ export async function updateFeatureFlag({
         }
       : flag
   );
-  const updated = MOCK_FEATURE_FLAGS.find(flag => flag.id === id);
+  const updated = MOCK_FEATURE_FLAGS.find((flag) => flag.id === id);
   if (!updated) {
     throw new Error('Feature flag not found');
   }
   return structuredClone(updated);
 }
 
-export async function fetchEnvironmentMessages(): Promise<EnvironmentMessage[]> {
+export async function fetchEnvironmentMessages(): Promise<
+  EnvironmentMessage[]
+> {
   await delay();
   return clone(MOCK_ENV_MESSAGES);
 }
@@ -499,7 +518,7 @@ export async function updateEnvironmentMessage({
   active: boolean;
 }): Promise<EnvironmentMessage> {
   await delay();
-  MOCK_ENV_MESSAGES = MOCK_ENV_MESSAGES.map(item =>
+  MOCK_ENV_MESSAGES = MOCK_ENV_MESSAGES.map((item) =>
     item.id === id
       ? {
           ...item,
@@ -509,14 +528,17 @@ export async function updateEnvironmentMessage({
         }
       : item
   );
-  const updated = MOCK_ENV_MESSAGES.find(item => item.id === id);
+  const updated = MOCK_ENV_MESSAGES.find((item) => item.id === id);
   if (!updated) {
     throw new Error('Environment message not found');
   }
   return structuredClone(updated);
 }
 
-const applyAuditFilters = (logs: AuditLogEntry[], options: AuditLogQueryOptions): AuditLogEntry[] => {
+const applyAuditFilters = (
+  logs: AuditLogEntry[],
+  options: AuditLogQueryOptions
+): AuditLogEntry[] => {
   const from = options.from ? Date.parse(options.from) : undefined;
   const to = options.to ? Date.parse(options.to) : undefined;
   const category = options.category?.toLowerCase();
@@ -524,9 +546,13 @@ const applyAuditFilters = (logs: AuditLogEntry[], options: AuditLogQueryOptions)
   const createdBy = options.createdBy?.toLowerCase();
   const routingId = options.routingId?.toLowerCase();
 
-  return logs.filter(log => {
+  return logs.filter((log) => {
     const timestamp = Date.parse(log.eventAt);
-    if (Number.isFinite(from) && from !== undefined && timestamp < (from ?? 0)) {
+    if (
+      Number.isFinite(from) &&
+      from !== undefined &&
+      timestamp < (from ?? 0)
+    ) {
       return false;
     }
     if (Number.isFinite(to) && to !== undefined && timestamp > (to ?? 0)) {
@@ -551,11 +577,16 @@ const applyAuditFilters = (logs: AuditLogEntry[], options: AuditLogQueryOptions)
   });
 };
 
-const paginateAuditLogs = (logs: AuditLogEntry[], options: AuditLogQueryOptions): AuditLogSearchResult => {
+const paginateAuditLogs = (
+  logs: AuditLogEntry[],
+  options: AuditLogQueryOptions
+): AuditLogSearchResult => {
   const page = Math.max(1, options.page ?? 1);
   const pageSize = Math.max(1, options.pageSize ?? DEFAULT_AUDIT_PAGE_SIZE);
   const start = (page - 1) * pageSize;
-  const sorted = logs.slice().sort((a, b) => Date.parse(b.eventAt) - Date.parse(a.eventAt));
+  const sorted = logs
+    .slice()
+    .sort((a, b) => Date.parse(b.eventAt) - Date.parse(a.eventAt));
   const items = sorted.slice(start, start + pageSize);
 
   return {
@@ -591,11 +622,22 @@ const buildAuditCsv = (logs: AuditLogEntry[]): string => {
   return lines.join('\n');
 };
 
-const computeAuditStatistics = (logs: AuditLogEntry[], fromIso: string, toIso: string, source: 'api' | 'mock'): AuditLogStatistics => {
+const computeAuditStatistics = (
+  logs: AuditLogEntry[],
+  fromIso: string,
+  toIso: string,
+  source: 'api' | 'mock'
+): AuditLogStatistics => {
   const totalEvents = logs.length;
-  const approvalEvents = logs.filter(item => item.category.toLowerCase() === 'approval').length;
-  const rejectionEvents = logs.filter(item => item.action === 'RoutingRejected').length;
-  const criticalEvents = logs.filter(item => item.severity === 'Critical').length;
+  const approvalEvents = logs.filter(
+    (item) => item.category.toLowerCase() === 'approval'
+  ).length;
+  const rejectionEvents = logs.filter(
+    (item) => item.action === 'RoutingRejected'
+  ).length;
+  const criticalEvents = logs.filter(
+    (item) => item.severity === 'Critical'
+  ).length;
 
   const eventsByCategory = Object.fromEntries(
     logs.reduce((map, log) => {
@@ -630,7 +672,11 @@ const computeAuditStatistics = (logs: AuditLogEntry[], fromIso: string, toIso: s
     if (log.action === 'RoutingApproved' || log.action === 'RoutingRejected') {
       const requestTs = requestMap.get(log.routingId);
       const decisionTs = Date.parse(log.eventAt);
-      if (requestTs !== undefined && Number.isFinite(decisionTs) && decisionTs >= requestTs) {
+      if (
+        requestTs !== undefined &&
+        Number.isFinite(decisionTs) &&
+        decisionTs >= requestTs
+      ) {
         durations.push((decisionTs - requestTs) / (1000 * 60 * 60));
       }
     }
@@ -657,12 +703,12 @@ const computeAuditStatistics = (logs: AuditLogEntry[], fromIso: string, toIso: s
     const rejectionRate = rejectionEvents / totalEvents;
     if (rejectionRate >= 0.25) {
       const rejectionPercentage = Math.round(rejectionRate * 1000) / 10;
-    alerts.push({
-      id: 'high-rejection-rate',
-      title: 'High rejection rate',
-      severity: 'warning',
-      message: `Rejection rate is ${rejectionPercentage}% of total audit events.`,
-      createdAt: nowIso
+      alerts.push({
+        id: 'high-rejection-rate',
+        title: 'High rejection rate',
+        severity: 'warning',
+        message: `Rejection rate is ${rejectionPercentage}% of total audit events.`,
+        createdAt: nowIso
       });
     }
   }
@@ -702,22 +748,30 @@ const computeAuditStatistics = (logs: AuditLogEntry[], fromIso: string, toIso: s
   };
 };
 
-const resolveRange = (options: AuditLogQueryOptions): { from: string; to: string } => {
+const resolveRange = (
+  options: AuditLogQueryOptions
+): { from: string; to: string } => {
   const now = new Date();
   const to = options.to ? new Date(options.to) : now;
-  const from = options.from ? new Date(options.from) : new Date(to.getTime() - 7 * 24 * 60 * 60 * 1000);
+  const from = options.from
+    ? new Date(options.from)
+    : new Date(to.getTime() - 7 * 24 * 60 * 60 * 1000);
   return {
     from: new Date(from).toISOString(),
     to: new Date(to).toISOString()
   };
 };
 
-const getMockAuditLogs = (options: AuditLogQueryOptions): AuditLogSearchResult => {
+const getMockAuditLogs = (
+  options: AuditLogQueryOptions
+): AuditLogSearchResult => {
   const filtered = applyAuditFilters(MOCK_AUDIT_LOGS, options);
   return paginateAuditLogs(filtered, options);
 };
 
-export async function fetchAuditLogs(options: AuditLogQueryOptions = {}): Promise<AuditLogSearchResult> {
+export async function fetchAuditLogs(
+  options: AuditLogQueryOptions = {}
+): Promise<AuditLogSearchResult> {
   const baseUrl = getApiBaseUrl();
   if (baseUrl) {
     try {
@@ -729,13 +783,22 @@ export async function fetchAuditLogs(options: AuditLogQueryOptions = {}): Promis
       if (options.createdBy) params.set('createdBy', options.createdBy);
       if (options.routingId) params.set('routingId', options.routingId);
       params.set('page', String(Math.max(1, options.page ?? 1)));
-      params.set('pageSize', String(Math.max(1, options.pageSize ?? DEFAULT_AUDIT_PAGE_SIZE)));
+      params.set(
+        'pageSize',
+        String(Math.max(1, options.pageSize ?? DEFAULT_AUDIT_PAGE_SIZE))
+      );
 
-      const response = await fetch(`${baseUrl}/api/audit-logs?${params.toString()}`, { cache: 'no-store' });
+      const response = await fetch(
+        `${baseUrl}/api/audit-logs?${params.toString()}`,
+        { cache: 'no-store' }
+      );
       if (!response.ok) {
         throw new Error(`Failed to fetch audit logs: ${response.status}`);
       }
-      const payload = (await response.json()) as Omit<AuditLogSearchResult, 'source'>;
+      const payload = (await response.json()) as Omit<
+        AuditLogSearchResult,
+        'source'
+      >;
       return { ...payload, source: 'api' };
     } catch (error) {
       console.warn('[fetchAuditLogs] falling back to mock data:', error);
@@ -744,7 +807,9 @@ export async function fetchAuditLogs(options: AuditLogQueryOptions = {}): Promis
   return getMockAuditLogs(options);
 }
 
-export async function exportAuditLogsCsv(options: AuditLogQueryOptions = {}): Promise<string> {
+export async function exportAuditLogsCsv(
+  options: AuditLogQueryOptions = {}
+): Promise<string> {
   const baseUrl = getApiBaseUrl();
   const filtered = applyAuditFilters(MOCK_AUDIT_LOGS, options);
 
@@ -760,7 +825,10 @@ export async function exportAuditLogsCsv(options: AuditLogQueryOptions = {}): Pr
       params.set('page', '1');
       params.set('pageSize', String(Math.max(1, options.pageSize ?? 5000)));
 
-      const response = await fetch(`${baseUrl}/api/audit-logs/export?${params.toString()}`, { cache: 'no-store' });
+      const response = await fetch(
+        `${baseUrl}/api/audit-logs/export?${params.toString()}`,
+        { cache: 'no-store' }
+      );
       if (!response.ok) {
         throw new Error(`Failed to export audit logs: ${response.status}`);
       }
@@ -773,7 +841,9 @@ export async function exportAuditLogsCsv(options: AuditLogQueryOptions = {}): Pr
   return buildAuditCsv(filtered);
 }
 
-export async function fetchAuditStatistics(options: AuditLogQueryOptions = {}): Promise<AuditLogStatistics> {
+export async function fetchAuditStatistics(
+  options: AuditLogQueryOptions = {}
+): Promise<AuditLogStatistics> {
   const { from, to } = resolveRange(options);
   const baseUrl = getApiBaseUrl();
 
@@ -786,11 +856,17 @@ export async function fetchAuditStatistics(options: AuditLogQueryOptions = {}): 
       if (options.createdBy) params.set('createdBy', options.createdBy);
       if (options.routingId) params.set('routingId', options.routingId);
 
-      const response = await fetch(`${baseUrl}/api/audit-logs/statistics?${params.toString()}`, { cache: 'no-store' });
+      const response = await fetch(
+        `${baseUrl}/api/audit-logs/statistics?${params.toString()}`,
+        { cache: 'no-store' }
+      );
       if (!response.ok) {
         throw new Error(`Failed to fetch audit statistics: ${response.status}`);
       }
-      const payload = (await response.json()) as Omit<AuditLogStatistics, 'source'>;
+      const payload = (await response.json()) as Omit<
+        AuditLogStatistics,
+        'source'
+      >;
       return { ...payload, source: 'api' };
     } catch (error) {
       console.warn('[fetchAuditStatistics] falling back to mock data:', error);
@@ -801,7 +877,9 @@ export async function fetchAuditStatistics(options: AuditLogQueryOptions = {}): 
   return computeAuditStatistics(filtered, from, to, 'mock');
 }
 
-export async function fetchApprovalHistory(routingId: string): Promise<ApprovalHistoryEntry[]> {
+export async function fetchApprovalHistory(
+  routingId: string
+): Promise<ApprovalHistoryEntry[]> {
   if (!routingId) {
     return [];
   }
@@ -809,7 +887,10 @@ export async function fetchApprovalHistory(routingId: string): Promise<ApprovalH
   const baseUrl = getApiBaseUrl();
   if (baseUrl) {
     try {
-      const response = await fetch(`${baseUrl}/api/routings/${routingId}/approval-history`, { cache: 'no-store' });
+      const response = await fetch(
+        `${baseUrl}/api/routings/${routingId}/approval-history`,
+        { cache: 'no-store' }
+      );
       if (!response.ok) {
         throw new Error(`Failed to fetch approval history: ${response.status}`);
       }
@@ -826,4 +907,3 @@ export async function fetchApprovalHistory(routingId: string): Promise<ApprovalH
 export function resolveAuditActionMarker(action: string): string {
   return AUDIT_ACTION_MARKERS[action] ?? '???';
 }
-

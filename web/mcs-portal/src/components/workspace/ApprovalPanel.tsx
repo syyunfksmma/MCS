@@ -1,7 +1,16 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import { Button, Empty, Form, Input, Modal, Timeline, Typography, message } from 'antd';
+import {
+  Button,
+  Empty,
+  Form,
+  Input,
+  Modal,
+  Timeline,
+  Typography,
+  message
+} from 'antd';
 import type { ExplorerRouting, ApprovalEvent } from '@/types/explorer';
 
 const { Text, Paragraph } = Typography;
@@ -23,13 +32,20 @@ const DECISION_LABEL: Record<'approved' | 'rejected' | 'pending', string> = {
   pending: '보류'
 };
 
-export default function ApprovalPanel({ routing, events, onSubmit }: ApprovalPanelProps) {
+export default function ApprovalPanel({
+  routing,
+  events,
+  onSubmit
+}: ApprovalPanelProps) {
   const [modal, setModal] = useState<ApprovalModalState | null>(null);
   const [form] = Form.useForm<{ comment: string }>();
   const [apiMessage, contextHolder] = message.useMessage();
 
   const sortedEvents = useMemo(() => {
-    return [...events].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    return [...events].sort(
+      (a, b) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    );
   }, [events]);
 
   const openModal = (decision: 'approved' | 'rejected') => {
@@ -50,7 +66,9 @@ export default function ApprovalPanel({ routing, events, onSubmit }: ApprovalPan
     try {
       const values = await form.validateFields();
       onSubmit(modal!.decision, values.comment.trim());
-      apiMessage.success(`${routing!.code} ${DECISION_LABEL[modal!.decision]} 기록이 추가되었습니다.`);
+      apiMessage.success(
+        `${routing!.code} ${DECISION_LABEL[modal!.decision]} 기록이 추가되었습니다.`
+      );
       closeModal();
     } catch (error) {
       // validation handled by form
@@ -61,39 +79,69 @@ export default function ApprovalPanel({ routing, events, onSubmit }: ApprovalPan
     <div className="flex flex-col gap-3">
       {contextHolder}
       <div className="flex flex-wrap gap-2">
-        <Button type="primary" disabled={!routing} onClick={() => openModal('approved')}>
+        <Button
+          type="primary"
+          disabled={!routing}
+          onClick={() => openModal('approved')}
+        >
           승인 요청 기록
         </Button>
-        <Button danger disabled={!routing} onClick={() => openModal('rejected')}>
+        <Button
+          danger
+          disabled={!routing}
+          onClick={() => openModal('rejected')}
+        >
           반려 기록 추가
         </Button>
       </div>
       {routing ? (
         <Paragraph type="secondary" className="mb-0 text-sm">
-          대상 Routing: <Text strong>{routing.code}</Text> · 상태: {routing.status}
+          대상 Routing: <Text strong>{routing.code}</Text> · 상태:{' '}
+          {routing.status}
         </Paragraph>
       ) : (
-        <Paragraph type="secondary">Routing을 선택하면 승인/반려 내역을 확인할 수 있습니다.</Paragraph>
+        <Paragraph type="secondary">
+          Routing을 선택하면 승인/반려 내역을 확인할 수 있습니다.
+        </Paragraph>
       )}
       {sortedEvents.length ? (
         <Timeline>
-          {sortedEvents.map(event => (
+          {sortedEvents.map((event) => (
             <Timeline.Item
               key={event.id}
-              color={event.decision === 'approved' ? 'green' : event.decision === 'rejected' ? 'red' : 'blue'}
+              color={
+                event.decision === 'approved'
+                  ? 'green'
+                  : event.decision === 'rejected'
+                    ? 'red'
+                    : 'blue'
+              }
             >
               <div className="flex flex-col gap-1">
                 <Text strong>
-                  {DECISION_LABEL[event.decision]} · {new Date(event.createdAt).toLocaleString()}
+                  {DECISION_LABEL[event.decision]} ·{' '}
+                  {new Date(event.createdAt).toLocaleString()}
                 </Text>
-                <Text type="secondary">{event.actor} · 출처: {event.source === 'user' ? '사용자' : event.source === 'system' ? '시스템' : 'SignalR'}</Text>
-                <Paragraph className="mb-0 whitespace-pre-wrap">{event.comment || '코멘트 없음'}</Paragraph>
+                <Text type="secondary">
+                  {event.actor} · 출처:{' '}
+                  {event.source === 'user'
+                    ? '사용자'
+                    : event.source === 'system'
+                      ? '시스템'
+                      : 'SignalR'}
+                </Text>
+                <Paragraph className="mb-0 whitespace-pre-wrap">
+                  {event.comment || '코멘트 없음'}
+                </Paragraph>
               </div>
             </Timeline.Item>
           ))}
         </Timeline>
       ) : (
-        <Empty description="승인/반려 이력이 없습니다" image={Empty.PRESENTED_IMAGE_SIMPLE} />
+        <Empty
+          description="승인/반려 이력이 없습니다"
+          image={Empty.PRESENTED_IMAGE_SIMPLE}
+        />
       )}
 
       <Modal
@@ -125,7 +173,13 @@ export default function ApprovalPanel({ routing, events, onSubmit }: ApprovalPan
               }
             ]}
           >
-            <Input.TextArea rows={4} placeholder="승인/반려 사유를 입력하세요" maxLength={500} showCount allowClear />
+            <Input.TextArea
+              rows={4}
+              placeholder="승인/반려 사유를 입력하세요"
+              maxLength={500}
+              showCount
+              allowClear
+            />
           </Form.Item>
         </Form>
       </Modal>

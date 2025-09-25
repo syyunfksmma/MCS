@@ -15,7 +15,10 @@ type RawExplorerRouting = ExplorerRouting & {
   files?: ExplorerRouting['files'];
 };
 
-type RawExplorerRoutingGroup = Omit<ExplorerRoutingGroup, 'routings' | 'displayOrder'> & {
+type RawExplorerRoutingGroup = Omit<
+  ExplorerRoutingGroup,
+  'routings' | 'displayOrder'
+> & {
   routings?: RawExplorerRouting[];
   displayOrder?: number;
   isDeleted?: boolean;
@@ -48,10 +51,12 @@ const cloneRouting = (routing: RawExplorerRouting): ExplorerRouting => ({
   sharedDrivePath: routing.sharedDrivePath,
   sharedDriveReady: routing.sharedDriveReady,
   createdAt: routing.createdAt,
-  files: (routing.files ?? []).map(file => ({ ...file }))
+  files: (routing.files ?? []).map((file) => ({ ...file }))
 });
 
-const ensureRoutingGroups = (revision: RawExplorerRevision): ExplorerRoutingGroup[] => {
+const ensureRoutingGroups = (
+  revision: RawExplorerRevision
+): ExplorerRoutingGroup[] => {
   const groups = revision.routingGroups ?? [];
   if (groups.length > 0) {
     return groups
@@ -86,9 +91,9 @@ const ensureRoutingGroups = (revision: RawExplorerRevision): ExplorerRoutingGrou
 };
 
 const normalizeExplorerItems = (items: RawExplorerItem[]): ExplorerItem[] =>
-  items.map(item => ({
+  items.map((item) => ({
     ...item,
-    revisions: item.revisions.map(revision => ({
+    revisions: item.revisions.map((revision) => ({
       id: revision.id,
       code: revision.code,
       routingGroups: ensureRoutingGroups(revision)
@@ -108,9 +113,11 @@ const createMockItems = (): RawExplorerItem[] => [
           {
             id: 'group_a_machining',
             name: 'Machining',
-            description: 'Primary machining steps for bracket roughing and finishing.',
+            description:
+              'Primary machining steps for bracket roughing and finishing.',
             displayOrder: 1,
-            sharedDrivePath: '\\MCMS_SHARE\\Routing\\Item_A\\REV_item_a_rev01\\GROUP_group_a_machining',
+            sharedDrivePath:
+              '\\MCMS_SHARE\\Routing\\Item_A\\REV_item_a_rev01\\GROUP_group_a_machining',
             routings: [
               {
                 id: 'routing_gt310001',
@@ -119,9 +126,12 @@ const createMockItems = (): RawExplorerItem[] => [
                 camRevision: '1.2.0',
                 owner: 'cam.jane',
                 notes: 'Initial machining program synced from ESPRIT.',
-                sharedDrivePath: '\\MCMS_SHARE\\Routing\\Item_A\\REV_item_a_rev01\\GROUP_group_a_machining',
+                sharedDrivePath:
+                  '\\MCMS_SHARE\\Routing\\Item_A\\REV_item_a_rev01\\GROUP_group_a_machining',
                 sharedDriveReady: true,
-                createdAt: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(),
+                createdAt: new Date(
+                  Date.now() - 6 * 60 * 60 * 1000
+                ).toISOString(),
                 files: [
                   { id: 'file_esp', name: 'GT310001.esp', type: 'esprit' },
                   { id: 'file_nc', name: 'GT310001.nc', type: 'nc' },
@@ -135,7 +145,8 @@ const createMockItems = (): RawExplorerItem[] => [
             name: 'Quality & Inspection',
             description: 'Coordinate-check and QA steps pending definition.',
             displayOrder: 2,
-            sharedDrivePath: '\\MCMS_SHARE\\Routing\\Item_A\\REV_item_a_rev01\\GROUP_group_a_quality',
+            sharedDrivePath:
+              '\\MCMS_SHARE\\Routing\\Item_A\\REV_item_a_rev01\\GROUP_group_a_quality',
             isDeleted: true,
             updatedAt: new Date(Date.now() - 60 * 60 * 1000).toISOString(),
             updatedBy: 'qa.bot',
@@ -159,7 +170,8 @@ const createMockItems = (): RawExplorerItem[] => [
             name: 'Setup & Fixturing',
             description: 'Fixture mounting and calibration sequence.',
             displayOrder: 1,
-            sharedDrivePath: '\\MCMS_SHARE\\Routing\\Item_B\\REV_item_b_rev02\\GROUP_group_b_setup',
+            sharedDrivePath:
+              '\\MCMS_SHARE\\Routing\\Item_B\\REV_item_b_rev02\\GROUP_group_b_setup',
             routings: [
               {
                 id: 'routing_sh2001',
@@ -168,9 +180,12 @@ const createMockItems = (): RawExplorerItem[] => [
                 camRevision: '0.9.1',
                 owner: 'cam.lee',
                 notes: 'Awaiting approval after tool change.',
-                sharedDrivePath: '\\MCMS_SHARE\\Routing\\Item_B\\REV_item_b_rev02\\GROUP_group_b_setup',
+                sharedDrivePath:
+                  '\\MCMS_SHARE\\Routing\\Item_B\\REV_item_b_rev02\\GROUP_group_b_setup',
                 sharedDriveReady: true,
-                createdAt: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString(),
+                createdAt: new Date(
+                  Date.now() - 3 * 60 * 60 * 1000
+                ).toISOString(),
                 files: [
                   { id: 'file_esp2', name: 'SH2001.esp', type: 'esprit' },
                   { id: 'file_meta2', name: 'meta.json', type: 'meta' }
@@ -181,9 +196,11 @@ const createMockItems = (): RawExplorerItem[] => [
           {
             id: 'group_b_quality',
             name: 'Inspection',
-            description: 'Placeholder group for surface and tolerance inspection.',
+            description:
+              'Placeholder group for surface and tolerance inspection.',
             displayOrder: 2,
-            sharedDrivePath: '\\MCMS_SHARE\\Routing\\Item_B\\REV_item_b_rev02\\GROUP_group_b_quality',
+            sharedDrivePath:
+              '\\MCMS_SHARE\\Routing\\Item_B\\REV_item_b_rev02\\GROUP_group_b_quality',
             routings: []
           }
         ]
@@ -194,10 +211,10 @@ const createMockItems = (): RawExplorerItem[] => [
 
 const flattenRoutingContexts = (items: ExplorerItem[]): RoutingContext[] => {
   const contexts: RoutingContext[] = [];
-  items.forEach(item => {
-    item.revisions.forEach(revision => {
-      revision.routingGroups.forEach(group => {
-        group.routings.forEach(routing => {
+  items.forEach((item) => {
+    item.revisions.forEach((revision) => {
+      revision.routingGroups.forEach((group) => {
+        group.routings.forEach((routing) => {
           contexts.push({ item, revision, group, routing });
         });
       });
@@ -221,8 +238,8 @@ const createMockAddinJobs = (items: ExplorerItem[]): AddinJob[] => {
       status === 'running'
         ? 'SignalR: job running'
         : status === 'succeeded'
-        ? 'SignalR: job succeeded'
-        : 'Queued from workspace';
+          ? 'SignalR: job succeeded'
+          : 'Queued from workspace';
 
     return {
       id: `job-${index + 1}`,
@@ -254,8 +271,8 @@ const createMockApprovalEvents = (items: ExplorerItem[]): ApprovalEventMap => {
       ctx.routing.status === 'Approved'
         ? 'approved'
         : ctx.routing.status === 'Rejected'
-        ? 'rejected'
-        : 'pending';
+          ? 'rejected'
+          : 'pending';
     const event: ApprovalEvent = {
       id: `approval-${ctx.routing.id}-${index + 1}`,
       routingId: ctx.routing.id,
@@ -289,18 +306,23 @@ export async function fetchExplorerData(): Promise<ExplorerResponse> {
   }
 
   try {
-    const res = await fetch(`${baseUrl}/api/explorer`, { next: { revalidate: 60 } });
+    const res = await fetch(`${baseUrl}/api/explorer`, {
+      next: { revalidate: 60 }
+    });
     if (!res.ok) {
       throw new Error(`API responded with status ${res.status}`);
     }
     const payload = (await res.json()) as ExplorerResponse;
-    const normalizedItems = normalizeExplorerItems(payload.items as unknown as RawExplorerItem[]);
+    const normalizedItems = normalizeExplorerItems(
+      payload.items as unknown as RawExplorerItem[]
+    );
     return {
       ...payload,
       source: 'api',
       items: normalizedItems,
       addinJobs: payload.addinJobs ?? createMockAddinJobs(normalizedItems),
-      approvalEvents: payload.approvalEvents ?? createMockApprovalEvents(normalizedItems)
+      approvalEvents:
+        payload.approvalEvents ?? createMockApprovalEvents(normalizedItems)
     };
   } catch (error) {
     console.warn('[fetchExplorerData] falling back to mock data:', error);

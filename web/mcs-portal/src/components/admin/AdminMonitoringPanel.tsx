@@ -18,18 +18,29 @@ export default function AdminMonitoringPanel() {
         <Title level={3} className="mb-0">
           Monitoring Dashboard
         </Title>
-        <Text type="secondary">Embed the live KPI dashboard directly inside the admin console.</Text>
+        <Text type="secondary">
+          Embed the live KPI dashboard directly inside the admin console.
+        </Text>
       </div>
       <Card
         bordered
         bodyStyle={{ padding: 12 }}
         extra={
           <Space>
-            <Button icon={<ReloadOutlined />} onClick={() => setIframeKey(prev => prev + 1)}>
+            <Button
+              icon={<ReloadOutlined />}
+              onClick={() => setIframeKey((prev) => prev + 1)}
+            >
               Refresh
             </Button>
             {externalUrl && (
-              <Button type="link" icon={<LinkOutlined />} href={externalUrl} target="_blank" rel="noopener noreferrer">
+              <Button
+                type="link"
+                icon={<LinkOutlined />}
+                href={externalUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 Open in new tab
               </Button>
             )}
@@ -46,12 +57,17 @@ export default function AdminMonitoringPanel() {
             allowFullScreen
           />
         ) : (
-          <Empty description={
-            <Space direction="vertical" size={2}>
-              <Text strong>Embed URL is not configured.</Text>
-              <Text type="secondary">Configure NEXT_PUBLIC_GRAFANA_EMBED_URL to render the dashboard.</Text>
-            </Space>
-          } />
+          <Empty
+            description={
+              <Space direction="vertical" size={2}>
+                <Text strong>Embed URL is not configured.</Text>
+                <Text type="secondary">
+                  Configure NEXT_PUBLIC_GRAFANA_EMBED_URL to render the
+                  dashboard.
+                </Text>
+              </Space>
+            }
+          />
         )}
       </Card>
     </div>

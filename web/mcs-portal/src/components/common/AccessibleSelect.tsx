@@ -1,6 +1,15 @@
 'use client';
 
-import { Children, CSSProperties, isValidElement, ReactNode, useEffect, useId, useMemo, useState } from 'react';
+import {
+  Children,
+  CSSProperties,
+  isValidElement,
+  ReactNode,
+  useEffect,
+  useId,
+  useMemo,
+  useState
+} from 'react';
 import { Select } from 'antd';
 import type { SelectProps } from 'antd';
 
@@ -23,7 +32,7 @@ function extractLabelsFromOptions(options?: SelectProps['options']): string[] {
   }
 
   return options
-    .map(option => {
+    .map((option) => {
       if (!option) return '';
       if (typeof option === 'string' || typeof option === 'number') {
         return String(option);
@@ -46,7 +55,7 @@ function extractLabelsFromOptions(options?: SelectProps['options']): string[] {
 
 function extractLabelsFromChildren(children?: ReactNode): string[] {
   const labels: string[] = [];
-  Children.forEach(children, child => {
+  Children.forEach(children, (child) => {
     if (!isValidElement(child)) return;
     const value = child.props?.children;
     if (typeof value === 'string') {
@@ -56,7 +65,8 @@ function extractLabelsFromChildren(children?: ReactNode): string[] {
   return labels;
 }
 
-export interface AccessibleSelectProps<ValueType = unknown> extends SelectProps<ValueType> {
+export interface AccessibleSelectProps<ValueType = unknown>
+  extends SelectProps<ValueType> {
   labelText?: string;
   optionTextOverride?: string[];
   describedBy?: string;
@@ -101,9 +111,14 @@ export default function AccessibleSelect<ValueType = unknown>({
   }, [controlId, expanded]);
 
   const restWithAria = rest as SelectProps<ValueType> & Record<string, unknown>;
-  const labelledById = labelText ? `${controlId}-label` : (restWithAria['aria-labelledby'] as string | undefined);
-  const describedById = describedBy ?? (restWithAria['aria-describedby'] as string | undefined);
-  const ariaLabel = labelText ? undefined : (restWithAria['aria-label'] as string | undefined);
+  const labelledById = labelText
+    ? `${controlId}-label`
+    : (restWithAria['aria-labelledby'] as string | undefined);
+  const describedById =
+    describedBy ?? (restWithAria['aria-describedby'] as string | undefined);
+  const ariaLabel = labelText
+    ? undefined
+    : (restWithAria['aria-label'] as string | undefined);
 
   const selectProps: SelectProps<ValueType> & Record<string, unknown> = {
     ...rest,
@@ -134,12 +149,20 @@ export default function AccessibleSelect<ValueType = unknown>({
           {labelText}
         </span>
       ) : null}
-      <Select<ValueType> {...selectProps}>
-        {children}
-      </Select>
-      <ul id={listboxId} role="listbox" aria-hidden="true" style={visuallyHidden}>
+      <Select<ValueType> {...selectProps}>{children}</Select>
+      <ul
+        id={listboxId}
+        role="listbox"
+        aria-hidden="true"
+        style={visuallyHidden}
+      >
         {mergedOptionLabels.map((text, index) => (
-          <li key={index} id={`${listboxId}_${index}`} role="option" aria-selected={index === 0}>
+          <li
+            key={index}
+            id={`${listboxId}_${index}`}
+            role="option"
+            aria-selected={index === 0}
+          >
             {text}
           </li>
         ))}

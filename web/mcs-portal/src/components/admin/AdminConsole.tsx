@@ -40,8 +40,11 @@ interface AdminConsoleProps {
 }
 
 export default function AdminConsole({ initialAccounts }: AdminConsoleProps) {
-  const [accounts, setAccounts] = useState<AdminAccount[]>(initialAccounts ?? []);
-  const [filter, setFilter] = useState<(typeof STATUS_FILTER)[number]['value']>('all');
+  const [accounts, setAccounts] = useState<AdminAccount[]>(
+    initialAccounts ?? []
+  );
+  const [filter, setFilter] =
+    useState<(typeof STATUS_FILTER)[number]['value']>('all');
   const [search, setSearch] = useState('');
   const [groups, setGroups] = useState<AdminDirectoryGroup[]>([]);
   const [loading, setLoading] = useState(false);
@@ -49,7 +52,10 @@ export default function AdminConsole({ initialAccounts }: AdminConsoleProps) {
   const loadData = useCallback(async () => {
     setLoading(true);
     try {
-      const [accountsData, groupsData] = await Promise.all([fetchAdminAccounts(), fetchDirectoryGroups()]);
+      const [accountsData, groupsData] = await Promise.all([
+        fetchAdminAccounts(),
+        fetchDirectoryGroups()
+      ]);
       setAccounts(accountsData);
       setGroups(groupsData);
     } finally {
@@ -67,30 +73,36 @@ export default function AdminConsole({ initialAccounts }: AdminConsoleProps) {
 
   const filteredAccounts = useMemo(() => {
     const lower = search.toLowerCase();
-    return accounts.filter(account => {
+    return accounts.filter((account) => {
       const statusMatch = filter === 'all' ? true : account.status === filter;
       const textMatch = lower
-        ? [account.displayName, account.email, account.department, account.role].some(value =>
-            value.toLowerCase().includes(lower)
-          )
+        ? [
+            account.displayName,
+            account.email,
+            account.department,
+            account.role
+          ].some((value) => value.toLowerCase().includes(lower))
         : true;
       return statusMatch && textMatch;
     });
   }, [accounts, filter, search]);
 
-  const updateAccountStatus = useCallback((account: AdminAccount, nextStatus: AdminStatus) => {
-    setAccounts(prev =>
-      prev.map(item =>
-        item.id === account.id
-          ? {
-              ...item,
-              status: nextStatus,
-              lastUpdated: new Date().toISOString()
-            }
-          : item
-      )
-    );
-  }, []);
+  const updateAccountStatus = useCallback(
+    (account: AdminAccount, nextStatus: AdminStatus) => {
+      setAccounts((prev) =>
+        prev.map((item) =>
+          item.id === account.id
+            ? {
+                ...item,
+                status: nextStatus,
+                lastUpdated: new Date().toISOString()
+              }
+            : item
+        )
+      );
+    },
+    []
+  );
 
   const openStatusModal = useCallback(
     (account: AdminAccount, nextStatus: AdminStatus) => {
@@ -117,22 +129,26 @@ export default function AdminConsole({ initialAccounts }: AdminConsoleProps) {
 
   const buildGroupMenu = useCallback(
     (account: AdminAccount): MenuProps => ({
-      items: groups.map(group => ({
+      items: groups.map((group) => ({
         key: group.id,
         label: (
           <Space>
             <Text>{group.name}</Text>
-            <Tag color={group.type === 'security' ? 'geekblue' : 'green'}>{group.type}</Tag>
+            <Tag color={group.type === 'security' ? 'geekblue' : 'green'}>
+              {group.type}
+            </Tag>
           </Space>
         ),
         onClick: () => {
           syncAdGroup({ accountId: account.id, groupId: group.id }).then(() => {
-            setAccounts(prev =>
-              prev.map(item =>
+            setAccounts((prev) =>
+              prev.map((item) =>
                 item.id === account.id
                   ? {
                       ...item,
-                      directoryGroups: Array.from(new Set([...(item.directoryGroups ?? []), group.name]))
+                      directoryGroups: Array.from(
+                        new Set([...(item.directoryGroups ?? []), group.name])
+                      )
                     }
                   : item
               )
@@ -185,7 +201,7 @@ export default function AdminConsole({ initialAccounts }: AdminConsoleProps) {
         title: 'AD 그룹',
         dataIndex: 'directoryGroups',
         key: 'directoryGroups',
-        render: groupsValue =>
+        render: (groupsValue) =>
           groupsValue?.length ? (
             <Space wrap>
               {groupsValue.map((name: string) => (
@@ -200,7 +216,7 @@ export default function AdminConsole({ initialAccounts }: AdminConsoleProps) {
         title: '최근 업데이트',
         dataIndex: 'lastUpdated',
         key: 'lastUpdated',
-        render: value => new Date(value).toLocaleString()
+        render: (value) => new Date(value).toLocaleString()
       },
       {
         title: '액션',
@@ -214,17 +230,28 @@ export default function AdminConsole({ initialAccounts }: AdminConsoleProps) {
               </Button>
             </Dropdown>
             <Tooltip title="활성">
-              <Button size="small" onClick={() => openStatusModal(record, 'active')}>
+              <Button
+                size="small"
+                onClick={() => openStatusModal(record, 'active')}
+              >
                 활성
               </Button>
             </Tooltip>
             <Tooltip title="잠금">
-              <Button size="small" danger onClick={() => openStatusModal(record, 'locked')}>
+              <Button
+                size="small"
+                danger
+                onClick={() => openStatusModal(record, 'locked')}
+              >
                 잠금
               </Button>
             </Tooltip>
             <Tooltip title="비활성">
-              <Button size="small" danger onClick={() => openStatusModal(record, 'disabled')}>
+              <Button
+                size="small"
+                danger
+                onClick={() => openStatusModal(record, 'disabled')}
+              >
                 비활성
               </Button>
             </Tooltip>
@@ -245,7 +272,7 @@ export default function AdminConsole({ initialAccounts }: AdminConsoleProps) {
       </div>
       <div className="flex flex-wrap gap-2 items-center">
         <Space>
-          {STATUS_FILTER.map(item => (
+          {STATUS_FILTER.map((item) => (
             <Button
               key={item.value}
               type={filter === item.value ? 'primary' : 'default'}
@@ -260,7 +287,7 @@ export default function AdminConsole({ initialAccounts }: AdminConsoleProps) {
           placeholder="이름/이메일/부서 검색"
           allowClear
           value={search}
-          onChange={event => setSearch(event.target.value)}
+          onChange={(event) => setSearch(event.target.value)}
           style={{ width: 280 }}
         />
         <Button icon={<ReloadOutlined />} onClick={() => void loadData()}>

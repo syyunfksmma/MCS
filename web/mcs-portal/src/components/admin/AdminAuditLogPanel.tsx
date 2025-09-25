@@ -15,7 +15,11 @@ import {
   Typography
 } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
-import { FileTextOutlined, ReloadOutlined, StockOutlined } from '@ant-design/icons';
+import {
+  FileTextOutlined,
+  ReloadOutlined,
+  StockOutlined
+} from '@ant-design/icons';
 import {
   ApprovalHistoryEntry,
   AuditLogEntry,
@@ -44,7 +48,13 @@ const timeRangeOptions = [
 ];
 
 const CATEGORY_PRESETS = ['Approval', 'Security', 'Integration'];
-const ACTION_PRESETS = ['ApprovalRequested', 'RoutingApproved', 'RoutingRejected', 'AdminLoginFailure', 'GrafanaEmbedViewed'];
+const ACTION_PRESETS = [
+  'ApprovalRequested',
+  'RoutingApproved',
+  'RoutingRejected',
+  'AdminLoginFailure',
+  'GrafanaEmbedViewed'
+];
 
 interface TimelineDrawerState {
   open: boolean;
@@ -57,12 +67,21 @@ function resolveRange(range: TimeRangePreset): { from: string; to: string } {
   const now = new Date();
   switch (range) {
     case '24h':
-      return { from: new Date(now.getTime() - 24 * 60 * 60 * 1000).toISOString(), to: now.toISOString() };
+      return {
+        from: new Date(now.getTime() - 24 * 60 * 60 * 1000).toISOString(),
+        to: now.toISOString()
+      };
     case '7d':
-      return { from: new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString(), to: now.toISOString() };
+      return {
+        from: new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+        to: now.toISOString()
+      };
     case '30d':
     default:
-      return { from: new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString(), to: now.toISOString() };
+      return {
+        from: new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString(),
+        to: now.toISOString()
+      };
   }
 }
 
@@ -82,11 +101,18 @@ export default function AdminAuditLogPanel() {
   const [action, setAction] = useState<string | undefined>();
   const [actor, setActor] = useState('');
   const [routingId, setRoutingId] = useState('');
-  const [queryOptions, setQueryOptions] = useState<AuditLogQueryOptions>({ page: 1, pageSize: 25 });
+  const [queryOptions, setQueryOptions] = useState<AuditLogQueryOptions>({
+    page: 1,
+    pageSize: 25
+  });
   const [result, setResult] = useState<AuditLogSearchResult | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [timelineState, setTimelineState] = useState<TimelineDrawerState>({ open: false, loading: false, entries: [] });
+  const [timelineState, setTimelineState] = useState<TimelineDrawerState>({
+    open: false,
+    loading: false,
+    entries: []
+  });
 
   const effectiveOptions = useMemo(() => {
     const range = resolveRange(timeRange);
@@ -121,23 +147,26 @@ export default function AdminAuditLogPanel() {
 
   const availableCategories = useMemo(() => {
     const set = new Set<string>(CATEGORY_PRESETS);
-    result?.items.forEach(item => set.add(item.category));
+    result?.items.forEach((item) => set.add(item.category));
     return Array.from(set);
   }, [result]);
 
   const availableActions = useMemo(() => {
     const set = new Set<string>(ACTION_PRESETS);
-    result?.items.forEach(item => set.add(item.action));
+    result?.items.forEach((item) => set.add(item.action));
     return Array.from(set);
   }, [result]);
 
-  const onTableChange = useCallback((pagination: { current?: number; pageSize?: number }) => {
-    setQueryOptions(prev => ({
-      ...prev,
-      page: pagination.current ?? prev.page ?? 1,
-      pageSize: pagination.pageSize ?? prev.pageSize
-    }));
-  }, []);
+  const onTableChange = useCallback(
+    (pagination: { current?: number; pageSize?: number }) => {
+      setQueryOptions((prev) => ({
+        ...prev,
+        page: pagination.current ?? prev.page ?? 1,
+        pageSize: pagination.pageSize ?? prev.pageSize
+      }));
+    },
+    []
+  );
 
   const handleRefresh = useCallback(() => {
     loadData(effectiveOptions).catch(() => undefined);
@@ -175,79 +204,94 @@ export default function AdminAuditLogPanel() {
     setTimelineState({ open: false, loading: false, entries: [] });
   }, []);
 
-  const columns: ColumnsType<AuditLogEntry> = useMemo(() => [
-    {
-      title: 'Timestamp',
-      dataIndex: 'eventAt',
-      key: 'eventAt',
-      width: 200,
-      render: value => new Date(value).toLocaleString()
-    },
-    {
-      title: 'Category',
-      dataIndex: 'category',
-      key: 'category',
-      width: 160,
-      render: (_, record) => (
-        <Space size={4}>
-          <span className="text-xs text-gray-500">{resolveAuditActionMarker(record.action)}</span>
-          <Tag color="geekblue">{record.category}</Tag>
-        </Space>
-      )
-    },
-    {
-      title: 'Action',
-      dataIndex: 'action',
-      key: 'action',
-      width: 200
-    },
-    {
-      title: 'Summary',
-      dataIndex: 'summary',
-      key: 'summary',
-      render: (_, record) => (
-        <Space direction="vertical" size={0}>
-          <Text strong>{record.summary}</Text>
-          {record.details && <Text type="secondary" className="text-xs">{record.details}</Text>}
-        </Space>
-      )
-    },
-    {
-      title: 'Severity',
-      dataIndex: 'severity',
-      key: 'severity',
-      width: 120,
-      render: (value: string) => <Tag color={severityColorMap[value] ?? 'default'}>{value}</Tag>
-    },
-    {
-      title: 'Actor',
-      dataIndex: 'createdBy',
-      key: 'createdBy',
-      width: 160
-    },
-    {
-      title: 'Links',
-      key: 'actions',
-      width: 160,
-      render: (_, record) => (
-        <Space>
-          <Tooltip title="View approval timeline">
-            <Button
-              size="small"
-              icon={<StockOutlined />}
-              disabled={!record.routingId}
-              onClick={() => openTimeline(record)}
-            />
-          </Tooltip>
-          {record.traceId && <Tag color="default">Trace: {record.traceId}</Tag>}
-        </Space>
-      )
-    }
-  ], [openTimeline]);
+  const columns: ColumnsType<AuditLogEntry> = useMemo(
+    () => [
+      {
+        title: 'Timestamp',
+        dataIndex: 'eventAt',
+        key: 'eventAt',
+        width: 200,
+        render: (value) => new Date(value).toLocaleString()
+      },
+      {
+        title: 'Category',
+        dataIndex: 'category',
+        key: 'category',
+        width: 160,
+        render: (_, record) => (
+          <Space size={4}>
+            <span className="text-xs text-gray-500">
+              {resolveAuditActionMarker(record.action)}
+            </span>
+            <Tag color="geekblue">{record.category}</Tag>
+          </Space>
+        )
+      },
+      {
+        title: 'Action',
+        dataIndex: 'action',
+        key: 'action',
+        width: 200
+      },
+      {
+        title: 'Summary',
+        dataIndex: 'summary',
+        key: 'summary',
+        render: (_, record) => (
+          <Space direction="vertical" size={0}>
+            <Text strong>{record.summary}</Text>
+            {record.details && (
+              <Text type="secondary" className="text-xs">
+                {record.details}
+              </Text>
+            )}
+          </Space>
+        )
+      },
+      {
+        title: 'Severity',
+        dataIndex: 'severity',
+        key: 'severity',
+        width: 120,
+        render: (value: string) => (
+          <Tag color={severityColorMap[value] ?? 'default'}>{value}</Tag>
+        )
+      },
+      {
+        title: 'Actor',
+        dataIndex: 'createdBy',
+        key: 'createdBy',
+        width: 160
+      },
+      {
+        title: 'Links',
+        key: 'actions',
+        width: 160,
+        render: (_, record) => (
+          <Space>
+            <Tooltip title="View approval timeline">
+              <Button
+                size="small"
+                icon={<StockOutlined />}
+                disabled={!record.routingId}
+                onClick={() => openTimeline(record)}
+              />
+            </Tooltip>
+            {record.traceId && (
+              <Tag color="default">Trace: {record.traceId}</Tag>
+            )}
+          </Space>
+        )
+      }
+    ],
+    [openTimeline]
+  );
 
   useEffect(() => {
-    const containers = document.querySelectorAll<HTMLElement>('.admin-audit-table .ant-table-content');
-    containers.forEach(container => {
+    const containers = document.querySelectorAll<HTMLElement>(
+      '.admin-audit-table .ant-table-content'
+    );
+    containers.forEach((container) => {
       if (!container.hasAttribute('tabindex')) {
         container.setAttribute('tabindex', '0');
         container.setAttribute('role', 'region');
@@ -273,20 +317,26 @@ export default function AdminAuditLogPanel() {
         <Title level={3} className="mb-0">
           Audit Log
         </Title>
-        <Text type="secondary">Review audit events alongside linked approval timelines.</Text>
+        <Text type="secondary">
+          Review audit events alongside linked approval timelines.
+        </Text>
       </div>
-      <div className="flex flex-wrap items-end gap-3" role="group" aria-label="Audit log filters">
+      <div
+        className="flex flex-wrap items-end gap-3"
+        role="group"
+        aria-label="Audit log filters"
+      >
         <label className="flex flex-col text-xs gap-1 text-neutral-600">
           <span className="font-semibold">Time range</span>
           <select
             className="rounded border border-neutral-300 px-2 py-1 text-sm"
             value={timeRange}
-            onChange={event => {
+            onChange={(event) => {
               setTimeRange(event.target.value as TimeRangePreset);
-              setQueryOptions(prev => ({ ...prev, page: 1 }));
+              setQueryOptions((prev) => ({ ...prev, page: 1 }));
             }}
           >
-            {timeRangeOptions.map(option => (
+            {timeRangeOptions.map((option) => (
               <option key={option.value} value={option.value}>
                 {option.label}
               </option>
@@ -298,14 +348,14 @@ export default function AdminAuditLogPanel() {
           <select
             className="rounded border border-neutral-300 px-2 py-1 text-sm"
             value={category ?? ''}
-            onChange={event => {
+            onChange={(event) => {
               const value = event.target.value || undefined;
               setCategory(value);
-              setQueryOptions(prev => ({ ...prev, page: 1 }));
+              setQueryOptions((prev) => ({ ...prev, page: 1 }));
             }}
           >
             <option value="">All categories</option>
-            {availableCategories.map(item => (
+            {availableCategories.map((item) => (
               <option key={item} value={item}>
                 {item}
               </option>
@@ -317,14 +367,14 @@ export default function AdminAuditLogPanel() {
           <select
             className="rounded border border-neutral-300 px-2 py-1 text-sm"
             value={action ?? ''}
-            onChange={event => {
+            onChange={(event) => {
               const value = event.target.value || undefined;
               setAction(value);
-              setQueryOptions(prev => ({ ...prev, page: 1 }));
+              setQueryOptions((prev) => ({ ...prev, page: 1 }));
             }}
           >
             <option value="">All actions</option>
-            {availableActions.map(item => (
+            {availableActions.map((item) => (
               <option key={item} value={item}>
                 {item}
               </option>
@@ -338,7 +388,7 @@ export default function AdminAuditLogPanel() {
             className="rounded border border-neutral-300 px-2 py-1 text-sm"
             placeholder="qa.lead"
             value={actor}
-            onChange={event => setActor(event.target.value)}
+            onChange={(event) => setActor(event.target.value)}
           />
         </label>
         <label className="flex flex-col text-xs gap-1 text-neutral-600">
@@ -347,18 +397,29 @@ export default function AdminAuditLogPanel() {
             type="text"
             className="rounded border border-neutral-300 px-2 py-1 text-sm"
             value={routingId}
-            onChange={event => setRoutingId(event.target.value)}
+            onChange={(event) => setRoutingId(event.target.value)}
           />
         </label>
         <div className="flex items-center gap-2 pt-2">
-          <Button icon={<ReloadOutlined />} onClick={handleRefresh} htmlType="button">
+          <Button
+            icon={<ReloadOutlined />}
+            onClick={handleRefresh}
+            htmlType="button"
+          >
             Refresh
           </Button>
-          <Button icon={<FileTextOutlined />} onClick={handleExport} htmlType="button">
+          <Button
+            icon={<FileTextOutlined />}
+            onClick={handleExport}
+            htmlType="button"
+          >
             Export CSV
           </Button>
           {result && (
-            <Badge status={result.source === 'api' ? 'processing' : 'default'} text={result.source === 'api' ? 'API data' : 'Mock data'} />
+            <Badge
+              status={result.source === 'api' ? 'processing' : 'default'}
+              text={result.source === 'api' ? 'API data' : 'Mock data'}
+            />
           )}
         </div>
       </div>
@@ -369,12 +430,27 @@ export default function AdminAuditLogPanel() {
         dataSource={result?.items}
         loading={loading}
         pagination={tablePagination}
-        onChange={pagination => onTableChange({ current: pagination.current, pageSize: pagination.pageSize })}
+        onChange={(pagination) =>
+          onTableChange({
+            current: pagination.current,
+            pageSize: pagination.pageSize
+          })
+        }
         bordered
-        locale={{ emptyText: error ? <Empty description={error} /> : <Empty description="No audit entries to display." /> }}
+        locale={{
+          emptyText: error ? (
+            <Empty description={error} />
+          ) : (
+            <Empty description="No audit entries to display." />
+          )
+        }}
       />
       <Drawer
-        title={timelineState.log ? 'Approval Timeline · ' + timelineState.log.summary : 'Approval Timeline'}
+        title={
+          timelineState.log
+            ? 'Approval Timeline · ' + timelineState.log.summary
+            : 'Approval Timeline'
+        }
         width={520}
         onClose={closeTimeline}
         open={timelineState.open}
@@ -383,7 +459,7 @@ export default function AdminAuditLogPanel() {
           <Text>Loading timeline...</Text>
         ) : timelineState.entries.length ? (
           <Timeline>
-            {timelineState.entries.map(entry => (
+            {timelineState.entries.map((entry) => (
               <Timeline.Item
                 key={entry.id ?? `${entry.changeType}-${entry.createdAt}`}
                 color={
@@ -396,9 +472,13 @@ export default function AdminAuditLogPanel() {
               >
                 <Space direction="vertical" size={0}>
                   <Text strong>{entry.changeType}</Text>
-                  <Text type="secondary">{new Date(entry.createdAt).toLocaleString()}</Text>
+                  <Text type="secondary">
+                    {new Date(entry.createdAt).toLocaleString()}
+                  </Text>
                   <Text>Actor: {entry.createdBy}</Text>
-                  {entry.comment && <Text type="secondary">{entry.comment}</Text>}
+                  {entry.comment && (
+                    <Text type="secondary">{entry.comment}</Text>
+                  )}
                 </Space>
               </Timeline.Item>
             ))}

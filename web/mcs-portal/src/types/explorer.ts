@@ -1,4 +1,8 @@
-export type RoutingStatus = 'Draft' | 'PendingApproval' | 'Approved' | 'Rejected';
+export type RoutingStatus =
+  | 'Draft'
+  | 'PendingApproval'
+  | 'Approved'
+  | 'Rejected';
 
 export interface ExplorerFile {
   id: string;
@@ -47,7 +51,12 @@ export interface ExplorerItem {
 
 export type ExplorerSource = 'mock' | 'api';
 
-export type AddinJobStatus = 'queued' | 'running' | 'succeeded' | 'failed' | 'cancelled';
+export type AddinJobStatus =
+  | 'queued'
+  | 'running'
+  | 'succeeded'
+  | 'failed'
+  | 'cancelled';
 
 export interface AddinJob {
   id: string;
@@ -94,7 +103,11 @@ export interface RoutingHistoryEvent {
   description?: string;
 }
 
-export type RoutingUploadStatusState = 'pending' | 'uploading' | 'completed' | 'failed';
+export type RoutingUploadStatusState =
+  | 'pending'
+  | 'uploading'
+  | 'completed'
+  | 'failed';
 
 export interface RoutingUploadStatus {
   fileId: string;

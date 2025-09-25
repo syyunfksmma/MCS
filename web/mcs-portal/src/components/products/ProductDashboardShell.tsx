@@ -1,33 +1,55 @@
-"use client";
+'use client';
 
-import { useMemo, useState } from "react";
-import type { BadgeProps } from "antd";
-import { Badge, Button, Empty, Input, Space, Statistic, Tag, Tooltip, Typography, message } from "antd";
-import Link from "next/link";
-import { CopyOutlined } from "@ant-design/icons";
-import type { ProductDashboardResponse, ProductSummary } from "@/types/products";
-import ProductFilterPanel from "@/components/products/ProductFilterPanel";
+import { useMemo, useState } from 'react';
+import type { BadgeProps } from 'antd';
+import {
+  Badge,
+  Button,
+  Empty,
+  Input,
+  Space,
+  Statistic,
+  Tag,
+  Tooltip,
+  Typography,
+  message
+} from 'antd';
+import Link from 'next/link';
+import { CopyOutlined } from '@ant-design/icons';
+import type {
+  ProductDashboardResponse,
+  ProductSummary
+} from '@/types/products';
+import ProductFilterPanel from '@/components/products/ProductFilterPanel';
 
 const { Title, Text } = Typography;
 
-const SOLIDWORKS_BADGE_STATUS: Record<ProductSummary["solidWorksStatus"], BadgeProps["status"]> = {
-  present: "success",
-  missing: "error",
-  unknown: "default"
+const SOLIDWORKS_BADGE_STATUS: Record<
+  ProductSummary['solidWorksStatus'],
+  BadgeProps['status']
+> = {
+  present: 'success',
+  missing: 'error',
+  unknown: 'default'
 };
 
-const SOLIDWORKS_STATUS_LABEL: Record<ProductSummary["solidWorksStatus"], string> = {
-  present: "3DM Synced",
-  missing: "3DM Missing",
-  unknown: "3DM Unknown"
+const SOLIDWORKS_STATUS_LABEL: Record<
+  ProductSummary['solidWorksStatus'],
+  string
+> = {
+  present: '3DM Synced',
+  missing: '3DM Missing',
+  unknown: '3DM Unknown'
 };
 
 interface ProductDashboardShellProps {
   initialData: ProductDashboardResponse;
 }
 
-export default function ProductDashboardShell({ initialData }: ProductDashboardShellProps) {
-  const [query, setQuery] = useState("");
+export default function ProductDashboardShell({
+  initialData
+}: ProductDashboardShellProps) {
+  const [query, setQuery] = useState('');
   const [apiMessage, contextHolder] = message.useMessage();
 
   const filteredProducts = useMemo(() => {
@@ -47,16 +69,16 @@ export default function ProductDashboardShell({ initialData }: ProductDashboardS
 
   const handleCopyPath = async (path?: string) => {
     if (!path) {
-      apiMessage.warning("SolidWorks path not provided yet.");
+      apiMessage.warning('SolidWorks path not provided yet.');
       return;
     }
 
     try {
       await navigator.clipboard.writeText(path);
-      apiMessage.success("Copied SolidWorks shared path.");
+      apiMessage.success('Copied SolidWorks shared path.');
     } catch (error) {
-      console.warn("Failed to copy SolidWorks path", error);
-      apiMessage.error("Copy failed. Please copy manually.");
+      console.warn('Failed to copy SolidWorks path', error);
+      apiMessage.error('Copy failed. Please copy manually.');
     }
   };
 
@@ -69,19 +91,33 @@ export default function ProductDashboardShell({ initialData }: ProductDashboardS
             <Title level={3} className="!mb-0 text-white">
               Product Routing Dashboard
             </Title>
-            <Text>Snapshot generated {new Date(initialData.generatedAt).toLocaleString()}</Text>
+            <Text>
+              Snapshot generated{' '}
+              {new Date(initialData.generatedAt).toLocaleString()}
+            </Text>
           </div>
           <Space size="large">
-            <Statistic title="Products" value={initialData.total} valueStyle={{ color: "#fff" }} />
+            <Statistic
+              title="Products"
+              value={initialData.total}
+              valueStyle={{ color: '#fff' }}
+            />
             <Statistic
               title="SolidWorks Linked"
-              value={initialData.items.filter((item) => item.solidWorksStatus === "present").length}
-              valueStyle={{ color: "#fff" }}
+              value={
+                initialData.items.filter(
+                  (item) => item.solidWorksStatus === 'present'
+                ).length
+              }
+              valueStyle={{ color: '#fff' }}
             />
             <Statistic
               title="Routing Groups"
-              value={initialData.items.reduce((acc, item) => acc + item.routingGroupCount, 0)}
-              valueStyle={{ color: "#fff" }}
+              value={initialData.items.reduce(
+                (acc, item) => acc + item.routingGroupCount,
+                0
+              )}
+              valueStyle={{ color: '#fff' }}
             />
           </Space>
         </div>
@@ -95,7 +131,10 @@ export default function ProductDashboardShell({ initialData }: ProductDashboardS
             <div className="flex items-center justify-between">
               <div>
                 <Text type="secondary">Source</Text>
-                <Tag color={initialData.source === "api" ? "blue" : "orange"} className="ml-3">
+                <Tag
+                  color={initialData.source === 'api' ? 'blue' : 'orange'}
+                  className="ml-3"
+                >
                   {initialData.source}
                 </Tag>
               </div>
@@ -128,23 +167,30 @@ export default function ProductDashboardShell({ initialData }: ProductDashboardS
                 >
                   <header className="flex items-start justify-between gap-3">
                     <div>
-                      <Text className="text-xs uppercase tracking-wide text-slate-500">Product Code</Text>
+                      <Text className="text-xs uppercase tracking-wide text-slate-500">
+                        Product Code
+                      </Text>
                       <Title level={4} className="!mb-0">
                         {product.code}
                       </Title>
                       <Text type="secondary">{product.name}</Text>
                     </div>
-                    <Badge status={SOLIDWORKS_BADGE_STATUS[product.solidWorksStatus]} text={SOLIDWORKS_STATUS_LABEL[product.solidWorksStatus]} />
+                    <Badge
+                      status={SOLIDWORKS_BADGE_STATUS[product.solidWorksStatus]}
+                      text={SOLIDWORKS_STATUS_LABEL[product.solidWorksStatus]}
+                    />
                   </header>
 
                   <dl className="grid grid-cols-2 gap-3 text-sm">
                     <div>
                       <dt className="text-slate-500">Latest Revision</dt>
-                      <dd className="font-semibold">{product.latestRevision ?? "N/A"}</dd>
+                      <dd className="font-semibold">
+                        {product.latestRevision ?? 'N/A'}
+                      </dd>
                     </div>
                     <div>
                       <dt className="text-slate-500">Owner</dt>
-                      <dd>{product.owner ?? "Unassigned"}</dd>
+                      <dd>{product.owner ?? 'Unassigned'}</dd>
                     </div>
                     <div>
                       <dt className="text-slate-500">Routing Groups</dt>
@@ -157,10 +203,13 @@ export default function ProductDashboardShell({ initialData }: ProductDashboardS
                   </dl>
 
                   <div className="rounded bg-slate-50 p-3 text-sm">
-                    <Text className="block text-xs uppercase tracking-wide text-slate-500">SolidWorks Shared Path</Text>
+                    <Text className="block text-xs uppercase tracking-wide text-slate-500">
+                      SolidWorks Shared Path
+                    </Text>
                     <div className="mt-1 flex items-center justify-between gap-3">
                       <Text className="truncate font-mono text-xs text-slate-600">
-                        {product.solidWorksPath ?? "Pending shared-drive confirmation"}
+                        {product.solidWorksPath ??
+                          'Pending shared-drive confirmation'}
                       </Text>
                       <Tooltip title="Copy network path">
                         <Button
@@ -176,8 +225,13 @@ export default function ProductDashboardShell({ initialData }: ProductDashboardS
                   </div>
 
                   <footer className="mt-auto flex items-center justify-between border-t border-slate-200 pt-3 text-xs text-slate-500">
-                    <span>Updated {new Date(product.updatedAt).toLocaleString()}</span>
-                    <Link href={`/products/${product.code}/workspace`} className="text-sky-600 hover:text-sky-800">
+                    <span>
+                      Updated {new Date(product.updatedAt).toLocaleString()}
+                    </span>
+                    <Link
+                      href={`/products/${product.code}/workspace`}
+                      className="text-sky-600 hover:text-sky-800"
+                    >
                       View workspace
                     </Link>
                   </footer>
@@ -190,4 +244,3 @@ export default function ProductDashboardShell({ initialData }: ProductDashboardS
     </div>
   );
 }
-
