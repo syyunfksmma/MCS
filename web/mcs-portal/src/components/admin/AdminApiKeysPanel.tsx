@@ -8,7 +8,6 @@ import {
   Form,
   Input,
   Modal,
-  Select,
   Space,
   Table,
   Tag,
@@ -18,6 +17,7 @@ import {
 } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { CopyOutlined, ExclamationCircleOutlined, PlusOutlined } from '@ant-design/icons';
+import AccessibleSelect from '../common/AccessibleSelect';
 import {
   AdminApiKey,
   ApiKeyScope,
@@ -293,9 +293,12 @@ export default function AdminApiKeysPanel({ createdBy = 'admin.user' }: AdminApi
           </Form.Item>
           <Form.Item label="스코프" name="scope" rules={[{ required: true, message: '스코프를 선택하세요.' }]}
           >
-            <Select
+            <AccessibleSelect
+              id="issue-api-scope"
               options={scopeOptions.map(option => ({ label: option.label, value: option.value }))}
-              placeholder="스코프 선택"
+              placeholder="권한 범위 선택"
+              labelText="API 키 권한 범위 선택"
+              optionTextOverride={scopeOptions.map(option => option.label)}
             />
           </Form.Item>
           <Form.Item
@@ -379,4 +382,6 @@ export default function AdminApiKeysPanel({ createdBy = 'admin.user' }: AdminApi
     </div>
   );
 }
+
+
 

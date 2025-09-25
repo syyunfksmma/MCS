@@ -19,7 +19,8 @@ interface ApprovalModalState {
 
 const DECISION_LABEL: Record<'approved' | 'rejected' | 'pending', string> = {
   approved: '승인',
-  rejected: '반려'
+  rejected: '반려',
+  pending: '보류'
 };
 
 export default function ApprovalPanel({ routing, events, onSubmit }: ApprovalPanelProps) {

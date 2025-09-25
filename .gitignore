@@ -360,4 +360,16 @@ MigrationBackup/
 .ionide/
 
 # Fody - auto-generated XML schema
-FodyWeavers.xsd\n\n# Performance reports\nweb/mcs-portal/reports/*.json\nweb/mcs-portal/reports/*.jsonl\n
+FodyWeavers.xsd
+
+# Performance reports
+web/mcs-portal/reports/*.json
+web/mcs-portal/reports/*.jsonl
+
+web/mcs-portal/.env.production
+
+# Generated artifacts
+MCMS Explorer.html
+MCMS Explorer_files/
+web/mcs-portal/.next/
+web/mcs-portal/public/favicon.ico

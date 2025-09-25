@@ -1,6 +1,7 @@
 'use client';
 
 import { ReactNode, useEffect, useMemo, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { Alert, Button, Result, Space, Typography } from 'antd';
 import { getMaintenanceConfig, getMaintenanceWindowLabel, isMaintenanceActive } from '@/lib/maintenance';
 
@@ -12,7 +13,8 @@ interface MaintenanceGateProps {
 
 export default function MaintenanceGate({ children }: MaintenanceGateProps) {
   const [override, setOverride] = useState(false);
-  const [forcedActive, setForcedActive] = useState(false);
+  const searchParams = useSearchParams();
+  const [forcedActive, setForcedActive] = useState(searchParams?.get('maintenance') === 'force');
 
   useEffect(() => {
     if (typeof window === 'undefined') {
@@ -22,11 +24,11 @@ export default function MaintenanceGate({ children }: MaintenanceGateProps) {
     if (stored === 'true') {
       setOverride(true);
     }
-    const params = new URLSearchParams(window.location.search);
-    if (params.get('maintenance') === 'force') {
-      setForcedActive(true);
-    }
   }, []);
+
+  useEffect(() => {
+    setForcedActive(searchParams?.get('maintenance') === 'force');
+  }, [searchParams]);
 
   const config = getMaintenanceConfig();
   const active = useMemo(() => forcedActive || isMaintenanceActive(), [forcedActive]);
@@ -48,7 +50,11 @@ export default function MaintenanceGate({ children }: MaintenanceGateProps) {
     <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f9fafb', padding: '48px' }}>
       <Result
         status="info"
-        title="Scheduled maintenance in progress"
+        title={
+          <Typography.Title level={2} role="heading" aria-level={2} className="!mb-0">
+            Scheduled maintenance in progress
+          </Typography.Title>
+        }
         subTitle={windowLabel ?? 'The portal is temporarily unavailable while maintenance is underway.'}
         extra={
           <Space>
@@ -69,3 +75,5 @@ export default function MaintenanceGate({ children }: MaintenanceGateProps) {
     </div>
   );
 }
+
+

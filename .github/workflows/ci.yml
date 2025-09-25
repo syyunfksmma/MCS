@@ -8,7 +8,12 @@ on:
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
+    env:
+      PLAYWRIGHT_CHANNEL: chromium
+      PLAYWRIGHT_BROWSERS_PATH: 0
+      LOCAL_IMAGE: mcs-portal:ci
+      REGISTRY_IMAGE: ghcr.io/${{ github.repository_owner }}/mcs-portal
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -23,6 +28,16 @@ jobs:
         working-directory: web/mcs-portal
         run: npm install
 
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: web/mcs-portal/node_modules/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('web/mcs-portal/package-lock.json') }}
+
+      - name: Install Playwright browsers
+        working-directory: web/mcs-portal
+        run: npx playwright install --with-deps
+
       - name: Lint
         working-directory: web/mcs-portal
         run: npm run lint
@@ -34,3 +49,44 @@ jobs:
       - name: Build
         working-directory: web/mcs-portal
         run: npm run build
+
+      - name: End-to-end tests
+        working-directory: web/mcs-portal
+        run: npm run test:e2e
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: web/mcs-portal/playwright-report/
+          if-no-files-found: ignore
+
+      - name: Upload E2E artifacts (raw)
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-artifacts
+          path: |
+            web/mcs-portal/test-results/
+            web/mcs-portal/playwright-report/
+          if-no-files-found: ignore
+
+      - name: Build Docker image
+        working-directory: web/mcs-portal
+        run: docker build -t ${{ env.LOCAL_IMAGE }} .
+
+      - name: Log in to registry
+        if: ${{ secrets.REGISTRY_USERNAME != '' && secrets.REGISTRY_PASSWORD != '' }}
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+
+      - name: Push Docker image
+        if: ${{ secrets.REGISTRY_USERNAME != '' && secrets.REGISTRY_PASSWORD != '' }}
+        working-directory: web/mcs-portal
+        run: |
+          docker tag ${{ env.LOCAL_IMAGE }} ${{ env.REGISTRY_IMAGE }}:${{ github.sha }}
+          docker push ${{ env.REGISTRY_IMAGE }}:${{ github.sha }}

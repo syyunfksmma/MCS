@@ -1,5 +1,5 @@
 import '../app/globals.css';
-import { ReactNode } from 'react';
+import { ReactNode, Suspense } from 'react';
 import MainLayout from '../components/MainLayout';
 import ReactQueryProvider from '../components/providers/ReactQueryProvider';
 import MaintenanceGate from '@/components/maintenance/MaintenanceGate';
@@ -14,9 +14,11 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     <html lang="en">
       <body className="bg-slate-50 text-neutral-900">
         <ReactQueryProvider>
-          <MaintenanceGate>
-            <MainLayout>{children}</MainLayout>
-          </MaintenanceGate>
+          <Suspense fallback={null}>
+            <MaintenanceGate>
+              <MainLayout>{children}</MainLayout>
+            </MaintenanceGate>
+          </Suspense>
         </ReactQueryProvider>
       </body>
     </html>

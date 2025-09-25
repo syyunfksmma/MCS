@@ -1,0 +1,10 @@
+node_modules
+.next
+test-results
+Dockerfile
+docker-compose.yml
+docker/
+.git
+.gitignore
+playwright-report
+playwright/.cache

@@ -1,0 +1,272 @@
+Active Workspace
+
+Streamlined and intuitive PLM user experience 
+anytime, anywhere, on any device
+
+users involved in your product lifecycle. 
+Active Workspace makes Teamcenter 
+accessible by providing a streamlined 
+and intuitive PLM user experience 
+anytime, anywhere, on any modern 
+computing device.
+
+Benefits
+• Increase productivity by finding
+the right information, in the
+context of the task at hand, faster
+and easier than ever before
+
+• Avoid costly mistakes and make
+
+smarter decisions by seeing the big
+picture in greater clarity
+
+• Reach your extended enterprise
+
+users and harness their knowledge
+by providing simple and intuitive
+access to PLM anytime, anywhere,
+on any modern computing device
+
+Features
+• Clean and simple, mobile friendly
+
+user experience
+
+• Web-based platform accessible on
+any modern computing device
+without a client or plug-in
+installation
+
+• Context-aware summary views
+
+• Configurable user interface themes
+
+• Dynamic, configurable home page
+
+• View assignments and participate
+
+in workflows
+
+• View change information
+
+• Create and revise items, upload
+files and edit object properties
+
+Summary
+Throughout the complex product life-
+cycle, you are expected to make good 
+decisions in the context of a large 
+amount of input and data, often from a 
+variety of sources. Active Workspace 
+from Siemens Digital Industries 
+Software is an innovative web-based 
+client platform that simplifies product 
+lifecycle management (PLM) for all 
+
+Find what you need faster
+Do you spend a lot of time searching for 
+the information you need to complete 
+your work? Does it seem like you need 
+to know exactly what you’re looking for, 
+and exactly how to look for it, before 
+you can actually find what you need?
+
+Active Workspace’s powerful search and 
+filtering capabilities visually present 
+search results in logical groups, making 
+
+If you know how to shop using Amazon, eBay, Google, etc. you are already know how to find what 
+you’re looking for using Active Workspace. Searching in Active Workspace is simple but not limited. 
+Familiar search, filter, and navigation capabilities help you find what you need faster than ever before. 
+
+siemens.com/teamcenter
+
+Active Workspace
+
+TEAMCENTER
+
+it easy for you to drill-down and browse 
+to find what you need, faster than ever 
+before. Intelligent charting, filtering on 
+properties, shape and classification as 
+well as results ranking capabilities allow 
+you to find the information you need 
+without having to know about how the 
+data is structured within the PLM 
+system.
+
+When relevant PLM data is scattered 
+across multiple systems, Active 
+Workspace helps aggregate this data 
+into a single location so you don’t have 
+to waste time searching in multiple 
+locations.
+
+Active Workspace helps you find the 
+right information, in the proper context 
+of the task at hand, easier than ever 
+before.
+
+Make smarter decisions
+Finding what you need is only half the 
+battle. You need to understand the 
+information you find, in the proper 
+context, to make decisions.
+
+Active Workspace enables you to access 
+information in the context of your role 
+
+and the tasks that you’re trying to 
+accomplish, proactively presenting you 
+with only relevant information. Active 
+Workspace helps you make smarter 
+decisions by cutting through the clutter 
+and allowing you to see the big picture.
+
+Powerful capabilities such as Structure 
+Browser, Relationship Browser as well 
+as Reporting & Analytics allow you to 
+quickly and visually identify critical 
+issues as well as understand and navi-
+gate various relationships between 
+different pieces of data. 
+
+Active Workspace makes it easy for 
+users not familiar with the intricacies of 
+PLM to participate in PLM – reviewing 
+tasks in a workflow, signing off on 
+assigned tasks, submitting new docu-
+ments into a workflow, submitting 
+problem reports, visualize and analyze 
+3D data and more.
+
+Using Active Workspace, you can avoid 
+costly mistakes and make smarter 
+decisions because you can now see the 
+big picture in greater clarity.
+
+Features continued
+• Submit issues, problem reports
+
+and change requests
+
+• Full-text search on files and file
+
+contents
+
+• Intelligent charting logically and
+visually groups search results for
+easy navigation
+
+• Context-based filters on search
+
+results
+
+• Shape search finds parts that are
+
+geometrically similar
+
+• Search and filter data based on
+
+classification attributes
+
+• Find and aggregate relevant PLM
+data stored in external systems
+
+• Save frequently used searches
+
+• Breadcrumb navigation
+
+• Launch information into the
+appropriate authoring tool in
+context
+
+• Visualize large and complex 3D
+
+product data without any
+installation
+
+• Preview requirements and
+
+specifications
+
+• Where used/referenced and
+
+traceability tracking
+
+• Interactive relationship browsing
+
+• Electronic work instructions
+
+• View and access reports and
+dashboards with Teamcenter
+Reporting and Analytics
+
+For people responsible for product planning, you can author schedules, tasks and requirements in 
+Active Workspace, and collaborate with upstream and downstream stakeholders to be sure all 
+product-related decisions are aligned.
+
+PLM anytime, anywhere
+Active Workspace allows you to reach 
+your extended enterprise users and 
+harness their knowledge by giving them 
+access to simple and intuitive PLM when 
+and where they need it.
+
+Using Active Workspace enables you to 
+access Teamcenter anytime, anywhere 
+by simply opening a browser on your 
+desktop, tablet or smartphone. It runs 
+on any operating system, any browser 
+and any modern computing devices, 
+with no installation needed and no 
+special plug-in requirements to simplify 
+deployment. Active Workspace’s touch-
+enabled, intuitive interface is optimized 
+to support both mobile and desktop 
+devices. The interface can be easily 
+tailored to fit your business, allowing 
+you to minimize user training and foster 
+quick adoption throughout your enter-
+prise. By embedding Active Workspace 
+into applications such as Microsoft® 
+Office and NX™ software, you can 
+access powerful PLM capabilities of 
+Teamcenter from within familiar 
+applications.
+
+Using Active Workspace makes PLM 
+available when and where it’s needed, 
+allowing you to simplify user adoption 
+and realize faster return-on-investment.
+
+TEAMCENTER
+
+It all starts on your home page. Your Active Workspace home page is the centralized location for all 
+your tasks. Pin items to your home page that you use most frequently, like you do a task or toolbar.  
+A familiar simple search box is always available when you need it. 
+
+Siemens Digital Industries Software
+siemens.com/plm
+
+Americas  +1 314 264 8499 
+Europe 
+Asia-Pacific  +852 2230 3333 
+
++44 (0) 1276 413200
+
+Restricted © Siemens 2019. Siemens, the Siemens 
+logo and SIMATIC IT are registered trade marks of 
+Siemens AG. Camstar, D-Cubed, Femap, Fibersim, 
+Geolus, GO PLM, I-deas, JT, NX, Parasolid, Polarion, 
+Simcenter, Solid Edge, Syncrofit, Teamcenter and 
+Tecnomatix are trademarks or registered trade-
+marks of Siemens Product Lifecycle Management 
+Software Inc. or its subsidiaries or affiliates in the 
+United States and in other countries. All other 
+trademarks, registered trademarks or service marks 
+belong to their respective holders. 
+26883-C10  6/19  C
+
+

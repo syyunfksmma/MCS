@@ -6,9 +6,7 @@ import {
   Button,
   Drawer,
   Empty,
-  Input,
   message,
-  Select,
   Space,
   Table,
   Tag,
@@ -247,12 +245,23 @@ export default function AdminAuditLogPanel() {
     }
   ], [openTimeline]);
 
+  useEffect(() => {
+    const containers = document.querySelectorAll<HTMLElement>('.admin-audit-table .ant-table-content');
+    containers.forEach(container => {
+      if (!container.hasAttribute('tabindex')) {
+        container.setAttribute('tabindex', '0');
+        container.setAttribute('role', 'region');
+        container.setAttribute('aria-label', 'Audit log scroll area');
+      }
+    });
+  }, [result, loading]);
+
   const tablePagination = useMemo(
     () => ({
       current: result?.page ?? queryOptions.page ?? 1,
       pageSize: result?.pageSize ?? queryOptions.pageSize ?? 25,
       total: result?.totalCount ?? 0,
-      showSizeChanger: true,
+      showSizeChanger: false,
       pageSizeOptions: [10, 25, 50, 100]
     }),
     [result, queryOptions]
@@ -266,62 +275,96 @@ export default function AdminAuditLogPanel() {
         </Title>
         <Text type="secondary">Review audit events alongside linked approval timelines.</Text>
       </div>
-      <Space wrap align="center" className="gap-3">
-        <Select<TimeRangePreset>
-          style={{ width: 160 }}
-          value={timeRange}
-          options={timeRangeOptions}
-          onChange={value => {
-            setTimeRange(value);
-            setQueryOptions(prev => ({ ...prev, page: 1 }));
-          }}
-        />
-        <Select
-          allowClear
-          placeholder="Category"
-          style={{ width: 160 }}
-          value={category}
-          options={availableCategories.map(item => ({ label: item, value: item }))}
-          onChange={value => {
-            setCategory(value ?? undefined);
-            setQueryOptions(prev => ({ ...prev, page: 1 }));
-          }}
-        />
-        <Select
-          allowClear
-          placeholder="Action"
-          style={{ width: 200 }}
-          value={action}
-          options={availableActions.map(item => ({ label: item, value: item }))}
-          onChange={value => {
-            setAction(value ?? undefined);
-            setQueryOptions(prev => ({ ...prev, page: 1 }));
-          }}
-        />
-        <Input
-          placeholder="Actor (e.g. qa.lead)"
-          value={actor}
-          onChange={event => setActor(event.target.value)}
-          style={{ width: 200 }}
-        />
-        <Input
-          placeholder="Routing ID"
-          value={routingId}
-          onChange={event => setRoutingId(event.target.value)}
-          style={{ width: 200 }}
-        />
-        <Button icon={<ReloadOutlined />} onClick={handleRefresh}>
-          Refresh
-        </Button>
-        <Button icon={<FileTextOutlined />} onClick={handleExport}>
-          Export CSV
-        </Button>
-        {result && (
-          <Badge status={result.source === 'api' ? 'processing' : 'default'} text={result.source === 'api' ? 'API' : 'Mock data'} />
-        )}
-      </Space>
+      <div className="flex flex-wrap items-end gap-3" role="group" aria-label="Audit log filters">
+        <label className="flex flex-col text-xs gap-1 text-neutral-600">
+          <span className="font-semibold">Time range</span>
+          <select
+            className="rounded border border-neutral-300 px-2 py-1 text-sm"
+            value={timeRange}
+            onChange={event => {
+              setTimeRange(event.target.value as TimeRangePreset);
+              setQueryOptions(prev => ({ ...prev, page: 1 }));
+            }}
+          >
+            {timeRangeOptions.map(option => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label className="flex flex-col text-xs gap-1 text-neutral-600">
+          <span className="font-semibold">Category</span>
+          <select
+            className="rounded border border-neutral-300 px-2 py-1 text-sm"
+            value={category ?? ''}
+            onChange={event => {
+              const value = event.target.value || undefined;
+              setCategory(value);
+              setQueryOptions(prev => ({ ...prev, page: 1 }));
+            }}
+          >
+            <option value="">All categories</option>
+            {availableCategories.map(item => (
+              <option key={item} value={item}>
+                {item}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label className="flex flex-col text-xs gap-1 text-neutral-600">
+          <span className="font-semibold">Action</span>
+          <select
+            className="rounded border border-neutral-300 px-2 py-1 text-sm"
+            value={action ?? ''}
+            onChange={event => {
+              const value = event.target.value || undefined;
+              setAction(value);
+              setQueryOptions(prev => ({ ...prev, page: 1 }));
+            }}
+          >
+            <option value="">All actions</option>
+            {availableActions.map(item => (
+              <option key={item} value={item}>
+                {item}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label className="flex flex-col text-xs gap-1 text-neutral-600">
+          <span className="font-semibold">Actor</span>
+          <input
+            type="text"
+            className="rounded border border-neutral-300 px-2 py-1 text-sm"
+            placeholder="qa.lead"
+            value={actor}
+            onChange={event => setActor(event.target.value)}
+          />
+        </label>
+        <label className="flex flex-col text-xs gap-1 text-neutral-600">
+          <span className="font-semibold">Routing ID</span>
+          <input
+            type="text"
+            className="rounded border border-neutral-300 px-2 py-1 text-sm"
+            value={routingId}
+            onChange={event => setRoutingId(event.target.value)}
+          />
+        </label>
+        <div className="flex items-center gap-2 pt-2">
+          <Button icon={<ReloadOutlined />} onClick={handleRefresh} htmlType="button">
+            Refresh
+          </Button>
+          <Button icon={<FileTextOutlined />} onClick={handleExport} htmlType="button">
+            Export CSV
+          </Button>
+          {result && (
+            <Badge status={result.source === 'api' ? 'processing' : 'default'} text={result.source === 'api' ? 'API data' : 'Mock data'} />
+          )}
+        </div>
+      </div>
       <Table<AuditLogEntry>
         rowKey="id"
+        className="admin-audit-table"
         columns={columns}
         dataSource={result?.items}
         loading={loading}
@@ -339,24 +382,27 @@ export default function AdminAuditLogPanel() {
         {timelineState.loading ? (
           <Text>Loading timeline...</Text>
         ) : timelineState.entries.length ? (
-          <Timeline
-            items={timelineState.entries.map(entry => ({
-              color:
-                entry.changeType === 'RoutingRejected'
-                  ? 'red'
-                  : entry.changeType === 'RoutingApproved'
-                    ? 'green'
-                    : 'blue',
-              children: (
+          <Timeline>
+            {timelineState.entries.map(entry => (
+              <Timeline.Item
+                key={entry.id ?? `${entry.changeType}-${entry.createdAt}`}
+                color={
+                  entry.changeType === 'RoutingRejected'
+                    ? 'red'
+                    : entry.changeType === 'RoutingApproved'
+                      ? 'green'
+                      : 'blue'
+                }
+              >
                 <Space direction="vertical" size={0}>
                   <Text strong>{entry.changeType}</Text>
                   <Text type="secondary">{new Date(entry.createdAt).toLocaleString()}</Text>
                   <Text>Actor: {entry.createdBy}</Text>
                   {entry.comment && <Text type="secondary">{entry.comment}</Text>}
                 </Space>
-              )
-            }))}
-          />
+              </Timeline.Item>
+            ))}
+          </Timeline>
         ) : (
           <Empty description="No linked approval timeline." />
         )}
