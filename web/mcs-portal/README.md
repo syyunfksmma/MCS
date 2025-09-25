@@ -54,3 +54,73 @@ src/
 ## 참고 문서
 - Sprint1 API 계약: `docs/sprint/Sprint1_APIContract.md`
 - OpenAPI 발췌: `docs/sprint/Sprint1_OpenAPIExcerpt.yaml`
+## Playwright 설치 가이드 (프록시/사내망)
+### A. 사내 루트 CA 신뢰 (권장)
+1. Windows 인증서 관리자에서 사내 루트 CA를 BASE64/PEM 형식으로 내보내 `C:\corp\rootCA.pem` 등에 저장합니다.
+2. Node 런타임과 npm이 해당 CA를 신뢰하도록 설정합니다.
+   ```powershell
+   setx NODE_EXTRA_CA_CERTS "C:\corp\rootCA.pem"
+   npm config set cafile "C:\corp\rootCA.pem"
+   npm config set strict-ssl true
+   # (프록시 사용 시)
+   npm config set proxy http://<proxy-host>:<port>
+   npm config set https-proxy http://<proxy-host>:<port>
+   ```
+3. 새 터미널에서 `npx playwright install --with-deps` 또는 CI에서는 `npx playwright install`을 실행합니다.
+4. `NODE_TLS_REJECT_UNAUTHORIZED=0` 사용은 금지(보안 정책 위반 가능).
+
+### B. 오프라인/캐시 설치
+1. 인터넷 가능 PC에서 `npx playwright install`을 실행하면 `%USERPROFILE%\AppData\Local\ms-playwright`에 브라우저가 내려받아집니다.
+2. 해당 폴더를 사내 파일 서버 등을 통해 대상 PC의 동일 경로에 복사하면 추가 설치 없이 사용 가능합니다.
+3. 프로젝트 내부 캐시를 쓰려면 다음과 같이 설정합니다.
+   ```powershell
+   setx PLAYWRIGHT_BROWSERS_PATH "0"
+   npx playwright install
+   ```
+   이렇게 하면 `node_modules/.cache/ms-playwright` 아래에 브라우저가 위치해 버전 관리와 캐시 정책을 맞출 수 있습니다.
+
+### C. 장기 전략 (사내 미러)
+- `ms-playwright` 캐시를 사내 아티팩트 서버에 보관하고, 개발 PC에서 해당 경로를 동기화하는 스크립트를 표준화하면 설치 속도와 재현성을 높일 수 있습니다.
+
+### 빠른 점검 커맨드
+```powershell
+node -p "process.env.NODE_EXTRA_CA_CERTS"   # 추가 CA 경로 확인
+npm config get cafile                        # npm이 참조하는 CA
+npx playwright --version                      # Playwright 버전
+npx playwright doctor                         # 진단
+npx playwright install --dry-run              # 설치 시도만 수행
+```
+
+### 참고
+- 세부 정책: `docs/playwright/CorporatePlaywrightPolicy.md` 참조.
+- CI에서는 `PLAYWRIGHT_BROWSERS_PATH=0`와 `actions/cache`를 활용하면 브라우저를 재사용할 수 있습니다.
+- 브라우저 설치가 불가할 경우 Selenium + Edge WebDriver 등의 대체 스모크 테스트를 병행해 최소 회귀를 확인하세요.
+
+## E2E 테스트
+- `npm run test:e2e` : Playwright 테스트 (실행 시 자동으로 production build + server 기동)
+- 개별 시나리오는 `npx playwright test <spec>` 로 실행 가능. 서버를 별도 기동할 필요는 없으나 사전에 `npm run build`가 병행됨.
+
+## Selenium 스모크 테스트
+- `npm run test:selenium` : Edge WebDriver 기반 사내망 대응 스모크.
+  - 사전 조건: `msedgedriver.exe`가 PATH에 존재하거나 `SELENIUM_MSEDGEDRIVER_PATH` 환경변수로 경로 지정.
+  - 기본 대상 URL은 `http://localhost:3000/admin`; 변경하려면 `E2E_BASE_URL` 환경변수를 지정합니다.
+
+## 수동 배포 참고
+- 내부 배포 절차: `docs/ops/InternalManualDeployment.md`에서 단계별 체크리스트 확인.
+
+## Docker 배포
+- `Dockerfile` : node:20-alpine 기반 멀티스테이지 이미지(빌드/런타임 분리).
+- `docker-compose.yml` : `web`(Next.js) + `reverse-proxy`(Nginx) 서비스 예시.
+- 실행 예시
+```bash
+docker compose up --build
+```
+- 환경 변수는 `.env.production` 또는 compose 환경 섹션에서 주입할 수 있습니다.
+
+
+## 이미지 배포 정책
+- 기본 태깅: `ghcr.io/<org>/<repo>/mcs-portal:${commitSha}` (CI에서 자동 푸시).
+- 사내 레지스트리(Py) 사용 시: `docker tag mcs-portal-web registry.internal/mcs-portal/web:<tag>` → `docker push registry.internal/mcs-portal/web:<tag>`.
+- 로컬 테스트 레지스트리: `docker run -d --name mcs-registry --restart unless-stopped -p 5001:5000 -v mcs_registry_data:/var/lib/registry registry:2`.
+- 푸시 검증: `docker run --rm registry.internal/mcs-portal/web:<tag> node --version`.
+- 세부 정책: `docs/ops/RegistryPolicy.md` 참고.

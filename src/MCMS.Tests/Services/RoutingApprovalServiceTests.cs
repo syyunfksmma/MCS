@@ -55,7 +55,7 @@ public class RoutingApprovalServiceTests
 
         var routing = await routingService.CreateRoutingAsync(createRequest);
 
-        var sut = new RoutingApprovalService(context, historyService, routingService, commandQueue);
+        var sut = new RoutingApprovalService(context, historyService, routingService, commandQueue, auditLogService);
         return (sut, routing.Id);
     }
 
@@ -80,7 +80,7 @@ public class RoutingApprovalServiceTests
         var historyService = new HistoryService(context);
         var commandQueue = new InMemoryCommandQueue();
         var routingService = new RoutingService(context, historyService, commandQueue, new EspritAutomationServiceStub(NullLogger<EspritAutomationServiceStub>.Instance));
-        var sut = new RoutingApprovalService(context, historyService, routingService, commandQueue);
+        var sut = new RoutingApprovalService(context, historyService, routingService, commandQueue, auditLogService);
 
         await Assert.ThrowsAsync<KeyNotFoundException>(
             () => sut.RequestApprovalAsync(new RequestRoutingApprovalRequest(Guid.NewGuid(), "approver", null)));

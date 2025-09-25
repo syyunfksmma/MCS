@@ -3,6 +3,7 @@ import HydrateClient from '@/components/providers/HydrateClient';
 import { fetchExplorerData } from '@/lib/explorer';
 import { explorerKeys } from '@/lib/queryKeys';
 import { dehydrate, QueryClient } from '@tanstack/react-query';
+import type { ExplorerResponse } from '@/types/explorer';
 
 export const metadata = {
   title: 'MCMS Explorer',
@@ -17,11 +18,15 @@ export default async function ExplorerPage() {
   });
 
   const dehydratedState = dehydrate(queryClient);
-  const initialData = queryClient.getQueryData(explorerKeys.list());
+  const initialData = queryClient.getQueryData<ExplorerResponse>(explorerKeys.list());
+
+  if (!initialData) {
+    throw new Error('Failed to load explorer data');
+  }
 
   return (
     <HydrateClient state={dehydratedState}>
-      <ExplorerShell initialData={initialData!} />
+      <ExplorerShell initialData={initialData} />
     </HydrateClient>
   );
 }
