@@ -11,4 +11,5 @@ public interface IFileStorageService
     Task<bool> ExistsAsync(string relativePath, CancellationToken cancellationToken = default);
     Task DeleteAsync(string relativePath, CancellationToken cancellationToken = default);
     Task WriteJsonAsync<T>(string relativePath, T payload, CancellationToken cancellationToken = default);
+    Task QueueJsonWriteAsync<T>(string relativePath, T payload, CancellationToken cancellationToken = default);
 }

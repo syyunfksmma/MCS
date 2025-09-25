@@ -69,8 +69,11 @@
   - 측정 로그: docs/sprint/Sprint6_Routing_Log.md, Sprint5_1_Routing_Log.md.
 - 2025-09-25 상태: Docker Desktop 미기동으로 k6 Docker 컨테이너 실행 실패 → 재측정은 Docker 서비스 기동 후 재시도 예정.
 
+- 2025-09-25 측정: FileShare 적용 후에도 k6 p95 13.6s (meta.json serialize 병목) → 메타 생성 비동기화/IO 최적화 필요.
+- 2025-09-25 추가 조치: FileStorageService에 FileShare.ReadWrite 및 재시도 로직을 적용해 meta.json 잠금으로 인한 500 오류 완화.
 ## 수정 이력
 - 2025-09-25 Codex: SLA 대응 계획 추가 및 절대 지령/변경 이력 규칙 반영.
+- 2025-09-25 Codex: FileStorageService FileShare.ReadWrite 및 재시도 로직 추가 기록.
 - 2025-09-25 Codex: Streaming 해시/병렬 병합 PoC 적용 현황 및 k6 재측정 대기 상황 기록.
 
 

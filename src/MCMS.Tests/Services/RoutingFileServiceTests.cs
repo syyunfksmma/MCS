@@ -4,6 +4,7 @@ using MCMS.Core.Contracts.Requests;
 using MCMS.Core.Domain.Entities;
 using MCMS.Core.Domain.Enums;
 using MCMS.Infrastructure.FileStorage;
+using Microsoft.Extensions.Logging.Abstractions;
 using MCMS.Infrastructure.Persistence;
 using MCMS.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
@@ -53,21 +54,37 @@ public class RoutingFileServiceTests
         return routing.Id;
     }
 
-    private static (RoutingFileService Service, string RootPath, HistoryService History, McmsDbContext Context) CreateService()
+    private static (RoutingFileService Service, string RootPath, HistoryService History, McmsDbContext Context, FileStorageService Storage) CreateService()
     {
         var context = CreateContext();
         var history = new HistoryService(context);
         var root = Path.Combine(Path.GetTempPath(), "mcms-tests", Guid.NewGuid().ToString());
         Directory.CreateDirectory(root);
-        var storage = new FileStorageService(Options.Create(new FileStorageOptions { RootPath = root }));
+        var storage = new FileStorageService(Options.Create(new FileStorageOptions { RootPath = root }), NullLogger<FileStorageService>.Instance);
         var service = new RoutingFileService(context, storage, history);
-        return (service, root, history, context);
+        return (service, root, history, context, storage);
+    }
+
+    private static async Task WaitForFileAsync(string path, TimeSpan timeout)
+    {
+        var deadline = DateTime.UtcNow + timeout;
+        while (DateTime.UtcNow <= deadline)
+        {
+            if (File.Exists(path))
+            {
+                return;
+            }
+
+            await Task.Delay(50).ConfigureAwait(false);
+        }
+
+        throw new TimeoutException($"File not created within {timeout.TotalMilliseconds} ms: {path}");
     }
 
     [Fact]
     public async Task UploadAsync_SavesFileAndGeneratesMeta()
     {
-        var (service, root, history, context) = CreateService();
+        var (service, root, history, context, storage) = CreateService();
         try
         {
             var routingId = await SeedRoutingAsync(context);
@@ -96,10 +113,12 @@ public class RoutingFileServiceTests
             Assert.True(File.Exists(storedFilePath));
 
             var metaPath = Path.Combine(root, meta.MetaPath.Replace('/', Path.DirectorySeparatorChar));
+            await WaitForFileAsync(metaPath, TimeSpan.FromSeconds(2));
             Assert.True(File.Exists(metaPath));
         }
         finally
         {
+            await storage.DisposeAsync();
             if (Directory.Exists(root))
             {
                 Directory.Delete(root, true);
@@ -111,7 +130,7 @@ public class RoutingFileServiceTests
     [Fact]
     public async Task DeleteAsync_RemovesFileAndUpdatesMeta()
     {
-        var (service, root, history, context) = CreateService();
+        var (service, root, history, context, storage) = CreateService();
         try
         {
             var routingId = await SeedRoutingAsync(context);
@@ -135,6 +154,7 @@ public class RoutingFileServiceTests
         }
         finally
         {
+            await storage.DisposeAsync();
             if (Directory.Exists(root))
             {
                 Directory.Delete(root, true);
