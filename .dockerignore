@@ -1,0 +1,17 @@
+.git
+.gitignore
+.vscode
+bin
+obj
+.dockerignore
+Dockerfile
+*.user
+*.suo
+*.vs
+*.DS_Store
+storage
+Tests
+TEST
+web/mcs-portal/node_modules
+node_modules
+.docker-data

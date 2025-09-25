@@ -1,16 +1,23 @@
 name: CI
 
 on:
-  push:
-    branches: [ main, v1 ]
-  pull_request:
-    branches: [ main, v1 ]
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: "Manual trigger reason"
+        required: false
+        default: "manual run required"
+  # ~~old~~ push:
+  #   branches: [ main, v1 ]
+  # ~~old~~ pull_request:
+  #   branches: [ main, v1 ]
 
 permissions:
   contents: read
   packages: write   # ghcr 푸시용
 
 jobs:
+  # NOTE: Automatic CI triggers disabled on 2025-09-25; manual dispatch only.
   build:
     runs-on: ubuntu-latest
     env:
@@ -25,8 +32,8 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'npm'
+          node-version: "20"
+          cache: "npm"
           cache-dependency-path: web/mcs-portal/package-lock.json
 
       - name: Install dependencies
@@ -93,5 +100,3 @@ jobs:
         run: |
           docker tag ${{ env.LOCAL_IMAGE }} ${{ env.REGISTRY_IMAGE }}:${{ github.sha }}
           docker push ${{ env.REGISTRY_IMAGE }}:${{ github.sha }}
-
-

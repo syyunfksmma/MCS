@@ -1,5 +1,7 @@
 using System;
-using System.Linq;`r`nusing System.Text;`r`nusing MCMS.Core.Contracts.Dtos;
+using System.Linq;
+using System.Text;
+using MCMS.Core.Contracts.Dtos;
 using MCMS.Core.Contracts.Requests;
 using MCMS.Core.Domain.Enums;
 using MCMS.Infrastructure.Persistence;
@@ -162,4 +164,5 @@ public class AuditLogServiceTests
         Assert.True(report.Alerts.Count >= 1);
     }
 }
+
 

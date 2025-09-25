@@ -1,0 +1,34 @@
+services:
+  db:
+    image: mcr.microsoft.com/azure-sql-edge:latest
+    platform: linux/amd64
+    container_name: mcms-sql
+    environment:
+      MSSQL_SA_PASSWORD: ${SA_PASSWORD}
+      ACCEPT_EULA: "Y"
+    ports:
+      - "14333:1433"
+    volumes:
+      - ./docker-data/sql:/var/opt/mssql
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P ${SA_PASSWORD} -Q 'SELECT 1' || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build:
+      context: .
+      dockerfile: docker/api/Dockerfile
+    container_name: mcms-api
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      ASPNETCORE_URLS: http://0.0.0.0:5229
+      ConnectionStrings__McmsDatabase: Server=db;Database=MCMS;User Id=sa;Password=${SA_PASSWORD};TrustServerCertificate=True
+      FileStorage__RootPath: /app/storage
+    ports:
+      - "5229:5229"
+    volumes:
+      - ./docker-data/storage:/app/storage
