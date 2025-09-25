@@ -34,6 +34,9 @@
 - 새 메타 생성 이벤트가 발생하면 `HistoryService`에 기록된 `HistoryEntryDto`를 기반으로 UI에 전달.
 - k6 측정치는 `tests/k6/chunk_upload.js` 실행 후 생성되는 JSON Summary를 수집하여 Insights 패널에 반영.
 
+## 진행 상황
+- 2025-09-25: 작업 착수. 기존 Sprint6 로그에 기재된 SLA 로그를 바탕으로 UX 요구사항 세부화 계획 수립.
+
 ## 후속 작업
 1. Notification Center 컴포넌트에 SLA 경고 상태 추가 (`StatusBadge` 재사용).
 2. HistoryTimeline 생성 및 로그 메시지 바인딩.
@@ -42,3 +45,4 @@
 
 ## 수정 이력
 - 2025-09-25 Codex: 초기 버전 작성, meta SLA 로그 반영.
+- 2025-09-25 Codex: 작업 착수 기록 추가.

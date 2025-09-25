@@ -3,6 +3,7 @@
 - 문서 수정은 기존 내용을 삭제하지 않고 문서 하단 "수정 이력"에 기록한다.
 - Sprint6 Routing 작업의 모든 측정치와 로그를 표 형태로 누적한다.
 - 관측된 SLA나 오류는 Sprint5.1 로그와 상호 참조한다.
+- 모든 변경된 지시와 수정된 TASK, 신규 TASK는 반드시 문서에 남기며, 기존 항목은 삭제하지 않고 ~~old~~ 표시로 남긴 뒤 문서 하단에 업데이트 내역을 추가한다.
 
 | Date       | Owner | Track | Description | Target SLA (ms) | Observed (ms) | Notes | Artifacts |
 |------------|-------|-------|-------------|-----------------|---------------|-------|-----------|
@@ -17,7 +18,10 @@
 | 2025-09-25 | Codex | F1 | FileStorageService 동시 접근 허용(FileShare.ReadWrite, 재시도) | 3500 | N/A | meta.json 잠금으로 500 발생 → 파일 공유/재시도 로직 적용 | src/MCMS.Infrastructure/FileStorage/FileStorageService.cs |
 | 2025-09-25 | Codex | F1 | Meta write async 큐 SLA 계측 및 k6 스크립트 업데이트 | 1000 | N/A | meta_generation_wait_ms 추가, 테스트 환경 미기동으로 측정 대기 (k6 log capture 예정) | tests/k6/chunk_upload.js; scripts/performance/k6-workspace.js |
 
-## 수정 이력\r\n- 2025-09-25 Codex: k6 SLA 계측 행 추가 및 k6 스크립트 업데이트 계획 기록.\r\n- 2025-09-25 Codex: 절대 지령 추가 및 Sprint6 로그 항목 정리.
+## 수정 이력
+- 2025-09-25 Codex: k6 SLA 계측 행 추가 및 k6 스크립트 업데이트 계획 기록.
+- 2025-09-25 Codex: 절대 지령 추가 및 Sprint6 로그 항목 정리.
+- 2025-09-25 Codex: 절대 지령에 문서 변경 기록 규칙 추가.
 
 
 =======
@@ -33,6 +37,7 @@
 - Task List와 체크박스를 유지하고 신규 생성된 작업에서도 절대 지령을 동일하게 준수한다.
 - 오류 개선을 위해 신규 TASK가 발생하면 TASK LIST를 새로 작성하거나 기존 LIST에 업데이트 한다.
 - PoC 기준은 1인 기업 관점으로 계획한다.
+- 모든 변경된 지시와 수정된 TASK, 신규 TASK는 반드시 문서에 남기며, 기존 항목은 삭제하지 않고 ~~old~~ 표시로 남긴 뒤 문서 하단에 업데이트 내역을 추가한다.
 
 > 영어로 상세 로그 작성. 각 Task ID 별 최소 하루 1회 갱신.
 
@@ -61,6 +66,4 @@
 | 2025-09-24 | Codex | H1 | Wired routing creation wizard modal into ExplorerShell with success/error messaging and shared-drive path stub | ExplorerShell.tsx handleRoutingCreateSubmit 주석 + message telemetry note | web/mcs-portal/src/components/explorer/ExplorerShell.tsx; web/mcs-portal/src/components/explorer/RoutingCreationWizard.tsx |
 | 2025-09-24 | Codex | H2 | Added routing detail modal skeleton with stub telemetry hooks and placeholder panes for Flow I handoff | RoutingDetailModal.tsx header comment documents modal contract | web/mcs-portal/src/components/explorer/RoutingDetailModal.tsx; web/mcs-portal/src/components/explorer/ExplorerShell.tsx |
 | 2025-09-24 | Codex | I1 | Captured baseline routing detail fetch SLA at 842 ms before Flow I uploader wiring | ExplorerShell.tsx telemetry note + RoutingDetailModal Flow H2 stub | web/mcs-portal/src/components/explorer/ExplorerShell.tsx; web/mcs-portal/src/components/explorer/RoutingDetailModal.tsx; web/mcs-portal/src/hooks/useRoutingDetail.ts |
-
-
 
