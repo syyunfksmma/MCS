@@ -187,6 +187,8 @@ paths:
       parameters:
         - $ref: '#/components/parameters/RoutingId'
         - $ref: '#/components/parameters/SessionId'
+        - $ref: '#/components/parameters/ChunkIndex'
+        - $ref: '#/components/parameters/ChunkChecksum'
       requestBody:
         required: true
         content:
@@ -237,7 +239,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RoutingSearchResponse'
+                $ref: '#/components/schemas/RoutingSearchResponseDto'
 components:
   parameters:
     RoutingId:
@@ -254,6 +256,322 @@ components:
       schema:
         type: string
         format: uuid
+    ChunkIndex:
+      name: X-Chunk-Index
+      in: header
+      required: true
+      description: Zero-based chunk sequence number for the current upload session.
+      schema:
+        type: integer
+        minimum: 0
+    ChunkChecksum:
+      name: X-Chunk-Checksum
+      in: header
+      required: false
+      description: Optional lowercase SHA-256 checksum of the chunk payload (reserved for future validation).
+      schema:
+        type: string
+        pattern: '^[0-9a-fA-F]{64}
+    RoutingDto:
+      type: object
+      required: [id, itemRevisionId, routingCode, status, camRevision, isPrimary, steps, files, history]
+      properties:
+        id:
+          type: string
+          format: uuid
+        itemRevisionId:
+          type: string
+          format: uuid
+        routingCode:
+          type: string
+        status:
+          type: integer
+        camRevision:
+          type: string
+        isPrimary:
+          type: boolean
+        approvalStatus:
+          type: integer
+          nullable: true
+        approvalRequestedAt:
+          type: string
+          format: date-time
+          nullable: true
+        approvalRequestedBy:
+          type: string
+          nullable: true
+        steps:
+          type: array
+          items:
+            $ref: '#/components/schemas/RoutingStepDto'
+        files:
+          type: array
+          items:
+            $ref: '#/components/schemas/RoutingFileDto'
+        history:
+          type: array
+          items:
+            $ref: '#/components/schemas/HistoryEntryDto'
+    RoutingStepDto:
+      type: object
+      required: [id, sequence, machine, processDescription]
+      properties:
+        id:
+          type: string
+          format: uuid
+        sequence:
+          type: integer
+        machine:
+          type: string
+        processDescription:
+          type: string
+        toolInformation:
+          type: string
+          nullable: true
+        notes:
+          type: string
+          nullable: true
+    RoutingFileDto:
+      type: object
+      required: [id, fileType, fileName, relativePath, fileSizeBytes, checksum, isPrimary, uploadedAt, uploadedBy]
+      properties:
+        id:
+          type: string
+          format: uuid
+        fileType:
+          type: integer
+        fileName:
+          type: string
+        relativePath:
+          type: string
+        fileSizeBytes:
+          type: integer
+        checksum:
+          type: string
+        isPrimary:
+          type: boolean
+        uploadedAt:
+          type: string
+          format: date-time
+        uploadedBy:
+          type: string
+    HistoryEntryDto:
+      type: object
+      required: [id, routingId, changeType, createdAt, createdBy]
+      properties:
+        id:
+          type: string
+          format: uuid
+        routingId:
+          type: string
+          format: uuid
+        changeType:
+          type: string
+        field:
+          type: string
+          nullable: true
+        previousValue:
+          type: string
+          nullable: true
+        currentValue:
+          type: string
+          nullable: true
+        outcome:
+          type: integer
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+        createdBy:
+          type: string
+        comment:
+          type: string
+          nullable: true
+    RoutingMetaDto:
+      type: object
+      required: [routingId, files]
+      properties:
+        routingId:
+          type: string
+          format: uuid
+        camRevision:
+          type: string
+          nullable: true
+        metaPath:
+          type: string
+        files:
+          type: array
+          items:
+            $ref: '#/components/schemas/RoutingMetaFileDto'
+        latestHistoryId:
+          type: string
+          format: uuid
+          nullable: true
+    RoutingMetaFileDto:
+      type: object
+      required: [fileName, fileType, relativePath, checksum, uploadedBy, uploadedAt]
+      properties:
+        fileName:
+          type: string
+        fileType:
+          type: string
+        relativePath:
+          type: string
+        checksum:
+          type: string
+        isPrimary:
+          type: boolean
+        uploadedBy:
+          type: string
+        uploadedAt:
+          type: string
+          format: date-time
+    RequestRoutingApprovalRequest:
+      type: object
+      required: [requestedBy]
+      properties:
+        requestedBy:
+          type: string
+        comments:
+          type: string
+          nullable: true
+    ApproveRoutingRequest:
+      type: object
+      required: [approvedBy]
+      properties:
+        approvedBy:
+          type: string
+        comments:
+          type: string
+          nullable: true
+    RejectRoutingRequest:
+      type: object
+      required: [rejectedBy, reason]
+      properties:
+        rejectedBy:
+          type: string
+        reason:
+          type: string
+    StartChunkUploadRequest:
+      type: object
+      required: [fileName, fileType, totalSizeBytes, chunkSizeBytes, uploadedBy]
+      properties:
+        fileName:
+          type: string
+        fileType:
+          type: string
+        totalSizeBytes:
+          type: integer
+        chunkSizeBytes:
+          type: integer
+        uploadedBy:
+          type: string
+    ChunkUploadSessionDto:
+      type: object
+      required: [sessionId, expiresAt, chunkSizeBytes, totalChunks]
+      properties:
+        sessionId:
+          type: string
+          format: uuid
+        expiresAt:
+          type: string
+          format: date-time
+        chunkSizeBytes:
+          type: integer
+        totalChunks:
+          type: integer
+    CompleteChunkUploadRequest:
+      type: object
+      required: [checksum]
+      properties:
+        checksum:
+          type: string
+        isPrimary:
+          type: boolean
+          nullable: true
+    RoutingSearchRequest:
+      type: object
+      required: [term]
+      properties:
+        term:
+          type: string
+        filters:
+          type: object
+          properties:
+            productCode:
+              type: string
+            groupId:
+              type: string
+            fileType:
+              type: string
+            owner:
+              type: string
+            updatedAfter:
+              type: string
+              format: date-time
+            updatedBefore:
+              type: string
+              format: date-time
+        page:
+          type: integer
+          minimum: 1
+          default: 1
+        pageSize:
+          type: integer
+          minimum: 1
+          maximum: 200
+          default: 25
+        slaTargetMs:
+          type: integer
+          default: 1500
+    RoutingSearchResponseDto:
+      type: object
+      required: [items, total, generatedAt, source]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/RoutingSearchItemDto'
+        total:
+          type: integer
+        generatedAt:
+          type: string
+          format: date-time
+        source:
+          type: string
+          enum: [mock, api]
+        slaMs:
+          type: integer
+          nullable: true
+    RoutingSearchItemDto:
+      type: object
+      required: [routingId, routingCode, productCode, revisionCode, groupName, status]
+      properties:
+        routingId:
+          type: string
+          format: uuid
+        routingCode:
+          type: string
+        productCode:
+          type: string
+        revisionCode:
+          type: string
+        groupName:
+          type: string
+        status:
+          type: string
+        updatedAt:
+          type: string
+          format: date-time
+          nullable: true
+        sharedDrivePath:
+          type: string
+          nullable: true
+
+
+
+
+
   schemas:
     RoutingDto:
       type: object
@@ -507,14 +825,14 @@ components:
         slaTargetMs:
           type: integer
           default: 1500
-    RoutingSearchResponse:
+    RoutingSearchResponseDto:
       type: object
       required: [items, total, generatedAt, source]
       properties:
         items:
           type: array
           items:
-            $ref: '#/components/schemas/RoutingSearchItem'
+            $ref: '#/components/schemas/RoutingSearchItemDto'
         total:
           type: integer
         generatedAt:
@@ -526,7 +844,7 @@ components:
         slaMs:
           type: integer
           nullable: true
-    RoutingSearchItem:
+    RoutingSearchItemDto:
       type: object
       required: [routingId, routingCode, productCode, revisionCode, groupName, status]
       properties:
@@ -550,3 +868,8 @@ components:
         sharedDrivePath:
           type: string
           nullable: true
+
+
+
+
+

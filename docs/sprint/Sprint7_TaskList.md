@@ -31,3 +31,11 @@
 
 ## 로그 기록
 - (작성 예정)
+### E. Explorer UX Delivery (Teamcenter)
+- [ ] E1. 좌측 필터 레일 React 컴포넌트 구현 및 Storybook 검증
+- [ ] E2. Ribbon 액션 그룹화 UI 적용 및 접근성 리뷰
+- [ ] E3. Hover Quick Menu 상호작용 ExplorerShell 통합 및 회귀 테스트
+### F. Chunk Upload Optimisation (Phase 2)
+- [ ] F1. 청크 크기 A/B 테스트(k6) 256KiB/512KiB/1MiB 비교 및 SLA 갱신
+- [ ] F2. SSD Warm-up 스크립트 및 배포 단계 점검 체크리스트 작성
+- [ ] F3. Streaming SHA-256 서버 측 도입 후 회귀 테스트

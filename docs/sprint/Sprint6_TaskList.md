@@ -32,3 +32,11 @@
 
 ## 로그 기록
 - (작성 예정)
+
+### E. Explorer UX Alignment (Teamcenter)
+- [ ] E1. 좌측 필터 레일 컴포넌트 정보구조 확정 및 ExplorerShell 반영 계획 수립
+- [ ] E2. Ribbon 액션 그룹화 규칙 정의 후 UI 설계 문서 업데이트
+- [ ] E3. Hover Quick Menu 상호작용 플로우 초안과 검증 계획 작성
+### F. Chunk Upload Optimisation
+- [ ] F1. Streaming SHA-256 클라이언트/서버 구현 계획 수립 및 POC(branch 기반)
+- [ ] F2. 병렬 청크 병합 프로토타입 작성 및 워크스페이스 업로더에 연결
