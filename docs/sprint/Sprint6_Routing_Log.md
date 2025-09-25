@@ -69,3 +69,8 @@
 | 2025-09-24 | Codex | I1 | Captured baseline routing detail fetch SLA at 842 ms before Flow I uploader wiring | ExplorerShell.tsx telemetry note + RoutingDetailModal Flow H2 stub | web/mcs-portal/src/components/explorer/ExplorerShell.tsx; web/mcs-portal/src/components/explorer/RoutingDetailModal.tsx; web/mcs-portal/src/hooks/useRoutingDetail.ts |
 
 
+## 업데이트 기록 (2025-09-25)
+
+- 2025-09-25 Codex: ~~meta queue single worker w/o cache~~ FileStorageService 다중 워커 + SHA 캐싱 + FileSystemWatcher 도입 (SLA ≤ 1s 목표 지속). 코드: src/MCMS.Infrastructure/FileStorage/FileStorageService.cs
+- 2025-09-25 Codex: ~~Routing meta 즉시 재생성~~ RoutingMetaUpdateScheduler로 라우팅 ID별 요청 병합. 코드: src/MCMS.Infrastructure/Services/RoutingFileService.cs
+- 2025-09-25 Codex: meta_generation_wait_ms 재측정은 로컬 SQL Server Developer 환경 구성 후 진행 (현재 로그: 측정 대기, tests/k6/chunk_upload.js TODO 유지).

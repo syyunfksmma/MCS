@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -32,6 +33,7 @@ public class RoutingFileService : IRoutingFileService
     private readonly IHistoryService _historyService;
     private readonly ILogger<RoutingFileService> _logger;
     private readonly UploadRoutingFileRequestValidator _uploadValidator = new();
+    private readonly ConcurrentDictionary<Guid, Lazy<Task<RoutingMetaDto>>> _metaRefreshTasks = new();
 
     public RoutingFileService(
         McmsDbContext dbContext,
@@ -45,24 +47,23 @@ public class RoutingFileService : IRoutingFileService
         _logger = logger;
     }
 
-    public async Task<RoutingMetaDto> GetAsync(Guid routingId, CancellationToken cancellationToken = default)
+    public Task<RoutingMetaDto> GetAsync(Guid routingId, CancellationToken cancellationToken = default)
     {
-        var routing = await LoadRoutingAggregateAsync(routingId, cancellationToken);
-        return await GenerateMetaAsync(routing, cancellationToken);
+        return ScheduleMetaRefreshAsync(routingId, cancellationToken);
     }
 
     public async Task<RoutingMetaDto> UploadAsync(UploadRoutingFileRequest request, CancellationToken cancellationToken = default)
     {
-        await _uploadValidator.ValidateAndThrowAsync(request, cancellationToken);
+        await _uploadValidator.ValidateAndThrowAsync(request, cancellationToken).ConfigureAwait(false);
         EnsureFileTypeIsSupported(request.FileType);
 
         var routing = await _dbContext.Routings
             .Include(r => r.Files)
             .FirstOrDefaultAsync(r => r.Id == request.RoutingId, cancellationToken)
-            ?? throw new KeyNotFoundException("Routing? ?? ? ????.");
+            ?? throw new KeyNotFoundException("Routing not found.");
 
         var relativePath = BuildRelativePath(routing, request.FileName);
-        var saveResult = await _fileStorage.SaveAsync(request.Content, relativePath, cancellationToken);
+        var saveResult = await _fileStorage.SaveAsync(request.Content, relativePath, cancellationToken).ConfigureAwait(false);
 
         var entity = new RoutingFile
         {
@@ -88,7 +89,7 @@ public class RoutingFileService : IRoutingFileService
         routing.UpdatedBy = request.UploadedBy;
 
         _dbContext.RoutingFiles.Add(entity);
-        await _dbContext.SaveChangesAsync(cancellationToken);
+        await _dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
         await _historyService.RecordAsync(new HistoryEntryDto(
             Guid.NewGuid(),
@@ -100,10 +101,9 @@ public class RoutingFileService : IRoutingFileService
             ApprovalOutcome.Pending,
             entity.CreatedAt,
             entity.CreatedBy,
-            null), cancellationToken);
+            null), cancellationToken).ConfigureAwait(false);
 
-        var refreshed = await LoadRoutingAggregateAsync(routing.Id, cancellationToken);
-        return await GenerateMetaAsync(refreshed, cancellationToken);
+        return await ScheduleMetaRefreshAsync(routing.Id, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<RoutingMetaDto> DeleteAsync(Guid routingId, Guid fileId, string deletedBy, CancellationToken cancellationToken = default)
@@ -111,15 +111,15 @@ public class RoutingFileService : IRoutingFileService
         var file = await _dbContext.RoutingFiles
             .Include(f => f.Routing)
             .FirstOrDefaultAsync(f => f.Id == fileId && f.RoutingId == routingId, cancellationToken)
-            ?? throw new KeyNotFoundException("??? ?? ? ????.");
+            ?? throw new KeyNotFoundException("File not found.");
 
         file.Routing!.UpdatedAt = DateTimeOffset.UtcNow;
         file.Routing.UpdatedBy = deletedBy;
 
         _dbContext.RoutingFiles.Remove(file);
-        await _dbContext.SaveChangesAsync(cancellationToken);
+        await _dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
-        await _fileStorage.DeleteAsync(file.RelativePath, cancellationToken);
+        await _fileStorage.DeleteAsync(file.RelativePath, cancellationToken).ConfigureAwait(false);
 
         await _historyService.RecordAsync(new HistoryEntryDto(
             Guid.NewGuid(),
@@ -131,10 +131,9 @@ public class RoutingFileService : IRoutingFileService
             ApprovalOutcome.Pending,
             DateTimeOffset.UtcNow,
             deletedBy,
-            null), cancellationToken);
+            null), cancellationToken).ConfigureAwait(false);
 
-        var refreshed = await LoadRoutingAggregateAsync(routingId, cancellationToken);
-        return await GenerateMetaAsync(refreshed, cancellationToken);
+        return await ScheduleMetaRefreshAsync(routingId, cancellationToken).ConfigureAwait(false);
     }
 
     private async Task<Routing> LoadRoutingAggregateAsync(Guid routingId, CancellationToken cancellationToken)
@@ -144,7 +143,7 @@ public class RoutingFileService : IRoutingFileService
             .Include(r => r.Files)
             .Include(r => r.HistoryEntries)
             .FirstOrDefaultAsync(r => r.Id == routingId, cancellationToken)
-            ?? throw new KeyNotFoundException("Routing? ?? ? ????.");
+            ?? throw new KeyNotFoundException("Routing not found.");
     }
 
     private async Task<RoutingMetaDto> GenerateMetaAsync(Routing routing, CancellationToken cancellationToken)
@@ -174,7 +173,7 @@ public class RoutingFileService : IRoutingFileService
             files,
             latestHistoryId);
 
-        await _fileStorage.QueueJsonWriteAsync(meta.MetaPath, meta, cancellationToken);
+        await _fileStorage.QueueJsonWriteAsync(meta.MetaPath, meta, cancellationToken).ConfigureAwait(false);
         var elapsed = Stopwatch.GetElapsedTime(startTimestamp);
 
         if (elapsed > MetaGenerationSla)
@@ -187,6 +186,47 @@ public class RoutingFileService : IRoutingFileService
         }
 
         return meta;
+    }
+
+    private async Task<RoutingMetaDto> GenerateMetaForRoutingAsync(Guid routingId)
+    {
+        var routing = await LoadRoutingAggregateAsync(routingId, CancellationToken.None).ConfigureAwait(false);
+        return await GenerateMetaAsync(routing, CancellationToken.None).ConfigureAwait(false);
+    }
+
+    private Task<RoutingMetaDto> ScheduleMetaRefreshAsync(Guid routingId, CancellationToken cancellationToken)
+    {
+        while (true)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var lazyTask = new Lazy<Task<RoutingMetaDto>>(
+                () => GenerateMetaForRoutingAsync(routingId),
+                LazyThreadSafetyMode.ExecutionAndPublication);
+
+            if (_metaRefreshTasks.TryAdd(routingId, lazyTask))
+            {
+                var task = lazyTask.Value;
+                _ = task.ContinueWith(
+                    _ => _metaRefreshTasks.TryRemove(routingId, out _),
+                    CancellationToken.None,
+                    TaskContinuationOptions.ExecuteSynchronously,
+                    TaskScheduler.Default);
+
+                return task.WaitAsync(cancellationToken);
+            }
+
+            if (_metaRefreshTasks.TryGetValue(routingId, out var existing))
+            {
+                var task = existing.Value;
+                if (!task.IsCompleted)
+                {
+                    return task.WaitAsync(cancellationToken);
+                }
+
+                _metaRefreshTasks.TryRemove(routingId, out _);
+            }
+        }
     }
 
     private static string BuildRelativePath(Routing routing, string fileName)
@@ -220,7 +260,7 @@ public class RoutingFileService : IRoutingFileService
     {
         if (!AllowedFileTypes.Contains(fileType))
         {
-            throw new ArgumentException($"???? ?? ?? ?????: {fileType}");
+            throw new ArgumentException($"Unsupported file type: {fileType}");
         }
     }
 }

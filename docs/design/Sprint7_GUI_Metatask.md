@@ -52,3 +52,7 @@
 
 
 
+## 업데이트 기록 (2025-09-25)
+
+- 2025-09-25 Codex: ~~Notification Center wireframe TBD~~ docs/design/wireframes/Sprint7/Notification_Performance.md 초안 작성, 참고 자료: docs/extracted_images/ 폴더.
+- 2025-09-25 Codex: ~~SLA 알림 문구만 정의~~ Notification Center/Performance Insights 상호작용 흐름과 meta_generation_wait_ms KPI 요구사항 구체화.

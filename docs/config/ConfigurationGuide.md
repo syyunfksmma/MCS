@@ -36,3 +36,7 @@
 2. FileStorage.RootPath는 실제 네트워크 공유 경로로 업데이트
 3. Client의 API/CmdHost URL은 배포된 도메인으로 설정
 4. 인증/권한 설정 시 User Secrets 또는 환경 변수로 민감 정보 관리
+## Updates (2025-09-25)
+
+- 2025-09-25 Codex: ~~Docker Azure SQL Edge container 권장~~ Local SQL Server Developer/Express 인스턴스 사용 (TCP 1433, Mixed Mode, LSA 오류 회피).
+- 2025-09-25 Codex: 새 권장 연결 문자열 예시 →  `Server=localhost,1433;Database=MCMS;User Id=sa;Password=<secure>;TrustServerCertificate=True;Encrypt=False` (appsettings.json / .env). 
