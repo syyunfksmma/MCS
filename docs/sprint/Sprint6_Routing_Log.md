@@ -69,3 +69,27 @@
 | 2025-09-24 | Codex | I1 | Captured baseline routing detail fetch SLA at 842 ms before Flow I uploader wiring | ExplorerShell.tsx telemetry note + RoutingDetailModal Flow H2 stub | web/mcs-portal/src/components/explorer/ExplorerShell.tsx; web/mcs-portal/src/components/explorer/RoutingDetailModal.tsx; web/mcs-portal/src/hooks/useRoutingDetail.ts |
 
 
+## 업데이트 기록 (2025-09-25)
+
+- 2025-09-25 Codex: ~~meta queue single worker w/o cache~~ FileStorageService 다중 워커 + SHA 캐싱 + FileSystemWatcher 도입 (SLA ≤ 1s 목표 지속). 코드: src/MCMS.Infrastructure/FileStorage/FileStorageService.cs
+- 2025-09-25 Codex: ~~Routing meta 즉시 재생성~~ RoutingMetaUpdateScheduler로 라우팅 ID별 요청 병합. 코드: src/MCMS.Infrastructure/Services/RoutingFileService.cs
+- 2025-09-25 Codex: ~~meta_generation_wait_ms 재측정은 로컬 SQL Server Developer 환경 구성 후 진행 (현재 로그: 측정 대기, tests/k6/chunk_upload.js TODO 유지).~~ 2025-09-25 18:59 KST k6 재측정 완료(BASE_URL=http://localhost:5229, CHUNK_SIZE=256KiB, CHUNK_COUNT=4): meta_generation_wait_ms p95=6534.8 ms, chunk_upload_complete_ms p95=3358.7 ms, chunk_upload_iteration_ms p95=6559.9 ms로 SLA(≤1 s) 미달.
+
+## 업데이트 기록 (2025-09-26)- 2025-09-26 Codex: ~~k6 수동 실행만 기록~~ scripts/performance/run-meta-sla.ps1 PowerShell 자동화 작성 및 docs/sprint/meta_sla_history.csv 초기화. GitHub Actions meta-sla.yml 스케줄러 승인을 기다리는 동안 로컬 로그도 유지.
+- 2025-09-26 Codex: 테스트 이력은 meta_sla_history.csv와 Sprint 로그 모두에 누적 기록(절대 지령 반영).
+
+- 2025-09-26 Codex: ~~SQL Server 2014(KBMSS14) 유지~~ KBMSS14/SQLAgent$KBMSS14 서비스 중지 및 시작 유형 Disabled, SQLEXPRESS 2019만 TCP 1433에서 동작하도록 정리. Docker 컨테이너에서 host.docker.internal:1433 접속 시 TLS 프리로그인 오류 해소.
+- 2025-09-26 Codex: ~~FileStorage 병렬 설정 기본값 유지~~ FileStorage__JsonWorkerCount=6 / FileStorage__MaxParallelJsonWrites=6 (BASE_URL=http://localhost:5229)으로 k6 재측정 → meta_generation_wait_ms p95=2553.5 ms, chunk_upload_complete_ms p95=1371.1 ms (SLA ≤ 1 s 미달).
+- 2025-09-26 Codex: ~~동일 파라미터로 SLA 달성 가능 예상~~ JsonWorkerCount=8 / MaxParallelJsonWrites=8 재측정 → meta_generation_wait_ms p95=6035.0 ms, chunk_upload_complete_ms p95=2925.9 ms (성능 악화 확인).
+- 2025-09-26 Codex: ~~멀티 워커 감소 시 개선 기대~~ JsonWorkerCount=4 / MaxParallelJsonWrites=4 재측정 → meta_generation_wait_ms p95=10668.3 ms, chunk_upload_complete_ms p95=4795.8 ms (큐 대기 급증).
+- 2025-09-26 Codex: ~~워커 6 + 병렬 2로 SLA 달성 가능~~ JsonWorkerCount=6 / MaxParallelJsonWrites=2 재측정 → meta_generation_wait_ms p95=11135.2 ms, chunk_upload_complete_ms p95=5807.6 ms (효과 없음, 추후 구조 개선 필요).
+- 2025-09-26 Codex: ~~FileStorageService 병렬 조정만으로 SLA 1 s 달성 가능~~ 라우팅 단위 배치, 캐시 확장, 수동 직렬화 등을 포함한 근본 최적화 계획 승인. 세부 플랜: docs/implementation/FileStorage_Meta_Optimization.md.
+- 2025-09-26 Codex: ~~SLA p95 ≤ 1 s 고수~~ 임시 완화안(p95 ≤ 3 s, p99 ≤ 5 s) 검토 승인. 최적화 완료 전까지 측정 로그를 지속 기록하고 재협상 시 재평가.
+- 2025-09-26 Codex: ~~GUI 일정 미정~~ Sprint7 GUI 마일스톤(M1~M5) 확정 및 Codex 담당. 상세 일정은 docs/design/Sprint7_GUI_Metatask.md 참고.
+- 절대 지령: 모든 업무 지시는 문서에 기록하고 기존 지시는 취소선으로 남긴다.
+
+
+
+- 절대 지령: 모든 업무 지시는 문서에 기록하고 기존 지시는 취소선으로 남긴다.
+
+

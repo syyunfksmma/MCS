@@ -372,3 +372,5 @@ web/mcs-portal/.next/
 docs/design/reference/archive/
 
 /.env
+/publish/
+docker-data/
