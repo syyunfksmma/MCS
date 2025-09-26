@@ -23,9 +23,10 @@
 - 데이터: 파일럿 데이터 복제본 사용 (민감 정보 마스킹).
 
 ## 4. 자동화 계획
-- 단위 테스트: GitHub Actions/DevOps에서 Pull Request 마다 실행.
-- 통합 테스트: QA 환경에 배포 후 스케줄 실행.
-- UI 자동화: WPF UI 테스트(White/FlaUI)로 핵심 흐름 (Routing 생성, 승인) 실행.
+- ~~단위 테스트: GitHub Actions/DevOps에서 Pull Request 마다 실행.~~
+- 단위 테스트: 내부 빌드 PC 예약 작업으로 야간 실행(dotnet test --filter Category=Unit).
+- 통합 테스트: QA 서버에 설치 패키지 배포 후 scripts\\tests\\run-integration.ps1로 수동/자동 실행.
+- UI 자동화: WPF UI 테스트(White/FlaUI)를 Windows 인증 계정으로 실행해 routing 생성/승인 흐름을 검증하고, 결과 로그를 \\MCMS_SHARE\\logs\\qa에 저장.
 
 ## 5. UAT 일정
 | 주차 | 활동 |
@@ -35,8 +36,10 @@
 | Week 8 | 피드백 반영, 재검증 |
 
 ## 6. 피드백 수집
-- UAT 설문지 (Google Form 또는 사내 툴) 작성.
-- 이슈 트래킹: Azure DevOps Board `UAT Feedback` 컬럼 운영.
+- ~~UAT 설문지 (Google Form 또는 사내 툴) 작성.~~
+- ~~이슈 트래킹: Azure DevOps Board UAT Feedback 컬럼 운영.~~
+- 내부 파일쉐어(\\MCMS_SHARE\\feedback\UAT)에 Excel 양식을 배포하고, 주기적으로 취합한다.
+- 피드백 항목은 docs/sprint/Sprint9_UAT_Log.md에 정리하고 승인 로그와 연동한다.
 - 주간 미팅으로 진행 현황 공유.
 
 ## 7. 주니어 개발자 지침
@@ -48,3 +51,6 @@
 - QA 자동화 환경(빌드 에이전트) 준비.
 - UAT 일정과 파일럿 사용자 참여 확정.
 - 교육 자료(슬라이드) 제작 담당자 지정.
+
+---
+2025-09-26 Codex: QA/UAT 계획을 내부망 설치형 시나리오에 맞게 조정하고 GitHub/DevOps 의존 항목에 취소선 적용.

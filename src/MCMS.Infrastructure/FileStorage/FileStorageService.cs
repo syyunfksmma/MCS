@@ -1,4 +1,6 @@
-using System;\r\nusing System.Buffers;\r\nusing System.Collections.Concurrent;
+using System;
+using System.Buffers;
+using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -19,7 +21,8 @@ public sealed class FileStorageService : IFileStorageService, IAsyncDisposable
     private const int DefaultBufferSize = 131072;
     private static readonly TimeSpan RetryDelay = TimeSpan.FromMilliseconds(150);
     private static readonly TimeSpan MetaWriteSla = TimeSpan.FromSeconds(1);
-    private static readonly TimeSpan CacheWriteGuardWindow = TimeSpan.FromMilliseconds(500);\r\n    private const int MetaCacheHistorySize = 3;
+    private static readonly TimeSpan CacheWriteGuardWindow = TimeSpan.FromMilliseconds(500);
+    private const int MetaCacheHistorySize = 3;
 
     private readonly FileStorageOptions _options;
     private readonly ILogger<FileStorageService> _logger;
@@ -326,18 +329,6 @@ public sealed class FileStorageService : IFileStorageService, IAsyncDisposable
         history.Record(candidate);
         return false;
     }
-        var normalized = Path.GetFullPath(fullPath);
-        var now = DateTimeOffset.UtcNow;
-        var entry = new MetaFileCacheEntry(payloadHash, payloadLength, now);
-
-        if (_metaCache.TryGetValue(normalized, out var existing) && existing.Length == payloadLength && existing.Hash == payloadHash)
-        {
-            _metaCache[normalized] = entry;
-            return true;
-        }
-
-        return false;
-    }
 
     private void UpdateCache(string fullPath, string payloadHash, long payloadLength)
     {
@@ -350,10 +341,6 @@ public sealed class FileStorageService : IFileStorageService, IAsyncDisposable
         var history = _metaCache.GetOrAdd(normalized, _ => new MetaFileCacheHistory(MetaCacheHistorySize));
         history.Record(new MetaFileCacheEntry(payloadHash, payloadLength, DateTimeOffset.UtcNow));
     }
-        var normalized = Path.GetFullPath(fullPath);
-        _metaCache[normalized] = new MetaFileCacheEntry(payloadHash, payloadLength, DateTimeOffset.UtcNow);
-    }
-
     private FileSystemWatcher? InitializeWatcher(string rootPath)
     {
         try
@@ -404,10 +391,10 @@ public sealed class FileStorageService : IFileStorageService, IAsyncDisposable
 
         var normalized = Path.GetFullPath(fullPath);
 
-        if (_metaCache.TryGetValue(normalized, out var entry))
+        if (_metaCache.TryGetValue(normalized, out var history) && history.TryGetLatest(out var latest))
         {
             var now = DateTimeOffset.UtcNow;
-            if (now - entry.LastUpdated < CacheWriteGuardWindow)
+            if (now - latest.LastUpdated < CacheWriteGuardWindow)
             {
                 return;
             }
@@ -523,13 +510,17 @@ public sealed class FileStorageService : IFileStorageService, IAsyncDisposable
 
             if (_index > _buffer.Length - count)
             {
-                throw new InvalidOperationException('Cannot advance beyond buffer size.');
+                throw new InvalidOperationException("Cannot advance beyond buffer size.");
             }
 
             _index += count;
         }
 
-        public Memory<byte> GetMemory(int sizeHint = 0) => GetSpan(sizeHint);
+        public Memory<byte> GetMemory(int sizeHint = 0)
+        {
+            EnsureCapacity(sizeHint);
+            return _buffer.AsMemory(_index);
+        }
 
         public Span<byte> GetSpan(int sizeHint = 0)
         {
@@ -654,6 +645,10 @@ private sealed class MetaFileCacheHistory
 
     private sealed record MetaFileCacheEntry(string Hash, long Length, DateTimeOffset LastUpdated);
 }
+
+
+
+
 
 
 

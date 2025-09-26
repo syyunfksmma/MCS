@@ -58,7 +58,10 @@
 - 2025-09-25 Codex: ~~SLA 알림 문구만 정의~~ Notification Center/Performance Insights 상호작용 흐름과 meta_generation_wait_ms KPI 요구사항 구체화.
 - 2025-09-25 Codex: k6 재측정 결과(meta_generation_wait_ms p95=6534.8 ms, chunk_upload_complete_ms p95=3358.7 ms)를 Performance Insights 초기 수치로 반영하도록 문서에 기록.
 ## 업데이트 기록 (2025-09-26)
+- 2025-09-26 Codex: Documented script_bug flag for meta SLA dashboard (0 ms baseline ignored in Performance Insights).
 - 2025-09-26 Codex: scripts/performance/run-meta-sla.ps1 자동 측정 스크립트와 meta_sla_history.csv 로그를 Performance Insights 시각화에 연동 예정.
+
+- 2025-09-26 Codex: ~~Sprint7 주간 마일스톤~~ 2025-09-26 하루 집중 추진 일정으로 재정렬, Notification Center·Performance Insights 산출물 병행 준비.
 
 - 2025-09-26 Codex: ~~SLA 초기값 6534.8 ms 유지~~ JsonWorkerCount/MaxParallelJsonWrites 조정(6/6 → 8/8 → 4/4 → 6/2) 결과를 Performance Insights 데이터 시트에 추가, 각 측정 meta_generation_wait_ms p95 = 2553.5 / 6035.0 / 10668.3 / 11135.2 ms (모두 SLA ≤ 1 s 미달).
 - 2025-09-26 Codex: k6 자동 측정 스크립트(scripts/performance/run-meta-sla.ps1) 작성, meta_sla_history.csv에 누적 기록하도록 구성.
@@ -67,13 +70,17 @@
 
 | Milestone | 기간 (KST) | 주요 작업 | 산출물 |
 |-----------|------------|-----------|--------|
-| M1 | 2025-09-29 ~ 10-03 | Notification Center 와이어프레임 확정, SLA 이벤트 페이로드 계약 | 최종 와이어프레임, API 계약서 |
-| M2 | 2025-10-06 ~ 10-10 | Performance Insights 탭 UI, 목 데이터 연동 | KPI 카드 & 라인 차트, 임시 API |
-| M3 | 2025-10-13 ~ 10-17 | SLA 경고 플로우, HistoryTimeline 딥링크 | 상호작용 프로토타입 |
-| M4 | 2025-10-20 ~ 10-24 | 접근성/테마 검수, 사용자 피드백 수집 | A11y 체크리스트, 테마 가이드 |
-| M5 | 2025-10-27 ~ 10-31 | 성능/QA 검증, 문서화 & 배포 준비 | 테스트 리포트, 배포 체크리스트 |
+| M1 | ~~2025-09-29 ~ 10-03~~ 2025-09-26 | Notification Center 와이어프레임 확정, SLA 이벤트 페이로드 계약 | 최종 와이어프레임, API 계약서 |
+| M2 | ~~2025-10-06 ~ 10-10~~ 2025-09-26 | Performance Insights 탭 UI, 목 데이터 연동 | KPI 카드 & 라인 차트, 임시 API |
+| M3 | ~~2025-10-13 ~ 10-17~~ 2025-09-26 | SLA 경고 플로우, HistoryTimeline 딥링크 | 상호작용 프로토타입 |
+| M4 | ~~2025-10-20 ~ 10-24~~ 2025-09-26 | 접근성/테마 검수, 사용자 피드백 수집 | A11y 체크리스트, 테마 가이드 |
+| M5 | ~~2025-10-27 ~ 10-31~~ 2025-09-26 | 성능/QA 검증, 문서화 & 배포 준비 | 테스트 리포트, 배포 체크리스트 |
 
 - 절대 지령: 모든 업무 지시는 문서에 기록하고 기존 지시는 취소선으로 남긴다.
+- 모든 검증 성공, 실패 기록도 다 로그에 기록, 유지할 것. 완료 될 시 취소선을 통해 업데이트 한다.
+- src/MCMS.Infrastructure/FileStorage/FileStorageService.cs의 기존 구문 오류를 정리해 전체 솔루션이 빌드되도록 한 뒤, Apply→Ready 이벤트 루프를 실제 실행 환경에서 연동 테스트
+- Signal-McsEvent.ps1나 Worker 큐를 이용해 에지 케이스(타임아웃, 라이센스 경고 등)에 대한 이벤트 흐름을 리허설하고, 필요한 경우 실패 시 별도 이벤트/로그 경로를 보강
+
 
 
 

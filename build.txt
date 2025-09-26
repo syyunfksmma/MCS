@@ -1,0 +1,6 @@
+﻿오후 3:17에 빌드를 시작함...
+1>------ 빌드 시작: 프로젝트: CAM_API, 구성: Debug x64 ------
+1>  CAM_API -> C:\Users\syyun\Documents\GitHub\MCS\obj\Debug\CAM_API.dll
+1>C:\Program Files\Microsoft Visual Studio\2022\Professional\MSBuild\Current\Bin\amd64\Microsoft.Common.CurrentVersion.targets(5664,5): warning MSB3214: "C:\Users\syyun\Documents\GitHub\MCS\obj\Debug\CAM_API.dll"에는 COM Interop에 등록할 수 있는 형식이 없습니다.
+========== 빌드: 1개 성공, 0개 실패, 0개 최신 상태, 0개 건너뜀 ==========
+========== 빌드이(가) 오후 3:17에 완료되었으며, 01.656 초이(가) 걸림 ==========

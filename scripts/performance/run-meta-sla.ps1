@@ -86,14 +86,17 @@ $metaP95Value = if ($metaP95 -ne $null) { [math]::Round($metaP95, 2) } else { ''
 $metaP99Value = if ($metaP99 -ne $null) { [math]::Round($metaP99, 2) } else { '' }
 $completeP95Value = if ($completeP95 -ne $null) { [math]::Round($completeP95, 2) } else { '' }
 $iterationP95Value = if ($iterationP95 -ne $null) { [math]::Round($iterationP95, 2) } else { '' }
+$scriptBug = if ($metaP95Value -ne '' -and $metaP95Value -eq '0') { 'true' } else { 'false' }
 $timestamp = (Get-Date).ToString("yyyy-MM-ddTHH:mm:ssK")
 
 if (-not (Test-Path $OutputPath)) {
-    'timestamp,base_url,chunk_size_bytes,chunk_count,meta_p95_ms,meta_p99_ms,complete_p95_ms,iteration_p95_ms' | Out-File -FilePath $OutputPath -Encoding UTF8
+    'timestamp,base_url,chunk_size_bytes,chunk_count,meta_p95_ms,meta_p99_ms,complete_p95_ms,iteration_p95_ms,script_bug' | Out-File -FilePath $OutputPath -Encoding UTF8
 }
-"$timestamp,$BaseUrl,$ChunkSizeBytes,$ChunkCount,$metaP95Value,$metaP99Value,$completeP95Value,$iterationP95Value" | Out-File -FilePath $OutputPath -Encoding UTF8 -Append
+"$timestamp,$BaseUrl,$ChunkSizeBytes,$ChunkCount,$metaP95Value,$metaP99Value,$completeP95Value,$iterationP95Value,$scriptBug" | Out-File -FilePath $OutputPath -Encoding UTF8 -Append
 
 Write-Host "Logged meta SLA measurement to $OutputPath" -ForegroundColor Green
+
+
 
 
 

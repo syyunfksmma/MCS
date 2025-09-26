@@ -20,9 +20,9 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>..\..\..\..\..\Public\Documents\Hexagon\ESPRIT EDGE\Data\Extensions\FKSM API\</OutputPath>
+    <OutputPath>..\obj\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <RegisterForComInterop>false</RegisterForComInterop>
+    <RegisterForComInterop>true</RegisterForComInterop>
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>x64</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
@@ -31,6 +31,9 @@
     <StartAction>Program</StartAction>
     <StartProgram>"$(ProgramW6432)\Hexagon\ESPRIT EDGE\Prog\ESPRITEDGE.exe"</StartProgram>
     <Optimize>false</Optimize>
+    <DocumentationFile>
+    </DocumentationFile>
+    <WarningLevel>0</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutputPath>$(Public)\Documents\Hexagon\ESPRIT EDGE\Data\Extensions\FKSM API\</OutputPath>
