@@ -1,8 +1,8 @@
-# MCS: Manufacturing Collaboration System
+# MCS: (Manufacturing Cam Managerment System)
 
 ## 프로젝트 개요
 
-MCS(Manufacturing Collaboration System)는 제조 기업의 제품 데이터·공정(Routing) 관리, 협업 자동화, 품질·변경 이력 추적, SolidWorks/Esprit 등 CAD/CAM 연동을 지원하는 통합 플랫폼입니다.  
+MCS(Manufacturing Cam Managerment System)는 제조 기업의 제품 데이터·공정(Routing) 관리, 협업 자동화, 품질·변경 이력 추적, SolidWorks/Esprit 등 CAD/CAM 연동을 지원하는 통합 플랫폼입니다.  
 PLM(Product Lifecycle Management) 및 PDM(Product Data Management) 핵심 기능을 웹 기반으로 제공하며, 대시보드, 상세 탐색, 승인/반려 워크플로우, API/권한 관리 등 현업 요구에 맞춘 확장성을 갖추고 있습니다.
 
 ---
