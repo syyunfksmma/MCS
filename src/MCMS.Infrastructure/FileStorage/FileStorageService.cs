@@ -422,9 +422,10 @@ public sealed class FileStorageService : IFileStorageService, IAsyncDisposable
         var directory = Path.GetDirectoryName(fullPath)!;
         Directory.CreateDirectory(directory);
 
-        var serializedBytes = await SerializePayloadAsync(payload, payloadType, cancellationToken).ConfigureAwait(false);
-        var payloadLength = serializedBytes.LongLength;
-        var payloadHash = Convert.ToHexString(SHA256.HashData(serializedBytes)).ToLowerInvariant();
+        using var bufferWriter = SerializePayload(payload, payloadType, cancellationToken);
+        var payloadMemory = bufferWriter.WrittenMemory;
+        var payloadLength = payloadMemory.Length;
+        var payloadHash = Convert.ToHexString(SHA256.HashData(payloadMemory.Span)).ToLowerInvariant();
 
         if (TrySkipWrite(fullPath, payloadHash, payloadLength))
         {
