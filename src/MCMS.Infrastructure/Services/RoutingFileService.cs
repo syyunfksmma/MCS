@@ -36,7 +36,8 @@ public class RoutingFileService : IRoutingFileService
     private readonly ILogger<RoutingFileService> _logger;
     private readonly UploadRoutingFileRequestValidator _uploadValidator = new();
     private readonly ConcurrentDictionary<Guid, RoutingMetaWorkItem> _metaWorkItems = new();
-    private readonly ConcurrentDictionary<Guid, RoutingMetaFingerprint> _metaFingerprints = new();
+    private const int MetaFingerprintHistorySize = 3;
+    private readonly ConcurrentDictionary<Guid, RoutingMetaFingerprintHistory> _metaFingerprints = new();
 
     public RoutingFileService(
         McmsDbContext dbContext,
@@ -200,13 +201,8 @@ public class RoutingFileService : IRoutingFileService
     private bool ShouldSkipMetaWrite(Guid routingId, RoutingMetaDto meta)
     {
         var fingerprint = RoutingMetaFingerprint.Create(meta);
-        if (_metaFingerprints.TryGetValue(routingId, out var existing) && existing == fingerprint)
-        {
-            return true;
-        }
-
-        _metaFingerprints[routingId] = fingerprint;
-        return false;
+        var history = _metaFingerprints.GetOrAdd(routingId, _ => new RoutingMetaFingerprintHistory(MetaFingerprintHistorySize));
+        return history.TryRecord(fingerprint);
     }
 
     private async Task<RoutingMetaDto> GenerateMetaForRoutingAsync(Guid routingId, CancellationToken cancellationToken)
@@ -266,6 +262,43 @@ public class RoutingFileService : IRoutingFileService
         if (!AllowedFileTypes.Contains(fileType))
         {
             throw new ArgumentException($"Unsupported file type: {fileType}");
+        }
+    }
+
+    private sealed class RoutingMetaFingerprintHistory
+    {
+        private readonly int _capacity;
+        private readonly Queue<RoutingMetaFingerprint> _recent;
+        private readonly object _sync = new();
+
+        public RoutingMetaFingerprintHistory(int capacity)
+        {
+            _capacity = Math.Max(1, capacity);
+            _recent = new Queue<RoutingMetaFingerprint>(_capacity);
+        }
+
+        public bool TryRecord(RoutingMetaFingerprint fingerprint)
+        {
+            lock (_sync)
+            {
+                if (_recent.Contains(fingerprint))
+                {
+                    Enqueue(fingerprint);
+                    return true;
+                }
+
+                Enqueue(fingerprint);
+                return false;
+            }
+        }
+
+        private void Enqueue(RoutingMetaFingerprint fingerprint)
+        {
+            _recent.Enqueue(fingerprint);
+            while (_recent.Count > _capacity)
+            {
+                _recent.Dequeue();
+            }
         }
     }
 
