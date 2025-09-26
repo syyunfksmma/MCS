@@ -7,13 +7,16 @@
 - Task List와 체크박스를 유지하고 Sprint 작업에서도 절대 지령을 동일하게 준수한다.
 - PoC 기준은 1인 기업 관점으로 계획한다.
 - 모든 코드와 API 작성은 Codex가 수행한다.
+- 모든 검증 성공, 실패 기록도 다 로그에 기록, 유지할 것. 완료 될 시 취소선을 통해 업데이트 한다.
+- src/MCMS.Infrastructure/FileStorage/FileStorageService.cs의 기존 구문 오류를 정리해 전체 솔루션이 빌드되도록 한 뒤, Apply→Ready 이벤트 루프를 실제 실행 환경에서 연동 테스트
+- Signal-McsEvent.ps1나 Worker 큐를 이용해 에지 케이스(타임아웃, 라이센스 경고 등)에 대한 이벤트 흐름을 리허설하고, 필요한 경우 실패 시 별도 이벤트/로그 경로를 보강
 
 > 이 문서는 Sprint 1 진행 상황과 로그를 함께 관리한다.
 
 ## 작업 목록
 ### A. 환경 & 빌드 구성
 - [x] A1. Next.js 프로젝트 스캐폴딩 및 기본 도구 설정 (Tailwind/ESLint/Prettier 등)
-- [x] A2. npm 스크립트/CI 파이프라인 초안 정리 (`dev`, `build`, `lint`, `format` 점검)
+- [x] ~~A2. npm 스크립트/CI 파이프라인 초안 정리 (`dev`, `build`, `lint`, `format` 점검)~~
 
 ### B. SSR & BFF 골격
 - [x] B1. `/explorer` 페이지 SSR/Hydration 골격 구성 (App Router)
@@ -38,10 +41,11 @@
 
 ### G. 테스트 & 검증
 - [x] G1. Playwright/Cypress 스모크 테스트 스텁 추가 (로그인 + Explorer 로딩)
-- [x] G2. `npm run lint`/`npm run format` CI 체크 안내 문서화
+- [x] ~~G2. `npm run lint`/`npm run format` CI 체크 안내 문서화~~
 
 ### H. 문서 & 로그
 - [x] H1. Sprint1_Log.md에 단계별 진행 로그 및 필요한 다이어그램/코드 스니펫 추가
 
 ## 로그 기록
 - (예) 2025-09-21 Codex — Task A1 완료, Tailwind/Prettier 설정 및 lint 검증 통과.
+2025-09-26 Codex: CI 관련 항목 deprecated, 내부 설치형 빌드 절차로 전환.

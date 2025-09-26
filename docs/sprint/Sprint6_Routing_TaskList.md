@@ -10,6 +10,9 @@
 - Task List와 체크박스를 유지하고 신규 생성된 작업에서도 절대 지령을 동일하게 준수한다.
 - 오류 개선을 위해 신규 TASK가 발생하면 TASK LIST를 새로 작성하거나 기존 LIST에 업데이트 한다.
 - PoC 기준은 1인 기업 관점으로 계획한다.
+- 모든 검증 성공, 실패 기록도 다 로그에 기록, 유지할 것. 완료 될 시 취소선을 통해 업데이트 한다.
+- src/MCMS.Infrastructure/FileStorage/FileStorageService.cs의 기존 구문 오류를 정리해 전체 솔루션이 빌드되도록 한 뒤, Apply→Ready 이벤트 루프를 실제 실행 환경에서 연동 테스트
+- Signal-McsEvent.ps1나 Worker 큐를 이용해 에지 케이스(타임아웃, 라이센스 경고 등)에 대한 이벤트 흐름을 리허설하고, 필요한 경우 실패 시 별도 이벤트/로그 경로를 보강
 
 ## 1. 개요
 - 목적: FR-3~FR-8을 충족하는 워크스페이스 경험을 구축한다.
@@ -19,21 +22,25 @@
 
 ## 2. 작업 흐름 및 체크리스트
 ### Flow G. 라우팅 그룹 관리
-- [x] G1. Drag-and-drop ordering with `/routing-groups/order` persistence.
+- [ ] G1. Drag-and-drop ordering with `/routing-groups/order` persistence.
   - UX: Match Teamcenter ribbon + selection indicators in the routing tree.
   - Log: Sprint6_Routing_Log.md -> 2025-09-23 G1 entry (mock API payload & rollback notes).
+  - Test Prep: see docs/testing/Sprint6_FlowG_H_Regressions.md for regression scenarios.
   - Comment: ExplorerShell.tsx handleReorder 주석으로 optimistic update + rollback 전략 명시.
-- [x] G2. Inline edit & soft delete 패턴 도입.
+- [ ] G2. Inline edit & soft delete 패턴 도입.
   - Log: Sprint6_Routing_Log.md -> 2025-09-24 G2 항목에 inline edit/soft delete 전략 기록.
+  - Test Prep: see docs/testing/Sprint6_FlowG_H_Regressions.md for regression scenarios.
   - Comment: ExplorerShell.tsx mutateGroup 주석으로 soft delete state flag 처리 문서화.
 
 ### Flow H. 라우팅 생성 플로우
-- [x] H1. Routing Creation Wizard (name, owner, status, notes, shared-drive check).
+- [ ] H1. Routing Creation Wizard (name, owner, status, notes, shared-drive check).
   - Log: Sprint6_Routing_Log.md -> 2025-09-24 H1 entry (modal wiring, success/error messaging).
+  - Test Prep: see docs/testing/Sprint6_FlowG_H_Regressions.md for regression scenarios.
   - Comment: ExplorerShell.tsx handleRoutingCreateSubmit 주석에 shared-drive 경로/rollback 메모 기록.
-- [x] H2. Routing Detail Modal (Overview/File Assets/History 탭).
+- [ ] H2. Routing Detail Modal (Overview/File Assets/History 탭).
   - Layout: Modal skeleton + 탭 구조 확립, Flow I uploader 연계를 위한 placeholder 유지.
   - Log: Sprint6_Routing_Log.md -> 2025-09-24 H2 entry (RoutingDetailModal contract).
+  - Test Prep: see docs/testing/Sprint6_FlowG_H_Regressions.md for regression scenarios.
   - Comment: RoutingDetailModal.tsx 상단 주석에 telemetry stub/탭 구조 설명 기록.
 
 ### Flow I. 파일 업로드 및 버전 관리
@@ -67,3 +74,6 @@
 
 
 
+
+
+> 2025-09-26 Codex: Flow G/H tasks reverted to [ ] pending ExplorerShell integration.

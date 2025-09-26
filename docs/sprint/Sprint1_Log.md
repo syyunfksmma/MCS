@@ -71,3 +71,4 @@
 - Task H1 진행: 로그 업데이트 및 Explorer 데이터 플로우 다이어그램(`Sprint1_ExplorerFlow.md`) 추가.
 
 - 2025-09-22 00:41 UTC Codex — Sprint3~7 TaskList & Log 템플릿 생성. 절대 지령 반영 완료.
+- 2025-09-26 Codex: GitHub Actions CI workflow retired; internal install builder introduced.

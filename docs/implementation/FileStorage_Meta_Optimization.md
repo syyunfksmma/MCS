@@ -21,6 +21,7 @@
 
 ## Measurement Plan
 - k6 `tests/k6/chunk_upload.js` 시나리오를 활용해 변경 전후 p50/p95를 기록합니다.
+- Use scripts/performance/monitor-meta-json.ps1 (see docs/ops/FileStorage_EventMonitoring.md) to capture EventCounter trends and correlate with k6 runs.
 - CI에 주간 부하 테스트를 추가하고 meta SLA 지표를 Dashboard에 연동합니다.
 
 ## Timeline
@@ -30,3 +31,14 @@
 - 재측정 & 보고: 2025-10-17
 
 - 절대 지령: 모든 업무 지시는 문서에 기록하고 기존 지시는 취소선으로 남긴다.
+- 모든 검증 성공, 실패 기록도 다 로그에 기록, 유지할 것. 완료 될 시 취소선을 통해 업데이트 한다.
+- src/MCMS.Infrastructure/FileStorage/FileStorageService.cs의 기존 구문 오류를 정리해 전체 솔루션이 빌드되도록 한 뒤, Apply→Ready 이벤트 루프를 실제 실행 환경에서 연동 테스트
+- Signal-McsEvent.ps1나 Worker 큐를 이용해 에지 케이스(타임아웃, 라이센스 경고 등)에 대한 이벤트 흐름을 리허설하고, 필요한 경우 실패 시 별도 이벤트/로그 경로를 보강
+## 업데이트 기록 (2025-09-26)
+- Codex: FileStorageService JsonWrite 큐 멀티 워커, MaxParallelJsonWrites 세마포어, MetaFileCacheHistory(최근 3회) 및 PooledByteBufferWriter 직렬화 경로 구현.
+- Codex: RoutingFileService에 RoutingMetaFingerprintHistory(3-slot) 도입으로 라우팅별 중복 meta write 스킵 범위 확대.
+- Codex: run-meta-sla.ps1 퍼센타일 파싱 수정 및 meta_sla_history.csv 자동 누적 검증(k6 p95=13.631 s).
+
+
+
+

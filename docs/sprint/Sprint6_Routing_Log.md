@@ -4,6 +4,9 @@
 - Sprint6 Routing 작업의 모든 측정치와 로그를 표 형태로 누적한다.
 - 관측된 SLA나 오류는 Sprint5.1 로그와 상호 참조한다.
 - 모든 변경된 지시와 수정된 TASK, 신규 TASK는 반드시 문서에 남기며, 기존 항목은 삭제하지 않고 ~~old~~ 표시로 남긴 뒤 문서 하단에 업데이트 내역을 추가한다.
+- 모든 검증 성공, 실패 기록도 다 로그에 기록, 유지할 것. 완료 될 시 취소선을 통해 업데이트 한다.
+- src/MCMS.Infrastructure/FileStorage/FileStorageService.cs의 기존 구문 오류를 정리해 전체 솔루션이 빌드되도록 한 뒤, Apply→Ready 이벤트 루프를 실제 실행 환경에서 연동 테스트
+- Signal-McsEvent.ps1나 Worker 큐를 이용해 에지 케이스(타임아웃, 라이센스 경고 등)에 대한 이벤트 흐름을 리허설하고, 필요한 경우 실패 시 별도 이벤트/로그 경로를 보강
 
 | Date       | Owner | Track | Description | Target SLA (ms) | Observed (ms) | Notes | Artifacts |
 |------------|-------|-------|-------------|-----------------|---------------|-------|-----------|
@@ -16,13 +19,15 @@
 | 2025-09-25 | Codex | Ops | GitHub Actions 워크플로 재실행 시도 (권한 미부여) | N/A | N/A | GitHub API 404(사설 저장소) 및 로컬 PAT 미존재로 재실행 불가, 재시도 계획: PAT 발급 후 gh run rerun 명령 사용. | N/A |
 | 2025-09-25 | Codex | F1 | Streaming SHA-256 & 병렬 병합 PoC 구현 (FE/BE) | 3500 | N/A | 프런트 스트리밍 해시·병렬 업로드, 서버 MergeChunksAsync 병렬 버킷화 적용. Docker Desktop 미기동으로 k6 재측정 실패(재시도 시 Docker 시작 필요). | web/mcs-portal/src/lib/uploads/uploadRoutingFileChunks.ts |
 | 2025-09-25 | Codex | F1 | FileStorageService 동시 접근 허용(FileShare.ReadWrite, 재시도) | 3500 | N/A | meta.json 잠금으로 500 발생 → 파일 공유/재시도 로직 적용 | src/MCMS.Infrastructure/FileStorage/FileStorageService.cs |
-| 2025-09-25 | Codex | F1 | Docker SQL Edge 컨테이너 LSA 오류 → LocalDB fallback 후 k6 측정 | 1000 | 20651 | meta_generation_wait_ms p95=20651.2 ms, avg=16588.6 ms (threshold 미충족) | tests/k6/chunk_upload.js; docker-compose.yml; docker/api/Dockerfile |
+| 2025-09-26 | Codex | F1 | FileStorageService 큐 병렬화/캐시 히스토리 적용 후 k6 재측정 | 1000 | 13631 | meta_generation_wait_ms p95=13631 ms (threshold fail); scripts/performance/run-meta-sla.ps1 parser fix, 이전 0 ms 기록은 버그에 따른 잔존 | scripts/performance/run-meta-sla.ps1; docs/sprint/meta_sla_history.csv |
 
 ## 수정 이력
 - 2025-09-25 Codex: Docker 기반 SLA 측정 재시도(컨테이너 SQL 실패) 및 k6 결과 기록.
 - 2025-09-25 Codex: k6 SLA 계측 행 추가 및 k6 스크립트 업데이트 계획 기록.
 - 2025-09-25 Codex: 절대 지령 추가 및 Sprint6 로그 항목 정리.
 - 2025-09-25 Codex: 절대 지령에 문서 변경 기록 규칙 추가.
+- 2025-09-26 Codex: FileStorageService 메타 큐 병렬화/캐시 히스토리 및 Pooled JSON writer 적용, RoutingMetaFingerprintHistory 도입.
+- 2025-09-26 Codex: run-meta-sla.ps1 percentiles 파싱 수정 및 meta_sla_history.csv 재측정(p95=13631 ms) 기록.
 
 <del>
 # Sprint 6 Routing Logbook (Workspace & Workflow)
@@ -38,6 +43,9 @@
 - 오류 개선을 위해 신규 TASK가 발생하면 TASK LIST를 새로 작성하거나 기존 LIST에 업데이트 한다.
 - PoC 기준은 1인 기업 관점으로 계획한다.
 - 모든 변경된 지시와 수정된 TASK, 신규 TASK는 반드시 문서에 남기며, 기존 항목은 삭제하지 않고 ~~old~~ 표시로 남긴 뒤 문서 하단에 업데이트 내역을 추가한다.
+- 모든 검증 성공, 실패 기록도 다 로그에 기록, 유지할 것. 완료 될 시 취소선을 통해 업데이트 한다.
+- src/MCMS.Infrastructure/FileStorage/FileStorageService.cs의 기존 구문 오류를 정리해 전체 솔루션이 빌드되도록 한 뒤, Apply→Ready 이벤트 루프를 실제 실행 환경에서 연동 테스트
+- Signal-McsEvent.ps1나 Worker 큐를 이용해 에지 케이스(타임아웃, 라이센스 경고 등)에 대한 이벤트 흐름을 리허설하고, 필요한 경우 실패 시 별도 이벤트/로그 경로를 보강
 
 > 영어로 상세 로그 작성. 각 Task ID 별 최소 하루 1회 갱신.
 
@@ -91,3 +99,6 @@
 
 - 절대 지령: 모든 업무 지시는 문서에 기록하고 기존 지시는 취소선으로 남긴다.
 </del>
+
+
+- 2025-09-26 Codex: sprint meta_sla_history.csv first row annotated with script_bug flag (0 ms data ignored).

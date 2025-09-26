@@ -1,2 +1,3 @@
-timestamp,base_url,chunk_size_bytes,chunk_count,meta_p95_ms,meta_p99_ms,complete_p95_ms,iteration_p95_ms
-2025-09-26T11:15:00+09:00,http://localhost:5229,262144,4,0,0,0,0
+timestamp,base_url,chunk_size_bytes,chunk_count,meta_p95_ms,meta_p99_ms,complete_p95_ms,iteration_p95_ms,script_bug
+2025-09-26T11:15:00+09:00,http://localhost:5229,262144,4,0,0,0,0,true
+2025-09-26T11:37:11+09:00,http://localhost:5229,262144,4,13631,,7751.54,13707.75,false

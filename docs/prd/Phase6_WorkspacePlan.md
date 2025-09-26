@@ -1,6 +1,9 @@
 # Phase 6 산출물 - Routing Workspace 계획
 ## 절대 지령
 - 문서 수정은 기존 내용을 삭제하지 않고 본문 하단 "수정 이력"에 기록한다.
+- 모든 검증 성공, 실패 기록도 다 로그에 기록, 유지할 것. 완료 될 시 취소선을 통해 업데이트 한다.
+- src/MCMS.Infrastructure/FileStorage/FileStorageService.cs의 기존 구문 오류를 정리해 전체 솔루션이 빌드되도록 한 뒤, Apply→Ready 이벤트 루프를 실제 실행 환경에서 연동 테스트
+- Signal-McsEvent.ps1나 Worker 큐를 이용해 에지 케이스(타임아웃, 라이센스 경고 등)에 대한 이벤트 흐름을 리허설하고, 필요한 경우 실패 시 별도 이벤트/로그 경로를 보강
 
 
 ## 1. UI 구조
