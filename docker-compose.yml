@@ -9,6 +9,9 @@ services:
       ASPNETCORE_URLS: http://0.0.0.0:5229
       ConnectionStrings__McmsDatabase: Server=host.docker.internal,1433;Database=MCMS;User Id=sa;Password=${SA_PASSWORD};TrustServerCertificate=True;Encrypt=False
       FileStorage__RootPath: /app/storage
+      FileStorage__JsonWorkerCount: 6
+      FileStorage__MaxParallelJsonWrites: 2
+      FileStorage__EnableMetaCaching: true
     ports:
       - "5229:5229"
     volumes:

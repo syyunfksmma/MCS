@@ -56,3 +56,24 @@
 
 - 2025-09-25 Codex: ~~Notification Center wireframe TBD~~ docs/design/wireframes/Sprint7/Notification_Performance.md 초안 작성, 참고 자료: docs/extracted_images/ 폴더.
 - 2025-09-25 Codex: ~~SLA 알림 문구만 정의~~ Notification Center/Performance Insights 상호작용 흐름과 meta_generation_wait_ms KPI 요구사항 구체화.
+- 2025-09-25 Codex: k6 재측정 결과(meta_generation_wait_ms p95=6534.8 ms, chunk_upload_complete_ms p95=3358.7 ms)를 Performance Insights 초기 수치로 반영하도록 문서에 기록.
+## 업데이트 기록 (2025-09-26)
+- 2025-09-26 Codex: scripts/performance/run-meta-sla.ps1 자동 측정 스크립트와 meta_sla_history.csv 로그를 Performance Insights 시각화에 연동 예정.
+
+- 2025-09-26 Codex: ~~SLA 초기값 6534.8 ms 유지~~ JsonWorkerCount/MaxParallelJsonWrites 조정(6/6 → 8/8 → 4/4 → 6/2) 결과를 Performance Insights 데이터 시트에 추가, 각 측정 meta_generation_wait_ms p95 = 2553.5 / 6035.0 / 10668.3 / 11135.2 ms (모두 SLA ≤ 1 s 미달).
+- 2025-09-26 Codex: k6 자동 측정 스크립트(scripts/performance/run-meta-sla.ps1) 작성, meta_sla_history.csv에 누적 기록하도록 구성.
+
+## Milestone Plan
+
+| Milestone | 기간 (KST) | 주요 작업 | 산출물 |
+|-----------|------------|-----------|--------|
+| M1 | 2025-09-29 ~ 10-03 | Notification Center 와이어프레임 확정, SLA 이벤트 페이로드 계약 | 최종 와이어프레임, API 계약서 |
+| M2 | 2025-10-06 ~ 10-10 | Performance Insights 탭 UI, 목 데이터 연동 | KPI 카드 & 라인 차트, 임시 API |
+| M3 | 2025-10-13 ~ 10-17 | SLA 경고 플로우, HistoryTimeline 딥링크 | 상호작용 프로토타입 |
+| M4 | 2025-10-20 ~ 10-24 | 접근성/테마 검수, 사용자 피드백 수집 | A11y 체크리스트, 테마 가이드 |
+| M5 | 2025-10-27 ~ 10-31 | 성능/QA 검증, 문서화 & 배포 준비 | 테스트 리포트, 배포 체크리스트 |
+
+- 절대 지령: 모든 업무 지시는 문서에 기록하고 기존 지시는 취소선으로 남긴다.
+
+
+

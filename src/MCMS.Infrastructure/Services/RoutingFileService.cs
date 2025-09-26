@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentValidation;
@@ -27,13 +28,15 @@ public class RoutingFileService : IRoutingFileService
     };
 
     private static readonly TimeSpan MetaGenerationSla = TimeSpan.FromSeconds(1);
+    private static readonly TimeSpan MetaBatchWindow = TimeSpan.FromMilliseconds(300);
 
     private readonly McmsDbContext _dbContext;
     private readonly IFileStorageService _fileStorage;
     private readonly IHistoryService _historyService;
     private readonly ILogger<RoutingFileService> _logger;
     private readonly UploadRoutingFileRequestValidator _uploadValidator = new();
-    private readonly ConcurrentDictionary<Guid, Lazy<Task<RoutingMetaDto>>> _metaRefreshTasks = new();
+    private readonly ConcurrentDictionary<Guid, RoutingMetaWorkItem> _metaWorkItems = new();
+    private readonly ConcurrentDictionary<Guid, RoutingMetaFingerprint> _metaFingerprints = new();
 
     public RoutingFileService(
         McmsDbContext dbContext,
@@ -119,8 +122,6 @@ public class RoutingFileService : IRoutingFileService
         _dbContext.RoutingFiles.Remove(file);
         await _dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
-        await _fileStorage.DeleteAsync(file.RelativePath, cancellationToken).ConfigureAwait(false);
-
         await _historyService.RecordAsync(new HistoryEntryDto(
             Guid.NewGuid(),
             routingId,
@@ -173,7 +174,15 @@ public class RoutingFileService : IRoutingFileService
             files,
             latestHistoryId);
 
-        await _fileStorage.QueueJsonWriteAsync(meta.MetaPath, meta, cancellationToken).ConfigureAwait(false);
+        if (ShouldSkipMetaWrite(routing.Id, meta))
+        {
+            _logger.LogDebug("Routing meta unchanged; skipping write for RoutingId={RoutingId}", routing.Id);
+        }
+        else
+        {
+            await _fileStorage.QueueJsonWriteAsync(meta.MetaPath, meta, cancellationToken).ConfigureAwait(false);
+        }
+
         var elapsed = Stopwatch.GetElapsedTime(startTimestamp);
 
         if (elapsed > MetaGenerationSla)
@@ -188,45 +197,41 @@ public class RoutingFileService : IRoutingFileService
         return meta;
     }
 
-    private async Task<RoutingMetaDto> GenerateMetaForRoutingAsync(Guid routingId)
+    private bool ShouldSkipMetaWrite(Guid routingId, RoutingMetaDto meta)
     {
-        var routing = await LoadRoutingAggregateAsync(routingId, CancellationToken.None).ConfigureAwait(false);
-        return await GenerateMetaAsync(routing, CancellationToken.None).ConfigureAwait(false);
+        var fingerprint = RoutingMetaFingerprint.Create(meta);
+        if (_metaFingerprints.TryGetValue(routingId, out var existing) && existing == fingerprint)
+        {
+            return true;
+        }
+
+        _metaFingerprints[routingId] = fingerprint;
+        return false;
+    }
+
+    private async Task<RoutingMetaDto> GenerateMetaForRoutingAsync(Guid routingId, CancellationToken cancellationToken)
+    {
+        var routing = await LoadRoutingAggregateAsync(routingId, cancellationToken).ConfigureAwait(false);
+        return await GenerateMetaAsync(routing, cancellationToken).ConfigureAwait(false);
     }
 
     private Task<RoutingMetaDto> ScheduleMetaRefreshAsync(Guid routingId, CancellationToken cancellationToken)
     {
-        while (true)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
+        var workItem = _metaWorkItems.GetOrAdd(
+            routingId,
+            id => new RoutingMetaWorkItem(
+                id,
+                MetaBatchWindow,
+                GenerateMetaForRoutingAsync,
+                RemoveMetaWorkItem,
+                _logger));
 
-            var lazyTask = new Lazy<Task<RoutingMetaDto>>(
-                () => GenerateMetaForRoutingAsync(routingId),
-                LazyThreadSafetyMode.ExecutionAndPublication);
+        return workItem.GetTask(cancellationToken);
+    }
 
-            if (_metaRefreshTasks.TryAdd(routingId, lazyTask))
-            {
-                var task = lazyTask.Value;
-                _ = task.ContinueWith(
-                    _ => _metaRefreshTasks.TryRemove(routingId, out _),
-                    CancellationToken.None,
-                    TaskContinuationOptions.ExecuteSynchronously,
-                    TaskScheduler.Default);
-
-                return task.WaitAsync(cancellationToken);
-            }
-
-            if (_metaRefreshTasks.TryGetValue(routingId, out var existing))
-            {
-                var task = existing.Value;
-                if (!task.IsCompleted)
-                {
-                    return task.WaitAsync(cancellationToken);
-                }
-
-                _metaRefreshTasks.TryRemove(routingId, out _);
-            }
-        }
+    private void RemoveMetaWorkItem(Guid routingId, RoutingMetaWorkItem workItem)
+    {
+        _metaWorkItems.TryRemove(new KeyValuePair<Guid, RoutingMetaWorkItem>(routingId, workItem));
     }
 
     private static string BuildRelativePath(Routing routing, string fileName)
@@ -261,6 +266,115 @@ public class RoutingFileService : IRoutingFileService
         if (!AllowedFileTypes.Contains(fileType))
         {
             throw new ArgumentException($"Unsupported file type: {fileType}");
+        }
+    }
+
+    private sealed record RoutingMetaFingerprint(string? LatestHistoryId, string FilesComposite)
+    {
+        public static RoutingMetaFingerprint Create(RoutingMetaDto meta)
+        {
+            var latestHistoryId = meta.LatestHistoryId?.ToString();
+            var builder = new StringBuilder();
+            foreach (var file in meta.Files.OrderBy(f => f.RelativePath, StringComparer.OrdinalIgnoreCase))
+            {
+                builder.Append(file.RelativePath)
+                       .Append(':')
+                       .Append(file.Checksum)
+                       .Append(':')
+                       .Append(file.IsPrimary ? '1' : '0')
+                       .Append('|');
+            }
+
+            return new RoutingMetaFingerprint(latestHistoryId, builder.ToString());
+        }
+    }
+
+    private sealed class RoutingMetaWorkItem : IDisposable
+    {
+        private readonly Guid _routingId;
+        private readonly TimeSpan _batchWindow;
+        private readonly Func<Guid, CancellationToken, Task<RoutingMetaDto>> _executor;
+        private readonly Action<Guid, RoutingMetaWorkItem> _onCompleted;
+        private readonly ILogger _logger;
+        private readonly TaskCompletionSource<RoutingMetaDto> _tcs = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        private readonly Timer _timer;
+        private int _executed;
+
+        public RoutingMetaWorkItem(
+            Guid routingId,
+            TimeSpan batchWindow,
+            Func<Guid, CancellationToken, Task<RoutingMetaDto>> executor,
+            Action<Guid, RoutingMetaWorkItem> onCompleted,
+            ILogger logger)
+        {
+            _routingId = routingId;
+            _batchWindow = batchWindow;
+            _executor = executor;
+            _onCompleted = onCompleted;
+            _logger = logger;
+            _timer = new Timer(OnTimer, null, batchWindow, Timeout.InfiniteTimeSpan);
+        }
+
+        public Task<RoutingMetaDto> GetTask(CancellationToken cancellationToken)
+        {
+            Reschedule();
+            if (cancellationToken.CanBeCanceled)
+            {
+                cancellationToken.Register(state =>
+                {
+                    var source = (TaskCompletionSource<RoutingMetaDto>)state!;
+                    source.TrySetCanceled(cancellationToken);
+                }, _tcs);
+            }
+
+            return _tcs.Task;
+        }
+
+        private void Reschedule()
+        {
+            if (Volatile.Read(ref _executed) == 0)
+            {
+                _timer.Change(_batchWindow, Timeout.InfiniteTimeSpan);
+            }
+        }
+
+        private void OnTimer(object? state)
+        {
+            TriggerExecution();
+        }
+
+        private void TriggerExecution()
+        {
+            if (Interlocked.Exchange(ref _executed, 1) == 1)
+            {
+                return;
+            }
+
+            _ = ExecuteAsync();
+        }
+
+        private async Task ExecuteAsync()
+        {
+            try
+            {
+                var result = await _executor(_routingId, CancellationToken.None).ConfigureAwait(false);
+                _tcs.TrySetResult(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to generate routing meta for {RoutingId}", _routingId);
+                _tcs.TrySetException(ex);
+            }
+            finally
+            {
+                _onCompleted(_routingId, this);
+                Dispose();
+            }
+        }
+
+        public void Dispose()
+        {
+            _timer.Dispose();
         }
     }
 }

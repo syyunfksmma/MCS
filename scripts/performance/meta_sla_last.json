@@ -1,0 +1,220 @@
+{
+    "metrics": {
+        "http_req_receiving": {
+            "avg": 1.6513285714285708,
+            "min": 0,
+            "med": 0,
+            "max": 36.5186,
+            "p(90)": 4.485539999999999,
+            "p(95)": 6.900249999999998
+        },
+        "iteration_duration": {
+            "p(90)": 13823.63356,
+            "p(95)": 14460.595860000003,
+            "avg": 10755.014019999999,
+            "min": 8396.2833,
+            "med": 9681.2193,
+            "max": 17549.1857
+        },
+        "http_req_duration{expected_response:true}": {
+            "med": 9.7389,
+            "max": 9348.7373,
+            "p(90)": 5364.12004,
+            "p(95)": 6362.3791699999965,
+            "avg": 1428.5826982857145,
+            "min": 5.3343
+        },
+        "http_req_blocked": {
+            "p(95)": 0.5347999999999994,
+            "avg": 0.09095085714285712,
+            "min": 0,
+            "med": 0,
+            "max": 3.7938,
+            "p(90)": 0
+        },
+        "http_req_failed": {
+            "passes": 0,
+            "fails": 175,
+            "value": 0
+        },
+        "chunk_upload_session_ms": {
+            "avg": 36.49441153846154,
+            "min": 5.3343,
+            "med": 11.288599999999999,
+            "max": 584.5945,
+            "p(90)": 31.242,
+            "p(95)": 49.746875,
+            "thresholds": {
+                "p(95)<2000": false
+            }
+        },
+        "http_req_connecting": {
+            "min": 0,
+            "med": 0,
+            "max": 3.7938,
+            "p(90)": 0,
+            "p(95)": 0.5257699999999998,
+            "avg": 0.0682977142857143
+        },
+        "http_req_tls_handshaking": {
+            "p(95)": 0,
+            "avg": 0,
+            "min": 0,
+            "med": 0,
+            "max": 0,
+            "p(90)": 0
+        },
+        "iterations": {
+            "count": 20,
+            "rate": 0.4444248640725442
+        },
+        "http_req_duration": {
+            "avg": 1428.5826982857145,
+            "min": 5.3343,
+            "med": 9.7389,
+            "max": 9348.7373,
+            "p(90)": 5364.12004,
+            "p(95)": 6362.3791699999965,
+            "thresholds": {
+                "p(95)<3500": true
+            }
+        },
+        "chunk_upload_iteration_ms": {
+            "avg": 10747.85,
+            "min": 8394,
+            "med": 9680.5,
+            "max": 17547,
+            "p(90)": 13821.7,
+            "p(95)": 14458.550000000003,
+            "thresholds": {
+                "p(95)<5000": true
+            }
+        },
+        "http_req_sending": {
+            "avg": 1.1797428571428572,
+            "min": 0,
+            "med": 1.0747,
+            "max": 8.7468,
+            "p(90)": 2.53272,
+            "p(95)": 4.132359999999998
+        },
+        "http_req_waiting": {
+            "med": 8.0719,
+            "max": 9342.3667,
+            "p(90)": 5358.60516,
+            "p(95)": 6353.010069999996,
+            "avg": 1425.7516268571435,
+            "min": 3.1985
+        },
+        "data_sent": {
+            "count": 27309315,
+            "rate": 606846.9303394647
+        },
+        "meta_generation_wait_ms": {
+            "avg": 10698.7,
+            "min": 8346,
+            "med": 9628.5,
+            "max": 17502,
+            "p(90)": 13779.400000000001,
+            "p(95)": 14405.000000000002,
+            "thresholds": {
+                "p(95)<1000": true
+            }
+        },
+        "checks": {
+            "passes": 206,
+            "fails": 20,
+            "value": 0.911504424778761
+        },
+        "chunk_upload_chunk_ms": {
+            "max": 16.3522,
+            "p(90)": 11.934550000000002,
+            "p(95)": 12.34638,
+            "avg": 8.949125,
+            "min": 5.9795,
+            "med": 8.60995,
+            "thresholds": {
+                "p(95)<2000": false
+            }
+        },
+        "vus_max": {
+            "value": 10,
+            "min": 10,
+            "max": 10
+        },
+        "http_reqs": {
+            "count": 175,
+            "rate": 3.888717560634762
+        },
+        "data_received": {
+            "count": 7307621,
+            "rate": 162384.4234809335
+        },
+        "vus": {
+            "value": 6,
+            "min": 0,
+            "max": 10
+        },
+        "chunk_upload_complete_ms": {
+            "p(90)": 7572.034820000002,
+            "p(95)": 8164.92622,
+            "avg": 5405.5094880000015,
+            "min": 4171.0835,
+            "med": 4921.3923,
+            "max": 8850.1922,
+            "thresholds": {
+                "p(95)<1000": true
+            }
+        }
+    },
+    "root_group": {
+        "groups": {},
+        "checks": {
+                "start status 200": {
+                    "passes": 26,
+                    "fails": 0,
+                    "name": "start status 200",
+                    "path": "::start status 200",
+                    "id": "ad31c70f0ef1558e24695a95ff2e95eb"
+                },
+                "start has sessionId": {
+                    "path": "::start has sessionId",
+                    "id": "d92249199b759fb48cc715edc244a703",
+                    "passes": 26,
+                    "fails": 0,
+                    "name": "start has sessionId"
+                },
+                "chunk status 204": {
+                    "name": "chunk status 204",
+                    "path": "::chunk status 204",
+                    "id": "b4f9430e0c4cc525a8843505eb540fa9",
+                    "passes": 104,
+                    "fails": 0
+                },
+                "complete status 200": {
+                    "id": "a36190db80780481ab8d1a5e0b9410ba",
+                    "passes": 25,
+                    "fails": 0,
+                    "name": "complete status 200",
+                    "path": "::complete status 200"
+                },
+                "complete returns meta": {
+                    "path": "::complete returns meta",
+                    "id": "84860235bb74a042c705e47b344f5545",
+                    "passes": 25,
+                    "fails": 0,
+                    "name": "complete returns meta"
+                },
+                "meta write within sla": {
+                    "passes": 0,
+                    "fails": 20,
+                    "name": "meta write within sla",
+                    "path": "::meta write within sla",
+                    "id": "105019af9830c00419b2fde8ca22de3b"
+                }
+            },
+        "name": "",
+        "path": "",
+        "id": "d41d8cd98f00b204e9800998ecf8427e"
+    }
+}

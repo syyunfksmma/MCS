@@ -1,5 +1,4 @@
-using System;
-using System.Collections.Concurrent;
+using System;\r\nusing System.Buffers;\r\nusing System.Collections.Concurrent;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -20,7 +19,7 @@ public sealed class FileStorageService : IFileStorageService, IAsyncDisposable
     private const int DefaultBufferSize = 131072;
     private static readonly TimeSpan RetryDelay = TimeSpan.FromMilliseconds(150);
     private static readonly TimeSpan MetaWriteSla = TimeSpan.FromSeconds(1);
-    private static readonly TimeSpan CacheWriteGuardWindow = TimeSpan.FromMilliseconds(500);
+    private static readonly TimeSpan CacheWriteGuardWindow = TimeSpan.FromMilliseconds(500);\r\n    private const int MetaCacheHistorySize = 3;
 
     private readonly FileStorageOptions _options;
     private readonly ILogger<FileStorageService> _logger;
@@ -29,7 +28,7 @@ public sealed class FileStorageService : IFileStorageService, IAsyncDisposable
     private readonly CancellationTokenSource _queueCts = new();
     private readonly Task[] _jsonWriterTasks;
     private readonly SemaphoreSlim _writeSemaphore;
-    private readonly ConcurrentDictionary<string, MetaFileCacheEntry> _metaCache = new(StringComparer.OrdinalIgnoreCase);
+    private readonly ConcurrentDictionary<string, MetaFileCacheHistory> _metaCache = new(StringComparer.OrdinalIgnoreCase);
     private readonly FileSystemWatcher? _watcher;
     private readonly bool _enableMetaCaching;
     private readonly int _workerCount;
@@ -482,3 +481,7 @@ public sealed class FileStorageService : IFileStorageService, IAsyncDisposable
 
     private sealed record MetaFileCacheEntry(string Hash, long Length, DateTimeOffset LastUpdated);
 }
+
+
+
+

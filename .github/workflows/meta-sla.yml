@@ -1,0 +1,38 @@
+name: Meta SLA Trend
+
+on:
+  schedule:
+    - cron: "0 0 * * 1" # 매주 월요일 09:00 KST
+  workflow_dispatch:
+inputs:
+  base-url:
+    description: "Target base URL"
+    required: false
+    default: "http://localhost:5229"
+    type: string
+
+jobs:
+  run-k6:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install k6
+        uses: grafana/setup-k6@v1
+
+      - name: Run meta SLA script
+        shell: pwsh
+        env:
+          BASE_URL: ${{ inputs.base-url || 'http://localhost:5229' }}
+        run: |
+          Set-Location $env:GITHUB_WORKSPACE
+          ./scripts/performance/run-meta-sla.ps1 -BaseUrl $env:BASE_URL
+
+      - name: Upload meta SLA history
+        uses: actions/upload-artifact@v4
+        with:
+          name: meta_sla_history
+          path: |
+            docs/sprint/meta_sla_history.csv
+            scripts/performance/meta_sla_last.json
