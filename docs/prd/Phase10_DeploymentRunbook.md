@@ -27,7 +27,7 @@ pm ci --production (필요 시)~~
 7. ~~IIS Reset 필요 시 iisreset /noforce~~
 8. ~~Health Check /healthz 확인~~
 9. ~~Smoke Test(Explorer, Workspace, Admin)~~
-1. 관리자 권한 PowerShell에서 MCMS_Setup_<version>.exe /quiet /log install.log 실행.
+1. 관리자 권한 PowerShell에서 scripts/deploy/package-offline.ps1 -Version <version> 실행(필요 시 -CreateSfx); 생성된 MCMS_Setup_<version>.zip을 대상 서버로 복사 후 Install-MCMS.ps1 /quiet /log install.log 실행.
 2. 설치 프로그램이 IIS 사이트(Default Web Site/MCS)에 애플리케이션을 배치하고, Windows 인증을 사용하도록 web.config를 자동 구성한다.
 3. 설치 완료 후 PowerShell에서 Test-NetConnection localhost -Port 443로 포트 오픈 여부를 확인한다.
 4. 브라우저에서 https://<server>/healthz를 Windows 인증 계정으로 호출해 200 응답 확인.
@@ -52,16 +52,18 @@ pm ci --production (필요 시)~~
 - ~~배포 로그 저장 (Azure DevOps, ELK)~~
 - ~~Change Request Close 보고~~
 - ~~Lessons Learned 기록(Confluence)~~
-- 설치 로그, Smoke Test 결과, 사용자 승인 메모를 docs/sprint/Sprint6_Log.md와 내부 공유 드라이브에 보관한다.
+- 설치 로그, Smoke Test 결과, 사용자 승인 메모를 docs/sprint/Sprint6_Log.md와 내부 공유 드라이브에 보관한다. (scripts/deploy/package-offline.ps1 실행 시 manifest/sha 로그 자동 생성)
 - Lessons Learned는 docs/ops/Deployment_Lessons.md에 Windows 설치 관점으로 정리한다.
 
 ## 6. TODO
 - ~~Stage/Prod 환경 변수 관리 자동화 (Secret Manager)~~
 - ~~배포 스크립트 idempotent 개선~~
 - ~~자동 Smoke Test 스크립트 작성~~
-- 설치 패키지 빌드 자동화를 위해 scripts/deploy/package-offline.ps1 초안을 작성하고 내부 빌드 PC에서 예약 작업으로 등록한다.
+- ~~설치 패키지 빌드 자동화를 위해 scripts/deploy/package-offline.ps1 초안을 작성하고 내부 빌드 PC에서 예약 작업으로 등록한다.~~
 - Windows 인증 사용자 매핑 문서를 업데이트하고 주기적으로 테스트 계정으로 검증한다.
 
 ## 수정 이력
 - 2025-09-25 Codex: 절대 지령/변경 이력 규칙 반영 및 .NET 4.8 요구사항 정리.
 - 2025-09-26 Codex: 내부망 윈도우 서버 설치형 배포 기준으로 Runbook 재정비, GitHub 기반 단계 취소선 처리.
+
+- 2025-09-26 Codex: package-offline/run-smoke 단계 및 공유 드라이브 로깅 지침 반영.

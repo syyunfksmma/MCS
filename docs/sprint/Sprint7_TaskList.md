@@ -19,16 +19,19 @@
 - [ ] A1. 사용자 매뉴얼 최종 업데이트(웹 기준)
 - [ ] A2. 운영/지원 매뉴얼 업데이트 (Runbook 링크 포함)
 - [ ] A3. Help Center/FAQ 콘텐츠 정비
+- [ ] A4. Offline 설치 패키지 QuickStart 작성(package-offline, run-smoke 포함)
 
 ### B. 교육/온보딩
 - [ ] B1. 교육 자료(동영상, 슬라이드) 제작 완료
 - [ ] B2. 교육 세션 진행 및 참석률/만족도 기록
 - [ ] B3. 온보딩 튜토리얼(온스크린 가이드) 점검
+- [ ] B4. 운영팀 대상 Windows Auth/Smoke 자동화 워크숍 진행
 
 ### C. 전환 보고 & 로드맵
 - [ ] C1. 전환 결과 보고서 및 KPI 요약 작성
 - [ ] C2. 후속 개선 로드맵 확정(Blue/Green PoC 등)
 - [ ] C3. Lessons Learned 문서화 & 공유
+- [ ] C4. Sprint8 자동화 범위 정의 및 Task Scheduler 구성 초안 링크
 
 ### D. 문서 & 로그
 - [ ] D1. Sprint7_Log.md에 교육/문서 작업 로그 기록
@@ -47,3 +50,5 @@
 - 2025-09-25 Codex: 문서 변경 기록 규칙 추가, UX/Chunk 작업 세부 일정 반영.
 - 2025-09-25 Codex: Storybook/Playwright 로그 계획 기록.
 
+
+- 2025-09-26 Codex: Offline 배포 QuickStart/운영 워크숍/Sprint8 연계 태스크 추가.

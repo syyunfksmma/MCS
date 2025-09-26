@@ -16,9 +16,8 @@ import type {
   ExplorerRevision
 } from '@/types/explorer';
 
-const { Step } = Steps;
 const { TextArea } = Input;
-const { Text } = Typography;
+const { Text, Paragraph } = Typography;
 
 const ROUTING_STATUSES = [
   { label: 'Draft', value: 'Draft' },
@@ -135,6 +134,9 @@ export default function RoutingCreationWizard({
       >
         {current === 0 ? (
           <>
+            <Paragraph type="secondary" className="mb-3">
+              대상 Revision: {revision.code}
+            </Paragraph>
             <Form.Item
               label="Routing Code"
               name="code"
@@ -226,3 +228,6 @@ export default function RoutingCreationWizard({
     </Modal>
   );
 }
+
+
+
