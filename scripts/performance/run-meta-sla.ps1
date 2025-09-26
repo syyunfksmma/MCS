@@ -34,16 +34,67 @@ if ($LASTEXITCODE -eq 99) {
 }
 
 $summary = Get-Content $summaryPath | ConvertFrom-Json
-$metaP95 = [math]::Round($summary.metrics.meta_generation_wait_ms.percentiles."0.95", 2)
-$metaP99 = [math]::Round($summary.metrics.meta_generation_wait_ms.percentiles."0.99", 2)
-$completeP95 = [math]::Round($summary.metrics.chunk_upload_complete_ms.percentiles."0.95", 2)
-$iterationP95 = [math]::Round($summary.metrics.chunk_upload_iteration_ms.percentiles."0.95", 2)
+
+function Get-MetricPercentile {
+    param(
+        [object]$Metric,
+        [string]$Percentile
+    )
+
+    if (-not $Metric) {
+        return $null
+    }
+
+    $propertyName = "p($Percentile)"
+    $property = $Metric.PSObject.Properties[$propertyName]
+    if ($property) {
+        return [double]$property.Value
+    }
+
+    $percentiles = $Metric.percentiles
+    if ($percentiles) {
+        $altName = "0.{0}" -f $Percentile
+        $altProperty = $percentiles.PSObject.Properties[$altName]
+        if ($altProperty) {
+            return [double]$altProperty.Value
+        }
+    }
+
+    return $null
+}
+
+$metaMetric = $summary.metrics.meta_generation_wait_ms
+$completeMetric = $summary.metrics.chunk_upload_complete_ms
+$iterationMetric = $summary.metrics.chunk_upload_iteration_ms
+
+$metaP95 = Get-MetricPercentile $metaMetric '95'
+$metaP99 = Get-MetricPercentile $metaMetric '99'
+$completeP95 = Get-MetricPercentile $completeMetric '95'
+$iterationP95 = Get-MetricPercentile $iterationMetric '95'
+
+if ($metaP95 -eq $null) {
+    Write-Warning 'meta_generation_wait_ms metric missing p(95); recorded as blank.'
+}
+if ($completeP95 -eq $null) {
+    Write-Warning 'chunk_upload_complete_ms metric missing p(95); recorded as blank.'
+}
+if ($iterationP95 -eq $null) {
+    Write-Warning 'chunk_upload_iteration_ms metric missing p(95); recorded as blank.'
+}
+
+$metaP95Value = if ($metaP95 -ne $null) { [math]::Round($metaP95, 2) } else { '' }
+$metaP99Value = if ($metaP99 -ne $null) { [math]::Round($metaP99, 2) } else { '' }
+$completeP95Value = if ($completeP95 -ne $null) { [math]::Round($completeP95, 2) } else { '' }
+$iterationP95Value = if ($iterationP95 -ne $null) { [math]::Round($iterationP95, 2) } else { '' }
 $timestamp = (Get-Date).ToString("yyyy-MM-ddTHH:mm:ssK")
 
 if (-not (Test-Path $OutputPath)) {
     'timestamp,base_url,chunk_size_bytes,chunk_count,meta_p95_ms,meta_p99_ms,complete_p95_ms,iteration_p95_ms' | Out-File -FilePath $OutputPath -Encoding UTF8
 }
-"$timestamp,$BaseUrl,$ChunkSizeBytes,$ChunkCount,$metaP95,$metaP99,$completeP95,$iterationP95" | Out-File -FilePath $OutputPath -Encoding UTF8 -Append
+"$timestamp,$BaseUrl,$ChunkSizeBytes,$ChunkCount,$metaP95Value,$metaP99Value,$completeP95Value,$iterationP95Value" | Out-File -FilePath $OutputPath -Encoding UTF8 -Append
 
 Write-Host "Logged meta SLA measurement to $OutputPath" -ForegroundColor Green
+
+
+
 

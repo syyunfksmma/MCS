@@ -286,12 +286,24 @@ public sealed class FileStorageService : IFileStorageService, IAsyncDisposable
         }
     }
 
-    private async Task<byte[]> SerializePayloadAsync(object? payload, Type payloadType, CancellationToken cancellationToken)
+    private PooledByteBufferWriter SerializePayload(object? payload, Type payloadType, CancellationToken cancellationToken)
     {
-        await using var memoryStream = new MemoryStream(DefaultBufferSize);
-        await JsonSerializer.SerializeAsync(memoryStream, payload, payloadType, _jsonSerializerOptions, cancellationToken).ConfigureAwait(false);
-        await memoryStream.FlushAsync(cancellationToken).ConfigureAwait(false);
-        return memoryStream.ToArray();
+        cancellationToken.ThrowIfCancellationRequested();
+
+        var writer = new PooledByteBufferWriter(DefaultBufferSize);
+        var writerOptions = new JsonWriterOptions
+        {
+            Indented = _jsonSerializerOptions.WriteIndented,
+            Encoder = _jsonSerializerOptions.Encoder
+        };
+
+        using (var jsonWriter = new Utf8JsonWriter(writer, writerOptions))
+        {
+            JsonSerializer.Serialize(jsonWriter, payload, payloadType, _jsonSerializerOptions);
+        }
+
+        cancellationToken.ThrowIfCancellationRequested();
+        return writer;
     }
 
     private bool TrySkipWrite(string fullPath, string payloadHash, long payloadLength)
@@ -301,6 +313,19 @@ public sealed class FileStorageService : IFileStorageService, IAsyncDisposable
             return false;
         }
 
+        var normalized = Path.GetFullPath(fullPath);
+        var history = _metaCache.GetOrAdd(normalized, _ => new MetaFileCacheHistory(MetaCacheHistorySize));
+        var candidate = new MetaFileCacheEntry(payloadHash, payloadLength, DateTimeOffset.UtcNow);
+
+        if (history.Contains(candidate))
+        {
+            history.Record(candidate);
+            return true;
+        }
+
+        history.Record(candidate);
+        return false;
+    }
         var normalized = Path.GetFullPath(fullPath);
         var now = DateTimeOffset.UtcNow;
         var entry = new MetaFileCacheEntry(payloadHash, payloadLength, now);
@@ -321,6 +346,10 @@ public sealed class FileStorageService : IFileStorageService, IAsyncDisposable
             return;
         }
 
+        var normalized = Path.GetFullPath(fullPath);
+        var history = _metaCache.GetOrAdd(normalized, _ => new MetaFileCacheHistory(MetaCacheHistorySize));
+        history.Record(new MetaFileCacheEntry(payloadHash, payloadLength, DateTimeOffset.UtcNow));
+    }
         var normalized = Path.GetFullPath(fullPath);
         _metaCache[normalized] = new MetaFileCacheEntry(payloadHash, payloadLength, DateTimeOffset.UtcNow);
     }
@@ -420,7 +449,7 @@ public sealed class FileStorageService : IFileStorageService, IAsyncDisposable
                 await using (var stream = new FileStream(tempFile, options))
                 {
                     cancellationToken.ThrowIfCancellationRequested();
-                    await stream.WriteAsync(serializedBytes.AsMemory(0, serializedBytes.Length), cancellationToken).ConfigureAwait(false);
+                    await stream.WriteAsync(payloadMemory, cancellationToken).ConfigureAwait(false);
                     await stream.FlushAsync(cancellationToken).ConfigureAwait(false);
                 }
 
@@ -470,6 +499,149 @@ public sealed class FileStorageService : IFileStorageService, IAsyncDisposable
         }
     }
 
+        private sealed class PooledByteBufferWriter : IBufferWriter<byte>, IDisposable
+    {
+        private byte[] _buffer;
+        private int _index;
+        private bool _disposed;
+
+        public PooledByteBufferWriter(int initialCapacity)
+        {
+            var rentSize = Math.Max(initialCapacity, 256);
+            _buffer = ArrayPool<byte>.Shared.Rent(rentSize);
+        }
+
+        public ReadOnlyMemory<byte> WrittenMemory => _buffer.AsMemory(0, _index);
+
+        public void Advance(int count)
+        {
+            if (count < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(count));
+            }
+
+            if (_index > _buffer.Length - count)
+            {
+                throw new InvalidOperationException('Cannot advance beyond buffer size.');
+            }
+
+            _index += count;
+        }
+
+        public Memory<byte> GetMemory(int sizeHint = 0) => GetSpan(sizeHint);
+
+        public Span<byte> GetSpan(int sizeHint = 0)
+        {
+            EnsureCapacity(sizeHint);
+            return _buffer.AsSpan(_index);
+        }
+
+        private void EnsureCapacity(int sizeHint)
+        {
+            if (sizeHint < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(sizeHint));
+            }
+
+            if (sizeHint == 0)
+            {
+                sizeHint = 1;
+            }
+
+            var remaining = _buffer.Length - _index;
+            if (remaining >= sizeHint)
+            {
+                return;
+            }
+
+            var growBy = Math.Max(sizeHint, _buffer.Length);
+            var newSize = checked(_buffer.Length + growBy);
+            var newBuffer = ArrayPool<byte>.Shared.Rent(newSize);
+            Array.Copy(_buffer, 0, newBuffer, 0, _index);
+            ArrayPool<byte>.Shared.Return(_buffer);
+            _buffer = newBuffer;
+        }
+
+        public void Dispose()
+        {
+            if (_disposed)
+            {
+                return;
+            }
+
+            ArrayPool<byte>.Shared.Return(_buffer);
+            _buffer = Array.Empty<byte>();
+            _index = 0;
+            _disposed = true;
+        }
+    }
+
+private sealed class MetaFileCacheHistory
+    {
+        private readonly int _capacity;
+        private readonly Queue<MetaFileCacheEntry> _entries;
+        private readonly object _sync = new();
+        private MetaFileCacheEntry? _latest;
+
+        public MetaFileCacheHistory(int capacity)
+        {
+            _capacity = Math.Max(1, capacity);
+            _entries = new Queue<MetaFileCacheEntry>(_capacity);
+        }
+
+        public bool Contains(MetaFileCacheEntry candidate)
+        {
+            lock (_sync)
+            {
+                foreach (var entry in _entries)
+                {
+                    if (entry.Hash == candidate.Hash && entry.Length == candidate.Length)
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+        }
+
+        public void Record(MetaFileCacheEntry entry)
+        {
+            lock (_sync)
+            {
+                _entries.Enqueue(entry);
+                _latest = entry;
+                while (_entries.Count > _capacity)
+                {
+                    _entries.Dequeue();
+                }
+            }
+        }
+
+        public bool TryGetLatest(out MetaFileCacheEntry latest)
+        {
+            lock (_sync)
+            {
+                if (_latest is null)
+                {
+                    latest = default!;
+                    return false;
+                }
+
+                latest = _latest;
+                return true;
+            }
+        }
+
+        public void Clear()
+        {
+            lock (_sync)
+            {
+                _entries.Clear();
+                _latest = null;
+            }
+        }
+    }
     private sealed record JsonWriteRequest(
         string RelativePath,
         object? Payload,
@@ -481,6 +653,15 @@ public sealed class FileStorageService : IFileStorageService, IAsyncDisposable
 
     private sealed record MetaFileCacheEntry(string Hash, long Length, DateTimeOffset LastUpdated);
 }
+
+
+
+
+
+
+
+
+
 
 
 

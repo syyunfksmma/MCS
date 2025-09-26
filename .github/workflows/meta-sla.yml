@@ -4,12 +4,12 @@ on:
   schedule:
     - cron: "0 0 * * 1" # 매주 월요일 09:00 KST
   workflow_dispatch:
-inputs:
-  base-url:
-    description: "Target base URL"
-    required: false
-    default: "http://localhost:5229"
-    type: string
+    inputs:
+      base-url:
+        description: "Target base URL"
+        required: false
+        default: "http://localhost:5229"
+        type: string
 
 jobs:
   run-k6:
