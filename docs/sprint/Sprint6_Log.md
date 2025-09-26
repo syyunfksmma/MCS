@@ -1,6 +1,8 @@
 # Sprint 6 Activity Log ? Deployment & Operations
 
 - 2025-09-26 Codex: k6 chunk_upload.js meta_poll 계측 추가(meta_poll_elapsed_ms/meta_poll_request_ms/meta_poll_status_code, match/success rate).
+- 2025-09-26 Codex: IIS MCMS.AppPool ID를 ApplicationPoolIdentity로 전환, C:\MCMS_Test\api 및 logs 폴더에 IIS AppPool\MCMS.AppPool Modify 권한 추가.
+- 2025-09-26 Codex: run-smoke.ps1 (Lab, http://localhost:5229, DisableWindowsAuth/SkipShareCopy) 실행 -> API/Swagger/Portal 모두 connection refused. 로그: artifacts/offline/logs/smoke_20250926_182952.*.
 - 2025-09-26 Codex: k6 실행(BASE_URL=http://localhost:5229) 실패 - connectex (target machine actively refused). IIS AppPool/포트 상태 점검 예정.
 
 > 모든 작업 과정과 로그를 기록한다. 배포/롤백/모니터링 결과를 상세히 남긴다.
