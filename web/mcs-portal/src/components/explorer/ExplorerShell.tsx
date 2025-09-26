@@ -1,4 +1,4 @@
-'use client';
+ï»¿'use client';
 
 import {
   Card,
@@ -114,21 +114,21 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
   const summaryItems = useMemo(() => {
     const base = [
       {
-        label: 'µ¥ÀÌÅÍ »ı¼º ½Ã°¢',
+        label: 'ë°ì´í„° ìƒì„± ì‹œê°',
         value: new Date(generatedAt).toLocaleString()
       },
-      { label: '¾ÆÀÌÅÛ ¼ö', value: itemsState.length.toString() },
-      { label: 'µ¥ÀÌÅÍ ÃâÃ³', value: source === 'mock' ? 'Mock' : 'API' },
+      { label: 'ì•„ì´í…œ ìˆ˜', value: itemsState.length.toString() },
+      { label: 'ë°ì´í„° ì¶œì²˜', value: source === 'mock' ? 'Mock' : 'API' },
       {
-        label: '»óÅÂ',
-        value: isError ? '¿¡·¯' : isFetching ? '·Îµù Áß' : 'Á¤»ó'
+        label: 'ìƒíƒœ',
+        value: isError ? 'ì—ëŸ¬' : isFetching ? 'ë¡œë”© ì¤‘' : 'ì •ìƒ'
       }
     ];
 
     if (searchResult) {
       base.push({
-        label: 'ÃÖ±Ù °Ë»ö SLA(ms)',
-        value: `${searchResult.slaMs ?? '¼­¹ö ¹Ìº¸°í'} / ${searchResult.observedClientMs}`
+        label: 'ìµœê·¼ ê²€ìƒ‰ SLA(ms)',
+        value: `${searchResult.slaMs ?? 'ì„œë²„ ë¯¸ë³´ê³ '} / ${searchResult.observedClientMs}`
       });
     }
 
@@ -378,7 +378,7 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
     () => [
       {
         key: 'summary',
-        label: '¿ä¾à',
+        label: 'ìš”ì•½',
         children: selectedRouting ? (
           <div className="flex flex-col gap-2">
             <Paragraph>
@@ -392,17 +392,17 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
             </Paragraph>
           </div>
         ) : (
-          <Empty description="¶ó¿ìÆÃÀ» ¼±ÅÃÇÏ¼¼¿ä" />
+          <Empty description="ë¼ìš°íŒ…ì„ ì„ íƒí•˜ì„¸ìš”" />
         )
       },
       {
         key: 'history',
-        label: 'È÷½ºÅä¸®',
-        children: <Empty description="È÷½ºÅä¸® ·Îµù ¿¹Á¤" />
+        label: 'íˆìŠ¤í† ë¦¬',
+        children: <Empty description="íˆìŠ¤í† ë¦¬ ë¡œë”© ì˜ˆì •" />
       },
       {
         key: 'files',
-        label: 'ÆÄÀÏ',
+        label: 'íŒŒì¼',
         children: selectedRouting ? (
           <ul className="list-disc pl-5">
             {selectedRouting.files.map((file) => (
@@ -410,7 +410,7 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
             ))}
           </ul>
         ) : (
-          <Empty description="ÆÄÀÏ ¸ñ·Ï ÁØºñ Áß" />
+          <Empty description="íŒŒì¼ ëª©ë¡ ì¤€ë¹„ ì¤‘" />
         )
       }
     ],
@@ -421,7 +421,7 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
     (rawValue?: string) => {
       const nextTerm = (rawValue ?? searchTerm).trim();
       if (!nextTerm) {
-        message.info('°Ë»ö¾î¸¦ ÀÔ·ÂÇÏ¼¼¿ä.');
+        message.info('ê²€ìƒ‰ì–´ë¥¼ ì…ë ¥í•˜ì„¸ìš”.');
         return;
       }
 
@@ -433,13 +433,13 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
         {
           onSuccess: (result) => {
             setSearchResult(result);
-            message.success(`°Ë»ö ¿Ï·á (${result.total}°Ç)`, 1.2);
+            message.success(`ê²€ìƒ‰ ì™„ë£Œ (${result.total}ê±´)`, 1.2);
           },
           onError: (err) => {
             const description =
-              err instanceof Error ? err.message : '¾Ë ¼ö ¾ø´Â ¿À·ù';
+              err instanceof Error ? err.message : 'ì•Œ ìˆ˜ ì—†ëŠ” ì˜¤ë¥˜';
             setLastSearchError(description);
-            message.error(`°Ë»ö ½ÇÆĞ: ${description}`);
+            message.error(`ê²€ìƒ‰ ì‹¤íŒ¨: ${description}`);
           }
         }
       );
@@ -451,7 +451,7 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
     (routingId: string) => {
       const next = findRoutingById(routingId);
       if (!next) {
-        message.warning('Å½»ö Æ®¸®¿¡ ¾ø´Â ¶ó¿ìÆÃÀÔ´Ï´Ù.');
+        message.warning('íƒìƒ‰ íŠ¸ë¦¬ì— ì—†ëŠ” ë¼ìš°íŒ…ì…ë‹ˆë‹¤.');
         return;
       }
       setSelectedRouting(next);
@@ -461,8 +461,8 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
 
   const addinBadgeStatus = selectedRouting ? 'queued' : 'idle';
   const addinBadgeMessage = selectedRouting
-    ? `${selectedRouting.code} Add-in Ã³¸® ´ë±â(Mock)`
-    : '¶ó¿ìÆÃÀ» ¼±ÅÃÇÏ¸é Add-in Å¥ »óÅÂ°¡ Ç¥½ÃµË´Ï´Ù.';
+    ? `${selectedRouting.code} Add-in ì²˜ë¦¬ ëŒ€ê¸°(Mock)`
+    : 'ë¼ìš°íŒ…ì„ ì„ íƒí•˜ë©´ Add-in í ìƒíƒœê°€ í‘œì‹œë©ë‹ˆë‹¤.';
 
   const searchItems: RoutingSearchItem[] = searchResult?.items ?? [];
 
@@ -497,7 +497,7 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
               <Alert
                 className="mt-4"
                 type="error"
-                message="Explorer µ¥ÀÌÅÍ¸¦ ºÒ·¯¿ÀÁö ¸øÇß½À´Ï´Ù."
+                message="Explorer ë°ì´í„°ë¥¼ ë¶ˆëŸ¬ì˜¤ì§€ ëª»í–ˆìŠµë‹ˆë‹¤."
                 description={(error as Error | undefined)?.message}
                 showIcon
               />
@@ -506,7 +506,7 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
           <Card bordered>
             {isFetching && !isError ? (
               <div className="flex justify-center py-10">
-                <Spin tip="Explorer µ¥ÀÌÅÍ¸¦ ·Îµù Áß" />
+                <Spin tip="Explorer ë°ì´í„°ë¥¼ ë¡œë”© ì¤‘" />
               </div>
             ) : (
               <Tabs defaultActiveKey="summary" items={tabs} />
@@ -515,9 +515,9 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
           <Card title="Routing Search" bordered>
             <Space direction="vertical" size="middle" className="w-full">
               <Input.Search
-                placeholder="Routing ÄÚµå / Ç°¸ñ / ¼ÒÀ¯ÀÚ °Ë»ö"
+                placeholder="Routing ì½”ë“œ / í’ˆëª© / ì†Œìœ ì ê²€ìƒ‰"
                 value={searchTerm}
-                enterButton="°Ë»ö"
+                enterButton="ê²€ìƒ‰"
                 loading={searchMutation.isPending}
                 onChange={(event) => setSearchTerm(event.target.value)}
                 onSearch={handleSearch}
@@ -529,9 +529,9 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
               {searchResult ? (
                 <div className="w-full">
                   <Paragraph type="secondary" className="mb-2 text-sm">
-                    ¼­¹ö SLA: {searchResult.slaMs ?? '¹Ìº¸°í'} ms / Å¬¶óÀÌ¾ğÆ® °üÃø:
+                    ì„œë²„ SLA: {searchResult.slaMs ?? 'ë¯¸ë³´ê³ '} ms / í´ë¼ì´ì–¸íŠ¸ ê´€ì¸¡:
                     {' '}
-                    {searchResult.observedClientMs} ms ¡¤ ÃÑ {searchResult.total}°Ç
+                    {searchResult.observedClientMs} ms Â· ì´ {searchResult.total}ê±´
                   </Paragraph>
                   <List
                     dataSource={searchItems}
@@ -546,18 +546,18 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
                               handleSelectSearchRouting(item.routingId)
                             }
                           >
-                            ¿­±â
+                            ì—´ê¸°
                           </Button>
                         ]}
                       >
                         <List.Item.Meta
-                          title={`${item.routingCode} ¡¤ ${item.productCode}`}
-                          description={`Revision ${item.revisionCode} ¡¤ »óÅÂ ${item.status}`}
+                          title={`${item.routingCode} Â· ${item.productCode}`}
+                          description={`Revision ${item.revisionCode} Â· ìƒíƒœ ${item.status}`}
                         />
                         <Text type="secondary">
                           {item.groupName}
                           {item.updatedAt
-                            ? ` ¡¤ ${new Date(item.updatedAt).toLocaleString()}`
+                            ? ` Â· ${new Date(item.updatedAt).toLocaleString()}`
                             : ''}
                         </Text>
                       </List.Item>
@@ -566,7 +566,7 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
                 </div>
               ) : (
                 <Paragraph type="secondary" className="mb-0 text-sm">
-                  °Ë»ö °á°ú°¡ ¿©±â Ç¥½ÃµË´Ï´Ù. SLA´Â Sprint5.1 ·Î±×¿¡ ´©Àû ±â·ÏµË´Ï´Ù.
+                  ê²€ìƒ‰ ê²°ê³¼ê°€ ì—¬ê¸° í‘œì‹œë©ë‹ˆë‹¤. SLAëŠ” Sprint5.1 ë¡œê·¸ì— ëˆ„ì  ê¸°ë¡ë©ë‹ˆë‹¤.
                 </Paragraph>
               )}
             </Space>
@@ -574,16 +574,16 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
           <Card title="Workspace Uploads" bordered>
             <WorkspaceUploadPanel routing={selectedRouting} />
           </Card>
-          <Card title="Add-in »óÅÂ" bordered>
+          <Card title="Add-in ìƒíƒœ" bordered>
             <div className="flex items-center gap-4">
               <AddinBadge status={addinBadgeStatus} message={addinBadgeMessage} />
-              <Text type="secondary">SignalR ¿¬µ¿ ½Ã ½Ç½Ã°£ ¾÷µ¥ÀÌÆ® ¿¹Á¤</Text>
+              <Text type="secondary">SignalR ì—°ë™ ì‹œ ì‹¤ì‹œê°„ ì—…ë°ì´íŠ¸ ì˜ˆì •</Text>
             </div>
             <Timeline className="mt-4">
               <Timeline.Item color="blue">
-                Mock: Add-in Å¥ µî·Ï (10:00)
+                Mock: Add-in í ë“±ë¡ (10:00)
               </Timeline.Item>
-              <Timeline.Item color="green">Mock: ½ÇÇà ¿Ï·á (10:02)</Timeline.Item>
+              <Timeline.Item color="green">Mock: ì‹¤í–‰ ì™„ë£Œ (10:02)</Timeline.Item>
             </Timeline>
           </Card>
         </div>

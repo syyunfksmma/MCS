@@ -20,6 +20,7 @@
 | 2025-09-25 | Codex | F1 | Streaming SHA-256 & 병렬 병합 PoC 구현 (FE/BE) | 3500 | N/A | 프런트 스트리밍 해시·병렬 업로드, 서버 MergeChunksAsync 병렬 버킷화 적용. Docker Desktop 미기동으로 k6 재측정 실패(재시도 시 Docker 시작 필요). | web/mcs-portal/src/lib/uploads/uploadRoutingFileChunks.ts |
 | 2025-09-25 | Codex | F1 | FileStorageService 동시 접근 허용(FileShare.ReadWrite, 재시도) | 3500 | N/A | meta.json 잠금으로 500 발생 → 파일 공유/재시도 로직 적용 | src/MCMS.Infrastructure/FileStorage/FileStorageService.cs |
 | 2025-09-26 | Codex | F1 | FileStorageService 큐 병렬화/캐시 히스토리 적용 후 k6 재측정 | 1000 | 13631 | meta_generation_wait_ms p95=13631 ms (threshold fail); scripts/performance/run-meta-sla.ps1 parser fix, 이전 0 ms 기록은 버그에 따른 잔존 | scripts/performance/run-meta-sla.ps1; docs/sprint/meta_sla_history.csv |
+| 2025-09-26 | Codex | F1 | k6 instrumentation attempt 실패 (API connection refused) | 1000 | N/A | BASE_URL=http://localhost:5229 요청이 "connectex" 오류로 모두 실패. meta_poll 계측 추가만 완료, IIS 상태 점검 예정 | tests/k6/chunk_upload.js; C:\MCMS_Test\api\logs |
 
 ## 수정 이력
 - 2025-09-25 Codex: Docker 기반 SLA 측정 재시도(컨테이너 SQL 실패) 및 k6 결과 기록.
