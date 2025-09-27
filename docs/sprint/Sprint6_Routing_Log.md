@@ -21,9 +21,11 @@
 | 2025-09-25 | Codex | F1 | FileStorageService 동시 접근 허용(FileShare.ReadWrite, 재시도) | 3500 | N/A | meta.json 잠금으로 500 발생 → 파일 공유/재시도 로직 적용 | src/MCMS.Infrastructure/FileStorage/FileStorageService.cs |
 | 2025-09-26 | Codex | F1 | FileStorageService 큐 병렬화/캐시 히스토리 적용 후 k6 재측정 | 1000 | 13631 | meta_generation_wait_ms p95=13631 ms (threshold fail); scripts/performance/run-meta-sla.ps1 parser fix, 이전 0 ms 기록은 버그에 따른 잔존 | scripts/performance/run-meta-sla.ps1; docs/sprint/meta_sla_history.csv |
 | 2025-09-26 | Codex | F1 | k6 instrumentation attempt 실패 (API connection refused) | 1000 | N/A | BASE_URL=http://localhost:5229 요청이 "connectex" 오류로 모두 실패. meta_poll 계측 추가만 완료, IIS 상태 점검 예정 | tests/k6/chunk_upload.js; C:\MCMS_Test\api\logs |
+| 2025-09-26 | Codex | F1 | k6 SLA 재측정 (BASE_URL=http://localhost:5229, chunk 256KiB×4, meta poll instrumentation) | 1000 | 23384 | meta_generation_wait_ms p95=23.38s, chunk_upload_complete_ms p95=14.17s, iteration p95=23.65s (모두 기준 초과). 로컬 Kestrel(`MCMS.Api.exe --urls http://localhost:5229`) + meta_poll_* 지표 수집. | tests/k6/chunk_upload.js; artifacts/perf/k6_chunk_20250926_1837.json |
 
 ## 수정 이력
 - 2025-09-25 Codex: Docker 기반 SLA 측정 재시도(컨테이너 SQL 실패) 및 k6 결과 기록.
+- 2025-09-27 Codex: FileStorageService JSON 큐 추적 로그(대기 시간/workerId/queue depth) 추가, SLA 경고 임계 500 ms 설정.
 - 2025-09-25 Codex: k6 SLA 계측 행 추가 및 k6 스크립트 업데이트 계획 기록.
 - 2025-09-25 Codex: 절대 지령 추가 및 Sprint6 로그 항목 정리.
 - 2025-09-25 Codex: 절대 지령에 문서 변경 기록 규칙 추가.

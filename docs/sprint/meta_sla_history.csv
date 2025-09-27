@@ -2,3 +2,4 @@ timestamp,base_url,chunk_size_bytes,chunk_count,meta_p95_ms,meta_p99_ms,complete
 2025-09-26T11:15:00+09:00,http://localhost:5229,262144,4,0,0,0,0,true
 2025-09-26T11:37:11+09:00,http://localhost:5229,262144,4,13631,,7751.54,13707.75,false
 2025-09-26T18:24:42+09:00,http://localhost:5229,262144,4,0,0,0,0,true
+2025-09-26T18:38:00+09:00,http://localhost:5229,262144,4,23384.2,,14169.29,23645.2,false
