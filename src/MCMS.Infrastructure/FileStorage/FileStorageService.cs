@@ -24,7 +24,7 @@ public sealed class FileStorageService : IFileStorageService, IAsyncDisposable
     private static readonly TimeSpan CacheWriteGuardWindow = TimeSpan.FromMilliseconds(500);
     private const int MetaCacheHistorySize = 3;
 
-    private readonly FileStorageOptions _options;
+    private readonly FileStorageOptions _options;\r\n    private int _pendingJsonWrites;\r\n    private long _jsonWritesTotal;
     private readonly ILogger<FileStorageService> _logger;
     private readonly JsonSerializerOptions _jsonSerializerOptions;
     private readonly Channel<JsonWriteRequest> _jsonWriteChannel;
@@ -215,7 +215,7 @@ public sealed class FileStorageService : IFileStorageService, IAsyncDisposable
         }
     }
 
-    private async Task ProcessJsonWriteQueueAsync(CancellationToken cancellationToken)
+    private async Task ProcessJsonWriteQueueAsync(int workerId, CancellationToken cancellationToken)
     {
         await foreach (var request in _jsonWriteChannel.Reader.ReadAllAsync(cancellationToken))
         {
@@ -645,6 +645,13 @@ private sealed class MetaFileCacheHistory
 
     private sealed record MetaFileCacheEntry(string Hash, long Length, DateTimeOffset LastUpdated);
 }
+
+
+
+
+
+
+
 
 
 

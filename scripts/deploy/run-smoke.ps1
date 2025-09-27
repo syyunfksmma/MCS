@@ -22,6 +22,32 @@ param(
     [int]$TimeoutSeconds = 20
 )
 
+function Join-Url {
+    param(
+        [Parameter(Mandatory=$true)][string]$Base,
+        [string]$Relative
+    )
+
+    if ([string]::IsNullOrWhiteSpace($Relative)) {
+        return $Base
+    }
+
+    try {
+        if (-not $Base.EndsWith('/')) {
+            $Base = $Base.TrimEnd('/') + '/'
+        }
+        $baseUri = [System.Uri]::new($Base, [System.UriKind]::Absolute)
+    }
+    catch {
+        throw "Invalid base URL: $Base"
+    }
+
+    if ($Relative -match '^(https?|ftp)://') {
+        return $Relative
+    }
+
+    return ([System.Uri]::new($baseUri, $Relative)).AbsoluteUri
+}
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
@@ -52,7 +78,7 @@ if (-not $ApiUrl -and $envMap.ContainsKey($Environment)) {
     $ApiUrl = $envMap[$Environment].ApiUrl
 }
 if (-not $ApiUrl -and $BaseUrl) {
-    $ApiUrl = (Join-Path $BaseUrl 'api')
+    $ApiUrl = (Join-Url $BaseUrl 'api')
 }
 if (-not $BaseUrl) {
     throw "BaseUrl could not be resolved for environment '$Environment'. Specify -BaseUrl explicitly."
@@ -182,7 +208,7 @@ $windowsAuthEnabled = -not $DisableWindowsAuth
 if ($windowsAuthEnabled -and -not $SkipApi) {
     $tests += [ordered]@{
         Name = 'Kerberos Challenge'
-        Url = (Join-Path $ApiUrl 'health')
+        Url = (Join-Url $ApiUrl 'health')
         Method = 'GET'
         ExpectedStatus = @(401)
         UseDefaultCredentials = $false
@@ -194,7 +220,7 @@ if ($windowsAuthEnabled -and -not $SkipApi) {
 if (-not $SkipApi) {
     $tests += [ordered]@{
         Name = 'API Health'
-        Url = (Join-Path $ApiUrl 'health')
+        Url = (Join-Url $ApiUrl 'health')
         Method = 'GET'
         ExpectedStatus = @(200)
         UseDefaultCredentials = $windowsAuthEnabled
@@ -203,7 +229,7 @@ if (-not $SkipApi) {
     }
     $tests += [ordered]@{
         Name = 'Swagger Document'
-        Url = (Join-Path $BaseUrl 'swagger/v1/swagger.json')
+        Url = (Join-Url $BaseUrl 'swagger/v1/swagger.json')
         Method = 'GET'
         ExpectedStatus = @(200)
         UseDefaultCredentials = $windowsAuthEnabled
@@ -292,3 +318,11 @@ $summary
 if ($failedCount -gt 0) {
     exit 1
 }
+
+
+
+
+
+
+
+
