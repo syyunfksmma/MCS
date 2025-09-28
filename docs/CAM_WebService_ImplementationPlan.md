@@ -33,6 +33,9 @@
 - DB 스키마 설계(EF Core + SQL Server Express, rowversion 동시성)
 - 백엔드 API 및 SignalR Hub 구현
 - 프론트엔드 React + Vite + Tailwind/shadcn UI 구축
+
+- ERP View Table(좌측 패널)에서 작업할당 대기 품목 리스트를 제공하고, Item_CD·착수상태(착수/미착수/Null)·Res_CD 등 핵심 필드를 노출하며 항목별 드롭다운 정렬 지원 구현
+
 - Save & Load, 파일 트리 실시간 갱신 로직 완성
 - 로컬 부하 테스트(k6) 및 보안 점검(AD 통합 인증)
 
