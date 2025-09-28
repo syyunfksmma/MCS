@@ -1,0 +1,82 @@
+# 사내망 전용 CAM 작업 웹서비스 구축 제안 및 구현 계획
+
+## 1. 현재 상태
+- 목적: CAM 프로그램 작업을 위한 사내 전용 웹 서비스 개발
+- 보안 환경: 사내망 전용, 외부 클라우드·AI·3rd party SaaS 전면 금지
+- 배포 대상: Windows Server 및 내부망 PC
+- 현황: 개념·기능 요구사항 도출 완료. PoC는 개발자 1인 로컬 PC(localhost)에서 착수 준비 단계. 배포는 중앙 집중형(IP/도메인 접속) 또는 설치형(MSI/EXE) 중 선택 검토 필요
+
+## 2. 제안 내용 및 사유
+### 아키텍처
+- ASP.NET Core 8 + SignalR + SQL Server + React 19(Vite 빌드)
+- Tailwind CSS v4 + shadcn/ui + Framer Motion 기반 UI/UX 구성
+- 외부 종속 제거: 사내 NuGet/NPM 미러 활용, 모든 자산은 내부망에 배치
+
+### 배포 전략
+- 1차: Windows Server 기반 중앙 집중형 서비스(IIS + Kestrel)
+- 2차: 필요 시 WiX Toolset 기반 MSI/EXE 설치형 제공
+
+### 실시간 기능 및 보안
+- SignalR Hub로 다중 사용자 편집, 파일 트리 갱신, Presence 처리
+- Windows 통합 인증(AD/Kerberos) + 내부 CA TLS로 사내 정책 준수
+
+## 3. 구현 단계 및 상세 Task List
+### 절대 지령
+- 각 단계는 승인 후 착수하며, 착수 전 전체 범위를 리뷰하고 오류를 식별한다.
+- 오류 발견 시 즉시 승인 재요청 후 수정한다.
+- 모든 단계 작업은 백그라운드 방식으로 수행하며, 문서/웹뷰어 점검 필요 시 승인 확인 후 진행한다.
+- 다음 단계 착수 전 이전 단계 전반을 재점검하고 무오류 상태를 재확인한다.
+- 단계·Task 변경 시 기존 항목에 취소선을 적용하고 변경 내용을 추가한다.
+
+### 단계 1. PoC 환경 구축 및 로컬 기능 구현 (localhost)
+- 개발환경 세팅 (Visual Studio 2022, Node LTS, 사내 NPM/NuGet 미러)
+- DB 스키마 설계(EF Core + SQL Server Express, rowversion 동시성)
+- 백엔드 API 및 SignalR Hub 구현
+- 프론트엔드 React + Vite + Tailwind/shadcn UI 구축
+- Save & Load, 파일 트리 실시간 갱신 로직 완성
+- 로컬 부하 테스트(k6) 및 보안 점검(AD 통합 인증)
+
+### 단계 2. 내부망 서버 배포 및 중앙 집중형 서비스화
+- IIS + Kestrel 배포 환경 설정
+- TLS(내부 CA 인증서) 적용, 방화벽 포트 최소화
+- DB 마이그레이션(운영 SQL Server)
+- 사내 IP 또는 FQDN으로 서비스 오픈
+- 사용자 계정/권한 정책 및 로그/감사 설정
+
+### 단계 3. 설치형(MSI/EXE) 보조 채널 구축 (필요 시)
+- WiX Toolset 기반 MSI 패키징
+- 로컬 SQL Server 옵션 제공
+- 자동 업데이트 또는 재배포 절차 문서화
+
+### 단계 4. 유지보수 및 고도화
+- 장애 모니터링: Windows Event Log + Serilog 파일 로그
+- 버전 관리 및 CI/CD(사내 Git + 배포 스크립트)
+- 사용 패턴·성능 수집 → 성능 최적화 제안
+- 신규 요구사항 수용 시 단계별 승인 후 적용
+
+## 4. 기대 효과
+- 보안: 외부망·클라우드 의존 제로, AD 기반 사내 인증으로 정보 유출 차단
+- 생산성: 실시간 파일 트리·Presence로 동시 협업 향상, 저장-갱신 지연 최소화
+- 유지보수: Windows Server 표준, SQL Server와 .NET Core로 사내 인프라와 자연 통합
+- 확장성: 사내망 증가·사용자 확장 시 수평 확장(IIS + SQL Always On) 용이
+- 운영 편의: 중앙 집중형 서비스로 업데이트·백업·권한 관리 비용 최소화
+
+## 5. 유지보수 전략
+- 정기 점검: 월간 서버·DB 점검, Windows Update 및 보안 패치
+- 로그 관리: Serilog Rolling File + Event Log → 이상 패턴 모니터링
+- 백업: DB는 SQL Server 백업 정책(풀·증분), 코드와 설정은 Git 저장
+- 버전 관리: 태그/릴리즈 노트 작성, 단계별 승인 후 배포
+
+## 6. 전체 기능 점검 및 테스트 계획
+- 단위 테스트: API, SignalR Hub, DB Repository 수준에서 100% 커버리지 목표
+- 통합 테스트: 저장-갱신-동시 편집 전체 시나리오 자동화
+- 부하 테스트: k6를 활용, 동시 사용자 100명 시 P95 응답 <150ms 검증
+- 보안 테스트: 인증/권한 우회, SQL Injection, XSS, CSRF 등 사내 보안 기준 적용
+- 사용성 테스트: 코딩 비전문 인원이 직접 PoC 실행, UI/UX 개선 피드백
+- 최종 검수: 모든 오류·버그 0건 상태에서 릴리즈 승인 후 사내망 배포
+
+## 7. 단계별 협업 및 Codex 역할
+- 개발자 1인 + Codex 협업
+- Codex가 모든 산출물(코드·스크립트·테스트·문서) 작성
+- 각 단계 착수 전 Codex가 전체 범위 리뷰 및 오류 식별
+- 수정·기능 향상 제안을 중간중간 Codex가 능동 제시
