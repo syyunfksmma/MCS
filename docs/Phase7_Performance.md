@@ -17,6 +17,12 @@
 - 클라이언트: 로컬 캐시 TTL 6시간, 변경 감지 시 무효화.
 - Worker: MSMQ Prefetch 10건, Retry 3회.
 
+## 3-1. SQL Server 엔터프라이즈 기능 활용
+- History 테이블: Clustered Columnstore 인덱스 구성으로 압축 + 분석 조회 성능 확보, 주기적 `ALTER INDEX ... REORGANIZE` 자동화.
+- 큐 테이블: 메모리 최적화(`MEMORY_OPTIMIZED = ON`) 테이블 + 네이티브 컴파일 프로시저로 Worker 지연 최소화, Durable 옵션은 SCHEMA_AND_DATA.
+- Query Store 자동 계획 회귀 감지: `sp_query_store_force_plan` 절차와 `sys.query_store_plan` 모니터링, Azure Monitor/SQL Agent 알림과 연계.
+- 장기 실행 쿼리 경고: Extended Events 세션으로 Columnstore/Memory-Optimized 관련 wait 추적.
+
 ## 4. 대용량 파일 처리
 - Chunked Upload (업로드 시 100MB 조각) 옵션 검토.
 - 다운로드는 Range 지원, 실패 시 재시도 안내.
