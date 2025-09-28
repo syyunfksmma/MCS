@@ -21,6 +21,21 @@
   - 단계: 빌드 → 테스트 → 패키징 → 아티팩트 업로드.
 - 배포 승인: QA → UAT → 생산 순, 수동 승인 스텝 포함.
 
+### 4.1 품질 게이트 및 텔레메트리 연동
+- 테스트 게이트: 빌드 후 자동으로 Unit/Integration/UI 테스트 결과를 Allure 리포트로 수집하고, Grafana OnCall에 실패 알림을 전송한다.
+- 성능 게이트: Phase 9의 k6 + OpenTelemetry 성능 회귀 리포트를 파이프라인에서 호출하여 최신 기준선과 비교한다. P95 응답시간 10% 초과 또는 오류율 1% 초과 시 `release/perf-blocker` 태그를 생성하고 배포 단계를 중단한다.
+- UAT 게이트: `UAT-Feedback` 프로젝트에서 Critical/High 미해결 티켓을 REST API로 조회해 존재할 경우 배포 작업을 실패 처리하고 담당자에게 Teams 웹훅 알림 발송.
+
+### 4.2 자동 리포트 & 알림
+- 배포 전: PowerShell 스크립트 `scripts/reports/Generate-ReleaseReadiness.ps1`을 실행해 테스트 통과율, 성능 지표, UAT 티켓 현황을 하나의 PDF로 생성 후 \\deploy\mcms\reports에 저장.
+- 배포 후: OpenTelemetry Collector에서 수집한 초기 30분간의 오류율/응답시간을 nightly job이 비교해 5분 이내 알림(Teams + 이메일) 발송.
+- 실패 시: Grafana OnCall 룰에 따라 운영 담당자 → 개발 리더 순으로 에스컬레이션한다.
+
+### 4.3 롤백 트리거
+- 텔레메트리 기반: 배포 후 15분 내 오류율이 기준선 대비 5%p 이상 상승하거나 CPU 사용률이 85% 지속 시 자동으로 `Invoke-Rollback.ps1` 실행.
+- 사용자 피드백: `UAT-Feedback` 프로젝트에 생산 장애(Critical) 등록 시 파이프라인이 자동으로 `Rollback-Package` 단계를 오픈하고, 승인 후 즉시 이전 안정 버전을 배포.
+- 수동 트리거: 운영 콘솔에서 `Rollback-Now` 명령을 실행하면 마지막 성공 배포 아티팩트를 재배포하고 관련 텔레메트리 이벤트를 Incident 티켓에 기록.
+
 ## 5. 운영 절차
 - 설치 가이드: `docs/InstallGuide.md` 예정, 스크린샷 포함.
 - 장애 대응: 1차 운영팀, 2차 개발팀, 3차 공급사 연락.
