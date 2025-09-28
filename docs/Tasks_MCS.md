@@ -28,7 +28,9 @@
 - [ ] DB 스키마 설계 (EF Core + SQL Server Express, rowversion 동시성)
 - [ ] ASP.NET Core API 및 SignalR Hub 구현
 - [ ] React 19 + Vite + Tailwind v4 + shadcn/ui 초기화 및 Save & Load/파일 트리 갱신 로직 구현
+
 - [ ] ERP View Table 좌측 패널 구성: Item_CD/착수상태/Res_CD 리스트 표시 및 컬럼별 드롭다운 정렬 구현
+
 - [ ] 로컬 부하 테스트(k6) 및 Windows 통합 인증 연동 검증
 - [ ] PoC 단계 회고 문서화 및 승인 요청
 

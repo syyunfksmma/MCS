@@ -13,7 +13,9 @@
 
 ### 1. 핵심 CAM 작업 기능
 - CAD/CAM 가공 데이터를 위한 Save & Load, 파일 트리 실시간 갱신, 다중 사용자 Presence 제공
+
 - 좌측 ERP View Table을 통해 작업할당 대기 품목(Item_CD/착수상태/Res_CD 등)을 즉시 확인하고 드롭다운 정렬로 우선순위를 조정
+
 - SignalR Hub를 활용하여 동시 편집 충돌을 줄이고, rowversion 기반 동시성 제어 적용
 - ASP.NET Core 8 API 및 EF Core를 사용한 SQL Server 스키마 설계로 CAM 데이터 일관성 확보
 
