@@ -17,29 +17,34 @@
 - 클라이언트: 로컬 캐시 TTL 6시간, 변경 감지 시 무효화.
 - Worker: MSMQ Prefetch 10건, Retry 3회.
 
-## 4. 대용량 파일 처리
+## 4. UI 성능
+- 백그라운드 Prefetch: `VirtualizingCollectionView`의 `LoadMoreItemsAsync` 호출 전에 인접 페이지(±1) 비동기 미리 불러오기, UI 스레드는 `Dispatcher.InvokeAsync`로 최소화.
+- 캐시 무효화 Hook: API WebSocket/SignalR 이벤트 수신 시 `IncrementalLoadingCollection.RefreshAsync` 호출하여 트리/그리드 바인딩 갱신.
+- KPI: Item/Rev 트리 스크롤 1000건 기준 120ms 이하 프레임 유지, Routing 그리드 페이지 전환 200건 로드 < 500ms, 가상화 Hit Ratio 90% 이상.
+
+## 5. 대용량 파일 처리
 - Chunked Upload (업로드 시 100MB 조각) 옵션 검토.
 - 다운로드는 Range 지원, 실패 시 재시도 안내.
 - 파일 I/O 모니터링: Windows Performance Counter (SMB Sessions, Disk Queue).
 
-## 5. 장애 대응
+## 6. 장애 대응
 - Esprit/ SolidWorks 장애 시 재시도 로직 + 관리자 알림 이메일.
 - Worker 다운 시 자동 재시작(Windows Service Recovery), 큐 메시지 보존.
 - DB 장애 대비: SQL Server Log Shipping + Failover 문서화.
 
-## 6. 테스트 일정
+## 7. 테스트 일정
 | 주차 | 항목 |
 | --- | --- |
 | Week 3 | 초기 부하 테스트, 캐시 튜닝 |
 | Week 4 | 파일 스트리밍/업로드 성능 검증 |
 | Week 5 | End-to-End 워크플로우 스트레스 테스트 |
 
-## 7. 모니터링 대시보드
+## 8. 모니터링 대시보드
 - Grafana/Elastic: API 응답시간, 오류율.
 - Windows Server PerfMon 템플릿: Disk IO, Network.
 - CmdHost 로그: 처리 건수, 실패율 시각화.
 
-## 8. 남은 과제
+## 9. 남은 과제
 - k6 실행 환경(내부망) 마련.
 - Grafana vs Kibana 대시보드 선택.
 - 자동 알림(Email/SMS) 채널 확정.
