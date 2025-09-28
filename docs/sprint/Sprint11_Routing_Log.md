@@ -19,6 +19,12 @@
 ## Log Template
 | Date (UTC) | Owner | Task ID | Summary (English) | Code Comments Added | Evidence Links |
 | --- | --- | --- | --- | --- | --- |
+| 2025-12-29 | Codex | X1 | Refreshed routing user guide with hierarchy/detail/search context. | <!-- HTML tips + screenshot sources embedded --> | docs/ops/Routing_UserGuide.md |
+| 2025-12-29 | Codex | X2 | Authored storyboard + narration for quick-start video/GIF. | <!-- Embed location noted in media plan --> | docs/ops/Routing_QuickStart_Media.md |
+| 2025-12-29 | Codex | Y1 | Delivered admin handbook covering shared-drive + health panel ops. | <!-- Inline tip comments for handbook actions --> | docs/ops/Routing_AdminHandbook.md |
+| 2025-12-29 | Codex | Y2 | Published support FAQ and escalation checklist with SLA targets. | <!-- FAQ references support template in comments --> | docs/ops/Routing_SupportFAQ.md |
+| 2025-12-29 | Codex | Z1 | Documented shared-drive path/permissions with approval notes. | <!-- Config reference comment links to appsettings --> | docs/ops/Routing_SharedDrive_Decisions.md |
+| 2025-12-29 | Codex | Z2 | Finalized version naming and mandatory file policy mapping to PRD. | <!-- PRD reference comment captured in policy --> | docs/ops/Routing_Versioning_Policy.md |
 
 ## Sections
 - **X1** User guide update
