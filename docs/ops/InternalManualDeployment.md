@@ -1,25 +1,105 @@
-# Internal Manual Deployment Checklist
+# Internal Manual Deployment Playbook
 
-## 1. 빌드
-1. 최신 코드를 `git pull`로 가져온다.
-2. Visual Studio에서 솔루션을 Release/Any CPU로 빌드하거나, 스크립트: `msbuild CAM.sln /p:Configuration=Release`.
-3. 출력물(EXE/필요 DLL)을 `dist/` 혹은 공유 드라이브 업로드용 임시 폴더에 모은다.
+## 0. Scope & Roles
+- **Target environment**: Internal Windows Server 2022 host running IIS + Kestrel reverse proxy with Windows Integrated Authentication enabled.
+- **Service components**: `MCMS.Api` (ASP.NET Core), `MCMS.Worker` background service, React/Vite static assets, and shared-drive file storage at `\\fileserver01\MCMS_Routing`.
+- **Actors**: Codex (build + deployment owner), MCMS Ops reviewer, IT security approver for TLS/AD updates.
 
-## 2. 사전 점검
-- 버전 표시(About 창 등)가 올바른지 확인.
-- 수동 기능 테스트: 로그인, 주요 화면 이동, 파일 업로드 등 최소 5분 스모크 체크.
-- 로그/에러가 발생하면 빌드를 중단하고 수정 후 재빌드한다.
+> Follow the absolute directives from `docs/Tasks_MCS.md`; all actions below assume approval for the sprint gate has been granted.
 
-## 3. 배포
-1. 공유 드라이브 `\\<share>\MCS-Portal\releases`에 날짜/버전 폴더를 만든다. 예: `2025-09-23_v1.2.0`.
-2. EXE와 필요한 부속 DLL/리소스 파일을 복사한다.
-3. 환경설정 파일(.config/.env 등)이 있다면 배포 전 백업 `backup/<날짜>` 폴더에 복사 후 교체.
-4. README 또는 릴리즈 노트를 `README.txt` 등으로 함께 배포한다.
+## 1. Pre-deployment Checklist
+1. Confirm Jira/ADO stories for the release are in **Ready for Deploy** and code freeze is in effect.
+2. Pull the latest `work` branch and tag the release candidate (e.g., `git tag rc-2025.12.29`).
+3. Validate dependencies:
+   - Service account `svc_mcms_router` password not expiring in the next 7 days.
+   - SQL Server connection string still resolves to the production availability group.
+   - Internal CA-issued certificate `CN=mcms-routing.internal` not expiring within 30 days (renew if necessary).
+4. Verify Windows Integrated Authentication by running `Test-KerberosAuthentication.ps1` (see `tools/` folder) against the staging server.
+5. Review change impact: ensure rollback package from previous deployment is archived at `\\fileserver01\MCMS_Routing\releases\<prev_version>_backup`.
 
-## 4. 배포 후 확인
-- 배포 폴더에서 직접 EXE를 실행해 정상 동작 확인.
-- 이전 버전으로 롤백이 필요하면 백업한 폴더에서 파일을 되돌린다.
+## 2. Build & Package Artifacts
+1. **Restore & compile**
+   ```powershell
+   git pull
+   nuget restore CAM API.sln
+   msbuild "CAM API.sln" /p:Configuration=Release /p:Platform="Any CPU"
+   ```
+2. **Publish web assets**
+   ```powershell
+   pushd web
+   npm ci
+   npm run build
+   popd
+   ```
+   Copy the Vite build output (`web/dist`) into `src/MCMS.Web/wwwroot`.
+3. **Publish API & worker**
+   ```powershell
+   dotnet publish src/MCMS.Api/MCMS.Api.csproj -c Release -o publish\api
+   dotnet publish src/MCMS.Worker/MCMS.Worker.csproj -c Release -o publish\worker
+   ```
+4. Collect artifacts into `artifacts\MCMS-<version>` with subfolders `api`, `worker`, `ui`, `tools` (scripts, PowerShell utilities), and `config` (template `appsettings.Production.json`).
+5. Generate release notes `artifacts\MCMS-<version>\ReleaseNotes.md` summarising commits, known issues, and verification status.
 
-## 5. 기록
-- Sprint 로그에 배포 일시, 버전, 주요 변경 사항, 테스트 결과를 남긴다.
-- README 또는 문서에서 절차를 업데이트했다면 해당 문서 링크를 포함한다.
+## 3. Staging Verification
+1. Deploy the package to the staging server using the same steps outlined in §5.
+2. Execute smoke tests:
+   - Run `tools\Signal-McsEvent.ps1 -Event ApplyReadyLoop` to validate Apply→Ready event handling.
+   - Trigger routing JSON write and confirm meta-cache update in `Event Viewer ▸ Applications`.
+   - Perform user flow smoke: login (Integrated Auth), product list load, routing detail open, file upload/download.
+3. Run automated checks:
+   - `k6 run k6/scripts/routing_list_compiled.js` targeting staging URL.
+   - `scripts/tests/Worker-QueueBench.ps1 -Environment Staging`.
+4. Capture results in `docs/testing/BenchmarkResults/<version>-stg.md` with pass/fail notes.
+5. Obtain sign-off from MCMS Ops reviewer before proceeding to production.
+
+## 4. Package Handoff & Approvals
+- Zip the `artifacts\MCMS-<version>` folder and upload to `\\fileserver01\MCMS_Routing\handoff\MCMS-<version>.zip`.
+- Share release notes and staging verification summary with IT security for final approval (includes TLS/AD validation results).
+- Once approval is logged, schedule the production deployment window and notify stakeholders (Slack `#mcms-ops`, email distribution list).
+
+## 5. Production Deployment Steps
+1. **Prepare server**
+   - Log on to the production host with administrative rights.
+   - Pause scheduled maintenance tasks impacting MCMS (e.g., backup jobs, antivirus scans).
+   - Ensure no active user sessions in the routing UI (send broadcast message if required).
+2. **Backup existing install**
+   - Stop IIS site `MCMS-Portal` and Windows service `MCMS.Worker`.
+   - Copy `C:\MCMS\api`, `C:\MCMS\worker`, and `C:\MCMS\ui` to `C:\MCMS\backups\<timestamp>`.
+   - Export current `appsettings.Production.json` and any secrets to the backup folder.
+3. **Deploy new bits**
+   - Extract `MCMS-<version>.zip` to `C:\MCMS\temp\MCMS-<version>`.
+   - Replace `C:\MCMS\api` and `C:\MCMS\worker` contents with the new publish output.
+   - Copy UI assets to `C:\MCMS\ui` (ensure cache-busting hash directories are preserved).
+   - Merge configuration changes: update connection strings, feature flags, and TLS certificate thumbprints in `appsettings.Production.json`. Use three-way diff to avoid overwriting environment secrets.
+4. **Configuration validation**
+   - Run `tools\Validate-AppSettings.ps1 -Path C:\MCMS\api\appsettings.Production.json`.
+   - Confirm NTFS permissions: `svc_mcms_router` has Modify on `C:\MCMS` and read access to `C:\MCMS\config`.
+5. **Start services**
+   - Start IIS site and ensure the Application Pool uses the service account.
+   - Start `MCMS.Worker` Windows service and observe `Event Viewer` for successful startup logs.
+6. **Database migrations (if required)**
+   - Execute `dotnet MCMS.Api.dll --apply-migrations` (or run `tools\Apply-MCMSMigration.ps1`).
+   - Verify migration results in SQL Server `__EFMigrationsHistory` table.
+
+## 6. Post-deployment Validation
+1. Run smoke script `tools\PostDeploy-Smoke.ps1 -Environment Prod`.
+2. Validate routing explorer manually: load dashboard, open revision, trigger Apply→Ready event.
+3. Confirm shared-drive connectivity by uploading a test routing file and checking `\\fileserver01\MCMS_Routing\<BU>`.
+4. Review telemetry dashboards (Application Insights, SQL Query Store) for anomalies within the first 30 minutes.
+5. Announce success in Slack and update ticket status to **Deployed**.
+
+## 7. Rollback Procedure
+1. If critical failures occur, stop IIS site and worker service immediately.
+2. Restore backup from `C:\MCMS\backups\<timestamp>` to the live directories.
+3. Reapply previous configuration files and restart services.
+4. Document the incident, capture logs (`C:\MCMS\logs`) and escalate per escalation matrix.
+
+## 8. Documentation & Audit Trail
+- Update `docs/sprint/<Sprint>_Routing_Log.md` with deployment timestamp, version, smoke results, and reviewers.
+- Attach release notes and validation artifacts to the sprint log entry.
+- Archive deployment evidence (screenshots, command output) in `\\fileserver01\MCMS_Routing\handoff\evidence\<version>`.
+- Schedule post-mortem review if any deviations or manual fixes were required during deployment.
+
+## 9. Appendices
+- **Reference scripts**: `tools\Signal-McsEvent.ps1`, `tools\Validate-AppSettings.ps1`, `scripts\tests\Worker-QueueBench.ps1`.
+- **Related docs**: `docs/ops/Routing_AdminHandbook.md`, `docs/ops/Routing_SharedDrive_Decisions.md`, `docs/Phase11_Documentation.md`.
