@@ -19,7 +19,8 @@
   - 추가: Python FastAPI 마이크로서비스(선택) — SolidWorks 파일 메타 추출/변환 작업 전용.
 - 통신
   - API-Gateway 패턴은 초기 스코프에서는 불필요, WebAPI 직접 호출.
-  - 내부 큐: Azure Service Bus 대체로 RabbitMQ on-prem 또는 MSMQ 고려 (내부망, Windows 기반이면 MSMQ 간편).
+  - 내부 큐: ~~Azure Service Bus 대체로 RabbitMQ on-prem 또는 MSMQ 고려 (내부망, Windows 기반이면 MSMQ 간편).~~
+  - 내부 큐: MSMQ 기반 메시징을 기본으로 하고, 필요 시 RabbitMQ를 사내 Windows 서버에 설치해 사용.
 
 ## 3. 데이터베이스 선택
 | 기준 | SQL Server 2019 | PostgreSQL 14 |
@@ -38,7 +39,8 @@
 | QA | 사내 테스트 서버 (Windows Server 2019, SQL Server QA), 파일 공유 샌드박스 | 통합 테스트 |
 | Prod | Windows Server 2019 (IIS + Windows Service), SQL Server Prod, W:\ MCMS 실제 경로 | 운영 |
 
-- CI/CD: Azure DevOps 또는 Jenkins(사내 표준) 이용, 빌드 파이프라인에서 WebAPI/Worker/CmdHost 패키징.
+- ~~CI/CD: Azure DevOps 또는 Jenkins(사내 표준) 이용, 빌드 파이프라인에서 WebAPI/Worker/CmdHost 패키징.~~
+- 패키징: 내부 빌드 PC에서 설치 패키지를 생성하고, Windows 파일 공유를 통해 서버에 전달.
 - 배포: WebAPI는 IIS WebDeploy, Worker/CmdHost는 Windows Service Installer (PowerShell 스크립트) 사용.
 - 클라이언트 배포: MSIX + 내부 파일 서버(\share\installers) 통해 배포, CMD 서비스가 설치/업데이트를 원격 실행.
 
@@ -74,3 +76,5 @@
 - MSMQ vs RabbitMQ 최종 선택 (운영팀 협의 필요).
 - CMD 서비스 로그 시각화 도구 결정 (Elastic vs 사내 Splunk).
 - Python FastAPI 모듈 범위 확정(필수/선택).
+---
+2025-09-26 Codex: Updated architecture to remove Azure dependencies and align with internal Windows server deployment.

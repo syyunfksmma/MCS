@@ -12,6 +12,8 @@
 ## 2. 화면 설계 요약
 ### 2.1 메인 화면 (Dashboard)
 - 좌측: 품목/Rev 트리 → 선택 시 우측 패널에 Routing 요약.
+  - 트리 데이터는 `VirtualizingCollectionView` 기반으로 1차 로드 200건, 이후 스크롤에 따라 증분 페이지(200건 단위) 비동기 로딩.
+  - 아이템 확장 시 하위 Rev 목록도 가상화 상태를 유지하고, 백그라운드 Prefetch로 인접 Rev 1단계 선로딩.
 - 상단 검색바: 품목 ID, 이름, 공정타입 필터.
 - SolidWorks 매칭 상태 아이콘 표시 (연결/미연결/오류).
 - 빠른 작업 버튼: "Routing 만들기", "이력 보기".
@@ -19,6 +21,7 @@
 ### 2.2 Routing 편집 창
 - 상단 탭: 기본정보, 공정 단계, 파일, 승인.
 - 공정 단계 그리드: Seq, Machine, ProcessDesc, ToolInfo 컬럼, 행 추가 버튼.
+  - `DataGrid` 가상화(열/행 VirtualizationMode = Recycling) 활성화, 100행 단위 서버 페이징 + 비동기 증분 로딩.
 - 파일 패널: Esprit/NC/WP/STL 등 파일 업로드 카드, 상태 표시.
 - 우측: Esprit 실행 버튼, 실행 결과 로그.
 - 하단: 저장/승인 요청 버튼, 승인 요청 시 코멘트 입력 팝업.

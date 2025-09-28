@@ -1,0 +1,18 @@
+services:
+  # ~~old~~ db service (Azure SQL Edge) 는 LSA 오류로 비활성화되었습니다. 로컬 SQL Server Developer/Express 인스턴스를 사용하세요.
+  api:
+    build:
+      context: .
+      dockerfile: docker/api/Dockerfile
+    container_name: mcms-api
+    environment:
+      ASPNETCORE_URLS: http://0.0.0.0:5229
+      ConnectionStrings__McmsDatabase: Server=host.docker.internal,1433;Database=MCMS;User Id=sa;Password=${SA_PASSWORD};TrustServerCertificate=True;Encrypt=False
+      FileStorage__RootPath: /app/storage
+      FileStorage__JsonWorkerCount: 6
+      FileStorage__MaxParallelJsonWrites: 2
+      FileStorage__EnableMetaCaching: true
+    ports:
+      - "5229:5229"
+    volumes:
+      - ./docker-data/storage:/app/storage

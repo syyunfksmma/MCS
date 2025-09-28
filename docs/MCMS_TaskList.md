@@ -10,6 +10,9 @@
 - Task List와 체크박스를 유지하고 신규 생성된 작업에서도 절대 지령을 동일하게 준수한다.
 - 오류 개선을 위해 신규 TASK가 발생하면 TASK LIST를 새로 작성하거나 기존 LIST에 업데이트 한다.
 - PoC 기준은 1인 기업 관점으로 계획한다.
+- 모든 검증 성공, 실패 기록도 다 로그에 기록, 유지할 것. 완료 될 시 취소선을 통해 업데이트 한다.
+- src/MCMS.Infrastructure/FileStorage/FileStorageService.cs의 기존 구문 오류를 정리해 전체 솔루션이 빌드되도록 한 뒤, Apply→Ready 이벤트 루프를 실제 실행 환경에서 연동 테스트
+- Signal-McsEvent.ps1나 Worker 큐를 이용해 에지 케이스(타임아웃, 라이센스 경고 등)에 대한 이벤트 흐름을 리허설하고, 필요한 경우 실패 시 별도 이벤트/로그 경로를 보강
 
 > Revised: 2025-09-23. This execution plan covers the frontend work required by docs/PRD_MCS.md and the routing hierarchy described in KSM Teamcenter Upgrade.pdf.
 
@@ -46,6 +49,9 @@
 - [ ] Review Siemens Teamcenter X UX patterns and capture reusable layout components (left nav, ribbon, preview panes).
 - [ ] Update Application Insights schema for new routing telemetry (search, upload, download).
 - [ ] Refresh Jira/ADO board with stories aligned to this document.
+- [ ] VS2022 Pro 라이선스 확보 후 CAM_API WPF 빌드 체인(g.cs 생성) 복구 — Owner: Codex.
+- [ ] 절대 지령 체크: CAM_API g.cs build chain 복구 계획을 VS2022 Pro 환경 기준으로 재정렬하고, 완료 전까지 Worker 회귀 테스트 착수 금지.
+- [ ] 절대 지령 체크: Worker 큐 회귀 테스트 계획서에 Apply→Ready 이벤트 및 라이선스 오류 리허설을 포함하고 로그 문서화 루프 설정.
 
 ## Phase 5 - Explorer and History (Routing Tree)
 - [ ] Build SSR product dashboard page with global search bar and product list scaffold.
@@ -98,7 +104,8 @@
 - [ ] Partner with CAM pilot group for UAT; capture feedback on folder sync latency and UI clarity.
 
 ## Phase 10 - Deployment and Operations
-- [ ] Update CI pipeline to include new lint/test stages for routing modules.
+- [ ] ~~Update CI pipeline to include new lint/test stages for routing modules.~~
+- [ ] Prepare Windows Server installer workflow and offline smoke verification checklist.
 - [ ] Configure blue/green deployment checklist specific to routing feature flags.
 - [ ] Document rollback procedure for shared-drive integration feature flag toggles.
 - [ ] Publish runbook covering folder-path troubleshooting and user support steps.
@@ -120,3 +127,6 @@
 
 
 
+
+---
+2025-09-26 Codex: Marked CI/GitHub Actions tasks as deprecated and added Windows Server installer workflow requirement.

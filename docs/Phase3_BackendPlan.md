@@ -28,6 +28,9 @@ scripts/
   - `CreateRoutingAsync(CreateRoutingRequest request)` → CAM Rev 1.0 → History 기록.
   - `UpdateRoutingAsync(UpdateRoutingRequest request)` → CAM Rev 증가 로직 포함.
 - 검증: FluentValidation 도입 (필수 필드, Seq 중복 등).
+- 읽기 전용 쿼리는 `AsNoTracking()` 기본 적용, History/Item 상세는 Split Query(`AsSplitQuery`)로 N+1 감소.
+- 반복 사용 조회는 `EF.CompileQuery`로 컴파일된 쿼리 캐시, 초기화 시 단위 테스트 포함.
+- 대량 조회는 `await foreach` + `AsAsyncEnumerable()` 스트리밍 패턴으로 파일 메타, History 로그를 페이징 없이 순차 처리.
 
 ### 2.3 FileMapper & 파일 처리
 - FileStorageProvider 인터페이스: `UploadAsync`, `DownloadStreamAsync`, `CheckExistsAsync`.
@@ -38,6 +41,8 @@ scripts/
 - EF Core SaveChangesInterceptor 사용하여 변경 추적 자동 기록.
 - 기록 내용: Entity, 필드, 이전/이후 값, ChangedBy, CAMRev, Timestamp.
 - 이력 조회 API는 페이징 + 필터 제공.
+- History Context는 `dotnet ef dbcontext optimize`로 컴파일 모델 빌드, 마이그레이션 이후 CI에서 재생성.
+- 변경 감지 최소화를 위해 History Append 작업은 별도 `DbContext` 인스턴스에서 Batch Insert.
 
 ### 2.5 SolidWorks/Esprit 연동
 - SolidWorks: API 호출은 Worker에서 Python FastAPI 모듈을 통해 변환(스케줄 작업).
@@ -48,6 +53,12 @@ scripts/
 - Unit: Core 서비스 로직, 검증.
 - Integration: InMemory DB + Temp SMB 경로 모킹.
 - End-to-End: 최소한의 시나리오 (Routing 생성 → 파일 업로드 → 승인) 자동화.
+- EF Core 최적화 검증: 컴파일 쿼리 응답 시간, Split Query 실행계획 비교, 스트리밍 시 메모리 사용량 측정.
+
+### 2.7 데이터 액세스 성능 수칙
+- `ModelCacheKeyFactory` 커스터마이징 없이 컴파일된 모델 아티팩트 사용해 애플리케이션 시작 시간 단축.
+- Transaction 범위를 최소화하고, 큐 처리 워커는 `ConfigureAwait(false)` + CancellationToken 연동.
+- 대용량 응답 API는 `IAsyncEnumerable` 반환으로 서버 메모리 사용을 일정 수준 유지, `ResponseCompression`과 함께 활용.
 
 ## 3. 작업 세부 일정(초안)
 | 주차 | 목표 |

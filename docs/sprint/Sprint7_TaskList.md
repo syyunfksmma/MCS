@@ -8,6 +8,9 @@
 - Task List와 체크박스를 유지하고 Sprint 작업에서도 절대 지령을 동일하게 준수한다.
 - PoC 기준은 1인 기업 관점으로 계획한다.
 - 모든 코드와 API 작성은 Codex가 수행한다.
+- 모든 검증 성공, 실패 기록도 다 로그에 기록, 유지할 것. 완료 될 시 취소선을 통해 업데이트 한다.
+- src/MCMS.Infrastructure/FileStorage/FileStorageService.cs의 기존 구문 오류를 정리해 전체 솔루션이 빌드되도록 한 뒤, Apply→Ready 이벤트 루프를 실제 실행 환경에서 연동 테스트
+- Signal-McsEvent.ps1나 Worker 큐를 이용해 에지 케이스(타임아웃, 라이센스 경고 등)에 대한 이벤트 흐름을 리허설하고, 필요한 경우 실패 시 별도 이벤트/로그 경로를 보강
 
 > 이 문서는 해당 Sprint 진행 상황과 로그를 함께 관리한다.
 
@@ -16,16 +19,19 @@
 - [ ] A1. 사용자 매뉴얼 최종 업데이트(웹 기준)
 - [ ] A2. 운영/지원 매뉴얼 업데이트 (Runbook 링크 포함)
 - [ ] A3. Help Center/FAQ 콘텐츠 정비
+- [ ] A4. Offline 설치 패키지 QuickStart 작성(package-offline, run-smoke 포함)
 
 ### B. 교육/온보딩
 - [ ] B1. 교육 자료(동영상, 슬라이드) 제작 완료
 - [ ] B2. 교육 세션 진행 및 참석률/만족도 기록
 - [ ] B3. 온보딩 튜토리얼(온스크린 가이드) 점검
+- [ ] B4. 운영팀 대상 Windows Auth/Smoke 자동화 워크숍 진행
 
 ### C. 전환 보고 & 로드맵
 - [ ] C1. 전환 결과 보고서 및 KPI 요약 작성
 - [ ] C2. 후속 개선 로드맵 확정(Blue/Green PoC 등)
 - [ ] C3. Lessons Learned 문서화 & 공유
+- [ ] C4. Sprint8 자동화 범위 정의 및 Task Scheduler 구성 초안 링크
 
 ### D. 문서 & 로그
 - [ ] D1. Sprint7_Log.md에 교육/문서 작업 로그 기록
@@ -44,3 +50,5 @@
 - 2025-09-25 Codex: 문서 변경 기록 규칙 추가, UX/Chunk 작업 세부 일정 반영.
 - 2025-09-25 Codex: Storybook/Playwright 로그 계획 기록.
 
+
+- 2025-09-26 Codex: Offline 배포 QuickStart/운영 워크숍/Sprint8 연계 태스크 추가.

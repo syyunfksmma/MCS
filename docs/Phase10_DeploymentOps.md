@@ -1,42 +1,64 @@
 # Phase 10 - 배포 및 운영 계획
 
-## 1. 클라이언트 배포 전략
-- 패키징: MSIX 기본, 미지원 환경을 위해 PowerShell 설치 스크립트 병행.
-- 업데이트: 내부 파일 서버 `\\deploy\mcms\client`에 최신 버전 저장, CmdHost 명령 `Update-Client`로 원격 배포.
-- 사전 체크: .NET 8 Desktop Runtime, VC++ 재배포 가능 패키지 확인.
+## 변경 전 전략 요약
+- ~~MSIX + PowerShell 기반 클라이언트 배포 및 CmdHost 원격 명령 체계~~
+- ~~Azure DevOps/Jenkins CI/CD 파이프라인과 OpenTelemetry Collector 다중 백엔드 연동~~
+- ~~Grafana/Elastic 중심의 이상 탐지, CmdHost 명령 승인, MSIX 방화벽 예외 프로세스~~
 
-## 2. 서버 배포
-- WebAPI: IIS WebDeploy 패키지(`.zip`), PowerShell 스크립트 `Deploy-WebApi.ps1`로 설치.
-- Worker & CmdHost: Windows Service 설치 스크립트(`Install-Service.ps1`).
-- 환경 변수: `MCMS_DB_CONN`, `MCMS_FILE_ROOT`, `CMD_QUEUE` 등 문서화.
+위 항목은 사내망 전용 CAM 작업 웹서비스 재편에 따라 폐기되었으며, 아래의 ASP.NET Core 8 + SignalR + SQL Server + React 19(Vite) 기반 계획으로 대체한다.
 
-## 3. 내부망 CMD 서비스 운영
-- 서비스 계정: `svc_mcms_cmd` (도메인), 최소 권한 부여.
-- 명령 목록: `Deploy-Client`, `Deploy-MachinePackage`, `Restart-Service`, `Sync-Permissions` 등.
-- 접근 제어: 명령 실행 시 요청자 AD 그룹 체크, 감사 로그 작성.
-- 모니터링: Windows Event Log + 중앙 로그 수집.
+## 1. 배포 전략
+### 1.1 중앙 집중형 서비스 (1차)
+- **플랫폼**: Windows Server 2022 + IIS(역방향 프록시) + Kestrel(Self-Contained)
+- **배포 절차**:
+  1. `dotnet publish -c Release` 산출물과 `web.config`를 준비한다.
+  2. PowerShell `scripts/deploy/Deploy-CamService.ps1`로 IIS 사이트 중지 → 파일 동기화 → App Pool 재기동을 수행한다.
+  3. 내부 CA 서명 TLS 인증서를 IIS에 바인딩하고 TLS 1.2 이상을 강제한다.
+  4. AD/Kerberos 통합 인증이 정상 동작하는지 klist, Event Log로 검증한다.
+- **방화벽 정책**: 443/TCP만 개방, SignalR WebSocket/Long Polling 포트를 사전 승인한다.
 
-## 4. CI/CD 파이프라인
-- 빌드: Azure DevOps (대안: Jenkins).
-  - 단계: 빌드 → 테스트 → 패키징 → 아티팩트 업로드.
-- 배포 승인: QA → UAT → 생산 순, 수동 승인 스텝 포함.
+### 1.2 설치형(MSI/EXE) 보조 채널 (2차, 필요 시)
+- **패키징**: WiX Toolset 기반 MSI, ASP.NET Core self-contained 런타임 포함
+- **옵션**: 로컬 SQL Server Express 설치/연결 선택 제공, 내부 CA TLS 인증서 자동 배포 스크립트 포함
+- **설치 후 작업**: 로컬 서비스 계정 생성, `appsettings.Local.json` 배포, 중앙 서버와 동기화 옵션 안내
+- **업데이트**: 자동 업데이트 미적용 시 재배포 절차 문서화, 버전별 MSI 보관
 
-## 5. 운영 절차
-- 설치 가이드: `docs/InstallGuide.md` 예정, 스크린샷 포함.
-- 장애 대응: 1차 운영팀, 2차 개발팀, 3차 공급사 연락.
-- 변경 관리: Change Request 템플릿 사용.
+## 2. 데이터베이스 및 구성 관리
+- 운영 DB는 중앙 SQL Server(필요 시 Always On)로 일원화하고, EF Core 마이그레이션(`dotnet ef database update`)으로 배포한다.
+- PoC/설치형은 SQL Server Express(LocalDB 가능)를 사용하며, 초기 스키마 스크립트를 MSI에 포함한다.
+- 구성 파일은 `appsettings.Production.json`(중앙), `appsettings.Local.json`(설치형)으로 분리하여 사내 Git에서 버전 관리한다.
+- 비밀 정보는 Windows Credential Manager 또는 사내 Secret Vault에 저장하며 외부 SaaS는 사용하지 않는다.
 
-## 6. 모니터링 & 알림
-- API/Worker: Grafana 대시보드, 오류율 및 응답시간 알림.
-- CmdHost: 실패 명령 이메일 알림, 재시도 정책.
-- 파일 서버: 용량 경고 및 권한 변경 기록.
+## 3. 인증 및 보안
+- Windows 통합 인증(AD/Kerberos)을 기본 인증 방식으로 사용한다.
+- 내부 CA TLS 인증서 갱신은 Task Scheduler + PowerShell 자동화를 활용하여 만료 30일 전에 교체한다.
+- 단계 전환 시 보안 점검 체크리스트: TLS 프로토콜, 인증 헤더, SignalR WebSocket 허용, SQL Server 권한, 로깅 권한을 검토한다.
 
-## 7. 교육 및 문서
-- 운영 매뉴얼: 서비스 재시작, 로그 확인 방법.
-- 사용자 매뉴얼: 설치, 로그인, 주요 기능.
-- 주니어용 FAQ: 자주 묻는 배포/업데이트 질문 정리.
+## 4. 테스트 및 승인 절차
+- 각 단계 착수 전 전체 범위를 리뷰하고 오류를 식별하여 필요 시 승인 재요청한다.
+- 단계 1(로컬 PoC) → 단계 2(내부망 배포) → 단계 3(MSI 보조 채널) → 단계 4(유지보수)의 순서를 준수한다.
+- 단계 완료 시 공통 검증 항목을 기록한다:
+  - 단위/통합 테스트 100% 커버리지 목표 달성 여부
+  - k6 부하 테스트(동시 사용자 100명, P95 < 150ms) 결과 및 로그
+  - AD 인증/권한 검증, TLS 핸드셰이크 캡처
+  - 사용성 테스트(코딩 비전문 인원) 피드백 반영 내역
+
+## 5. 모니터링 및 로그 수집
+- Serilog Rolling File + Windows Event Log를 표준으로 하며, 로그는 공유 스토리지로 수집한다.
+- SignalR Hub, 저장/로드 API, DB 트랜잭션 로그를 분리하여 분석한다.
+- 장애 대응 Runbook: 서비스 재시작 → 로그 분석 → 승인 요청 → 후속 조치 기록.
+
+## 6. 백업 및 복구
+- 운영 SQL Server 백업: 풀(일간), 차등(12시간), 로그(1시간) 정책을 따른다.
+- 애플리케이션: `dotnet publish` 결과와 구성 파일을 버전별로 보관한다.
+- 설치형: MSI, 초기 설정 파일, 로컬 DB 백업 절차를 문서화하고 정기 점검한다.
+
+## 7. 교육 및 문서화
+- 중앙 집중형 배포 가이드, 설치형 배포 가이드, 장애 대응 매뉴얼을 작성해 내부 위키에 게시한다.
+- 단계별 승인 요청 템플릿과 체크리스트를 제공한다.
+- Codex가 생성한 코드/스크립트/테스트/문서 산출물과 릴리즈 노트를 연결하여 추적성을 확보한다.
 
 ## 8. 오픈 이슈
-- MSIX 배포 시 방화벽 예외 등록 프로세스.
-- CmdHost 명령 승인 워크플로우 세부 정의.
-- Azure DevOps vs Jenkins 최종 선정.
+- 내부 CA 인증서 자동 갱신 정책 세부 절차 확정 필요
+- SignalR Presence 로깅/보존 정책 결정
+- 설치형 로컬 DB와 중앙 DB 간 동기화/병합 전략 최종 검토

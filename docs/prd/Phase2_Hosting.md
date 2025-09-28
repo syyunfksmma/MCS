@@ -38,8 +38,10 @@
 - Alerts: 응답시간 2초↑, Error Rate 5%↑, Health Check 실패 연속 3회
 
 ## 6. 백업/복구 전략
-- 코드 아티팩트: Artifactory/ 내부 저장소에 버전 관리
-- 구성 파일(.env): Azure Key Vault 또는 사내 비밀 저장소
+- ~~코드 아티팩트: Artifactory/ 내부 저장소에 버전 관리~~
+- 코드 아티팩트: 공유 드라이브(\\MCMS_SHARE\\packages) 및 오프라인 디스크에 버전 관리
+- ~~구성 파일(.env): Azure Key Vault 또는 사내 비밀 저장소~~
+- 구성 파일(.env): Windows Credential Manager + 암호화된 로컬 파일(Protect-CmsMessage)
 - 재배포: 이전 버전 아티팩트 롤백 스크립트 제공
 - 재해 복구: Secondary 서버에 동일 환경 standby, DNS 전환 준비
 
@@ -53,3 +55,5 @@
 - Next.js 서비스 재시작 절차 상세화
 - 로그 위치/로테이션 방법 문서화
 - Capacity Plan (동시 사용자 증가 시 scale-up 전략)
+---
+2025-09-26 Codex: Hosting 문서를 내부망 설치형 배포/비밀 관리 방식으로 수정.

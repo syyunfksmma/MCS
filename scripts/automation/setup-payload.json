@@ -1,0 +1,25 @@
+{
+  "files": [
+    {
+      "path": "workplan.cs",
+      "replacements": [
+        {
+          "description": "Append AUTO plane token to checkNames list",
+          "pattern": "var checkNames = new List<string> \{ \"XYZ\", \"ZXY\", \"YZX\" \};",
+          "replacement": "var checkNames = new List<string> { \"XYZ\", \"ZXY\", \"YZX\", \"AUTO\" };"
+        }
+      ],
+      "injections": [
+        {
+          "description": "Preload routing metadata constant",
+          "anchor": "        public workplan(Application application)",
+          "mode": "Before",
+          "lines": [
+            "        private const string McsTempleProfile = \"MCMS-AUTO\";"
+          ]
+        }
+      ]
+    }
+  ]
+}
+

@@ -34,7 +34,7 @@ public class ItemsController : ControllerBase
     public async Task<ActionResult<ItemDto>> CreateAsync([FromBody] CreateItemRequest request, CancellationToken cancellationToken)
     {
         var result = await _itemService.CreateItemAsync(request, cancellationToken);
-        return CreatedAtAction(nameof(GetAsync), new { id = result.Id }, result);
+        return Created($"/api/items/{result.Id}", result);
     }
 
     [HttpPost("{itemId:guid}/revisions")]
@@ -45,3 +45,4 @@ public class ItemsController : ControllerBase
         return Ok(result);
     }
 }
+

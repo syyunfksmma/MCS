@@ -371,3 +371,6 @@ web/mcs-portal/.next/
 # Design reference exports archives
 docs/design/reference/archive/
 
+/.env
+/publish/
+docker-data/

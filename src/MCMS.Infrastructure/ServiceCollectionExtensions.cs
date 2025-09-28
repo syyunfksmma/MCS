@@ -15,6 +15,7 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddMcmsInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
         services.Configure<FileStorageOptions>(configuration.GetSection("FileStorage"));
+        services.Configure<EspritAutomationOptions>(configuration.GetSection("EspritAutomation"));
         services.AddMemoryCache();
 
         services.AddDbContext<McmsDbContext>(options =>
@@ -36,7 +37,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IAddinKeyService, AddinKeyService>();
         services.AddSingleton<IFileStorageService, FileStorageService>();
         services.AddSingleton<ICommandQueue, InMemoryCommandQueue>();
-        services.AddSingleton<IEspritAutomationService, EspritAutomationServiceStub>();
+        services.AddSingleton<IEspritAutomationService, EspritAutomationService>();
         services.AddSingleton<ISolidWorksIntegrationService, SolidWorksIntegrationServiceStub>();
 
         return services;
