@@ -22,26 +22,26 @@
 
 ## 2. 작업 흐름 및 체크리스트
 ### Flow X. 사용자 문서
-- [ ] X1. User guide 업데이트 (라우팅 계층, 상세 모달, 검색 필터 스크린샷).
+- [x] ~~X1. User guide 업데이트 (라우팅 계층, 상세 모달, 검색 필터 스크린샷).~~
   - Log: Record page IDs, screenshot sources.
   - Comment: Annotate markdown with context comments (HTML comments if needed).
-- [ ] X2. Quick-start video 또는 GIF 제작 (라우팅 생성 ~ 버전 관리).
+- [x] ~~X2. Quick-start video 또는 GIF 제작 (라우팅 생성 ~ 버전 관리).~~
   - Log: Include storyboard, narration script.
   - Comment: Document embed location in docs site.
 
 ### Flow Y. 운영자 자료
-- [ ] Y1. Admin handbook (공유 드라이브 설정, 헬스 패널 사용법).
+- [x] ~~Y1. Admin handbook (공유 드라이브 설정, 헬스 패널 사용법).~~
   - Log: Summarize sections and reviewers.
   - Comment: Explain inline tips in handbook markdown.
-- [ ] Y2. Support FAQ + escalation 절차 정리.
+- [x] ~~Y2. Support FAQ + escalation 절차 정리.~~
   - Log: Outline categories, SLAs.
   - Comment: Document link to support ticket template.
 
 ### Flow Z. 오픈 질문 해결
-- [ ] Z1. Shared-drive path/permission 결정 확정 문서화.
+- [x] ~~Z1. Shared-drive path/permission 결정 확정 문서화.~~
   - Log: Capture final authority and sign-off date.
   - Comment: Annotate configuration section references.
-- [ ] Z2. Version naming/mandatory file 리스트 확정.
+- [x] ~~Z2. Version naming/mandatory file 리스트 확정.~~
   - Log: Detail agreed naming scheme + reasons.
   - Comment: Document updates to PRD references.
 
