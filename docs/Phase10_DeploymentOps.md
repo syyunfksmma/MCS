@@ -40,3 +40,22 @@
 - MSIX 배포 시 방화벽 예외 등록 프로세스.
 - CmdHost 명령 승인 워크플로우 세부 정의.
 - Azure DevOps vs Jenkins 최종 선정.
+
+## 9. OpenTelemetry Collector & 백엔드 배포 가이드
+- 토폴로지: 각 서버(Local Agent Collector) → 중앙 Collector(고가용성 2노드) → 백엔드(Elastic APM, Grafana Tempo/Loki 등).
+- Collector 설치: Windows Service 모드, `otelcol-contrib` MSI + 공통 구성 템플릿 `configs/otel/collector.yaml` 배포.
+- 입력 파이프라인: OTLP gRPC(4317), OTLP HTTP(4318), Windows PerfCounter Receiver(옵션) 활성화.
+- 출력 파이프라인: Tempo/Jaeger(Traces), Prometheus Remote Write or Elastic Ingest(Metrics), Loki/Elastic(Log Exporter).
+- 구성 관리: Ansible/PowerShell DSC로 Collector 버전 및 파이프라인 일관성 유지, 변경 시 GitOps PR 리뷰 필수.
+- 보안: mTLS 인증서(사내 CA) 적용, 서비스 계정 `svc_mcms_otel` 최소 권한, 방화벽 포트 화이트리스트.
+- 백엔드 운영: Elastic APM 사용 시 Index Lifecycle Policy 설정(핫 7일/웜 30일/콜드 90일), Grafana Tempo/Loki 사용 시 Object Storage(S3 compatible) 버킷 할당 및 Retention(Trace 14일, 로그 30일) 정의.
+
+## 10. 이상 탐지 및 알림 플로우
+- 기준: SLO 메트릭(`http.server.duration`, `queue.process.duration`, `command.execution.duration`, 오류율)을 기반으로 한 Adaptive Threshold(Alert rules in Grafana/Elastic ML jobs).
+- 워크플로우:
+  1. Collector → Backend로 메트릭 전송.
+  2. Backend Alert Engine에서 이상 감지 시 Teams Webhook으로 1차 통보.
+  3. 10분 내 미확인 시 OpsGenie/On-call SMS escalate.
+  4. 알림 수신자는 Runbook(`docs/runbooks/observability.md`)에 따라 1차 진단 후 Jira Incident 생성.
+- 로그 기반 이상탐지: Loki/Elastic Watcher로 `severity=error` 5분 내 10건 이상 감지 시 동일 플로우 적용.
+- 주기적 검증: 월 1회 Chaos Test 후 Alert 라인 정상 작동 여부 확인, 결과는 운영 회의록에 기록.
