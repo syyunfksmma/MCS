@@ -67,3 +67,5 @@
 - 2025-09-27 Codex: http://10.204.2.28/api/health 요청 시 IIS 500.30 (ASP.NET Core app failed to start) 페이지 확인.
 - 2025-09-27 Codex: SQL Server 미사용 방침에 따라 LocalDB 대체용 연결 문자열 작업 보류, 대안 Task 정리 예정.
 - 2025-09-27 Codex: SQL Server 미사용 방침에 따라 LiteDB 기반 저장소 전환 설계안 수립(연결 문자열 제거, McmsDbContext 대체, Program.cs 초기화 변경 등 Task 정의).
+- 2025-09-27 Codex: SQL Server 대안으로 Access DB 전환 방침 확정, 전체 TaskList 체크 현황 수집(완료 80, 미완료 103).
+- 2025-09-27 Codex: TaskList 통계 재확인 → 완료 82, 미완료 103으로 정정.
