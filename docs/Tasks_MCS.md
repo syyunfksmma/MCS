@@ -67,7 +67,7 @@
 
 ## 문서 & 자료 정리
 - [x] Playwright/프록시 환경 설치 가이드 작성 (README, docs/playwright)
-- [ ] 내부 수동 배포 절차 문서화 (`docs/ops/InternalManualDeployment.md`)
+- [x] 내부 수동 배포 절차 문서화 (`docs/ops/InternalManualDeployment.md`)
 
 ## 선택/추후 자동화 과제 (옵션)
 - [ ] Selenium Edge 스모크 테스트 유지/보완 (필요 시 실행)
