@@ -43,3 +43,32 @@
 - k6 실행 환경(내부망) 마련.
 - Grafana vs Kibana 대시보드 선택.
 - 자동 알림(Email/SMS) 채널 확정.
+
+## 9. OpenTelemetry 계측 계획
+- 범위: `MCMS.Api`(WebAPI), `MCMS.Workers`(큐 소비자), `MCMS.CmdHost`(원격 명령) 애플리케이션.
+- 도입 단계: .NET OpenTelemetry SDK → OTLP Exporter → Collector → Backend(Grafana Tempo/Loki 또는 Elastic APM).
+
+### 9.1 Trace 계측
+- `MCMS.Api`: 주요 HTTP 엔드포인트(라우팅 목록, 파일 업로드, History 조회)에 Server Span 추가, `itemId`, `camRev` 태그 부여.
+- `MCMS.Workers`: 큐 메시지 수신 시 Consumer Span, 외부 시스템 호출(DB, Esprit) 하위 Span 구성, 재시도 횟수/대기시간 기록.
+- `MCMS.CmdHost`: 명령 수신/실행/결과 반환을 Span으로 분리, 호출자 AD 정보 태그 포함.
+- Trace-Log 상관: 모든 Span Id를 구조적 로그 필드(`trace_id`, `span_id`)에 삽입하여 Kibana/Loki 조회 시 Trace jump 지원.
+
+### 9.2 Metrics 계측
+- 공통: OpenTelemetry Meter API로 `request.duration`, `queue.process.duration`, `command.execution.duration` Histogram 수집.
+- `MCMS.Api`: 성공/오류 카운터, 요청 바이트/응답 바이트 Gauge.
+- `MCMS.Workers`: 큐 길이 Gauge(`msmq.depth`), 처리 성공률 Counter, 재처리 카운터.
+- `MCMS.CmdHost`: 명령별 처리 시간 Histogram, 실패 카운터, 동시 실행 수 Gauge.
+- Metrics-Trace 연계: Span Attribute `operation.key`를 Metric tag로 사용해 대시보드 Drill-down 구성.
+
+### 9.3 로그 상관
+- Serilog/ILogger 구조 로그에 `trace_id`, `span_id`, `operation.key` 추가.
+- 예외 로그는 Trace EventId와 Metrics의 `status=error` 태그를 공유하여 삼중 상관.
+- 로그 샘플링: 정상 로그는 10% 샘플링, 오류/경고는 무조건 전송.
+
+### 9.4 SLO 정의
+- WebAPI 가용성: 99.5% (5분 단위로 `http.server.duration` 오류율 < 0.5%).
+- WebAPI 응답시간: 95번째 백분위수 2초 이하(`routing/list`, `history` 엔드포인트).
+- Worker 처리: 메시지 처리 성공률 99% 이상, 평균 대기시간 60초 이하(`queue.process.duration`).
+- CmdHost 명령 성공률: 98% 이상, 실패 시 15분 내 알림 후 재처리.
+- SLO 위반 시: Grafana Alert + Microsoft Teams Webhook, 2차 알림 SMS.
