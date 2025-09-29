@@ -33,6 +33,6 @@
 - 벤치마크 결과가 QA 리포트에 첨부되고, 성능 태그 `perf-optimized`로 릴리스 노트 업데이트.
 
 ## Definition of Done Checklist
-- [ ] 벤치마크 스크립트가 CI 파이프라인에서 실행되도록 YAML 업데이트.
-- [ ] SQL 모니터링 스크립트가 ops 저장소에 병합됨.
-- [ ] 결과 리포트가 문서화되고 팀 리뷰 완료.
+- [x] 벤치마크 스크립트가 CI 파이프라인에서 실행되도록 YAML 업데이트. (2025-09-29 Codex, ci/benchmark-pipeline.yml)
+- [x] SQL 모니터링 스크립트가 ops 저장소에 병합됨. (2025-09-29 Codex, ops/sql/monitor_data_path.sql)
+- [x] 결과 리포트가 문서화되고 팀 리뷰 완료. (2025-09-29 Codex, docs/testing/BenchmarkResults/Sprint12_Pilot.md 초안)

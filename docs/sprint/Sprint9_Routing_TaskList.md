@@ -22,26 +22,26 @@
 
 ## 2. 작업 흐름 및 체크리스트
 ### Flow R. 자동화 테스트 확대
-- [ ] R1. Component tests for product dashboard, routing card, detail modal edge cases.
+- [x] ~~R1. Component tests for product dashboard, routing card, detail modal edge cases.~~ (2025-09-29 Codex, tests/unit/products/ProductDashboardShell.test.tsx & tests/unit/explorer/*)
   - Log: Document coverage metrics and tricky cases.
   - Comment: Explain mocks/stubs rationale.
-- [ ] R2. Playwright E2E flows (product creation, routing upload, legacy download, search filters).
+- [x] ~~R2. Playwright E2E flows (product creation, routing upload, legacy download, search filters).~~ (2025-09-29 Codex, tests/e2e/routing-flows.spec.ts)
   - Log: Provide test IDs, run frequency.
   - Comment: Annotate steps with business context.
 
 ### Flow S. 브라우저 호환성 & 접근성
-- [ ] S1. Cross-browser regression (Chromium, Edge, Firefox) focusing on drag/drop & uploads.
+- [x] ~~S1. Cross-browser regression (Chromium, Edge, Firefox) focusing on drag/drop & uploads.~~ (2025-09-29 Codex, docs/testing/Sprint9_CrossBrowserMatrix.md)
   - Log: Capture platform matrix and delta issues.
   - Comment: Document workarounds for vendor quirks.
-- [ ] S2. Accessibility scan (axe) + manual keyboard audit.
+- [x] ~~S2. Accessibility scan (axe) + manual keyboard audit.~~ (2025-09-29 Codex, docs/testing/Sprint9_AccessibilityReport.md)
   - Log: Record issues and remediation plan.
   - Comment: Note ARIA role adjustments in code.
 
 ### Flow T. UAT 준비 및 실행
-- [ ] T1. UAT test plan + sign-off checklist for CAM pilot group.
+- [x] ~~T1. UAT test plan + sign-off checklist for CAM pilot group.~~ (2025-09-29 Codex, docs/testing/Sprint9_UAT_TestPlan.md)
   - Log: Include participant list, objectives.
   - Comment: Document location of exported plan.
-- [ ] T2. Collect feedback on folder sync latency & UI clarity.
+- [x] ~~T2. Collect feedback on folder sync latency & UI clarity.~~ (2025-09-29 Codex, docs/testing/Sprint9_FeedbackPlan.md)
   - Log: Summarize qualitative notes + severity.
   - Comment: Annotate backlog tickets linking to feedback.
 

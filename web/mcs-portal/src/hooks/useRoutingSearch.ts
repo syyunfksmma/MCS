@@ -1,36 +1,52 @@
-import { useMutation } from '@tanstack/react-query';
-import { getApiBaseUrl } from '@/lib/env';
-import type { RoutingSearchResult } from '@/types/search';
+"use client";
 
-export interface RoutingSearchRequest {
+import { useMutation } from "@tanstack/react-query";
+
+interface SearchArgs {
   term: string;
   pageSize?: number;
   slaTargetMs?: number;
 }
 
-const buildEndpoint = () => {
-  const base = getApiBaseUrl();
-  return `${base.replace(/\/$/, '')}/api/search`;
-};
+interface SearchItem {
+  routingId: string;
+  routingCode: string;
+  productCode: string;
+  revisionCode: string;
+  groupName: string;
+  status: string;
+  updatedAt: string;
+  slaMs?: number;
+  observedClientMs?: number;
+}
+
+interface SearchResponse {
+  total: number;
+  items: SearchItem[];
+  observedClientMs?: number;
+  slaMs?: number;
+}
 
 export function useRoutingSearch() {
-  return useMutation<RoutingSearchResult, Error, RoutingSearchRequest>({
-    mutationFn: async (payload) => {
-      const response = await fetch(buildEndpoint(), {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        credentials: 'include',
-        body: JSON.stringify(payload)
-      });
-
-      if (!response.ok) {
-        const message = await response.text();
-        throw new Error(message || `검색 호출 실패 (${response.status})`);
-      }
-
-      return (await response.json()) as RoutingSearchResult;
+  return useMutation(async ({ term, pageSize = 15, slaTargetMs }: SearchArgs) => {
+    const start = performance.now();
+    const params = new URLSearchParams({
+      q: term,
+      limit: String(pageSize)
+    });
+    if (slaTargetMs) {
+      params.set('slaTarget', String(slaTargetMs));
     }
+    const response = await fetch(`/api/search?${params.toString()}`);
+    if (!response.ok) {
+      throw new Error("검색 요청이 실패했습니다.");
+    }
+    const data = (await response.json()) as SearchResponse;
+    const end = performance.now();
+    return {
+      ...data,
+      observedClientMs: Math.round(end - start),
+      slaTargetMs
+    };
   });
 }

@@ -2,7 +2,7 @@
 
 import { Tag, Tooltip } from 'antd';
 
-interface AddinBadgeProps {
+export interface AddinBadgeProps {
   status: 'idle' | 'queued' | 'running' | 'failed' | 'completed';
   message?: string;
 }

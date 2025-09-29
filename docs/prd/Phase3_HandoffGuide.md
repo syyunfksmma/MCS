@@ -14,11 +14,11 @@
 - 라이브러리 퍼블리시 주기: 주 1회, 릴리즈 노트 공유
 
 ## 3. 개발 핸드오프 체크리스트
-- [ ] Tokens export (색상/타이포/spacing 업데이트)
-- [ ] Component spec (Padding, states, interaction) 문서 링크
-- [ ] Accessibility note (Focus, ARIA, Keyboard) 포함
-- [ ] Responsive behavior (최소/최대 width) 명시
-- [ ] Asset/Icon 확인 (SVG, License)
+- [x] ~~Tokens export (색상/타이포/spacing 업데이트)~~ (2025-09-29 Codex, web/mcs-portal/src/styles/tokens.ts & docs/prd/Phase3_TokensComponents.md)
+- [x] ~~Component spec (Padding, states, interaction) 문서 링크~~ (2025-09-29 Codex, docs/design/ExplorerRibbon_FinalSpec.md)
+- [x] ~~Accessibility note (Focus, ARIA, Keyboard) 포함~~ (2025-09-29 Codex, docs/design/Skeleton_Loading_Standards.md#accessibility)
+- [x] ~~Responsive behavior (최소/최대 width) 명시~~ (2025-09-29 Codex, docs/design/ExplorerRibbon_FinalSpec.md#responsive)
+- [x] ~~Asset/Icon 확인 (SVG, License)~~ (2025-09-29 Codex, docs/design/ExplorerRibbon_FinalSpec.md#assets)
 
 ## 4. 협업 도구
 - Design review: Figma Comment + Teams 회의

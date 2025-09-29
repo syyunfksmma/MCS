@@ -1,0 +1,111 @@
+import React from 'react';
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import ExplorerShell from "@/components/explorer/ExplorerShell";
+import type { ExplorerResponse } from "@/types/explorer";
+import { vi } from "vitest";
+
+vi.mock("@/components/TreePanel", () => ({
+  __esModule: true,
+  default: ({ onSelect }: { onSelect?: (id: string | null) => void }) => (
+    <button data-testid="mock-tree" onClick={() => onSelect?.("routing-1")}>Select Routing</button>
+  )
+}));
+
+vi.mock("@/components/features/FeatureGate", () => ({
+  __esModule: true,
+  default: ({ children }: { children: React.ReactNode }) => <>{children}</>
+}));
+
+vi.mock("@/components/explorer/RoutingCreationWizard", () => ({
+  __esModule: true,
+  default: () => null
+}));
+
+vi.mock("@/components/explorer/SearchFilterRail", () => ({
+  __esModule: true,
+  default: () => <div data-testid="mock-filter">Filters</div>
+}));
+
+vi.mock("@/components/explorer/ExplorerRibbon", () => ({
+  __esModule: true,
+  default: () => <div data-testid="mock-ribbon">Ribbon</div>
+}));
+
+vi.mock("@/components/workspace/WorkspaceUploadPanel", () => ({
+  __esModule: true,
+  default: () => <div data-testid="mock-upload">Upload Panel</div>
+}));
+
+vi.mock("@/components/explorer/AddinHistoryPanel", () => ({
+  __esModule: true,
+  default: () => <div data-testid="mock-history">History Panel</div>
+}));
+
+vi.mock("@/hooks/useExplorerData", () => ({
+  useExplorerData: () => ({ data: undefined, isFetching: false, isError: false, error: null })
+}));
+
+const mutateAsync = vi.fn();
+
+vi.mock("@/hooks/useRoutingSearch", () => ({
+  useRoutingSearch: () => ({ mutateAsync, isPending: false })
+}));
+
+vi.mock("@/lib/featureFlags", () => ({
+  isFeatureEnabled: () => true,
+  setFeatureFlag: vi.fn()
+}));
+
+const initialData: ExplorerResponse = {
+  source: "mock",
+  generatedAt: "2025-09-29T00:00:00.000Z",
+  items: [
+    {
+      id: "item-1",
+      code: "ITEM-1",
+      name: "Sample Item",
+      revisions: [
+        {
+          id: "rev-1",
+          code: "REV-A",
+          routingGroups: [
+            {
+              id: "group-1",
+              name: "OP10",
+              displayOrder: 1,
+              routings: [
+                {
+                  id: "routing-1",
+                  code: "R-001",
+                  status: "PendingApproval",
+                  camRevision: "CAM-5",
+                  owner: "operator.one",
+                  files: []
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+};
+
+describe("ExplorerShell routing card", () => {
+  it("shows quick-menu placeholder then renders routing details after selection", async () => {
+    const user = userEvent.setup();
+
+    render(<ExplorerShell initialData={initialData} />);
+
+    expect(
+      screen.getByText(/검색 결과가 여기 표시됩니다. SLA는 Sprint5\.1 로그에 누적 기록됩니다\./)
+    ).toBeInTheDocument();
+
+    await user.click(screen.getByTestId("mock-tree"));
+
+    expect(screen.getByText("R-001")).toBeInTheDocument();
+    expect(screen.getByText(/PendingApproval/)).toBeInTheDocument();
+    expect(screen.getByText(/CAM-5/)).toBeInTheDocument();
+  });
+});

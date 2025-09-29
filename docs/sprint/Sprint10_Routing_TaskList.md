@@ -22,26 +22,26 @@
 
 ## 2. 작업 흐름 및 체크리스트
 ### Flow U. 파이프라인 업데이트
-- [ ] U1. Routing 모듈 전용 lint/test 단계 추가.
+- [x] ~~U1. Routing 모듈 전용 lint/test 단계 추가.~~ (2025-09-29 Codex, ci/routing-ci.yml LintRouting/TestRouting jobs)
   - Log: Document pipeline YAML diff and trigger conditions.
   - Comment: Annotate new job purpose.
-- [ ] U2. CI 캐시 전략 조정 (build artifacts for Next.js/Playwright).
+- [x] ~~U2. CI 캐시 전략 조정 (build artifacts for Next.js/Playwright).~~ (2025-09-29 Codex, ci/routing-ci.yml Cache@2 configuration)
   - Log: Capture cache keys, retention.
   - Comment: Explain potential cache invalidation.
 
 ### Flow V. 배포 전략
-- [ ] V1. Blue/Green 또는 Canary 체크리스트 업데이트 (routing feature flags 포함).
+- [x] ~~V1. Blue/Green 또는 Canary 체크리스트 업데이트 (routing feature flags 포함).~~ (2025-09-29 Codex, docs/ops/Routing_BlueGreen_Checklist.md)
   - Log: Summarize go/no-go criteria.
   - Comment: Document script toggling flags.
-- [ ] V2. 배포 dry-run + 모니터링 알람 확인.
+- [x] ~~V2. 배포 dry-run + 모니터링 알람 확인.~~ (2025-09-29 Codex, docs/ops/Routing_DryRun_Report_2025-09-29.md)
   - Log: Include dry-run output, metrics.
   - Comment: Note dashboards to watch.
 
 ### Flow W. 롤백 및 Runbook
-- [ ] W1. 공유 드라이브 통합 플래그 롤백 절차 문서화.
+- [x] ~~W1. 공유 드라이브 통합 플래그 롤백 절차 문서화.~~ (2025-09-29 Codex, docs/ops/Routing_Rollback_Procedure.md)
   - Log: Provide step-by-step instructions.
   - Comment: Annotate automation script entry point.
-- [ ] W2. 운영 런북 작성 (Folder path troubleshooting, support FAQ).
+- [x] ~~W2. 운영 런북 작성 (Folder path troubleshooting, support FAQ).~~ (2025-09-29 Codex, docs/ops/Routing_Operations_Runbook.md)
   - Log: Link final document and training schedule.
   - Comment: Document location of troubleshooting flowcharts.
 
@@ -52,6 +52,7 @@
 ## 4. 승인 조건
 - DevOps/운영팀 서명.
 - 비상 롤백 절차 리허설 완료.
+
 
 
 

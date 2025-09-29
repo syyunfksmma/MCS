@@ -24,7 +24,9 @@ public sealed class FileStorageService : IFileStorageService, IAsyncDisposable
     private static readonly TimeSpan CacheWriteGuardWindow = TimeSpan.FromMilliseconds(500);
     private const int MetaCacheHistorySize = 3;
 
-    private readonly FileStorageOptions _options;\r\n    private int _pendingJsonWrites;\r\n    private long _jsonWritesTotal;
+    private readonly FileStorageOptions _options;
+    private int _pendingJsonWrites;
+    private long _jsonWritesTotal;
     private readonly ILogger<FileStorageService> _logger;
     private readonly JsonSerializerOptions _jsonSerializerOptions;
     private readonly Channel<JsonWriteRequest> _jsonWriteChannel;
@@ -69,7 +71,7 @@ public sealed class FileStorageService : IFileStorageService, IAsyncDisposable
         });
 
         _jsonWriterTasks = Enumerable.Range(0, _workerCount)
-            .Select(_ => Task.Run(() => ProcessJsonWriteQueueAsync(_queueCts.Token)))
+            .Select(workerId => Task.Run(() => ProcessJsonWriteQueueAsync(workerId, _queueCts.Token)))
             .ToArray();
 
         if (_enableMetaCaching)
@@ -213,6 +215,8 @@ public sealed class FileStorageService : IFileStorageService, IAsyncDisposable
         {
             await _jsonWriteChannel.Writer.WriteAsync(request, cancellationToken).ConfigureAwait(false);
         }
+
+        Interlocked.Increment(ref _pendingJsonWrites);
     }
 
     private async Task ProcessJsonWriteQueueAsync(int workerId, CancellationToken cancellationToken)
@@ -263,6 +267,7 @@ public sealed class FileStorageService : IFileStorageService, IAsyncDisposable
                             request.RelativePath);
                     }
 
+                    Interlocked.Increment(ref _jsonWritesTotal);
                     request.CompletionSource?.TrySetResult(true);
                 }
                 finally
@@ -284,6 +289,7 @@ public sealed class FileStorageService : IFileStorageService, IAsyncDisposable
             }
             finally
             {
+                Interlocked.Decrement(ref _pendingJsonWrites);
                 linked?.Dispose();
             }
         }
@@ -300,10 +306,8 @@ public sealed class FileStorageService : IFileStorageService, IAsyncDisposable
             Encoder = _jsonSerializerOptions.Encoder
         };
 
-        using (var jsonWriter = new Utf8JsonWriter(writer, writerOptions))
-        {
-            JsonSerializer.Serialize(jsonWriter, payload, payloadType, _jsonSerializerOptions);
-        }
+        using var jsonWriter = new Utf8JsonWriter(writer, writerOptions);
+        JsonSerializer.Serialize(jsonWriter, payload, payloadType, _jsonSerializerOptions);
 
         cancellationToken.ThrowIfCancellationRequested();
         return writer;
@@ -487,7 +491,7 @@ public sealed class FileStorageService : IFileStorageService, IAsyncDisposable
         }
     }
 
-        private sealed class PooledByteBufferWriter : IBufferWriter<byte>, IDisposable
+    private sealed class PooledByteBufferWriter : IBufferWriter<byte>, IDisposable
     {
         private byte[] _buffer;
         private int _index;
@@ -568,7 +572,7 @@ public sealed class FileStorageService : IFileStorageService, IAsyncDisposable
         }
     }
 
-private sealed class MetaFileCacheHistory
+    private sealed class MetaFileCacheHistory
     {
         private readonly int _capacity;
         private readonly Queue<MetaFileCacheEntry> _entries;
@@ -634,6 +638,7 @@ private sealed class MetaFileCacheHistory
             }
         }
     }
+
     private sealed record JsonWriteRequest(
         string RelativePath,
         object? Payload,
@@ -645,27 +650,3 @@ private sealed class MetaFileCacheHistory
 
     private sealed record MetaFileCacheEntry(string Hash, long Length, DateTimeOffset LastUpdated);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

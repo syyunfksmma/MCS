@@ -1,0 +1,78 @@
+groups:
+  - name: mcms-core-slo
+    interval: 1m
+    rules:
+      - alert: MCMSPortalSLAWarning
+        expr: |
+          histogram_quantile(0.95, sum by (le) (rate(mcs_request_duration_seconds_bucket{route="/api/search"}[5m]))) > 1.5
+        for: 5m
+        labels:
+          severity: warning
+          service: mcms-portal
+          channel: teams
+        annotations:
+          summary: "Portal /api/search SLA 경고 (p95 > 1.5s)"
+          description: |
+            5분 동안 /api/search 요청의 95퍼센타일 응답 시간이 1.5초를 초과했습니다.
+            grafana_dashboard: mcms-s6-core
+            next_step: check sprint6 monitoring dashboard and consider scaling.
+      - alert: MCMSPortalSLACritical
+        expr: |
+          histogram_quantile(0.95, sum by (le) (rate(mcs_request_duration_seconds_bucket{route="/api/search"}[5m]))) > 2
+        for: 5m
+        labels:
+          severity: critical
+          service: mcms-portal
+          channel: opsgenie
+        annotations:
+          summary: "Portal /api/search SLA 치명 (p95 > 2.0s)"
+          description: |
+            5분 동안 /api/search 요청의 95퍼센타일 응답 시간이 2.0초를 초과했습니다.
+            즉시 Sprint6_DRPlaybook 절차(BG-4) 검토.
+      - alert: MCMSChunkUploadSlow
+        expr: |
+          histogram_quantile(0.95, rate(mcs_chunk_complete_ms_bucket[5m])) > 20000
+        for: 10m
+        labels:
+          severity: warning
+          service: mcms-upload
+          channel: teams
+        annotations:
+          summary: "Chunk Upload p95 20초 초과"
+          description: |
+            Chunk Upload 완료 시간(p95)이 20초를 넘었습니다. F1/F2 향상 플로우를 실행하세요.
+      - alert: MCMSWorkerQueueBacklog
+        expr: avg_over_time(mcs_worker_queue_depth[10m]) > 50
+        for: 10m
+        labels:
+          severity: warning
+          service: mcms-worker
+          channel: teams
+        annotations:
+          summary: "Worker 큐가 50건 이상 쌓였습니다"
+          description: |
+            Worker 큐 깊이가 10분 동안 평균 50건을 초과했습니다. PM2 상태와 Shared Drive 동기화를 확인하세요.
+      - alert: MCMSWebVitalsLCPDegraded
+        expr: |
+          histogram_quantile(0.95, sum by (le) (rate(mcs_web_vitals_lcp_seconds_bucket[15m]))) > 2.5
+        for: 15m
+        labels:
+          severity: warning
+          service: mcms-portal
+          channel: ux
+        annotations:
+          summary: "Web Vitals LCP p95 2.5s 초과"
+          description: |
+            Explorer/Workspace 페이지 LCP 지표가 15분 동안 목표를 초과했습니다. UX Alignment(E1~E3) 트랙 확인이 필요합니다.
+      - alert: MCMSmokeFailures
+        expr: |
+          increase(mcs_smoke_failure_total[10m]) >= 2
+        for: 0m
+        labels:
+          severity: critical
+          service: mcms-portal
+          channel: opsgenie
+        annotations:
+          summary: "Smoke 테스트 2회 이상 실패"
+          description: |
+            run-smoke.ps1 로그에서 10분 이내 2회 이상 실패가 감지되었습니다. Sprint6_DRPlaybook 단일 노드 롤백 절차를 실행하세요.

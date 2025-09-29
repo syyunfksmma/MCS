@@ -1,4 +1,5 @@
 # Phase 8 산출물 - 성능 측정 및 개선 플랜
+> ~~이전 버전: Windows 인증/IIS 기반 구성~~
 
 ## 1. 측정 전략
 | 영역 | 도구 | 주기 |
@@ -15,7 +16,7 @@
 - Code Split & Dynamic Import (Explorer/Workspace)
 - 이미지 최적화: next/image, AVIF 지원, 캐시 헤더
 - 캐싱: React Query staleTime 조정, Edge Cache(Phase 10 검토)
-- 서버 튜닝: Node heap/CPU 모니터링, IIS Compression 설정
+- 서버 튜닝: Node heap/CPU 모니터링, pm2 로그/리소스 모니터링, gzip 압축(`next.config.js`) 설정
 
 ## 3. 실측 시나리오
 - 가장 깊은 라우팅 탐색(100 단계)

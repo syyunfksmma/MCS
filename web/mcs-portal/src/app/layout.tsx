@@ -2,6 +2,7 @@ import '../app/globals.css';
 import { ReactNode, Suspense } from 'react';
 import MainLayout from '../components/MainLayout';
 import ReactQueryProvider from '../components/providers/ReactQueryProvider';
+import FeatureGate from '../components/features/FeatureGate';;
 import MaintenanceGate from '@/components/maintenance/MaintenanceGate';
 
 export const metadata = {
