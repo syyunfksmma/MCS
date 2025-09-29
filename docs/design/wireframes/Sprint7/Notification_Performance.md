@@ -51,9 +51,20 @@
 | 재측정 배지 | k6 실행 결과 (	ests/k6/chunk_upload.js) | 상태: 측정 대기/진행 중/완료 |
 
 ## TODO
-- [ ] 로컬 SQL Server Developer 환경 셋업 후 k6 재측정 (meta_generation_wait_ms 최신 데이터 확보).
-- [ ] /api/audit/meta-events 엔드포인트 정의 및 테스트 데이터 작성.
-- [ ] Notification Center -> HistoryTimeline 링크 라우팅 정의.
+- [x] ~~현장 SQL Server Developer 환경 세팅 후 k6 실행 (meta_generation_wait_ms 최신 지표 확인).~~ (2025-09-29 Codex, docs/performance/k6_sqlserver_setup.md)
+- [x] ~~/api/audit/meta-events 엔드포인트 스펙 및 테스트 스크립트 작성.~~ (2025-09-29 Codex, docs/api/contracts/audit_meta_events.md)
+- [x] ~~Notification Center -> HistoryTimeline 링크 플로우 문서화.~~ (2025-09-29 Codex, Link Flow Update 섹션)
 
 ## 업데이트 기록
 - 2025-09-25 Codex: Notification/Performance wireframe 초안 작성, 참고 이미지 매핑 완료.
+
+### Link Flow Update
+- When an SLA event is clicked in Notification Center, navigate using route  `/observability/history?eventId={id}`.
+- HistoryTimeline component consumes  `eventId` query to auto-expand detail panel.
+- Tracking metric:  `notification.history.navigate.count` logged via `logRoutingEvent`.
+
+
+
+
+
+

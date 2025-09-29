@@ -75,3 +75,6 @@
 - 아이콘 패키지 확정(Phosphor 예상)
 - Design token 자동 동기화(Style Dictionary 도입 여부)
 - 다크 모드/고대비 지원 기준 논의
+
+
+> Updated 2025-09-29 Codex — Synced with web/mcs-portal/src/styles/tokens.ts

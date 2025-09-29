@@ -33,3 +33,9 @@
 
 
 
+| 2025-09-29 | Codex | U1 | Added routing-ci Azure pipeline with dedicated lint + vitest/playwright smoke jobs. | Inline comments point to routing tests + environment variables. | ci/routing-ci.yml |
+| 2025-09-29 | Codex | U2 | Implemented npm cache restore/save in routing pipeline jobs (Cache@2, workspace-level). Documented retention + restore keys. | Comments embedded in ci/routing-ci.yml + pipeline README note pending. | ci/routing-ci.yml |
+| 2025-09-29 | Codex | V1 | Authored routing Blue/Green checklist with feature flag sequence + approvals. | Linked to Ops_Comms_Template and snapshot ID tracking. | docs/ops/Routing_BlueGreen_Checklist.md |
+| 2025-09-29 | Codex | V2 | Conducted staging dry-run: routing-green dry-run script + Playwright smoke; captured Grafana metrics. | Logged evidence path + automation TODO for nightly dry-run. | docs/ops/Routing_DryRun_Report_2025-09-29.md |
+| 2025-09-29 | Codex | W1 | Documented shared drive rollback workflow (snapshot restore + feature flag disable). | Added verification checklist + communication steps. | docs/ops/Routing_Rollback_Procedure.md |
+| 2025-09-29 | Codex | W2 | Published routing operations runbook (folder troubleshooting + support FAQ + escalation flow). | Cross-linked to operations design + dry-run reports. | docs/ops/Routing_Operations_Runbook.md |

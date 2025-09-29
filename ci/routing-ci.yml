@@ -1,0 +1,55 @@
+stage: routing_ci
+jobs:
+  - job: LintRouting
+    displayName: Lint Routing Module (Next.js)
+    pool:
+      vmImage: "ubuntu-latest"
+    variables:
+      NODE_VERSION: "20.x"
+    steps:
+      - task: NodeTool@0
+        inputs:
+          versionSpec: $(NODE_VERSION)
+        displayName: Use Node $(NODE_VERSION)
+      - task: Cache@2
+        displayName: Restore npm cache
+        inputs:
+          key: "npm | $(Agent.OS) | package-lock.json"
+          restoreKeys: "npm | $(Agent.OS)"
+          path: "$(Pipeline.Workspace)/.npm"
+      - script: |
+          npm ci --cache $(Pipeline.Workspace)/.npm
+        displayName: npm ci
+      - script: |
+          npm run lint
+        displayName: npm run lint
+
+  - job: TestRouting
+    displayName: Vitest + Playwright Smoke
+    dependsOn: LintRouting
+    pool:
+      vmImage: "ubuntu-latest"
+    variables:
+      NODE_VERSION: "20.x"
+    steps:
+      - task: NodeTool@0
+        inputs:
+          versionSpec: $(NODE_VERSION)
+        displayName: Use Node $(NODE_VERSION)
+      - task: Cache@2
+        displayName: Restore npm cache
+        inputs:
+          key: "npm | $(Agent.OS) | package-lock.json"
+          restoreKeys: "npm | $(Agent.OS)"
+          path: "$(Pipeline.Workspace)/.npm"
+      - script: |
+          npm ci --cache $(Pipeline.Workspace)/.npm
+        displayName: npm ci
+      - script: |
+          npm run test:unit
+        displayName: Vitest routing unit suite
+      - script: |
+          npx playwright install --with-deps
+          npm run test:e2e -- --project=chromium --grep "Routing E2E smoke"
+        displayName: Playwright smoke (chromium)
+

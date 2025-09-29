@@ -27,10 +27,10 @@
 - Icebox: AI 기반 CAM 추천, SolidWorks 자동 업로드.
 
 ## 5. 핸드오프 체크리스트
-- [ ] 코드/문서 저장소 인수인계.
-- [ ] CI/CD 파이프라인 접근 권한 전달.
-- [ ] 서비스 계정/인증서 만료 일정 공유.
-- [ ] 운영 연락망 & 에스컬레이션 경로 문서화.
+- [x] ~~코드/문서 저장소 인수인계.~~ (2025-09-29 Codex, docs/phase11/Handoff_Bundle.md)
+- [x] ~~CI/CD 파이프라인 접근 권한 전달.~~ (2025-09-29 Codex, docs/phase11/CI_CD_Transfer_Guide.md)
+- [x] ~~서비스 계정/인증서 만료 일정 공유.~~ (2025-09-29 Codex, docs/phase11/Ops_LogMetrics_Bundle.md)
+- [x] ~~운영 연락망 & 에스컬레이션 경로 문서화.~~ (2025-09-29 Codex, docs/phase11/Ops_Procedures.md)
 
 ## 6. 주니어 개발자 참고
 - 모든 문서는 `docs/README.md`에서 링크 제공.

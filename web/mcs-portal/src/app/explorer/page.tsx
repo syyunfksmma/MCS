@@ -2,7 +2,8 @@ import ExplorerShell from '@/components/explorer/ExplorerShell';
 import HydrateClient from '@/components/providers/HydrateClient';
 import { fetchExplorerData } from '@/lib/explorer';
 import { explorerKeys } from '@/lib/queryKeys';
-import { dehydrate, QueryClient } from '@tanstack/react-query';
+import { dehydrate } from '@tanstack/react-query';
+import { createQueryClient } from '@/lib/queryClientFactory';
 import type { ExplorerResponse } from '@/types/explorer';
 
 export const metadata = {

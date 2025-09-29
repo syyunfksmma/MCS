@@ -13,7 +13,7 @@
 
 ## 설계 (Design)
 - [ ] 요구사항 워크숍 개최 및 PRD 리뷰를 통해 ML 데이터 요구 정의
-- [ ] Next.js 정보구조/트리 UX 와이어프레임 작성
+- [x] ~~Next.js ��������/Ʈ�� UX ���̾������� �ۼ�~~ (2025-09-29 Codex, docs/design/Nextjs_ML_Integration_Design.md)
 - [ ] ML 파이프라인 아키텍처 문서화 (피처, 모델, 서빙 흐름)
 - [ ] ESPRIT Add-in ↔ API 연동 시나리오 정의 및 API 스펙 업데이트
 

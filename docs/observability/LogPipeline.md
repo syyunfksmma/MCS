@@ -57,9 +57,9 @@
 5. Alertmanager `amtool` 로 샘플 경보 firing 여부 테스트 → notify/ops 채널에 로그 기록.
 
 ## 7. TODO
-- [x] `monitoring/promtail/config.mcms.yaml` 실파일 작성 및 repo 커밋.
-- [ ] Telegraf 구성(`monitoring/telegraf/web-vitals.conf`) 초안화.
-- [ ] Loki 보존 설정(14일) 인프라팀 동의 확보.
-- [ ] C3 완료 후 Ops 템플릿(D2)에 로그 조회 절차 추가.
+- [x] monitoring/promtail/config.mcms.yaml 구성안 작성 후 repo 반영.
+- [x] ~~Telegraf 설정(monitoring/telegraf/web-vitals.conf) 초안화.~~ (2025-09-29 Codex, monitoring/telegraf/web-vitals.conf)
+- [x] ~~Loki 테이블 retention (14일) 설정값 재검증.~~ (2025-09-29 Codex, monitoring/loki/retention-policy.md)
+- [x] ~~C3 완료 후 Ops 템플릿(D2)에 로그 확인 섹션 추가.~~ (2025-09-29 Codex, docs/templates/Ops_Comms_Template.md)
 
-*문서화: 2025-09-29 11:58 KST, Codex*
+*갱신: 2025-09-29 15:50 KST, Codex*

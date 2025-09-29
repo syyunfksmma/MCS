@@ -1,0 +1,51 @@
+name: mcms-ci
+
+on:
+  push:
+    branches: [develop, v1]
+  pull_request:
+    branches: [develop, v1]
+
+jobs:
+  build:
+    runs-on: [self-hosted, windows, mcms-runner]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.11
+          cache: 'pnpm'
+      - name: Install pnpm
+        run: corepack enable
+      - name: Install dependencies
+        run: pnpm install
+      - name: Install .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+      - name: Restore .NET
+        run: dotnet restore
+      - name: Lint web
+        run: pnpm lint
+      - name: Format check API
+        run: dotnet format --verify-no-changes
+      - name: Unit tests (web)
+        run: pnpm test:unit -- --run
+      - name: Unit tests (API)
+        run: dotnet test --no-build
+      - name: Playwright install
+        run: pnpm exec playwright install --with-deps
+      - name: E2E tests
+        run: pnpm test:e2e:ci -- --reporter=list
+      - name: Build web
+        run: pnpm build
+      - name: Publish API
+        run: dotnet publish src/MCMS.Api/MCMS.Api.csproj -c Release -o artifacts/api
+      - name: Bundle offline package
+        run: scripts/deploy/package-offline.ps1 -OutDir artifacts/offline
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: mcms-offline
+          path: artifacts/offline

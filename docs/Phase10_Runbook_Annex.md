@@ -16,8 +16,8 @@
 - 실패 시 Sprint6_DRPlaybook 단일 노드 롤백 절차 실행
 
 ## 4. Checklist (배포 후)
-- [ ] package-offline 결과 로그 확인
-- [ ] run-smoke-monitor.ps1 성공 여부 기록
-- [ ] notify-deploy.ps1 Deployed 이벤트 전송
+- [x] ~~package-offline 결과 로그 확인~~ (2025-09-29 Codex, artifacts/offline/logs/2025-09-29)
+- [x] ~~run-smoke-monitor.ps1 성공 여부 기록~~ (2025-09-29 Codex, docs/sprint/Sprint8_Log.md)
+- [x] ~~notify-deploy.ps1 Deployed 이벤트 전송~~ (2025-09-29 Codex, docs/logs/Timeline_2025-09-29.md 14:05 기록)
 
-*Codex — 2025-09-29 12:11 KST*
+*Codex — 2025-09-29 12:11 KST (updated 14:20)*
