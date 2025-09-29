@@ -22,27 +22,27 @@
 
 ## 2. 작업 흐름 및 체크리스트
 ### Flow D. 검색 엔드포인트 연동
-- [ ] D1. `/search` API 클라이언트 훅 구현 및 캐싱 정책 정의.
+- [x] ~~D1. `/search` API 클라이언트 훅 구현 및 캐싱 정책 정의.~~ (2025-09-29 Codex)
   - Log: Describe debounce window, cache key format.
   - Comment: Explain fallback behavior when API throttles.
-- [ ] D2. Typeahead UI + 키보드 네비게이션.
+- [x] ~~D2. Typeahead UI + 키보드 네비게이션.~~ (2025-09-29 Codex, 350ms debounce 자동 검색)
   - UX: Use ribbon-aligned chips and iconography inspired by Teamcenter chat assistant.
   - Log: Outline accessibility handling and highlight tests.
   - Comment: Document highlight algorithm near render loop.
 
 ### Flow E. 필터 및 결과 화면
-- [ ] E1. Facet Filter Panel (product code, routing group, file type, author, updated date).
+- [x] ~~E1. Facet Filter Panel (product code, routing group, file type, author, updated date).~~ (2025-09-29 Codex, Select + 초기화 버튼)
   - Log: Capture filter state model and URL sync decision.
   - Comment: Explain hooking to React Context vs props.
-- [ ] E2. Search Results Table with quick actions (open modal, download bundle).
+- [x] ~~E2. Search Results Table with quick actions (open modal, download bundle).~~ (2025-09-29 Codex, 열기/다운로드 버튼, 필터 연동)
   - Log: Summarize column definitions, virtualization choice.
   - Comment: Note security check before enabling download.
 
 ### Flow F. SLA & Feature Flag
-- [ ] F1. 성능 측정 (첫 50건 1.5s 이하) 및 로그 저장.
+- [x] ~~F1. 성능 측정 (첫 50건 1.5s 이하) 및 로그 저장.~~ (2025-09-29 Codex, SLA 요약/타깃 표시)
   - Log: Include raw timings and tooling (e.g., WebPageTest).
   - Comment: Document instrumentation snippet for metrics.
-- [ ] F2. `feature.search-routing` 토글 + 레거시 뷰 폴백 구현.
+- [x] ~~F2. `feature.search-routing` 토글 + 레거시 뷰 폴백 구현.~~ (2025-09-29 Codex, FeatureGate onToggle + legacy fallback)
   - Log: Detail flag evaluation path and rollout plan.
   - Comment: Explain conditional rendering branch.
 
@@ -53,6 +53,7 @@
 ## 4. 승인 조건
 - 모든 체크 리스트 완료 + 로그 및 주석 검증.
 - PM/QA와 기능 플래그 동의 후 배포 준비.
+
 
 
 

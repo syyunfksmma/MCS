@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import {
   Card,
@@ -11,10 +11,15 @@ import {
   List,
   Space,
   Button,
+  Select,
+  Divider,
+  Tag,
   message
 } from 'antd';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import TreePanel, { TreePanelReorderPayload } from '@/components/TreePanel';
+import FeatureGate from '@/components/features/FeatureGate';
+import { isFeatureEnabled } from '@/lib/featureFlags';
 import RoutingCreationWizard, {
   type RoutingCreationInput
 } from '@/components/explorer/RoutingCreationWizard';
@@ -39,6 +44,25 @@ type WizardContext = {
   item: ExplorerItem;
   revision: ExplorerRevision;
   group: ExplorerRoutingGroup;
+};
+
+type LegacyRoutingListItem = {
+  routingId: string;
+  routingCode: string;
+  productCode: string;
+  revisionCode: string;
+  status: string;
+  groupName: string;
+  updatedAt?: string | null;
+};
+
+const STATUS_TAG_COLOR: Record<string, string> = {
+  Approved: 'green',
+  PendingApproval: 'gold',
+  Rejected: 'red',
+  Draft: 'default',
+  '완료': 'green',
+  '진행 중': 'gold'
 };
 
 const { Paragraph, Text } = Typography;
@@ -87,11 +111,29 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
   const [lastSearchError, setLastSearchError] = useState<string | null>(null);
   const [wizardContext, setWizardContext] = useState<WizardContext | null>(null);
 
+  const [productFilter, setProductFilter] = useState<string | undefined>(undefined);
+  const [groupFilter, setGroupFilter] = useState<string | undefined>(undefined);
+  const [statusFilter, setStatusFilter] = useState<string | undefined>(undefined);
+
+  const [isSearchFeatureEnabled, setIsSearchFeatureEnabled] = useState(() =>
+    isFeatureEnabled('feature.search-routing')
+  );
+  const [legacyFilterTerm, setLegacyFilterTerm] = useState('');
+
   const searchMutation = useRoutingSearch();
+  const typeaheadTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     setItemsState(items);
   }, [items]);
+
+  useEffect(() => {
+    return () => {
+      if (typeaheadTimeoutRef.current) {
+        clearTimeout(typeaheadTimeoutRef.current);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     if (!selectedRouting) {
@@ -416,8 +458,41 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
     [selectedRouting]
   );
 
+  const executeSearch = useCallback(
+    (term: string, notify = true) => {
+      if (!isSearchFeatureEnabled) {
+        return;
+      }
+      setLastSearchError(null);
+
+      searchMutation.mutate(
+        { term, pageSize: 25, slaTargetMs: 1500 },
+        {
+          onSuccess: (result) => {
+            setSearchResult(result);
+            if (notify) {
+              message.success(`검색 완료 (${result.total}건)`, 1.2);
+            }
+          },
+          onError: (err) => {
+            const description =
+              err instanceof Error ? err.message : '시스템 서비스 문제';
+            setLastSearchError(description);
+            message.error(`검색 오류: ${description}`);
+          }
+        }
+      );
+    },
+    [isSearchFeatureEnabled, message, searchMutation]
+  );
+
   const handleSearch = useCallback(
     (rawValue?: string) => {
+      if (!isSearchFeatureEnabled) {
+        message.info('검색 기능 토글이 비활성화되어 있습니다.');
+        return;
+      }
+
       const nextTerm = (rawValue ?? searchTerm).trim();
       if (!nextTerm) {
         message.info('검색어를 입력하세요.');
@@ -425,28 +500,39 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
       }
 
       setSearchTerm(nextTerm);
-      setLastSearchError(null);
-
-      searchMutation.mutate(
-        { term: nextTerm, pageSize: 25, slaTargetMs: 3500 },
-        {
-          onSuccess: (result) => {
-            setSearchResult(result);
-            message.success(`검색 완료 (${result.total}건)`, 1.2);
-          },
-          onError: (err) => {
-            const description =
-              err instanceof Error ? err.message : '알 수 없는 오류';
-            setLastSearchError(description);
-            message.error(`검색 실패: ${description}`);
-          }
-        }
-      );
+      executeSearch(nextTerm, true);
     },
-    [searchTerm, searchMutation]
+    [executeSearch, isSearchFeatureEnabled, message, searchTerm]
   );
 
-  const handleSelectSearchRouting = useCallback(
+  const handleSearchChange = useCallback(
+    (value: string) => {
+      setSearchTerm(value);
+      setLastSearchError(null);
+
+      if (typeaheadTimeoutRef.current) {
+        clearTimeout(typeaheadTimeoutRef.current);
+      }
+
+      if (!isSearchFeatureEnabled) {
+        return;
+      }
+
+      const trimmed = value.trim();
+      if (!trimmed) {
+        setSearchResult(null);
+        return;
+      }
+
+      typeaheadTimeoutRef.current = setTimeout(() => {
+        if (trimmed.length >= 2) {
+          executeSearch(trimmed, false);
+        }
+      }, 350);
+    },
+    [executeSearch, isSearchFeatureEnabled]
+  );
+const handleSelectSearchRouting = useCallback(
     (routingId: string) => {
       const next = findRoutingById(routingId);
       if (!next) {
@@ -463,7 +549,180 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
     ? `${selectedRouting.code} Add-in 처리 대기(Mock)`
     : '라우팅을 선택하면 Add-in 큐 상태가 표시됩니다.';
 
-  const searchItems: RoutingSearchItem[] = searchResult?.items ?? [];
+  
+  const clearFilters = useCallback(() => {
+    setProductFilter(undefined);
+    setGroupFilter(undefined);
+    setStatusFilter(undefined);
+  }, []);
+
+  const resetSearchExperience = useCallback(() => {
+    if (typeaheadTimeoutRef.current) {
+      clearTimeout(typeaheadTimeoutRef.current);
+    }
+    setSearchTerm('');
+    setSearchResult(null);
+    setLastSearchError(null);
+    clearFilters();
+  }, [clearFilters]);
+
+  const handleSearchFeatureToggle = useCallback(
+    (nextEnabled: boolean) => {
+      setIsSearchFeatureEnabled(nextEnabled);
+      if (!nextEnabled) {
+        resetSearchExperience();
+        setLegacyFilterTerm('');
+        message.info('Routing 검색 플래그 비활성화: 레거시 뷰로 전환되었습니다.', 1.6);
+      } else {
+        message.success('Routing 검색 플래그 활성화: 신규 검색 뷰가 적용됩니다.', 1.6);
+      }
+    },
+    [message, resetSearchExperience]
+  );
+
+  const legacyRoutingItems = useMemo<LegacyRoutingListItem[]>(() => {
+    const entries: LegacyRoutingListItem[] = [];
+    itemsState.forEach((item) => {
+      item.revisions.forEach((revision) => {
+        revision.routingGroups.forEach((group) => {
+          group.routings.forEach((routing) => {
+            entries.push({
+              routingId: routing.id,
+              routingCode: routing.code,
+              productCode: item.code,
+              revisionCode: revision.code,
+              status: routing.status,
+              groupName: group.name,
+              updatedAt: routing.updatedAt ?? group.updatedAt ?? null
+            });
+          });
+        });
+      });
+    });
+    return entries.sort((a, b) => {
+      const left = a.updatedAt ? new Date(a.updatedAt).getTime() : 0;
+      const right = b.updatedAt ? new Date(b.updatedAt).getTime() : 0;
+      return right - left;
+    });
+  }, [itemsState]);
+
+  const filteredLegacyItems = useMemo(() => {
+    const normalized = legacyFilterTerm.trim().toLowerCase();
+    if (!normalized) {
+      return legacyRoutingItems.slice(0, 50);
+    }
+    return legacyRoutingItems
+      .filter((item) => {
+        const tokens = [
+          item.routingCode,
+          item.productCode,
+          item.groupName,
+          item.status
+        ].map((value) => value.toLowerCase());
+        return tokens.some((token) => token.includes(normalized));
+      })
+      .slice(0, 50);
+  }, [legacyFilterTerm, legacyRoutingItems]);
+
+  const legacyTotalCount = legacyRoutingItems.length;
+
+const searchItems: RoutingSearchItem[] = searchResult?.items ?? [];
+  const productOptions = useMemo(() => {
+    const values = new Set(searchItems.map((item) => item.productCode));
+    return Array.from(values).map((value) => ({ label: value, value }));
+  }, [searchItems]);
+
+  const groupOptions = useMemo(() => {
+    const values = new Set(searchItems.map((item) => item.groupName));
+    return Array.from(values).map((value) => ({ label: value || 'N/A', value }));
+  }, [searchItems]);
+
+  const statusOptions = useMemo(() => {
+    const values = new Set(searchItems.map((item) => item.status));
+    return Array.from(values).map((value) => ({ label: value, value }));
+  }, [searchItems]);
+
+  const filteredItems = useMemo(
+    () =>
+      searchItems.filter((item) => {
+        if (productFilter && item.productCode !== productFilter) return false;
+        if (groupFilter && item.groupName !== groupFilter) return false;
+        if (statusFilter && item.status !== statusFilter) return false;
+        return true;
+      }),
+    [searchItems, productFilter, groupFilter, statusFilter]
+  );
+
+  const slaSummary = searchResult
+    ? {
+        target: searchResult.slaTargetMs ?? 1500,
+        server: searchResult.slaMs ?? 0,
+        client: searchResult.observedClientMs ?? 0
+      }
+    : null;
+
+  const legacySearchFallback = (
+    <Card title="Routing Search (Legacy)" bordered>
+      <Space direction="vertical" size="middle" className="w-full">
+        <Paragraph type="secondary" className="mb-0 text-sm">
+          레거시 검색 모드입니다. Explorer 트리 또는 로컬 목록을 사용하세요. ({filteredLegacyItems.length}/{legacyTotalCount}건 표시)
+        </Paragraph>
+        <Input.Search
+          placeholder="코드/제품/상태 (로컬 필터)"
+          value={legacyFilterTerm}
+          onChange={(event) => setLegacyFilterTerm(event.target.value)}
+          onSearch={(value) => setLegacyFilterTerm(value.trim())}
+          allowClear
+        />
+        {filteredLegacyItems.length ? (
+          <List
+            dataSource={filteredLegacyItems}
+            bordered
+            renderItem={(item) => (
+              <List.Item
+                actions={[
+                  <Button
+                    key="open"
+                    type="link"
+                    onClick={() => handleSelectSearchRouting(item.routingId)}
+                  >
+                    열기
+                  </Button>,
+                  <Button key="download" type="link" disabled>
+                    다운로드
+                  </Button>
+                ]}
+              >
+                <List.Item.Meta
+                  title={`${item.routingCode} · ${item.productCode}`}
+                  description={
+                    <>
+                      Revision {item.revisionCode} ·{' '}
+                      <Tag color={STATUS_TAG_COLOR[item.status] ?? 'default'}>
+                        {item.status}
+                      </Tag>
+                    </>
+                  }
+                />
+                <Text type="secondary">
+                  {item.groupName}
+                  {item.updatedAt
+                    ? ` · ${new Date(item.updatedAt).toLocaleString()}`
+                    : ''}
+                </Text>
+              </List.Item>
+            )}
+          />
+        ) : (
+          <Empty description="일치하는 라우팅이 없습니다." />
+        )}
+      </Space>
+    </Card>
+  );
+
+
+
+  return (
 
   return (
     <>
@@ -511,65 +770,107 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
               <Tabs defaultActiveKey="summary" items={tabs} />
             )}
           </Card>
-          <Card title="Routing Search" bordered>
-            <Space direction="vertical" size="middle" className="w-full">
-              <Input.Search
-                placeholder="Routing 코드 / 품목 / 소유자 검색"
-                value={searchTerm}
-                enterButton="검색"
-                loading={searchMutation.isPending}
-                onChange={(event) => setSearchTerm(event.target.value)}
-                onSearch={handleSearch}
-                allowClear
-              />
-              {lastSearchError ? (
-                <Alert type="error" message={lastSearchError} showIcon />
-              ) : null}
-              {searchResult ? (
-                <div className="w-full">
-                  <Paragraph type="secondary" className="mb-2 text-sm">
-                    서버 SLA: {searchResult.slaMs ?? '미보고'} ms / 클라이언트 관측:
-                    {' '}
-                    {searchResult.observedClientMs} ms · 총 {searchResult.total}건
+          <FeatureGate
+            flag="feature.search-routing"
+            onToggle={handleSearchFeatureToggle}
+            fallback={legacySearchFallback}
+          >
+            <Card title="Routing Search" bordered>
+              <Space direction="vertical" size="middle" className="w-full">
+                <Input.Search
+                  placeholder="Routing 코드 / 품목 / 소유자 검색"
+                  value={searchTerm}
+                  enterButton="검색"
+                  loading={searchMutation.isPending}
+                  onChange={(event) => handleSearchChange(event.target.value)}
+                  onSearch={handleSearch}
+                  allowClear
+                />
+                {lastSearchError ? (
+                  <Alert type="error" message={lastSearchError} showIcon />
+                ) : null}
+                {searchResult ? (
+                  <div className="w-full">
+                    <Space wrap className="mb-2">
+                      <Select
+                        allowClear
+                        placeholder="제품 코드"
+                        options={productOptions}
+                        value={productFilter}
+                        onChange={setProductFilter}
+                        style={{ minWidth: 160 }}
+                      />
+                      <Select
+                        allowClear
+                        placeholder="Routing 그룹"
+                        options={groupOptions}
+                        value={groupFilter}
+                        onChange={setGroupFilter}
+                        style={{ minWidth: 160 }}
+                      />
+                      <Select
+                        allowClear
+                        placeholder="상태"
+                        options={statusOptions}
+                        value={statusFilter}
+                        onChange={setStatusFilter}
+                        style={{ minWidth: 140 }}
+                      />
+                      <Button onClick={clearFilters}>필터 초기화</Button>
+                    </Space>
+                    <Divider className="my-2" />
+                    <Paragraph type="secondary" className="mb-2 text-sm">
+                      서버 SLA: {slaSummary?.server ?? '미보고'} ms / 클라이언트 관측: {slaSummary?.client ?? '미측정'} ms · 목표 {slaSummary?.target ?? '1,500'} ms
+                    </Paragraph>
+                    {slaSummary ? (
+                      <Paragraph className='text-xs text-gray-500'>
+                        목표 대비 {Math.round(((slaSummary.client || 0) / (slaSummary.target || 1)) * 100)}%
+                      </Paragraph>
+                    ) : null}
+
+                    <List
+                      dataSource={filteredItems}
+                      bordered
+                      renderItem={(item) => (
+                        <List.Item
+                          actions={[
+                            <Button
+                              key="open"
+                              type="link"
+                              onClick={() =>
+                                handleSelectSearchRouting(item.routingId)
+                              }
+                            >
+                              열기
+                            </Button>,
+                            <Button key="download" type="link" disabled>
+                              다운로드
+                            </Button>
+                          ]}
+                        >
+                          <List.Item.Meta
+                            title={`${item.routingCode} · ${item.productCode}`}
+                            description={`Revision ${item.revisionCode} · 상태 ${item.status}`}
+                          />
+                          <Text type="secondary">
+                            {item.groupName}
+                            {item.updatedAt
+                              ? ` · ${new Date(item.updatedAt).toLocaleString()}`
+                              : ''}
+                          </Text>
+                        </List.Item>
+                      )}
+                    />
+                  </div>
+                ) : (
+                  <Paragraph type="secondary" className="mb-0 text-sm">
+                    검색 결과가 여기 표시됩니다. SLA는 Sprint5.1 로그에 누적 기록됩니다.
                   </Paragraph>
-                  <List
-                    dataSource={searchItems}
-                    bordered
-                    renderItem={(item) => (
-                      <List.Item
-                        actions={[
-                          <Button
-                            key="open"
-                            type="link"
-                            onClick={() =>
-                              handleSelectSearchRouting(item.routingId)
-                            }
-                          >
-                            열기
-                          </Button>
-                        ]}
-                      >
-                        <List.Item.Meta
-                          title={`${item.routingCode} · ${item.productCode}`}
-                          description={`Revision ${item.revisionCode} · 상태 ${item.status}`}
-                        />
-                        <Text type="secondary">
-                          {item.groupName}
-                          {item.updatedAt
-                            ? ` · ${new Date(item.updatedAt).toLocaleString()}`
-                            : ''}
-                        </Text>
-                      </List.Item>
-                    )}
-                  />
-                </div>
-              ) : (
-                <Paragraph type="secondary" className="mb-0 text-sm">
-                  검색 결과가 여기 표시됩니다. SLA는 Sprint5.1 로그에 누적 기록됩니다.
-                </Paragraph>
-              )}
-            </Space>
-          </Card>
+                )}
+              </Space>
+            </Card>
+          </FeatureGate>
+
           <Card title="Workspace Uploads" bordered>
             <WorkspaceUploadPanel routing={selectedRouting} />
           </Card>

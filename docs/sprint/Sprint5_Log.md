@@ -62,3 +62,20 @@ pm run test:regression, axe, ZAP, 브라우저 매트릭스 실측 실행.
 5. 각 단계 완료 시 Timeline 로그 및 Sprint5_Log.md에 기록.
 ### 2025-09-29 10:46:23 Codex — Sprint5.1 D1 진행 현황
 -  `/api/search` mock 구현 및 useRoutingSearch 훅 SLA 측정 로직 적용. 
+### 2025-09-29 10:48:37 Codex — Sprint5.1 D2 Typeahead 작업 시작
+- 2025-09-29 10:52:51 Sprint5.1 D2 Typeahead 처리: 입력 Debounce(350ms) 및 자동 검색을 ExplorerShell에 적용.
+- 2025-09-29 10:54:10 남은 체크박스 총 256건 (Sprint5.1 D1/D2 완료 후).
+### 2025-09-29 10:55:20 Codex — Sprint5.1 E 단계 착수 계획
+- E1 Facet 필터 패널 구성(중복 항목 점검, 필요 시 통합).
+- E2 검색 결과 테이블/Quick Action 구현, 기존 Explorer 카드와 중복 로직 취소선 처리 예정.
+- 완료마다 Timeline/Sprint 로그 및 정량 보고를 갱신.
+- 2025-09-29 11:00:42 Sprint5.1 E1/E2 완료: Select 기반 필터 + 결과 테이블 Quick Action(열기/다운로드) 및 필터 초기화 추가.
+- 2025-09-29 11:02:51 남은 체크박스 총 254건 (Sprint5.1 E1/E2 완료 포함).
+### 2025-09-29 11:05:29 Codex — Sprint5.1 F 단계 착수
+- 성능 측정(SLA ≤ 1.5s), feature flag fallback 구현 계획을 실행합니다.
+- 2025-09-29 11:09:32 Sprint5.1 F1: `/api/search` SLA 타겟 파라미터 및 ExplorerShell SLA 요약(목표/서버/클라이언트, % 표시) 구현.
+- 2025-09-29 11:10:24 남은 체크박스 총 253건 (Sprint5.1 F1 완료 반영).
+### 2025-09-29 11:11:03 Codex — Sprint5.1 F2 feature flag 작업 시작
+- `feature.search-routing` 플래그 및 레거시 폴백을 구현하고 로그를 남길 예정입니다.
+- 2025-09-29 11:28:55 Sprint5.1 F2 완료: feature.search-routing 토글, ExplorerShell legacy fallback, state reset 메시지 처리.
+- 2025-09-29 11:29:02 남은 체크박스 252건 (Sprint5.1 D1~F2 완료 반영).

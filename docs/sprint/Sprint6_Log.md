@@ -1,4 +1,9 @@
 # Sprint 6 Activity Log ? Deployment & Operations
+- 2025-09-29 11:50:15 Codex: C1 Grafana/Prometheus 대시보드 스펙(Sprint6_Monitoring.md) 작성, SLA/Chunk Upload/Web Vitals 패널 정의 및 알림 임계치 설정.
+- 2025-09-29 11:47:10 Codex: B3 DR 전략 문서화(Sprint6_DRPlaybook.md) — Blue/Green 단계, 단일 노드 롤백, 알림/테스트 매트릭스 정리.
+- 2025-09-29 11:45:40 Codex: B2 롤백 시뮬레이션(run-smoke.ps1 Lab, rollback_20250929_1145.log) 실행 – 서비스 중지 감지 및 후속 조치 계획 수립.
+- 2025-09-29 11:40:20 Codex: Sprint6 Bulk Execution Plan 문서화(B2~F2 병렬 추진 전략, 4개 트랙 구성).
+- 2025-09-29 11:38:05 Codex: notify-deploy.ps1 PowerShell 스크립트로 배포 승인/롤백 자동 알림 구성, Teams Webhook + jsonl 로그 경로 생성 및 README 안내 추가.
 - 2025-09-27 Codex: MCMS.AppPool SpecificUser 롤백 시도(암호 미확보) → IIS 503 발생 확인 후 ApplicationPoolIdentity로 즉시 복귀, WAS 이벤트 점검 필요.
 - 2025-09-27 Codex: FileStorageService JSON 큐 로깅 강화(pending depth/workerId/queue 경고) 및 _jsonWritesTotal 계측 추가.
 - 2025-09-27 Codex: mcms.internal 루트 응답 확보용 index.html 배포(임시 리디렉션).

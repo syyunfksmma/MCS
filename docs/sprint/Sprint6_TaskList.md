@@ -18,15 +18,15 @@
 ### A. 배포 자동화/검증
 - [x] A1. Stage→Prod 배포 자동화 스크립트 보완 (package-offline.ps1 작성)
 - [x] A2. 배포 전/후 Smoke Test 자동 실행 (run-smoke.ps1 배포)
-- [ ] A3. 배포 승인/롤백 자동 알림 설정
+- [x] ~~A3. 배포 승인/롤백 자동 알림 설정.~~ (2025-09-29 Codex, notify-deploy.ps1 Teams Webhook 자동 알림 구성)
 
 ### B. Runbook & DR
 - [x] B1. 배포 Runbook 세부 절차 검토/업데이트 (Phase10 Runbook 보강)
-- [ ] B2. 롤백 시뮬레이션 실행 및 결과 기록
-- [ ] B3. DR 전략 문서화(Blue/Green PoC 결과 반영)
+- [x] ~~B2. 롤백 시뮬레이션 실행 및 결과 기록.~~ (2025-09-29 Codex, run-smoke.ps1 Lab 환경 모의 + rollback_20250929_1145.log 기록)
+- [x] ~~B3. DR 전략 문서화(Blue/Green PoC 결과 반영).~~ (2025-09-29 Codex, Sprint6_DRPlaybook.md 초안 작성)
 
 ### C. 모니터링/알람 튜닝
-- [ ] C1. Grafana/Prometheus 대시보드 확정
+- [x] ~~C1. Grafana/Prometheus 대시보드 확정.~~ (2025-09-29 Codex, Sprint6_Monitoring.md 대시보드 명세)
 - [ ] C2. Alert Rule Fine-tuning 및 노이즈 감소 작업
 - [ ] C3. 로그 파이프라인 테스트 및 보존 정책 업데이트
 
@@ -50,3 +50,4 @@
 
 
 - 2025-09-26 Codex: package-offline/run-smoke 작업 완료, Runbook 및 Sprint 로그 업데이트.
+- 2025-09-29 Codex: A3 자동 알림 스크립트 추가 및 notify-deploy.ps1 소개.

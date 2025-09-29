@@ -28,6 +28,7 @@ export async function GET(request: Request) {
     total: filtered.length,
     items: data,
     observedClientMs: Math.floor(Math.random() * 300) + 200,
-    slaMs: 1500
+    slaMs: 1500,
+    slaTargetMs: Number(searchParams.get('slaTarget') ?? 1500)
   });
 }
