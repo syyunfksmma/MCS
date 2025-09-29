@@ -35,6 +35,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IAuditLogService, AuditLogService>();
         services.AddScoped<IAddinJobService, AddinJobService>();
         services.AddScoped<IAddinKeyService, AddinKeyService>();
+        services.AddScoped<IExplorerService, ExplorerService>();
         services.AddSingleton<IFileStorageService, FileStorageService>();
         services.AddSingleton<ICommandQueue, InMemoryCommandQueue>();
         services.AddSingleton<IEspritAutomationService, EspritAutomationService>();

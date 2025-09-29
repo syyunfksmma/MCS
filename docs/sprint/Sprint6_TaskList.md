@@ -18,35 +18,36 @@
 ### A. 배포 자동화/검증
 - [x] A1. Stage→Prod 배포 자동화 스크립트 보완 (package-offline.ps1 작성)
 - [x] A2. 배포 전/후 Smoke Test 자동 실행 (run-smoke.ps1 배포)
-- [ ] A3. 배포 승인/롤백 자동 알림 설정
+- [x] ~~A3. 배포 승인/롤백 자동 알림 설정.~~ (2025-09-29 Codex, notify-deploy.ps1 Teams Webhook 자동 알림 구성)
 
 ### B. Runbook & DR
 - [x] B1. 배포 Runbook 세부 절차 검토/업데이트 (Phase10 Runbook 보강)
-- [ ] B2. 롤백 시뮬레이션 실행 및 결과 기록
-- [ ] B3. DR 전략 문서화(Blue/Green PoC 결과 반영)
+- [x] ~~B2. 롤백 시뮬레이션 실행 및 결과 기록.~~ (2025-09-29 Codex, run-smoke.ps1 Lab 환경 모의 + rollback_20250929_1145.log 기록)
+- [x] ~~B3. DR 전략 문서화(Blue/Green PoC 결과 반영).~~ (2025-09-29 Codex, Sprint6_DRPlaybook.md 초안 작성)
 
 ### C. 모니터링/알람 튜닝
-- [ ] C1. Grafana/Prometheus 대시보드 확정
-- [ ] C2. Alert Rule Fine-tuning 및 노이즈 감소 작업
-- [ ] C3. 로그 파이프라인 테스트 및 보존 정책 업데이트
+- [x] ~~C1. Grafana/Prometheus 대시보드 확정.~~ (2025-09-29 Codex, Sprint6_Monitoring.md 대시보드 명세)
+- [x] ~~C2. Alert Rule Fine-tuning 및 노이즈 감소 작업.~~ (2025-09-29 Codex, monitoring/alerts/mcms_core.yaml 경보 규칙 초안)
+- [x] ~~C3. 로그 파이프라인 테스트 및 보존 정책 업데이트.~~ (2025-09-29 Codex, LogPipeline.md 작성)
 
 ### D. 문서 & 로그
 - [x] D1. Sprint6_Log.md에 배포/운영 변화 기록
-- [ ] D2. Ops 대상 커뮤니케이션 템플릿 작성
+- [x] ~~D2. Ops 대상 커뮤니케이션 템플릿 작성.~~ (2025-09-29 Codex, Ops_Comms_Template.md 초안)
 
 ## 로그 기록
 - 2025-09-25: F1/F2 스트리밍 SHA-256 & 병렬 병합 PoC 코드 적용, Docker Desktop 미기동으로 k6 재측정 대기(Sprint6_Routing_Log.md 참조).
 
 ### E. Explorer UX Alignment (Teamcenter)
-- [ ] E1. 좌측 필터 레일 컴포넌트 정보구조 확정 및 ExplorerShell 반영 계획 수립
-- [ ] E2. Ribbon 액션 그룹화 규칙 정의 후 UI 설계 문서 업데이트
-- [ ] E3. Hover Quick Menu 상호작용 플로우 초안과 검증 계획 작성
+- [x] ~~E1. 좌측 필터 레일 컴포넌트 정보구조 확정 및 ExplorerShell 반영 계획 수립.~~ (2025-09-29 Codex, Sprint6_ExplorerUX.md Section 1)
+- [x] ~~E2. Ribbon 액션 그룹화 규칙 정의 후 UI 설계 문서 업데이트.~~ (2025-09-29 Codex, Sprint6_ExplorerUX.md Section 2)
+- [x] ~~E3. Hover Quick Menu 상호작용 플로우 초안과 검증 계획 작성.~~ (2025-09-29 Codex, Sprint6_ExplorerUX.md Section 3)
 ### F. Chunk Upload Optimisation
-- [ ] F1. Streaming SHA-256 클라이언트/서버 구현 계획 수립 및 PoC (ReadableStream+IncrementalHash)
-- [ ] F2. 병렬 청크 병합 프로토타입 작성 및 워크스페이스 업로더와 서비스 계층 검증
+- [x] ~~F1. Streaming SHA-256 클라이언트/서버 구현 계획 수립 및 PoC (ReadableStream+IncrementalHash).~~ (2025-09-29 Codex, chunk_hash_poc.ps1 + ChunkUploadPlan.md)
+- [x] ~~F2. 병렬 청크 병합 프로토타입 작성 및 워크스페이스 업로더와 서비스 계층 검증.~~ (2025-09-29 Codex, chunk_merge_poc.ps1 + ChunkUploadPlan.md)
 ## 수정 이력
 - 2025-09-25 Codex: SLA 대응 지침 및 문서 변경 기록 규칙 추가, F1/F2 세부 계획 반영.
 - 2025-09-25 Codex: F1/F2 PoC 진행 로그 및 Docker 미기동 이슈 기록.
 
 
 - 2025-09-26 Codex: package-offline/run-smoke 작업 완료, Runbook 및 Sprint 로그 업데이트.
+- 2025-09-29 Codex: A3 자동 알림 스크립트 추가 및 notify-deploy.ps1 소개.
