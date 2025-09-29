@@ -48,7 +48,12 @@
 - [ ] Sync with design team on updated hierarchy layouts and modal states; capture final UI kit components.
 - [ ] Review Siemens Teamcenter X UX patterns and capture reusable layout components (left nav, ribbon, preview panes).
 - [ ] Update Application Insights schema for new routing telemetry (search, upload, download).
+- [ ] Configure SMTP (dev/prod) credentials and document `.env.local` template.
+- [ ] Implement Magic Link email templates (HTML + text) and preview in Storybook.
+- [ ] Build email verification UI (register/verify pages) and session management flow.
 - [ ] Refresh Jira/ADO board with stories aligned to this document.
+- [ ] Schedule API/Design sync (2025-09-30) covering REST contracts, shared-drive mapping, design tokens; capture outcome in docs/api/logs/20250930.md.
+- [x] ~~Prepare decision log template with FR ID crosswalk before the sync and stage it in docs/api/pending/20250930_agenda.md.~~ (2025-09-29 Codex 준비 완료)
 - [ ] VS2022 Pro 라이선스 확보 후 CAM_API WPF 빌드 체인(g.cs 생성) 복구 — Owner: Codex.
 - [ ] 절대 지령 체크: CAM_API g.cs build chain 복구 계획을 VS2022 Pro 환경 기준으로 재정렬하고, 완료 전까지 Worker 회귀 테스트 착수 금지.
 - [ ] 절대 지령 체크: Worker 큐 회귀 테스트 계획서에 Apply→Ready 이벤트 및 라이선스 오류 리허설을 포함하고 로그 문서화 루프 설정.
@@ -105,10 +110,10 @@
 
 ## Phase 10 - Deployment and Operations
 - [ ] ~~Update CI pipeline to include new lint/test stages for routing modules.~~
-- [ ] Prepare Windows Server installer workflow and offline smoke verification checklist.
-- [ ] Configure blue/green deployment checklist specific to routing feature flags.
-- [ ] Document rollback procedure for shared-drive integration feature flag toggles.
-- [ ] Publish runbook covering folder-path troubleshooting and user support steps.
+- [ ] Prepare local PC deployment runbook (Node.js 20, pm2 optional) and smoke verification checklist.
+- [ ] Define git revert + pm2 restart rollback playbook for email-auth environment.
+- [ ] Document email verification failure handling and rollback procedure (token purge + resend).
+- [ ] Publish runbook covering local log paths, email queue 모니터링, 사용자 지원 절차.
 
 ## Phase 11 - Documentation and Training
 - [ ] Update user guide with screenshots of routing hierarchy, detail modal, and search filters.
@@ -130,3 +135,6 @@
 
 ---
 2025-09-26 Codex: Marked CI/GitHub Actions tasks as deprecated and added Windows Server installer workflow requirement.
+2025-09-29 Codex: 전환 정책에 따라 이메일 인증 + 로컬 PC 배포 계획으로 업데이트.
+
+

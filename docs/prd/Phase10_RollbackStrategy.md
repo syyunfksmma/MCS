@@ -3,29 +3,30 @@
 ## 1. 전략 비교
 | 전략 | 장점 | 단점 |
 |---|---|---|
-| Blue/Green | 무중단 전환, 빠른 롤백 | 서버 두 대 필요, 자원 비용 |
-| Canary | 부분 트래픽 검증 가능 | 라우팅/모니터링 복잡 |
-| Direct Rollback | 간단, 현재 인프라 유지 | 다운타임 가능성 |
+| Git Revert + npm restart | 실행이 단순, 추가 인프라 필요 없음 | 서비스 잠시 중단(수 초) |
+| pm2 graceful reload | 짧은 다운타임, 로그 유지 | pm2 프로세스 관리 필요 |
+| Backup 폴더 복원 | 파일 수준 복구 | 백업이 오래되면 데이터 차이 발생 |
 
-**결정**: 초기에는 Direct Rollback + Stage 검증, 장기적으로 Blue/Green 도입 검토
+**결정**: Git Revert + npm restart를 1차 롤백 수단으로 사용, pm2 graceful reload를 보조 전략으로 유지.
 
-## 2. 롤백 절차 (Direct)
-1. 배포 아티팩트 백업에서 이전 버전 복구
-2. `Stop-Service MCMS.NextPortal`
-3. 이전 버전 zip 재배포
-4. 서비스 재시작, Health Check
-5. 문제 원인 분석 후 재배포 계획 수립
+## 2. 롤백 절차 (Git Revert)
+1. `git status`로 배포 브랜치 확인 → `git log --oneline`으로 이전 커밋 체크.
+2. `git revert <deploy_commit_hash>` 실행 (또는 `git checkout <previous_tag>`).
+3. `npm run build` → `npm run start -- -p 4000` 재실행.
+4. `/healthz` 및 주요 화면 스모크 테스트.
+5. `logs/deploy/YYYYMMDD.log`에 롤백 시간/원인/결과 기록.
 
-## 3. Blue/Green 도입 계획
-- 요구 사항: 추가 서버(Secondary) 확보, Load Balancer 구성
-- 구현 단계: Pilot(사내 테스트) → Prod 적용
-- Phase 12(후속)에서 구체화 예정
+## 3. pm2 기반 롤백
+1. `npx pm2 stop mcms`.
+2. `robocopy backup/YYYYMMDD .next /MIR` 등으로 이전 빌드 복사.
+3. `npx pm2 start mcms` → `npx pm2 logs mcms`로 상태 확인.
 
-## 4. Canary 고려 사항
-- IIS ARR에서 트래픽 분할 가능 여부 검토
-- 모니터링 알람 세부 조정 필요
+## 4. 후속 조치
+- 장애 원인 분석 → Sprint6_Log.md에 회고 작성.
+- 이메일 인증 실패/SMTP 오류가 원인인 경우 SMTP 자격 증명 갱신.
+- 필요 시 `npm run test:regression` 재실행으로 회귀 검증.
 
 ## 5. TODO
-- Direct Rollback 스크립트 작성 (`rollback.ps1`)
-- Blue/Green 인프라 비용 견적 산출
-- Ops 팀과 시뮬레이션 일정 잡기
+- `scripts/deploy/rollback-local.ps1` 작성 (git revert + npm start 자동화).
+- pm2 프로세스 목록/로그 백업 스크립트 추가.
+- 롤백 훈련을 분기마다 1회 수행.
