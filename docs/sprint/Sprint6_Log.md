@@ -1,4 +1,6 @@
 # Sprint 6 Activity Log ? Deployment & Operations
+- 2025-09-29 12:12:55 Codex: Chunk Upload PoC 실행(sample_5mb) 및 meta_sla_history 갱신.
+- 2025-09-29 12:12:40 Codex: Sprint6 Monitoring TODOs 완료(Alert YAML, Promtail config, Dashboard JSON, Ops 템플릿 연결).
 - 2025-09-29 12:05:50 Codex: artifacts/offline/logs 용량 모니터링 스크립트(check-offline-logs.ps1) 작성, 6시간 주기 점검 계획 수립.
 - 2025-09-29 12:05:05 Codex: run-smoke.ps1 Stage/Prod 환경 매핑 검토(InternalStage=https://mcms-stage.internal, InternalProd=https://mcms.internal) 완료.
 - 2025-09-29 12:04:30 Codex: F1/F2 Chunk Upload 계획 수립 — chunk_hash_poc.ps1, chunk_merge_poc.ps1 스크립트 및 ChunkUploadPlan.md 작성.

@@ -1,0 +1,30 @@
+stage: benchmark
+jobs:
+  - job: RunOptimizedDataPath
+    displayName: Run Sprint12 Optimized Data Path Benchmark
+    pool:
+      vmImage: 'windows-latest'
+    steps:
+      - task: PowerShell@2
+        displayName: Restore & build
+        inputs:
+          targetType: filePath
+          filePath: scripts/build/restore.ps1
+      - task: PowerShell@2
+        displayName: Apply migrations
+        inputs:
+          targetType: filePath
+          filePath: scripts/db/apply-migrations.ps1
+      - task: PowerShell@2
+        displayName: Run benchmark
+        inputs:
+          targetType: filePath
+          filePath: scripts/tests/History-BatchInsert.ps1
+      - script: |
+          node scripts/performance/k6/chunk_upload_ab_test.js
+        displayName: Run k6 benchmark
+      - task: PublishBuildArtifacts@1
+        displayName: Publish Benchmark Results
+        inputs:
+          PathtoPublish: docs/testing/BenchmarkResults
+          ArtifactName: PerfResults

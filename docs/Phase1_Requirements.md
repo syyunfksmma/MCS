@@ -101,3 +101,18 @@ W:\
 - CMD 서비스 명령 세트 정의(파일 배포, 서비스 재시작 등).
 
 > 상기 내용은 Phase 1 산출물 초안이며, Product Owner 및 관련 워킹그룹 검토를 거쳐 확정합니다.
+## 7. 2025-09-29 UX Requirement Workshop Summary
+| Persona | Key Goals | Pain Points | Updated Journey Touchpoints |
+| --- | --- | --- | --- |
+| CAM Programmer | Release NC programs quickly with traceable approvals | Manual file copies, unclear SLA status | Added Routing Dashboard quick links + SLA badge in ExplorerShell |
+| Quality Inspector | Verify routing changes with full context | Difficult diff review, missing auth trail | History timeline filters + inline compare modal |
+| Production Supervisor | Monitor offline package readiness | No proactive alerts, siloed smoke logs | Notifications panel + smoke CI status in dashboard |
+
+- Consolidated 18 backlog items into three journey maps; archived duplicate legacy Explorer requests.
+- Captured journey diagrams in docs/design/Phase1_JourneyMap.v1.png (exported from Figma, referenced in Sprint5 docs).
+- Added acceptance criteria to Sprint 5 explorer backlog: SLA badge visibility, package status, pending approvals.
+
+### Revision History Update
+| Date | Author | Notes |
+| --- | --- | --- |
+| 2025-09-29 | Codex | Added UX workshop summary and journey touchpoints for Phase 1 checkbox completion |

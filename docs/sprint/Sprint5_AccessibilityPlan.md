@@ -21,7 +21,7 @@ pm run perf:lighthouse 스크립트에 접근성 점수 임계치(≥90) 검증�
 ## 3. 작업 항목
 - [x] Playwright 접근성 스펙 추가 및 실행 스크립트 작성
 - [x] package.json에 	est:axe 스크립트 등록
-- [ ] UAT 전 접근성 수동 체크리스트(Jira-XXX) 업데이트 (QA 담당자 배정 필요)
+- [x] UAT 전 접근성 수동 체크리스트(Jira-XXX) 업데이트 (QA 담당자 배정 완료, docs/accessibility/UAT_Manual_Checklist.md)
 
 ## 4. 산출물 위치
 - 접근성 테스트 코드: web/mcs-portal/tests/e2e/accessibility/*
