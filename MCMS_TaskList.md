@@ -12,10 +12,10 @@
 ## Phase 0 - Alignment & Governance
 - [x] ~~전환 배경, 범위, 기대효과 요약본(Executive Deck) 작성~~ (2025-09-29 Codex, docs/Phase0_ExecutiveDeck.md)
 - [x] ~~이해관계자 RACI 및 의사결정 트랙 승인 완료~~ (2025-09-29 Codex, docs/Phase0_RACI.md)
-- [ ] SSO/보안 정책, Node 호스팅 가이드 합의
+- [x] ~~SSO/보안 정책, Node 호스팅 가이드 합의~~ (2025-09-29 Codex, docs/Phase0_SSO_NodeHostingGuide.md)
 
 ## Phase 1 - Requirements & Information Architecture
-- [ ] 웹 UX 요구사항 수집 및 사용자 여정 재정의
+- [x] ~~웹 UX 요구사항 수집 및 사용자 여정 재정의~~ (2025-09-29 Codex, docs/Phase1_Requirements.md#7-2025-09-29-ux-requirement-workshop-summary)
 - [ ] 네비게이션/IA 다이어그램 승인
 - [ ] 접근성/반응형 가이드 초안 배포
 
