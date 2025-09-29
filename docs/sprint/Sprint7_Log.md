@@ -1,4 +1,5 @@
 # Sprint 7 Activity Log — Documentation & Training
+- 2025-09-29 12:06:30 Codex: LogPipeline TODO( Promtail config ) 완료 및 Loki 파이프라인 준비.
 - 2025-09-29 12:02:20 Codex: E1~E3 Explorer UX 구현(SearchFilterRail, ExplorerRibbon, Quick Menu) 완료.
 - 2025-09-29 12:04:30 Codex: F1~F3 Chunk Upload Phase2 계획 및 스크립트(chunks A/B, SSD warm-up, Streaming SHA) 작성.
 - 2025-09-29 12:05:55 Codex: D1 Sprint7_Log 최신화 및 Timeline 동기화.

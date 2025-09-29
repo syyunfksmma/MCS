@@ -1,0 +1,46 @@
+server:
+  http_listen_port: 9080
+  grpc_listen_port: 0
+
+positions:
+  filename: /var/log/promtail-positions.yaml
+
+clients:
+  - url: http://loki.internal:3100/loki/api/v1/push
+
+scrape_configs:
+  - job_name: mcms-app
+    static_configs:
+      - targets: [localhost]
+        labels:
+          job: mcms-portal
+          env: internal
+          __path__: "${LOG_PATH:-logs/app}/*.log"
+  - job_name: mcms-notify
+    static_configs:
+      - targets: [localhost]
+        labels:
+          job: mcms-notify
+          env: internal
+          __path__: "logs/deploy/notifications/*.jsonl"
+  - job_name: mcms-smoke
+    pipeline_stages:
+      - multiline:
+          firstline: '^[0-9]{4}-'
+          max_lines: 20
+      - regex:
+          expression: '^(?P<timestamp>[^ ]+) \[(?P<level>[^]]+)\] (?P<message>.*)$'
+      - labels:
+          level:
+      - metrics:
+          mcms_smoke_failure_total:
+            type: Counter
+            description: Smoke failure counter
+            match_all: true
+            action: inc
+    static_configs:
+      - targets: [localhost]
+        labels:
+          job: mcms-smoke
+          env: internal
+          __path__: "artifacts/offline/logs/smoke_*.log"

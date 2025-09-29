@@ -57,7 +57,7 @@
 5. Alertmanager `amtool` 로 샘플 경보 firing 여부 테스트 → notify/ops 채널에 로그 기록.
 
 ## 7. TODO
-- [ ] `monitoring/promtail/config.mcms.yaml` 실파일 작성 및 repo 커밋.
+- [x] `monitoring/promtail/config.mcms.yaml` 실파일 작성 및 repo 커밋.
 - [ ] Telegraf 구성(`monitoring/telegraf/web-vitals.conf`) 초안화.
 - [ ] Loki 보존 설정(14일) 인프라팀 동의 확보.
 - [ ] C3 완료 후 Ops 템플릿(D2)에 로그 조회 절차 추가.
