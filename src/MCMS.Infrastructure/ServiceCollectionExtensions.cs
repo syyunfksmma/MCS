@@ -1,3 +1,4 @@
+using EntityFrameworkCore.Jet;
 using MCMS.Core.Abstractions;
 using MCMS.Infrastructure.FileStorage;
 using MCMS.Infrastructure.Integrations;
@@ -21,8 +22,17 @@ public static class ServiceCollectionExtensions
         services.AddDbContext<McmsDbContext>(options =>
         {
             var connectionString = configuration.GetConnectionString("McmsDatabase")
-                ?? throw new InvalidOperationException("McmsDatabase ?? ???? ?? ? ????.");
-            options.UseSqlServer(connectionString);
+                ?? throw new InvalidOperationException("McmsDatabase 연결 문자열이 구성되지 않았습니다.");
+
+            var provider = configuration["DatabaseProvider"]?.ToLowerInvariant();
+            if (provider == "access")
+            {
+                options.UseJet(connectionString);
+            }
+            else
+            {
+                options.UseSqlServer(connectionString);
+            }
         });
 
         services.AddScoped<IItemService, ItemService>();
