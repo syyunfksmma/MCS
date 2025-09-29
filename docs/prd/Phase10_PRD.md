@@ -1,6 +1,16 @@
-# Phase 10 PRD - Deployment & Operations\n\n## 초점 영역\n- IIS+Node 배포 스크립트
-- 롤백 전략 수립
-- 모니터링/알람 대시보드
-\n## 산출물\n- 배포 Runbook
-- 모니터링 대시보드 캡처
-\n## 주요 위험\n- Node 재시작 자동화 실패
+# Phase 10 PRD - Deployment & Operations
+
+## 초점 영역
+- 로컬 PC(Node.js) 배포 스크립트/Runbook 정리
+- Magic Link 이메일 인증 운영 플로우 확정
+- 모니터링·알람·로그 아카이브 체계 구축
+
+## 산출물
+- 명령형 Runbook + pm2/Scheduled Task 설정 가이드
+- 롤백 절차 문서 및 체크리스트
+- 모니터링/알람 대시보드 스냅샷 및 로그 경로 표
+
+## 주요 위험
+- 로컬 PC 오프라인 시 서비스 중단
+- 이메일 발송 한도 초과 → 인증 실패
+- 로그 미정리로 장애 시점 파악 지연

@@ -15,7 +15,7 @@
 - Code Split & Dynamic Import (Explorer/Workspace)
 - 이미지 최적화: next/image, AVIF 지원, 캐시 헤더
 - 캐싱: React Query staleTime 조정, Edge Cache(Phase 10 검토)
-- 서버 튜닝: Node heap/CPU 모니터링, IIS Compression 설정
+- 서버 튜닝: Node heap/CPU 모니터링, pm2 로그/리소스 모니터링, gzip 압축(`next.config.js`) 설정
 
 ## 3. 실측 시나리오
 - 가장 깊은 라우팅 탐색(100 단계)

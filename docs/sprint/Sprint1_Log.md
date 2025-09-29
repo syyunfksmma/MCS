@@ -72,3 +72,7 @@
 
 - 2025-09-22 00:41 UTC Codex — Sprint3~7 TaskList & Log 템플릿 생성. 절대 지령 반영 완료.
 - 2025-09-26 Codex: GitHub Actions CI workflow retired; internal install builder introduced.
+## 2025-09-29 Codex
+- Add-in 상태 배지·히스토리 더미 UI 구성(AddinHistoryPanel)을 ExplorerShell에 연결하고 상태 타임라인/이벤트 리스트를 Mock 데이터로 노출.
+- 라우팅 선택 여부에 따른 배지 툴팁을 검증하고, SignalR 연동 전까지 HTTP-only 환경에서 표시되는 안내 문구를 추가.
+- 스크린샷: (추가 예정) explorer_addin_history_20250929.png — src/components/explorer/AddinHistoryPanel.tsx 기준 렌더링 확인.

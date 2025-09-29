@@ -3,57 +3,51 @@
 ## 1. 물리 구성
 | 구성 | 설명 |
 |---|---|
-| Web Frontend Server | Windows Server 2019, IIS + ARR, Node.js 20, Next.js 서비스 |
-| API Server | 기존 MCMS API IIS 서버 (변경 없음) |
-| Worker Server | 기존 MCMS Workers Windows Service |
-| DB/File | SQL Server, W:\ 공유 드라이브 |
+| MCMS Portal (로컬) | Windows 11 Pro PC, Node.js 20, Next.js SSR 서비스 |
+| MCMS API | 기존 MCMS .NET API (변경 없음) |
+| Worker | 기존 MCMS Worker 서비스 |
+| DB/File | SQL Server, 공유 드라이브 |
 
-## 2. 배포 방식
-- Next.js 빌드: `npm ci` → `npm run lint` → `npm run build`
-- 아티팩트: `.next`, `package.json` 등 압축 → 서버로 복사
-- 서버 측 배포 스크립트: PowerShell + PM2 또는 NSSM
-  - `Stop-Service MCMS.NextPortal`
-  - 파일 교체
-  - `Start-Service MCMS.NextPortal`
-- Health Check: `/healthz` (Next.js custom API Route), 30초 간격 모니터링
+## 2. 배포 방식 (로컬)
+1. `git pull` → `npm install`
+2. `npm run build`
+3. `npm run start -- -p 4000`
+4. pm2 사용 시 `npx pm2 start npm --name mcms -- run start -- -p 4000`
+5. `/healthz` 호출로 상태 확인 후 로그 기록
 
-## 3. IIS Reverse Proxy 설정
-- Hostname: `https://portal.mcms.local`
-- Rewrite Rule: HTTPS → `http://localhost:3100`
-- ARR Sticky Session 비활성
-- Compression: Response Compression 활성
-- Request Filtering: 업로드 최대 4GB (청크 업로드 시 API로 전환)
+## 3. 네트워크/포트 정책
+- 로컬 PC 방화벽에서 4000 포트 허용, 외부 포트 포워딩 금지
+- 이메일 인증 링크는 `http://<로컬IP>:4000` 또는 ngrok(임시) 사용
+- 향후 HTTPS 필요 시 mkcert 등으로 로컬 인증서 발급 검토
 
 ## 4. 프로세스 관리 옵션
-| 옵션 | 장점 | 단점 | 후보 |
-|---|---|---|---|
-| NSSM Windows Service | 단순, 기존 Ops 팀 친숙 | 로그 관리 수동 | **우선 고려** |
-| PM2 Windows Service | 재시작/클러스터/로깅 지원 | Windows 환경 추가 설정 필요 | 후보 |
-| Node Windows Service (custom) | 자유도 높음 | 유지보수 부담 | 비추천 |
+| 옵션 | 장점 | 단점 |
+|---|---|---|
+| pm2 | 재시작/로깅 통합, 윈도우 지원 | 설치/학습 필요 |
+| PowerShell 스크립트 | 단순, 기본 제공 | 자동 재기동 미지원 |
+| 작업 스케줄러 | 부팅 시 자동 시작 | 로그 관리 별도 필요 |
 
 ## 5. 모니터링/로깅
-- 프로세스 상태: Windows Service Manager + Prometheus Exporter
-- 애플리케이션 로그: winston → JSON → Logstash/ELK
-- Metrics: Next.js SSR 응답시간, Cache Hit, SignalR 연결 수
-- Alerts: 응답시간 2초↑, Error Rate 5%↑, Health Check 실패 연속 3회
+- 애플리케이션 로그: `logs/app/server.log`
+- 인증 로그: `logs/auth/YYYYMMDD.log`
+- 배포 로그: `logs/deploy/YYYYMMDD.log`
+- 필수 알람: 서버 다운, 이메일 발송 실패, 업로드 오류
 
 ## 6. 백업/복구 전략
-- ~~코드 아티팩트: Artifactory/ 내부 저장소에 버전 관리~~
-- 코드 아티팩트: 공유 드라이브(\\MCMS_SHARE\\packages) 및 오프라인 디스크에 버전 관리
-- ~~구성 파일(.env): Azure Key Vault 또는 사내 비밀 저장소~~
-- 구성 파일(.env): Windows Credential Manager + 암호화된 로컬 파일(Protect-CmsMessage)
-- 재배포: 이전 버전 아티팩트 롤백 스크립트 제공
-- 재해 복구: Secondary 서버에 동일 환경 standby, DNS 전환 준비
+- 빌드 아티팩트 백업: `backup/YYYYMMDD/.next`
+- `.env.local` 암호화 백업: `Protect-CmsMessage` 활용
+- 롤백: git revert + npm run start 절차 준수
+- 주간 전체 백업(프로젝트 폴더) 외장 디스크에 보관
 
 ## 7. 보안/접근 권한
-- 서버 접근: Infra 팀 전용 Jump Box, MFA 필수
-- 서비스 계정: Node 서비스 실행용 도메인 계정 (읽기 전용)
-- HTTPS 인증서: 사내 CA에서 발급, Auto-renew 스크립트
-- 로그 접근: Ops 팀 전용, 개인정보 마스킹 적용
+- 로컬 PC 관리자 계정으로만 서비스 실행
+- SMTP 계정 비밀번호는 암호화 파일 + 2FA 지원 메일 서비스 사용
+- 로그에 이메일/토큰 등 민감 정보 마스킹
 
-## 8. 운영 Runbook To-do
-- Next.js 서비스 재시작 절차 상세화
-- 로그 위치/로테이션 방법 문서화
-- Capacity Plan (동시 사용자 증가 시 scale-up 전략)
+## 8. 운영 Runbook TODO
+- `npm run start`/`pm2 restart` 절차 체크리스트 업데이트
+- 로그 로테이션 PowerShell 스크립트 작성
+- 이메일 발송 실패 시 재시도 정책 문서화
+
 ---
-2025-09-26 Codex: Hosting 문서를 내부망 설치형 배포/비밀 관리 방식으로 수정.
+2025-09-29 Codex: 로컬 PC(Node.js 20) 기반 Hosting 설계로 전환 및 이메일 인증 운영 시나리오 반영.

@@ -51,7 +51,7 @@ installers
 - `logs/changes/` : 공유 드라이브 구조 변경/승인 문서 저장.
 
 ## 4. config
-- `config/iis/<hostname>/` : IIS 사이트 백업(압축), `applicationHost.config`, web.config 스냅샷.
+- `config/server/<hostname>/` : Node.js 서버 환경 변수 백업(.env), pm2 설정, 로그 스냅샷.
 - `config/spn/` : SPN 등록 스크립트(`Register-SPN.ps1`), 검증 결과(`klist.txt`).
 - `config/permissions/` : AD 그룹 ↔ MCMS 역할 매핑 문서 (`RoleMapping.xlsx`), 보안 검증 체크리스트.
 - `config/certs/` : 사내 CA 인증서(.pfx, .cer)와 암호화된 암호 파일. 접근 권한은 보안팀 전용.

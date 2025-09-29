@@ -7,7 +7,6 @@ import {
   Typography,
   Spin,
   Alert,
-  Timeline,
   Input,
   List,
   Space,
@@ -20,7 +19,7 @@ import RoutingCreationWizard, {
   type RoutingCreationInput
 } from '@/components/explorer/RoutingCreationWizard';
 import WorkspaceUploadPanel from '@/components/workspace/WorkspaceUploadPanel';
-import AddinBadge from './AddinBadge';
+import AddinHistoryPanel from './AddinHistoryPanel';
 import { useExplorerData } from '@/hooks/useExplorerData';
 import { useRoutingSearch } from '@/hooks/useRoutingSearch';
 import type {
@@ -575,16 +574,11 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
             <WorkspaceUploadPanel routing={selectedRouting} />
           </Card>
           <Card title="Add-in 상태" bordered>
-            <div className="flex items-center gap-4">
-              <AddinBadge status={addinBadgeStatus} message={addinBadgeMessage} />
-              <Text type="secondary">SignalR 연동 시 실시간 업데이트 예정</Text>
-            </div>
-            <Timeline className="mt-4">
-              <Timeline.Item color="blue">
-                Mock: Add-in 큐 등록 (10:00)
-              </Timeline.Item>
-              <Timeline.Item color="green">Mock: 실행 완료 (10:02)</Timeline.Item>
-            </Timeline>
+            <AddinHistoryPanel
+              status={addinBadgeStatus}
+              message={addinBadgeMessage}
+              routingCode={selectedRouting?.code}
+            />
           </Card>
         </div>
       </div>
