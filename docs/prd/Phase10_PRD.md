@@ -1,4 +1,5 @@
 # Phase 10 PRD - Deployment & Operations
+<<<<<<< Updated upstream
 > ~~이전 버전: Windows 인증/IIS 기반 구성~~
 
 ## 초점 영역
@@ -16,3 +17,17 @@
 - 로컬 PC 오프라인 시 서비스 중단
 - 이메일 발송 한도 초과 → 인증 실패
 - 로그 미정리로 장애 시점 파악 지연
+=======
+
+## 초점 영역
+- IIS Reverse Proxy + Node 서비스 배포 스크립트
+- 롤백 전략(Blue/Green 또는 Canary)
+- 모니터링(Grafana/Prometheus) 대시보드 업데이트
+
+## 산출물
+- 배포 Runbook
+- 모니터링 대시보드 스냅샷
+
+## 주요 위험
+- Node 서비스 재기동 자동화 실패
+>>>>>>> Stashed changes

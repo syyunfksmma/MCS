@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 # Phase 2 PRD - Hosting & Architecture
 > ~~이전 버전: Windows 인증/IIS 기반 구성~~
 
@@ -16,3 +17,20 @@
 - 이메일 발송 실패 시 인증 차질
 - 로컬 PC 리소스 부족으로 성능 저하
 - SMTP 자격 증명 유출 위험
+=======
+# Phase 2 PRD - Architecture & Hosting
+
+## 초점 영역
+- Next.js SSR/ISR 구조, BFF/API Gateway 설계
+- IIS Reverse Proxy와 Node Service 구성도 정의
+- CI/CD 파이프라인(빌드, Lint, Test) 설계
+
+## 산출물
+- Web Architecture Diagram
+- Hosting Runbook (IIS + Node)
+- CI/CD 파이프라인 설계서
+
+## 주요 위험
+- SSR 서버 장애 대응 미정
+- NPM 저장소 미러 구성 필요
+>>>>>>> Stashed changes

@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 # MCMS Routing Frontend Task List (Next.js)
 
 ## 절대 지령
@@ -139,3 +140,75 @@
 
 
 - 2025-09-29 Codex: SMTP 기반 계획 대신 로컬 이메일 수동 승인 플로우로 변경, 관련 Task/Runbook을 업데이트.
+=======
+# MCMS Web Portal Execution Task List (Next.js Transition)
+
+# 절대 조건
+- 각 단계는 사용자 승인 후에만 착수한다.
+- 단계 착수 전 Phase별 PRD를 재확인하고 범위/위험을 명시한다.
+- 선행 단계 산출물에 오류가 있으면 즉시 보고하고 재승인을 득한다.
+- 진행 중 변경 사항은 모두 문서화하고 체크리스트를 갱신한다.
+- 문서, 코드, 배포 로그 등 모든 산출물은 사내 저장소에 보관한다.
+
+> Approval required before starting each phase.
+
+## Phase 0 - Alignment & Governance
+- [ ] 전환 배경 및 기대효과 Executive Deck 작성
+- [ ] 이해관계자 RACI, 의사결정 플로우 승인
+- [ ] SSO/보안 정책, Node 호스팅 가이드 합의
+
+## Phase 1 - Requirements & Information Architecture
+- [ ] 사용자 여정 및 UX 요구사항 재정의
+- [ ] IA/내비게이션 다이어그램 승인
+- [ ] 접근성·반응형 가이드 초안 배포
+
+## Phase 2 - Architecture & Hosting
+- [ ] Next.js + .NET 통합 아키텍처 다이어그램 확정
+- [ ] IIS Reverse Proxy + Node 서비스 운영 설계 승인
+- [ ] CI/CD 파이프라인 설계 문서 리뷰 통과
+
+## Phase 3 - Design System & UI Kit
+- [ ] 디자인 토큰 JSON/TS 모듈 작성
+- [ ] 핵심 컴포넌트(Button/Table/Modal/Badge) 스캐폴딩
+- [ ] Figma → 코드 매핑 가이드 배포
+
+## Phase 4 - API Contracts & Integrations
+- [ ] REST API 소비 가이드(Next.js 관점) 업데이트
+- [ ] SignalR/SSE 이벤트 규격 문서화
+- [ ] 대용량 파일 업·다운로드 정책 확정
+
+## Phase 5 - Sprint 1 (Explorer & History)
+- [ ] Item/Revision/Routing SSR 페이지 구현
+- [ ] React Query 캐싱/Prefetch 전략 적용
+- [ ] Add-in 배지 & 히스토리 뷰 UI 완료
+
+## Phase 6 - Sprint 2 (Workspace & Workflow)
+- [ ] Routing Workspace Drag & Drop 기능 구현
+- [ ] Add-in Control Panel(큐 모니터링/재시도) 제공
+- [ ] 승인/반려 코멘트 플로우 통합 테스트
+
+## Phase 7 - Admin & Settings
+- [ ] API 키·파라미터, AD 롤 매핑 UI 구축
+- [ ] 감사 로그/모니터링 뷰 구현
+- [ ] Feature Flag/환경변수 관리 화면 배포
+
+## Phase 8 - Performance & Reliability
+- [ ] Lighthouse/Web Vitals 측정 및 개선 플랜 수립
+- [ ] SSR 서버 부하·회복 테스트 수행
+- [ ] 예외/네트워크 장애 대응 UX 설계
+
+## Phase 9 - QA & UAT
+- [ ] E2E 테스트 스위트(Cypress/Playwright) 작성 및 실행
+- [ ] UAT 시나리오 수행 및 피드백 반영 계획 수립
+- [ ] 접근성/보안/브라우저 호환성 검증 완료
+
+## Phase 10 - Deployment & Operations
+- [ ] IIS + Node 배포 스크립트/Runbook 작성
+- [ ] 롤백 전략(Blue/Green 또는 Canary) 문서화
+- [ ] 모니터링/알람 대시보드 개편 및 검증
+
+## Phase 11 - Documentation & Training
+- [ ] 사용자/운영 매뉴얼 업데이트 (웹 기준)
+- [ ] 교육 자료(동영상, 가이드) 제작 및 세션 진행
+- [ ] 전환 결과 보고 및 후속 개선 로드맵 수립
+>>>>>>> Stashed changes
