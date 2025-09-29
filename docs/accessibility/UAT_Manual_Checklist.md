@@ -6,3 +6,5 @@
 4. Error messaging ensures `role=alert` and aria-describedby links.
 
 *Updated 2025-09-29 12:13 KST by Codex*
+5. Browser-specific fallback: Firefox drag/drop fallback documented (A12).
+6. Ribbon quick menu tooltip verified with keyboard (A13).

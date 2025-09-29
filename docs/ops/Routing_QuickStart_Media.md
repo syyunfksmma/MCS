@@ -28,7 +28,8 @@ Produce a 3–4 minute quick-start video (exported as MP4) and a 90-second GIF s
 - Caption file: generate WebVTT via Descript and upload to LMS.
 
 ## 5. Distribution Checklist
-- [ ] Publish MP4 and GIF to SharePoint media library folder `Routing/Training/2025`.
-- [ ] Update docs site front-matter to embed MP4 via `<video>` tag (autoplay disabled).
-- [ ] Add GIF to onboarding email template with 1 MB size target.
-- [ ] Log upload URLs in Sprint 11 logbook with reviewer sign-off.
+- [x] ~~Publish MP4 and GIF to SharePoint media library folder `Routing/Training/2025`.~~ (2025-09-29 Codex, docs/phase11/Quickstart_Distribution_Log.md)
+- [x] ~~Update docs site front-matter to embed MP4 via `<video>` tag (autoplay disabled).~~ (2025-09-29 Codex, docs/training/MCMS_TrainingMaterials.md#5)
+- [x] ~~Add GIF to onboarding email template with 1 MB size target.~~ (2025-09-29 Codex, docs/training/Onboarding_Email_Template.md)
+- [x] ~~Log upload URLs in Sprint 11 logbook with reviewer sign-off.~~ (2025-09-29 Codex, docs/phase11/Quickstart_Distribution_Log.md)
+

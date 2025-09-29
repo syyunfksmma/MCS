@@ -85,3 +85,13 @@ installers
 
 ---
 2025-09-26 Codex: 오프라인 배포 및 Windows 통합 인증 운영을 위한 공유 드라이브 레이아웃 최초 정의.
+
+## 6. Environment Mapping
+| Environment | Root Path | Notes |
+| --- | --- | --- |
+| DEV | \\DEV-MCMS\share | Sandbox; read/write for MCMS-Dev group |
+| STAGE | \\STAGE-MCMS\share | Mirrors production layout; write restricted to Ops |
+| PROD | \\MCMS_SHARE | Production authoritative store; access logged via audit scripts |
+
+- 각 환경은 `config/env/<env>-mapping.json`에 루트 경로와 권한 정보를 명시한다.
+- Stage/Prod 전환 시 `register-package-offline.ps1`가 해당 매핑을 읽어 대상 경로에 복사한다.

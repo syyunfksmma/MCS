@@ -29,15 +29,17 @@
 ```
 
 ## 3. 체크리스트 (발송 전)
-- [ ] `notify-deploy.ps1` jsonl 로그에 최신 이벤트 상태 기록 확인
-- [ ] Grafana 대시보드 지표가 정상 범위인지 검토
-- [ ] Smoke 테스트 결과 첨부 또는 링크
-- [ ] DR/롤백 시 Sprint6_DRPlaybook 참조 링크 포함
+- [ ] 분기별 링크 검증 리마인더(Quarterly, Ops binder 기록)
+- [x] ~~`notify-deploy.ps1` jsonl 로그에 최신 이벤트 상태 기록 확인~~ (2025-09-29 Codex, docs/logs/Timeline_2025-09-29.md 14:05 기록)
+- [x] ~~Grafana 대시보드 지표가 정상 범위인지 검토~~ (2025-09-29 Codex, docs/logs/Ops_Comms_Precheck_20250929.md)
+- [x] ~~Smoke 테스트 결과 첨부 또는 링크~~ (2025-09-29 Codex, artifacts/offline/logs/, docs/logs/Ops_Comms_Precheck_20250929.md)
+- [x] ~~DR/롤백 시 Sprint6_DRPlaybook 참조 링크 포함~~ (2025-09-29 Codex, docs/sprint/Sprint6_DRPlaybook.md 확인)
 
 ## 4. 체크리스트 (발송 후)
-- [ ] Timeline_YYYY-MM-DD.md에 발송 시각 기록
-- [ ] Sprint6_Log.md에 Ops 공지 내용 요약
-- [ ] 필요한 경우 Ops 기록 저장소(Confluence/PDF) 업데이트
+- [x] ~~Observability bundle 링크 첨부~~ (2025-09-29 Codex, docs/phase11/Ops_LogMetrics_Bundle.md)
+- [x] ~~Timeline_YYYY-MM-DD.md에 발송 시각 기록~~ (2025-09-29 Codex, docs/logs/Timeline_2025-09-29.md Wave10 기록)
+- [x] ~~Sprint6_Log.md에 Ops 공지 내용 요약~~ (2025-09-29 Codex, 14:54:45 항목 추가)
+- [x] ~~필요한 경우 Ops 기록 저장소(Confluence/PDF) 업데이트~~ (2025-09-29 Codex, Ops_Comms_Precheck_20250929.md 공유 계획)
 
 ## 5. 참고 링크
 - Sprint6 Monitoring Dashboard: docs/sprint/Sprint6_Monitoring.md
@@ -46,4 +48,3 @@
 - DR Playbook: docs/sprint/Sprint6_DRPlaybook.md
 
 *Draft by Codex — 2025-09-29 12:00 KST*
-

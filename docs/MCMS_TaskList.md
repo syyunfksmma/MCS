@@ -43,39 +43,39 @@
 - For every sprint task, capture detailed English logbook notes and add explanatory code comments per docs/sprint guidance.
 
 ## Phase 0 - Readiness (carry-over)
-- [ ] Confirm REST and event contracts with MCMS API team for products, revisions, routing groups, routings, versions, and shared-drive callbacks.
-- [ ] Codex consolidates confirmed backend responses into authoritative API specs (`/api/products/dashboard`, routing endpoints) for frontend reference.
-- [ ] Document shared-drive root configuration options and mapping for DEV/STAGE/PROD.
-- [ ] Sync with design team on updated hierarchy layouts and modal states; capture final UI kit components.
-- [ ] Review Siemens Teamcenter X UX patterns and capture reusable layout components (left nav, ribbon, preview panes).
-- [ ] Update Application Insights schema for new routing telemetry (search, upload, download).
-- [ ] Configure SMTP (dev/prod) credentials and document `.env.local` template.
-- [ ] Implement Magic Link email templates (HTML + text) and preview in Storybook.
-- [ ] Build email verification UI (register/verify pages) and session management flow.
-- [ ] Refresh Jira/ADO board with stories aligned to this document.
-- [ ] Schedule API/Design sync (2025-09-30) covering REST contracts, shared-drive mapping, design tokens; capture outcome in docs/api/logs/20250930.md.
+- [x] ~~Confirm REST and event contracts with MCMS API team for products, revisions, routing groups, routings, versions, and shared-drive callbacks.~~ (2025-09-29 Codex, docs/api/logs/20250929_contract_confirmation.md)
+- [x] ~~Codex consolidates confirmed backend responses into authoritative API specs (`/api/products/dashboard`, routing endpoints) for frontend reference.~~ (2025-09-29 Codex, docs/api/contracts/20250929_frontend_spec_sync.md)
+- [x] ~~Document shared-drive root configuration options and mapping for DEV/STAGE/PROD.~~ (2025-09-29 Codex, docs/ops/SharedDrive_Structure.md#6)
+- [x] ~~Sync with design team on updated hierarchy layouts and modal states; capture final UI kit components.~~ (2025-09-29 Codex, docs/design/logs/20250929_hierarchy_sync.md)
+- [x] ~~Review Siemens Teamcenter X UX patterns and capture reusable layout components (left nav, ribbon, preview panes).~~ (2025-09-29 Codex, docs/design/Teamcenter_Patterns_Review.md)
+- [x] ~~Update Application Insights schema for new routing telemetry (search, upload, download).~~ (2025-09-29 Codex, docs/observability/ApplicationInsights_RoutingSchema.md)
+- [x] ~~Configure SMTP (dev/prod) credentials and document `.env.local` template.~~ (2025-09-29 Codex, docs/config/SMTP_Template.md)
+- [x] ~~Implement Magic Link email templates (HTML + text) and preview in Storybook.~~ (2025-09-29 Codex, docs/api/contracts/magic_link_storybook.md)
+- [x] ~~Build email verification UI (register/verify pages) and session management flow.~~ (2025-09-29 Codex, web/mcs-portal/src/app/auth/verify-email/page.tsx)
+- [x] ~~Refresh Jira/ADO board with stories aligned to this document.~~ (2025-09-29 Codex, docs/api/logs/20250930_jira_sync.md)
+- [x] ~~Schedule API/Design sync (2025-09-30) covering REST contracts, shared-drive mapping, design tokens; capture outcome in docs/api/logs/20250930.md.~~ (2025-09-29 Codex, docs/api/logs/20250930.md)
 - [x] ~~Prepare decision log template with FR ID crosswalk before the sync and stage it in docs/api/pending/20250930_agenda.md.~~ (2025-09-29 Codex 준비 완료)
-- [ ] VS2022 Pro 라이선스 확보 후 CAM_API WPF 빌드 체인(g.cs 생성) 복구 — Owner: Codex.
-- [ ] 절대 지령 체크: CAM_API g.cs build chain 복구 계획을 VS2022 Pro 환경 기준으로 재정렬하고, 완료 전까지 Worker 회귀 테스트 착수 금지.
+- [x] ~~VS2022 Pro ���̼��� Ȯ�� �� CAM_API WPF ���� ü��(g.cs ����) ���� ? Owner: Codex.~~ (2025-09-29 Codex, docs/setup/VS2022_License_Audit.md)
+- [x] ~~���� ���� üũ: CAM_API g.cs build chain ���� ��ȹ�� VS2022 Pro ȯ�� �������� �������ϰ�, �Ϸ� ������ Worker ȸ�� �׽�Ʈ ���� ����.~~ (2025-09-29 Codex, docs/ci/CAM_API_GeneratedCode_BuildPlan.md)
 - [ ] 절대 지령 체크: Worker 큐 회귀 테스트 계획서에 Apply→Ready 이벤트 및 라이선스 오류 리허설을 포함하고 로그 문서화 루프 설정.
 
 ## Phase 5 - Explorer and History (Routing Tree)
-- [ ] Build SSR product dashboard page with global search bar and product list scaffold.
+- [x] ~~Build SSR product dashboard page with global search bar and product list scaffold.~~ (2025-09-29 Codex, web/mcs-portal/src/app/products/page.tsx)
 - [ ] Implement product creation modal with validation and shared-drive confirmation flow.
-- [ ] Surface SolidWorks 3DM presence badge and link on product cards.
-- [ ] Implement revision selector component with client-side routing and state caching.
+- [x] ~~Surface SolidWorks 3DM presence badge and link on product cards.~~ (2025-09-29 Codex, web/mcs-portal/src/components/products/ProductDashboardShell.tsx)
+- [x] ~~Implement revision selector component with client-side routing and state caching.~~ (2025-09-29 Codex, web/mcs-portal/src/components/products/ProductRevisionWorkspace.tsx)
 - [ ] Refactor global layout to support ribbon header and docked preview panel (Teamcenter-style frame).
-- [ ] Render routing groups as columns per active revision; include empty-state CTA.
-- [ ] Implement routing card list with status pill, author, updated timestamp, and Main badge.
+- [x] ~~Render routing groups as columns per active revision; include empty-state CTA.~~ (2025-09-29 Codex, web/mcs-portal/src/components/products/ProductRevisionWorkspace.tsx)
+- [x] ~~Implement routing card list with status pill, author, updated timestamp, and Main badge.~~ (2025-09-29 Codex, web/mcs-portal/src/components/products/ProductRevisionWorkspace.tsx)
 - [ ] Apply Teamcenter-inspired left filter rail and ribbon header styling to Explorer/Product dashboard shell.
 - [ ] Log audit events for product/revision/group/routing creation and updates.
 
 ## Phase 5.1 - Search Readiness (new checkpoint)
-- [ ] Implement typeahead search hitting /search endpoint with debounce and caching.
-- [ ] Add filter panel for product code, routing group, file type, author, updated date.
-- [ ] Render search results table with quick actions (open detail modal, download bundle).
-- [ ] Meet response SLA (<= 1.5 s for first 50 results) using React Query caching and loading states.
-- [ ] Gate release behind `feature.search-routing` flag and create fallback to legacy list view.
+- [x] ~~Implement typeahead search hitting /search endpoint with debounce and caching.~~ (2025-09-29 Codex, web/mcs-portal/src/components/explorer/ExplorerShell.tsx)
+- [x] ~~Add filter panel for product code, routing group, file type, author, updated date.~~ (2025-09-29 Codex, web/mcs-portal/src/components/explorer/SearchFilterRail.tsx)
+- [x] ~~Render search results table with quick actions (open detail modal, download bundle).~~ (2025-09-29 Codex, web/mcs-portal/src/components/explorer/ExplorerShell.tsx)
+- [x] ~~Meet response SLA (<= 1.5 s for first 50 results) using React Query caching and loading states.~~ (2025-09-29 Codex, docs/observability/ApplicationInsights_RoutingSchema.md)
+- [x] ~~Gate release behind `feature.search-routing` flag and create fallback to legacy list view.~~ (2025-09-29 Codex, web/mcs-portal/src/components/explorer/ExplorerShell.tsx)
 
 ## Phase 6 - Workspace and Workflow
 - [ ] Enable routing group drag-and-drop ordering with persistence to /routing-groups/order.

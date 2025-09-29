@@ -1,4 +1,5 @@
 # Sprint 6 Activity Log ? Deployment & Operations
+- 2025-09-29 14:54:45 Codex: Ops 공지 체크리스트 사전 검토 및 smoke/grafana 자료 링크 정리(Ops_Comms_Precheck_20250929.md).
 - 2025-09-29 12:12:55 Codex: Chunk Upload PoC 실행(sample_5mb) 및 meta_sla_history 갱신.
 - 2025-09-29 12:12:40 Codex: Sprint6 Monitoring TODOs 완료(Alert YAML, Promtail config, Dashboard JSON, Ops 템플릿 연결).
 - 2025-09-29 12:05:50 Codex: artifacts/offline/logs 용량 모니터링 스크립트(check-offline-logs.ps1) 작성, 6시간 주기 점검 계획 수립.

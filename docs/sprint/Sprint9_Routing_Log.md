@@ -33,3 +33,9 @@
 
 
 
+| 2025-09-29 | Codex | R1 | Drafted Vitest component tests for ProductDashboardShell, RoutingDetailModal, Explorer routing card stub (see tests/unit). Initial run requires jsdom getComputedStyle polyfill; defects logged for follow-up. | Added test file comments documenting mocks for message API & feature flags. | Local Vitest run (fails: jsdom getComputedStyle missing) |
+| 2025-09-29 | Codex | R2 | Authored routing-flows Playwright smoke suite covering product creation->approval and legacy download/search filters (skipped pending seeded env). | Documented CI skip rationale via inline comments + MCMS_E2E_BASE_URL usage. | tests/e2e/routing-flows.spec.ts (skip when env not ready) |
+| 2025-09-29 | Codex | S1 | Recorded cross-browser regression matrix (Chromium/Edge/Firefox) for drag-drop + upload paths; flagged Firefox async clipboard limitation. | Added manual checklist references + doc links in Accessibility guide. | docs/testing/Sprint9_CrossBrowserMatrix.md |
+| 2025-09-29 | Codex | S2 | Ran axe-core smoke suite + manual keyboard audit; documented outcomes and backlog for tooltip aria-live. | Added evidence links in Sprint9_AccessibilityReport.md and updated manual checklist. | docs/testing/Sprint9_AccessibilityReport.md, artifacts/testing/accessibility/sprint9 |
+| 2025-09-29 | Codex | T1 | Published Sprint9 UAT plan with participant matrix, scenarios, and sign-off checklist. | Linked communication cadences + reference templates for SteerCo update. | docs/testing/Sprint9_UAT_TestPlan.md |
+| 2025-09-29 | Codex | T2 | Drafted feedback intake workflow for folder sync latency + UI clarity (Teams form + automation export). | Linked backlog tickets OPS-212/UX-189 for severity tracking. | docs/testing/Sprint9_FeedbackPlan.md |
