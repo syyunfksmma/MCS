@@ -26,12 +26,12 @@
 ### C. 문서 & 지식 이전
 - [ ] C1. Offline Deployment QuickStart(영상/슬라이드) 제작 및 Sprint7 교육 결과 반영.
 - [ ] C2. SharedDrive_Structure.md 유지보수 프로세스 정의(ACL 검토 주기, 보존 정책 포함).
-- [ ] C3. Phase10 Runbook Annex 작성: Install-MCMS.ps1 매개변수/오류 코드 표.
+- [ ] C3. Phase10 Runbook Annex 작성: npm/pm2 명령, 이메일 인증 점검 체크리스트.
 
 ### D. 품질 & 회귀
 - [ ] D1. package-offline.ps1 패키지 결과에 대한 SHA256 검증 자동화(Compare-FileHash.ps1) 도입.
 - [ ] D2. run-smoke.ps1 CI 모드(-SkipShareCopy) 테스트 케이스 작성 및 artifacts/offline/logs 청소 스크립트 추가.
-- [ ] D3. Windows 서비스 재시작/롤백 스크립트(idempotent) 개선 계획 수립.
+- [ ] D3. pm2/스크립트 기반 서비스 재시작·롤백(idempotent) 개선 계획 수립.
 
 ## 로그 기록
 - Sprint8_Log.md에 스케줄러 등록 결과, 실패/성공 로그, 공유 드라이브 업로드 시간 기록.

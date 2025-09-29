@@ -27,6 +27,23 @@
    - Unit-test the service to assert that `/complete` enqueues the result command and that `AddinJobResultCommand` processing updates `Routing` + `History` correctly.
    - Add integration tests covering success/failure flows to prevent regressions.
 
+### Worker Storage Flow with Deduplication & Integrity Controls
+- **큐 메시지 확장**
+  - `FileIngestCommand`에 `casHash`, `chunks`, `resumeToken`, `logicalPath` 필드를 추가하여 Phase 5 CAS 레이아웃과 연동.
+  - 메시지 내 `chunks` 배열은 각 청크의 순서, 사이즈, ETag/해시를 포함해 재시작 시 어떤 파트가 누락되었는지 명확히 구분.
+- **스테이징 → CAS 커밋**
+  1. 워커가 스테이징 경로에서 파일을 열고 청크별 SHA256을 재계산하여 메시지의 해시와 비교.
+  2. 모든 청크 검증 후 `cas/<algo>/<prefix>/<hash>/payload`에 이동 또는 Object Storage로 업로드.
+  3. `refs/<routing>/<rev>/<logicalName>.json`을 생성/갱신하여 새 버전을 참조하고, `meta.json`에 CAS 참조와 체크섬을 기록.
+- **무결성 검증 단계**
+  - CAS 업로드 후 Object Storage의 ETag 혹은 `ChecksumCRC32C`를 조회하여 로컬 계산값과 비교.
+  - `meta.json` 커밋 직전 `IntegrityAudit` 레코드에 해시, 청크 수, 업로더, 업로드 세션 ID를 남겨 추적성을 확보.
+  - 불일치 발생 시 워커는 `RoutingFileStatus=Invalid`로 표시하고 재시도 큐(`storage-retry`)에 재등록, 운영자 알림을 트리거.
+- **롤백 및 재시작 처리**
+  - 커밋 실패 시 워커는 임시 참조(`refs.pending`)를 삭제하고, 이미 작성된 CAS 페이로드는 참조 카운트를 감소시키거나 고아 수집(garbage collection) 큐에 추가.
+  - `resumeToken`을 사용하여 중단된 업로드를 이어받고, 누락 청크만 `missingParts` 큐로 전송.
+  - 재시도 횟수(`retryCount`)가 임계치를 넘으면 `HistoryEntry`에 `StorageCommitFailed` 이벤트를 기록하고, 사용자에게 파일 재업로드를 요청하는 알림을 발송.
+
 ## Open Considerations
 - Align retry/back-off strategy with the queue policy (`docs/design/Phase3_AddinIntegration.md:49`).
 - Decide whether a failed job should revert the routing to `PendingApproval` or maintain `Approved` with an error badge; document the choice for UI consistency.

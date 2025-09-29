@@ -29,7 +29,7 @@
 ### D. UI/UX 스켈레톤
 - [x] D1. Explorer 트리(가상 스크롤) 레이아웃 기본 구현
 - [x] D2. Routing 요약 카드 + 탭 레이아웃 스켈레톤
-- [ ] D3. Add-in 상태 배지·히스토리 섹션 더미 UI 배치
+- [x] ~~D3. Add-in 상태 배지·히스토리 섹션 더미 UI 배치~~ (2025-09-29 Codex)
 
 ### E. API/문서 연동
 - [x] E1. Explorer 관련 REST 엔드포인트 계약 검토 및 BFF ↔ API 매핑 문서화

@@ -27,6 +27,7 @@
 - 단위 테스트: 내부 빌드 PC 예약 작업으로 야간 실행(dotnet test --filter Category=Unit).
 - 통합 테스트: QA 서버에 설치 패키지 배포 후 scripts\\tests\\run-integration.ps1로 수동/자동 실행.
 - UI 자동화: WPF UI 테스트(White/FlaUI)를 Windows 인증 계정으로 실행해 routing 생성/승인 흐름을 검증하고, 결과 로그를 \\MCMS_SHARE\\logs\\qa에 저장.
+- 성능 회귀 가드레일: QA 환경에 주 2회 예약된 k6 스크립트를 실행해 Item/ Routing/ Esprit API 주요 시나리오의 응답시간 및 오류율을 수집하고, OpenTelemetry(OTLP)로 전송한 메트릭을 Grafana Loki/Tempo 대시보드와 비교 분석한다. 기준선 대비 10% 이상 악화되면 자동으로 UAT 승인 차단 상태를 생성하고 QA 채널에 경고 메시지를 게시한다.
 
 ## 5. UAT 일정
 | 주차 | 활동 |
@@ -38,16 +39,22 @@
 ## 6. 피드백 수집
 - ~~UAT 설문지 (Google Form 또는 사내 툴) 작성.~~
 - ~~이슈 트래킹: Azure DevOps Board UAT Feedback 컬럼 운영.~~
-- 내부 파일쉐어(\\MCMS_SHARE\\feedback\UAT)에 Excel 양식을 배포하고, 주기적으로 취합한다.
-- 피드백 항목은 docs/sprint/Sprint9_UAT_Log.md에 정리하고 승인 로그와 연동한다.
+- Excel 양식 대신 내부 이슈 트래커(예: Confluence + JIRA on-prem 또는 자체 Portal)에 `UAT-Feedback` 프로젝트를 생성하고, 모든 피드백을 컴포넌트/시나리오별 티켓으로 등록한다. 등록 시 UAT 테스트 케이스 ID, 재현 로그, OpenTelemetry Trace ID를 필수 필드로 연결해 실제 사용자 행동과 성능 이벤트를 연계한다.
+- 대시보드: 이슈 트래커의 Kanban 보드와 Grafana 패널을 연결해 티켓 상태별(신규/분석/해결/검증) 진행률과 관련 OTel 지표(응답시간, 오류율)를 자동 표시한다.
+- docs/sprint/Sprint9_UAT_Log.md에는 요약 지표(티켓 수, 해결률, 평균 리드타임)와 주요 텔레메트리 스냅샷 URL을 기록해 승인 로그와 연동한다.
 - 주간 미팅으로 진행 현황 공유.
 
-## 7. 주니어 개발자 지침
+## 7. 릴리스 승인 기준
+- 기능 회귀: 핵심 시나리오 자동화 테스트 100% 통과.
+- 성능 회귀: k6 + OTel 비교 리포트에서 기준선 대비 P95 응답시간 10% 이내, 오류율 1% 이하 유지. 기준 초과 시 릴리스 차단 및 원인 분석 완료 후 재측정.
+- UAT 피드백: `UAT-Feedback` 프로젝트 내 Critical/High 티켓 0건, Medium 이하는 해결 계획 문서화.
+
+## 8. 주니어 개발자 지침
 - 테스트 케이스 작성 시 Given/When/Then 구조 사용.
 - 모든 버그는 재현 절차와 기대/실제 결과 명시.
 - 자동화 스크립트 README 작성, 실행 방법 기록.
 
-## 8. 오픈 이슈
+## 9. 오픈 이슈
 - QA 자동화 환경(빌드 에이전트) 준비.
 - UAT 일정과 파일럿 사용자 참여 확정.
 - 교육 자료(슬라이드) 제작 담당자 지정.
