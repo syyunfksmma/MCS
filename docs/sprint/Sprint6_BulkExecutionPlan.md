@@ -19,8 +19,8 @@
 | B2 | 롤백 시뮬레이션 실행 및 결과 기록 | `artifacts/offline/logs/rollback_20250929_1145.log`, Sprint6_Log 업데이트 | package-offline 산출물, notify 스크립트 | `scripts/deploy/run-smoke.ps1`, `scripts/deploy/notify-deploy.ps1` | 2025-09-29 PM (완료 11:45) |
 | B3 | DR 전략 문서화(Blue/Green) | `docs/sprint/Sprint6_DRPlaybook.md` 초안 | B2 결과 | Markdown authoring, draw.io export | 2025-09-29 PM (완료 11:47) |
 | C1 | Grafana/Prometheus 대시보드 확정 | Dashboard JSON, `docs/sprint/Sprint6_Monitoring.md` | 기존 SLO, meta_sla_history.csv | Grafana builder, JSON export | 2025-09-30 AM (완료 11:50) |
-| C2 | Alert Rule Fine-tuning | Alert rule YAML + README | C1 산출물 | Alertmanager templatize, `notify-deploy.ps1` | 2025-09-30 AM |
-| C3 | 로그 파이프라인 테스트 및 보존 정책 | `docs/observability/LogPipeline.md`, retention 설정 | C1/C2 | Elastic/Grafana Loki 참고, PowerShell | 2025-09-30 PM |
+| C2 | Alert Rule Fine-tuning | Alert rule YAML + README | C1 산출물 | Alertmanager templatize, `notify-deploy.ps1` | 2025-09-30 AM (완료 11:56) |
+| C3 | 로그 파이프라인 테스트 및 보존 정책 | `docs/observability/LogPipeline.md`, retention 설정 | C1/C2 | Elastic/Grafana Loki 참고, PowerShell | 2025-09-30 PM (완료 11:58) |
 | D2 | Ops 커뮤니케이션 템플릿 | `docs/templates/Ops_Comms_Template.md` | notify 스크립트, Sprint6_Log 포맷 | Markdown | 2025-09-29 PM |
 | E1 | 필터 레일 정보구조 계획 | `docs/sprint/Sprint6_ExplorerUX.md` Section 1 | ExplorerShell 최신 코드 | Figma 링크/Storybook | 2025-09-30 PM |
 | E2 | Ribbon 액션 그룹화 규칙 | 같은 문서 Section 2 | E1 | UX guidelines | 2025-09-30 PM |
@@ -46,8 +46,8 @@
 - **UX 문서 검증 지연**: Figma 접근 제한 시 `docs/sprint/Sprint6_ExplorerUX.md`에 스크린샷 경로 대신 설명 텍스트로 대체 후 후속 TODO 남김.
 
 ## 후속 액션 체커
-- [ ] Track Leads 지정 (Codex → 4개 트랙 모두 직접 수행, 병렬 로그만 구분)
-- [ ] `scripts/deploy/run-smoke.ps1` 환경 세트(Stage/Prod) 재검토
-- [ ] `docs/templates/Ops_Comms_Template.md` 작성 시작
-- [ ] `artifacts/offline/logs` 용량 모니터링 (주기: 6h)
+- [x] Track Leads 지정 (Codex → 모든 트랙 직접 수행, 병렬 로그만 구분 — 완료 2025-09-29 12:02)
+- [x] `scripts/deploy/run-smoke.ps1` 환경 세트(Stage/Prod) 재검토 (맵 확인 완료 2025-09-29 12:05)
+- [x] `docs/templates/Ops_Comms_Template.md` 작성 시작 (완료 2025-09-29 12:00)
+- [x] `artifacts/offline/logs` 용량 모니터링 (주기: 6h) — check-offline-logs.ps1 작성 (2025-09-29 12:05)
 
