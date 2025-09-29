@@ -1,6 +1,8 @@
 # Sprint 5 Activity Log — QA & UAT
 
 > 모든 작업 과정과 로그를 기록한다. UAT 피드백/테스트 결과를 상세히 남긴다.
+- 2025-09-29 12:13:10 Codex: 접근성 수동 체크리스트(UAT_Manual_Checklist.md) 업데이트.
+- 2025-09-29 12:13:00 Codex: Sprint5 Monitoring Plan TODO(Telegraf config, Grafana UID, Alert routing) 업데이트.
 
 ## 2025-09-22 Codex
 - Sprint5 접근성 계획 수립 및 문서화(Sprint5_AccessibilityPlan.md).
@@ -58,7 +60,8 @@ pm run test:regression, axe, ZAP, 브라우저 매트릭스 실측 실행.
 1. /api/search (mock) 엔드포인트 작성 → initialData 재활용 vs 별도 fetch 결정.
 2. Typeahead UI 구현: ExplorerShell 또는 별도 SearchBar 컴포넌트 확장.
 3. Facet 필터 패널/결과 테이블 구성.
-4. SLA 측정 로직 및 feature flag (eature.search-routing) 적용.
+4. SLA 측정 로직 및 feature flag (
+eature.search-routing) 적용.
 5. 각 단계 완료 시 Timeline 로그 및 Sprint5_Log.md에 기록.
 ### 2025-09-29 10:46:23 Codex — Sprint5.1 D1 진행 현황
 -  `/api/search` mock 구현 및 useRoutingSearch 훅 SLA 측정 로직 적용. 

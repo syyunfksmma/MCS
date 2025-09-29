@@ -49,9 +49,9 @@
 - 남은 C2/C3 작업은 본 대시보드 알람 라우팅 및 로그 보존 전략을 이어서 사용.
 
 ## 7. 후속 TODO
-- [ ] Alert Rule YAML (`monitoring/alerts/mcms_core.yaml`) 작성.
-- [ ] Loki 파이프라인 구성 파일 체크인.
-- [ ] Dashboard JSON을 artifacts/monitoring 경로에 저장.
-- [ ] Ops 템플릿에 Grafana 링크 추가.
+- [x] Alert Rule YAML (`monitoring/alerts/mcms_core.yaml`) 작성. (2025-09-29 Codex)
+- [x] Loki 파이프라인 구성 파일 체크인. (2025-09-29 Codex, config.mcms.yaml)
+- [x] Dashboard JSON을 artifacts/monitoring 경로에 저장. (2025-09-29 Codex, grafana_mcms_sprint6.json)
+- [x] Ops 템플릿에 Grafana 링크 추가. (2025-09-29 Codex, Ops_Comms_Template.md)
 
 *작성: 2025-09-29 11:50 KST, Codex*
