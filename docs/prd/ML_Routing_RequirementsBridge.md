@@ -1,0 +1,28 @@
+# ML Routing Requirements Bridge (2025-09-29)
+
+## 목적
+- ML Routing 기능 요구사항을 PRD 항목과 상세 스펙으로 매핑해 개발 범위를 확정한다.
+
+## 요구사항 매핑
+| 요구 | PRD ID | 설명 | 상태 |
+| --- | --- | --- | --- |
+| 추천 우선순위 제공 | FR-ML-01 | CAM 작업자 선호도 기반 추천 | 승인 |
+| 공정 시간 예측 | FR-ML-02 | ±10% 정확도 SLA | 데이터 준비 중 |
+| 품질 검증 알림 | FR-ML-03 | 업로드 시 오류 확률 표시 | 모델 학습 예정 |
+| 라우팅 재사용 제안 | FR-ML-04 | 유사 Item 추천 | PoC 범위 |
+| Add-in 연동 | FR-ML-05 | ESPRIT Add-in 실시간 호출 | 설계 진행 |
+
+## 기능 분해
+1. 데이터 수집: ERP, Work Order, CAM 라벨.
+2. 모델 파이프라인: Feature Engineering → Training → Serving.
+3. UI 연동: Next.js 추천 패널, 사후 행동 기록.
+4. 감사/추적: 추천 수락/거절 이벤트 저장.
+
+## 결정사항
+- 모델 버전 관리: MLflow 사용, 버전 태깅 `ml-routing-v{n}`.
+- 추적성: 추천 결과는 `Recommendations` 테이블에 저장 후 API 제공.
+- 규제: 추천 근거(Feature 중요도) 사용자에게 표시.
+
+## 후속
+- 2025-09-30 API/Design Sync에서 본 문서를 기반으로 승인 요청.
+- 승인 후 Jira Epic `ML-ROUTING` 하위에 Story 분할.
