@@ -10,7 +10,7 @@
 > Approval required before starting each phase.
 
 ## Phase 0 - Alignment & Governance
-- [ ] 전환 배경, 범위, 기대효과 요약본(Executive Deck) 작성
+- [x] ~~전환 배경, 범위, 기대효과 요약본(Executive Deck) 작성~~ (2025-09-29 Codex, docs/Phase0_ExecutiveDeck.md)
 - [ ] 이해관계자 RACI 및 의사결정 트랙 승인 완료
 - [ ] SSO/보안 정책, Node 호스팅 가이드 합의
 
