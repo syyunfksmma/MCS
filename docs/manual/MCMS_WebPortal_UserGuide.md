@@ -20,3 +20,7 @@ Revision History
 | Date | Author | Notes |
 | --- | --- | --- |
 | 2025-09-29 | Codex | Initial web/ops manual 업데이트 |
+## 2025-09-29 Routing UI 업데이트
+- Explorer 트리, Routing Detail 모달, 검색 필터 스크린샷을 `images/userguide/routing/` 경로에 추가했습니다.
+- SolidWorks 경로 복사 버튼과 Preview 패널 사용법을 단계별로 설명했습니다.
+- Workspace 리본 헤더/프리뷰 도킹 레이아웃을 GIF(`media/routing_workspace_docked.gif`)로 포함했습니다.
