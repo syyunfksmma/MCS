@@ -1,36 +1,35 @@
-import { useMutation } from '@tanstack/react-query';
-import { getApiBaseUrl } from '@/lib/env';
-import type { RoutingSearchResult } from '@/types/search';
+"use client";
+import { useMutation } from "@tanstack/react-query";
 
-export interface RoutingSearchRequest {
-  term: string;
-  pageSize?: number;
-  slaTargetMs?: number;
+interface SearchResponse {
+  total: number;
+  items: Array<{
+    routingId: string;
+    routingCode: string;
+    productCode: string;
+    revisionCode: string;
+    groupName: string;
+    status: string;
+    updatedAt: string;
+    slaMs?: number;
+    observedClientMs?: number;
+  }>;
+  observedClientMs?: number;
+  slaMs?: number;
 }
 
-const buildEndpoint = () => {
-  const base = getApiBaseUrl();
-  return `${base.replace(/\/$/, '')}/api/search`;
-};
-
 export function useRoutingSearch() {
-  return useMutation<RoutingSearchResult, Error, RoutingSearchRequest>({
-    mutationFn: async (payload) => {
-      const response = await fetch(buildEndpoint(), {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        credentials: 'include',
-        body: JSON.stringify(payload)
-      });
-
-      if (!response.ok) {
-        const message = await response.text();
-        throw new Error(message || `검색 호출 실패 (${response.status})`);
-      }
-
-      return (await response.json()) as RoutingSearchResult;
+  return useMutation(async (term: string) => {
+    const start = performance.now();
+    const response = await fetch(`/api/search?q=${encodeURIComponent(term)}&limit=15`);
+    if (!response.ok) {
+      throw new Error("검색 요청이 실패했습니다.");
     }
+    const data = (await response.json()) as SearchResponse;
+    const end = performance.now();
+    return {
+      ...data,
+      observedClientMs: Math.round(end - start)
+    };
   });
 }

@@ -1,4 +1,5 @@
 # Phase 2 산출물 - 배포/패키징 절차 메모
+> ~~이전 버전: Windows 인증/IIS 기반 구성~~
 
 ## 1. 개요
 - 로컬 PC에서 수동 트리거(버전 태그)로 빌드/배포를 진행한다.
@@ -19,7 +20,7 @@
 # scripts/testing/bootstrap-uat.ps1
 # scripts/testing/seed-test-data.mjs
 # scripts/testing/reset-test-data.mjs
-# scripts/testing/check-smtp.mjs
+~~# scripts/testing/check-smtp.mjs~~ # (제거됨)
 ```
 - `npm run test:data:reset`
 - `npm run test:data:seed`
@@ -33,7 +34,7 @@
 ## 5. 비밀/보안
 - SMTP 비밀번호, JWT Secret은 `.env.local`에만 저장하고 Git에 커밋 금지.
 - 필요 시 `Protect-CmsMessage`로 암호화하여 공유.
-- Magic Link 토큰 로그는 민감 정보 마스킹.
+- 승인/로그인 이벤트 로그는 이메일 주소를 마스킹 처리.
 
 ## 6. 관측성
 - 배포 로그: `logs/deploy/YYYYMMDD.log`.

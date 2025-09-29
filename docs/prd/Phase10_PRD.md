@@ -1,8 +1,10 @@
 # Phase 10 PRD - Deployment & Operations
+> ~~이전 버전: Windows 인증/IIS 기반 구성~~
 
 ## 초점 영역
 - 로컬 PC(Node.js) 배포 스크립트/Runbook 정리
-- Magic Link 이메일 인증 운영 플로우 확정
+- ~~Magic Link 이메일 인증 운영 플로우 확정~~
+- 이메일 가입 + 관리자 수동 승인 운영 플로우 확정
 - 모니터링·알람·로그 아카이브 체계 구축
 
 ## 산출물

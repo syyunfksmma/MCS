@@ -1,8 +1,10 @@
 # Phase 2 PRD - Hosting & Architecture
+> ~~이전 버전: Windows 인증/IIS 기반 구성~~
 
 ## 초점 영역
 - 로컬 PC(Node.js 20) 기반 SSR 서비스 구조 정의
-- 이메일 인증(Magic Link) + JWT 세션 흐름 확정
+- ~~이메일 인증(Magic Link) + JWT 세션 흐름 확정~~
+- 이메일 가입 + 관리자 승인 기반의 세션 흐름 확정
 - MCMS API 연동 BFF, 파일 업로드, 로그 체계 설계
 
 ## 산출물

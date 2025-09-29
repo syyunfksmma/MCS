@@ -1,4 +1,5 @@
 # Phase 2 산출물 - Hosting & Operations 설계
+> ~~이전 버전: Windows 인증/IIS 기반 구성~~
 
 ## 1. 물리 구성
 | 구성 | 설명 |

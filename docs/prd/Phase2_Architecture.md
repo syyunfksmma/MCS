@@ -1,9 +1,10 @@
 # Phase 2 산출물 - Next.js + 이메일 인증 아키텍처 개요
+> ~~이전 버전: Windows 인증/IIS 기반 구성~~
 
 ## 1. 논리 아키텍처
 ```
 [Client Browser]
-    | (HTTP, Magic Link)
+    | (HTTP, 관리자 승인)
     v
 [Next.js SSR Service (Node 20, localhost:4000)]
     |  (API Routes, Email Service, Upload API)
@@ -27,7 +28,7 @@
 
 ## 3. 주요 컴포넌트
 - Next.js SSR Service: `npm run start -- -p 4000`으로 실행, Health Check `/healthz` 제공.
-- Auth Module: Magic Link 생성, 토큰 저장(`auth_tokens`), 만료/폐기 배치.
+- Auth Module: 이메일 가입 요청 저장, 관리자 승인, 세션 생성.
 - Email Service: Nodemailer + SMTP (Gmail/SendGrid) → 로그 `logs/auth`에 기록.
 - Logging: winston + 로컬 파일(`logs/app`, `logs/auth`), 필요 시 Elastic Stack 연동.
 
@@ -38,7 +39,7 @@
 - pm2(선택) 또는 Scheduled Task로 서비스 자동화.
 
 ## 5. 보안/컴플라이언스 고려
-- Magic Link 토큰 만료 10분, 재사용 차단.
+- 승인 대기 사용자 정리: 일정 기간(예: 30일)마다 미승인 사용자 삭제.
 - 이메일 발송 실패 시 재전송 로직 및 관리자 알림.
 - HTTP만 사용하므로 라우터/PC 방화벽을 통해 외부 접근 차단.
 

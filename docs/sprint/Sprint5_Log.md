@@ -39,5 +39,26 @@ pm run perf:lighthouse:ci) 도입.
 2025-09-29 Codex — SMTP 준비 단계
 - `.env.local`에 SMTP/EMAIL_FROM/JWT_SECRET 플레이스홀더를 추가하고 `logs/app`, `logs/auth`, `logs/deploy` 폴더를 생성.
 - `npm install` 실행하여 nodemailer 의존성을 포함한 패키지 재설치를 수행(경고 있음, 완료 로그 확인 필요).
-- SMTP 점검 스크립트(`check-smtp.mjs`)에 dotenv 로딩을 추가하고 `npm install dotenv` 완료.
+- ~~SMTP 점검 스크립트(`check-smtp.mjs`)에 dotenv 로딩을 추가하고 `npm install dotenv` 완료.~~ (이후 수동 승인 플로우로 전환하며 스크립트 제거)
 - SMTP 점검 스크립트에서 `.env.local`을 직접 로드하도록 dotenv `config({ path })` 적용.
+### 2025-09-29 Codex — 이메일 수동 승인 플로우 전환
+- Magic Link/SMTP 계획을 폐기하고, 가입 정보를 로컬 JSON에 저장한 뒤 관리자가 수동 승인하는 흐름으로 재정의.
+- `/api/auth/register`, `/api/auth/approve`, `/api/auth/login` API와 `/auth/*` 페이지를 추가해 승인/로그인 과정을 시각화.
+- nodemailer/SMTP 관련 스크립트(`check-smtp`, `purge-expired`) 제거.
+## 2025-09-29 10:24:44 Codex — 다음 단계 계획
+1. Sprint5.1 검색 기능 (/api/search, Typeahead UI, SLA 기록, feature flag) 구현 및 로그 유지.
+2. Sprint6 라우팅/운영 태스크(Routing Wizard, Detail Modal, 업로드/다운로드, Grafana/pm2) 순차 진행.
+3. HTTP-only 스테이징 준비 후 
+pm run test:regression, axe, ZAP, 브라우저 매트릭스 실측 실행.
+4. 각 단계 완료 시 docs/logs/Timeline_2025-09-29.md, Sprint 로그, QA Report에 시간별 기록을 추가.
+## 2025-09-29 10:29:05 Codex — Sprint5.1 검색 작업 착수
+- /api/auth 수동 승인 흐름 기반 시스템에서 검색 기능을 확장하기 위해 Sprint5.1 TaskList(D/E/F) 수행을 시작합니다.
+- 단계별 결과는 docs/logs/Timeline_2025-09-29.md 및 Sprint5_Log.md에 시간 단위로 기록합니다.
+## 2025-09-29 10:45:17 Codex — Sprint5.1 검색 구현 하위 계획
+1. /api/search (mock) 엔드포인트 작성 → initialData 재활용 vs 별도 fetch 결정.
+2. Typeahead UI 구현: ExplorerShell 또는 별도 SearchBar 컴포넌트 확장.
+3. Facet 필터 패널/결과 테이블 구성.
+4. SLA 측정 로직 및 feature flag (eature.search-routing) 적용.
+5. 각 단계 완료 시 Timeline 로그 및 Sprint5_Log.md에 기록.
+### 2025-09-29 10:46:23 Codex — Sprint5.1 D1 진행 현황
+-  `/api/search` mock 구현 및 useRoutingSearch 훅 SLA 측정 로직 적용. 

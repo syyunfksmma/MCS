@@ -1,10 +1,11 @@
 # Phase 10 산출물 - 모니터링 & 알람 계획
+> ~~이전 버전: Windows 인증/IIS 기반 구성~~
 
 ## 1. 모니터링 구성
 | 영역 | 도구 | 지표 |
 |---|---|---|
 | 애플리케이션 | pm2 monit / winston 로그 | SSR 응답시간, 에러율 |
-| 인증 | logs/auth 분석 스크립트 | Magic Link 발송 성공률, 실패 사유 |
+| 인증 | logs/auth 분석 스크립트 | 가입/승인/로그인 성공률, 실패 사유 |
 | 서버 리소스 | Windows 성능 모니터, PowerShell | CPU, 메모리, 디스크 I/O |
 | 사용자 체감 | Lighthouse, Web Vitals | LCP/FID/CLS |
 
