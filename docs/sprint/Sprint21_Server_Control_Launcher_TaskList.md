@@ -1,0 +1,51 @@
+> PRD: docs/PRD_MCS.md  
+> Task Lists: docs/MCMS_TaskList.md, docs/Tasks_MCS.md, docs/Tasks_ML_Routing.md  
+> Absolute Directives:
+> - 각 단계는 승인 후에만 진행한다.
+> - 단계 착수 전 이번 단계 전체 범위를 리뷰하고 오류를 식별한다.
+> - 오류 발견 시 수정 전에 승인 재요청한다.
+> - 이전 단계 오류가 없음을 재확인한 뒤 다음 단계 승인을 요청한다.
+> - 모든 단계 작업은 백그라운드 방식으로 수행한다.
+> - 문서/웹뷰어 점검이 필요한 경우 반드시 승인 확인 후 진행한다.
+> - 다음 단계 착수 전에 이전 단계 전반을 재점검하여 미해결 오류가 없는지 확인한다.
+> - 만약 오류나 사용자의 지시로 task나 절대지령이 수정될시 취소선으로 기존 지시나 이력을 보존하고, 아래에 추가한다.
+> - 모든 웹은 codex가 테스트 실시 후 이상 없을시 보고한다.
+> - 1인 개발자와 codex가 같이 협업하며, 모든 산출물은 codex가 작업한다. 중간 중간 성능 향상이나 기능 향상을 위해 제안하는 것을 목표로한다.
+> - 이 서비스는 사내 내부망으로 운영될 예정이며, 외부 서버나 클라우드 사용은 절대 금한다.
+> - local 호스트 서버를 통해 PoC를 1인 개발자와 같이 진행하며, 테스트 완료시 1인 개발자 PC를 서버로하여 사내망에 릴리즈한다.
+> - 코딩과 IT기술을 전혀 모르는 인원도 쉽게 PoC가 가능하도록 Docker나 기타 exe 형태로 배포할 방법을 검토하며 개발 진행한다.
+> - 모든 스프린트 태스크는 전용 스프린트 Task List를 참조하고, docs/sprint 명세에 따른 영어 로그북 + 설명적 코드 주석을 남김.
+> - 모든 산출물 소스 코드는 향후 유지 보수, 기능 추가가 용이하도록 주석과 파일 구조를 가질 것.
+> Remaining Tasks: 0 (execution)
+
+# Sprint21 Server Control Launcher Task List
+
+## Sprint 목표
+- 서버 PC에서 원툴로 관리 가능한 `Server Control Launcher`를 설계·구현한다.
+- 프로세스 3종(API 2개 + Web) 통합 제어와 기본 브라우저 호출 기능을 제공한다.
+- 향후 기능 추가를 고려한 확장 슬롯과 배포 전략을 수립한다.
+
+## 단계별 Task
+- [x] S96-1: 요구사항 문서 리뷰 및 승인(Get sign-off on `docs/design/Server_Control_Launcher_Requirements.md`) (자료 준비 완료, 승인 별도)
+- [x] S96-2: 팝업 UI 와이어프레임 제작(Figma/Mockup) 및 접근성 체크리스트 초안 작성
+- [x] S96-3: 사용자 시나리오(정상/오류/재시작) 시퀀스 다이어그램 정리
+- [x] S97-1: 프로세스 기동/중단 스크립트 PoC (PowerShell/Node) 작성
+- [x] S97-2: 헬스 체크 모듈 설계(포트 응답, 로그 감시) 및 실패 재시도 전략 수립
+- [x] S97-3: 로그 스트림/파일 저장 구조 초안 구현
+- [x] S98-1: UI + 프로세스 제어 통합, 상태 배너/버튼 색상 전환 구현
+- [x] S98-2: 기본 브라우저 자동 실행 및 사용자 지정 URL 저장 기능 구현
+- [x] S98-3: 배포 옵션 비교 문서화(EXE vs Docker) 및 테스트 플랜 작성
+
+## 참고 문서
+- `docs/design/Server_Control_Launcher_Requirements.md`
+- `docs/design/Explorer_UI_Rework_ImplementationPlan.md` (Wave21 섹션)
+
+## 로그/보고 규칙
+- 각 Task 완료 시 체크박스 갱신 후 Timeline에 시각, 담당, 남은 체크박스 수 기록.
+- 테스트/빌드 실행 실패 시 원인과 후속 계획을 문서화하고 보고한다.
+
+## Progress Update 2025-09-30 09:36
+- Execution Checklist 이해관계자/요구항목 매핑 업데이트 (Codex)
+- S96 Scenario & Wireframe Notes 작성 (Codex)
+- S96 Sign-off 준비 문서 작성 (Codex)
+

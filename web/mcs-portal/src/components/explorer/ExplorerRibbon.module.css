@@ -1,0 +1,122 @@
+.root {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--explorer-gap);
+  height: var(--explorer-ribbon-height);
+  padding: 0 var(--explorer-content-gutter);
+  background: var(--explorer-neutral-bg);
+}
+
+.groups {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--explorer-gap) * 1.25);
+  flex-wrap: wrap;
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 180px;
+}
+
+.groupLabel {
+  font: var(--explorer-font-caption);
+  color: #5c6270;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.groupActions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.actionButton {
+  font: var(--explorer-font-body);
+  border-radius: 9999px;
+  padding: 6px 16px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: #1b1f29;
+  transition: all 0.2s ease;
+}
+
+.actionButton:hover {
+  border-color: var(--explorer-panel-border);
+  background: rgba(0, 153, 153, 0.08);
+}
+
+.actionButtonPrimary {
+  background: var(--explorer-accent);
+  color: #ffffff;
+  box-shadow: var(--explorer-shadow-level1);
+}
+
+.actionButtonPrimary:hover {
+  background: #008282;
+  border-color: #007676;
+}
+
+.actionButton:disabled,
+.actionButton[disabled] {
+  color: #9da3af;
+  background: rgba(16, 24, 40, 0.05);
+  border-color: transparent;
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+.meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font: var(--explorer-font-caption);
+  color: #5c6270;
+}
+
+.metaLabel {
+  font: var(--explorer-font-caption);
+  color: #5c6270;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.metaBadge {
+  font: var(--explorer-font-heading);
+  color: #1b1f29;
+}
+
+.metaStatus {
+  padding: 4px 12px;
+  border-radius: 9999px;
+  background: rgba(0, 153, 153, 0.12);
+  color: #006d6d;
+  font-weight: 500;
+}
+
+.metaPlaceholder {
+  font: var(--explorer-font-caption);
+  color: #9da3af;
+}
+
+@media (max-width: 960px) {
+  .root {
+    align-items: flex-start;
+    flex-direction: column;
+    padding: var(--explorer-gap) var(--explorer-content-gutter);
+    height: auto;
+  }
+
+  .groups {
+    width: 100%;
+  }
+
+  .meta {
+    width: 100%;
+    justify-content: flex-start;
+  }
+}

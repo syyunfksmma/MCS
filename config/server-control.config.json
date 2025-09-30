@@ -1,0 +1,30 @@
+{
+  "logDirectory": ".\\logs",
+  "defaultUrl": "http://localhost:3000",
+  "services": [
+    {
+      "name": "API-A",
+      "description": "ESPRIT EDGE API Gateway",
+      "command": "pwsh.exe",
+      "arguments": "-File ./scripts/server-control/demo-service.ps1 -ServiceName API-A",
+      "healthUrl": "http://localhost:7800/health/apiA",
+      "workingDirectory": "./"
+    },
+    {
+      "name": "API-B",
+      "description": "CAM Job Management API",
+      "command": "pwsh.exe",
+      "arguments": "-File ./scripts/server-control/demo-service.ps1 -ServiceName API-B",
+      "healthUrl": "http://localhost:7800/health/apiB",
+      "workingDirectory": "./"
+    },
+    {
+      "name": "Web-UI",
+      "description": "Server Control Launcher React Shell",
+      "command": "pwsh.exe",
+      "arguments": "-File ./scripts/server-control/demo-service.ps1 -ServiceName Web-UI",
+      "healthUrl": "http://localhost:7800/health/web",
+      "workingDirectory": "./"
+    }
+  ]
+}

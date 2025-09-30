@@ -1,17 +1,21 @@
 'use client';
 
-import { Button, Card, Input, Space, Tag, Tooltip, Tree } from 'antd';
+import { Button, Card, Input, Space, Tooltip, Tree, Tag } from 'antd';
 import type { DataNode, TreeProps } from 'antd/es/tree';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState, useId } from 'react';
 import {
   EditOutlined,
   DeleteOutlined,
   RollbackOutlined,
   CheckOutlined,
   CloseOutlined,
-  PlusOutlined
+  PlusOutlined,
+  PlusSquareOutlined,
+  MinusSquareOutlined,
+  HolderOutlined
 } from '@ant-design/icons';
 import { ExplorerItem } from '@/types/explorer';
+import styles from './TreePanel.module.css';
 
 type ExplorerNodeType = 'item' | 'revision' | 'group' | 'routing' | 'file';
 
@@ -41,11 +45,13 @@ interface TreePanelProps {
 }
 
 const ROUTING_STATUS_COLOR: Record<string, string> = {
-  Approved: 'green',
-  PendingApproval: 'gold',
-  Rejected: 'red',
-  Draft: 'default'
+  Approved: '#10b981',
+  PendingApproval: '#f59e0b',
+  Rejected: '#ef4444',
+  Draft: '#94a3b8'
 };
+
+const DEFAULT_STATUS_COLOR = '#94a3b8';
 
 const cloneNode = (node: ExplorerTreeNode): ExplorerTreeNode => ({
   ...node,
@@ -90,6 +96,48 @@ const findNode = (nodes: ExplorerTreeNode[], key: string): NodeRef | null => {
   return null;
 };
 
+const collectExpandableKeys = (nodes: ExplorerTreeNode[]): string[] => {
+  const keys: string[] = [];
+
+  const traverse = (list: ExplorerTreeNode[]) => {
+    list.forEach((node) => {
+      if (node.children && node.children.length) {
+        keys.push(node.key);
+        traverse(node.children as ExplorerTreeNode[]);
+      }
+    });
+  };
+
+  traverse(nodes);
+  return keys;
+};
+
+const findAncestorKeys = (
+  nodes: ExplorerTreeNode[],
+  key: string,
+  ancestors: string[] = []
+): string[] => {
+  for (const node of nodes) {
+    if (node.key === key) {
+      return ancestors;
+    }
+
+    if (node.children && node.children.length) {
+      const result = findAncestorKeys(
+        node.children as ExplorerTreeNode[],
+        key,
+        [...ancestors, node.key]
+      );
+
+      if (result.length) {
+        return result;
+      }
+    }
+  }
+
+  return [];
+};
+
 export default function TreePanel({
   items,
   selectedKey,
@@ -103,10 +151,28 @@ export default function TreePanel({
   const [editingGroupId, setEditingGroupId] = useState<string | null>(null);
   const [groupDraftName, setGroupDraftName] = useState('');
   const [treeData, setTreeData] = useState<ExplorerTreeNode[]>([]);
+  const [expandedKeys, setExpandedKeys] = useState<string[]>([]);
+  const [autoExpandParent, setAutoExpandParent] = useState(true);
+  const instructionsId = useId();
 
   const stopEditing = useCallback(() => {
     setEditingGroupId(null);
     setGroupDraftName('');
+  }, []);
+
+  const allExpandableKeys = useMemo(
+    () => collectExpandableKeys(treeData),
+    [treeData]
+  );
+
+  const expandAll = useCallback(() => {
+    setExpandedKeys(allExpandableKeys);
+    setAutoExpandParent(false);
+  }, [allExpandableKeys]);
+
+  const collapseAll = useCallback(() => {
+    setExpandedKeys([]);
+    setAutoExpandParent(false);
   }, []);
 
   const commitEditing = useCallback(
@@ -142,11 +208,17 @@ export default function TreePanel({
         parentKey: string
       ): ExplorerTreeNode => ({
         title: (
-          <span>
-            {routing.code}{' '}
-            <Tag color={ROUTING_STATUS_COLOR[routing.status] ?? 'default'}>
-              {routing.status}
-            </Tag>
+          <span className={styles.routingTitle}>
+            <span
+              className={styles.statusDot}
+              style={{
+                backgroundColor:
+                  ROUTING_STATUS_COLOR[routing.status] ?? DEFAULT_STATUS_COLOR
+              }}
+              aria-hidden
+            />
+            <span>{routing.code}</span>
+            <span className={styles.routingStatus}>{routing.status}</span>
           </span>
         ),
         key: routing.id,
@@ -324,6 +396,34 @@ export default function TreePanel({
     }
   }, [items, buildTreeNodes, editingGroupId, stopEditing]);
 
+  useEffect(() => {
+    setExpandedKeys(allExpandableKeys);
+    setAutoExpandParent(true);
+  }, [allExpandableKeys]);
+
+  useEffect(() => {
+    if (!search.trim()) {
+      return;
+    }
+    setExpandedKeys(allExpandableKeys);
+    setAutoExpandParent(true);
+  }, [search, allExpandableKeys]);
+
+  useEffect(() => {
+    if (!selectedKey) {
+      return;
+    }
+    const ancestors = findAncestorKeys(treeData, selectedKey);
+    if (ancestors.length) {
+      setExpandedKeys((previous) => {
+        const merged = new Set(previous);
+        ancestors.forEach((key) => merged.add(key));
+        return Array.from(merged);
+      });
+      setAutoExpandParent(true);
+    }
+  }, [selectedKey, treeData]);
+
   const filteredData = useMemo(() => {
     if (!search.trim()) {
       return treeData;
@@ -399,42 +499,86 @@ export default function TreePanel({
 
   return (
     <Card
-      style={{ width: 340, maxHeight: 640, overflow: 'hidden' }}
-      title="Explorer"
+      className={styles.card}
+      title="Explorer Tree"
       bordered
+      extra={
+        <Space size={4} className={styles.toolbar}>
+          <Tooltip title="Expand all nodes">
+            <Button
+              size="small"
+              type="text"
+              icon={<PlusSquareOutlined />}
+              onClick={expandAll}
+              aria-label="전체 노드 펼치기"
+              className={styles.toolbarButton}
+            />
+          </Tooltip>
+          <Tooltip title="Collapse all nodes">
+            <Button
+              size="small"
+              type="text"
+              icon={<MinusSquareOutlined />}
+              onClick={collapseAll}
+              aria-label="전체 노드 접기"
+              className={styles.toolbarButton}
+            />
+          </Tooltip>
+        </Space>
+      }
     >
       <Input.Search
         placeholder="Search Item / Revision / Group / Routing"
         value={search}
         onChange={(event) => setSearch(event.target.value)}
-        style={{ marginBottom: 12 }}
         allowClear
+        aria-label="Explorer 트리 검색"
+        className={styles.search}
       />
-      <Tree
-        showLine
-        virtual
-        height={520}
-        blockNode
-        draggable
-        defaultExpandAll
-        treeData={filteredData}
-        selectedKeys={selectedKey ? [selectedKey] : []}
-        onDrop={handleDrop}
-        onSelect={(_, info) => {
-          if (!onSelect) return;
-          const key = info.node.key as string;
-          const found = items
-            .flatMap((item) => item.revisions)
-            .flatMap((revision) => revision.routingGroups)
-            .flatMap((group) => group.routings)
-            .find((routing) => routing.id === key);
-          if (found) {
-            onSelect(key);
-          } else if (!info.node.children || info.node.children.length === 0) {
-            onSelect(null);
-          }
-        }}
-      />
+      <p id={instructionsId} className={styles.assistive}>
+        방향키로 노드를 이동하고 Enter 키로 세부 정보를 확인할 수 있습니다.
+      </p>
+      <div className={styles.treeContainer}>
+        <Tree
+          showLine
+          virtual
+          height={520}
+          blockNode
+          draggable={{
+            icon: <HolderOutlined className={styles.dragIcon} />,
+            nodeDraggable: (node) => {
+              const typed = node as ExplorerTreeNode;
+              return typed.nodeType === 'group' || typed.nodeType === 'routing';
+            }
+          }}
+          expandedKeys={expandedKeys}
+          autoExpandParent={autoExpandParent}
+          treeData={filteredData}
+          selectedKeys={selectedKey ? [selectedKey] : []}
+          onExpand={(keys) => {
+            setExpandedKeys(keys as string[]);
+            setAutoExpandParent(false);
+          }}
+          onDrop={handleDrop}
+          onSelect={(_, info) => {
+            if (!onSelect) return;
+            const key = info.node.key as string;
+            const found = items
+              .flatMap((item) => item.revisions)
+              .flatMap((revision) => revision.routingGroups)
+              .flatMap((group) => group.routings)
+              .find((routing) => routing.id === key);
+            if (found) {
+              onSelect(key);
+            } else if (!info.node.children || info.node.children.length === 0) {
+              onSelect(null);
+            }
+          }}
+          aria-label="Explorer routing tree"
+          aria-describedby={instructionsId}
+          role="tree"
+        />
+      </div>
     </Card>
   );
 }
