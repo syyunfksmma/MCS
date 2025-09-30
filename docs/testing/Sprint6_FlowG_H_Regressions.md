@@ -63,3 +63,15 @@
 - meta-json queue length p95 < 10 during peak reorders.
 - No regression failures recorded in Playwright nightly run.
 
+## 2025-09-30 Wave1 재점검 노트
+- Focus: Drag-and-drop reorder, Inline Edit & Soft Delete, Routing Creation Wizard, Routing Detail Modal.
+- 신규 테스트 케이스:
+  - Drag reorder 실패 → Optimistic 롤백 검증.
+  - Inline Edit 저장 지연(5s) 시 사용자 피드백 토스트 확인.
+  - Soft Delete 후 Undo 타이머 만료 시 최종 삭제 상태 유지 확인.
+  - Routing Creation Wizard 필수 필드 누락 → Validation 메시지 확인.
+  - Routing Detail Modal 탭 간 이동 시 상태 유지 확인.
+- 로그 수집: Application Insights customEvent 
+outing.wave1.flowg / 
+outing.wave1.flowh.
+

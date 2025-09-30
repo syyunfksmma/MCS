@@ -59,7 +59,7 @@
 
 ## 3. 로깅 & 보고
 - Storybook 실행/빌드 결과는 `docs/sprint/Sprint6_Routing_Log.md` Ops 행에 링크로 남긴다.
-- Playwright 회귀 시나리오는 `docs/sprint/Sprint7_TaskList.md` 로그 구역에 체크박스 업데이트로 반영한다.
+- Playwright 회귀 시나리오는 `docs/sprint/Sprint7_TaskList.md` 로그 구역에 불릿 상태 갱신로 반영한다.
 - 실패/차단 사유 발생 시 Sprint6_Routing_Log.md Notes 필드에 구체적 오류와 재시도 계획을 기록한다.
 
 ## 수정 이력

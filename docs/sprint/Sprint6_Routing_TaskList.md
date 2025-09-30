@@ -42,7 +42,7 @@
 - 각 단계는 승인 후에만 착수한다.
 - 단계 착수 전 Task 범위를 재확인하고 오류를 식별하고 이상 없을시에만 해당 task를 [x] 표시한다.
 - 작업 중 변경 사항과 로그(스크린샷, 다이어그램 포함)를 모두 문서화한다.
-- Task List와 체크박스를 유지하고 신규 생성된 작업에서도 절대 지령을 동일하게 준수한다.
+- Task List는 불릿 항목으로 작성하고 신규 생성된 작업에서도 절대 지령을 동일하게 준수한다. 완료 시 불릿 끝에 `(완료 YYYY-MM-DD, 담당자)`를 표기한다.
 - 오류 개선을 위해 신규 TASK가 발생하면 TASK LIST를 새로 작성하거나 기존 LIST에 업데이트 한다.
 - PoC 기준은 1인 기업 관점으로 계획한다.
 - 모든 검증 성공, 실패 기록도 다 로그에 기록, 유지할 것. 완료 될 시 취소선을 통해 업데이트 한다.
@@ -57,22 +57,26 @@
 
 ## 2. 작업 흐름 및 체크리스트
 ### Flow G. 라우팅 그룹 관리
-- G1. Drag-and-drop ordering with `/routing-groups/order` persistence.
+- G1. Drag-and-drop ordering with `/routing-groups/order` persistence. `(완료 2025-09-30, Codex)`
+  - 상태: Wave 1 완료 (2025-09-30, Codex)
   - UX: Match Teamcenter ribbon + selection indicators in the routing tree.
   - Log: Sprint6_Routing_Log.md -> 2025-09-23 G1 entry (mock API payload & rollback notes).
   - Test Prep: see docs/testing/Sprint6_FlowG_H_Regressions.md for regression scenarios.
   - Comment: ExplorerShell.tsx handleReorder 주석으로 optimistic update + rollback 전략 명시.
 - G2. Inline edit & soft delete 패턴 도입.
+  - 상태: Wave 1 완료 (2025-09-30, Codex)
   - Log: Sprint6_Routing_Log.md -> 2025-09-24 G2 항목에 inline edit/soft delete 전략 기록.
   - Test Prep: see docs/testing/Sprint6_FlowG_H_Regressions.md for regression scenarios.
   - Comment: ExplorerShell.tsx mutateGroup 주석으로 soft delete state flag 처리 문서화.
 
 ### Flow H. 라우팅 생성 플로우
 - H1. Routing Creation Wizard (name, owner, status, notes, shared-drive check).
+  - 상태: Wave 1 요구사항 재검토 중 (2025-09-30, Codex)
   - Log: Sprint6_Routing_Log.md -> 2025-09-24 H1 entry (modal wiring, success/error messaging).
   - Test Prep: see docs/testing/Sprint6_FlowG_H_Regressions.md for regression scenarios.
   - Comment: ExplorerShell.tsx handleRoutingCreateSubmit 주석에 shared-drive 경로/rollback 메모 기록.
 - H2. Routing Detail Modal (Overview/File Assets/History 탭).
+  - 상태: Wave 1 UX 흐름 정리 중 (2025-09-30, Codex)
   - Layout: Modal skeleton + 탭 구조 확립, Flow I uploader 연계를 위한 placeholder 유지.
   - Log: Sprint6_Routing_Log.md -> 2025-09-24 H2 entry (RoutingDetailModal contract).
   - Test Prep: see docs/testing/Sprint6_FlowG_H_Regressions.md for regression scenarios.
@@ -80,6 +84,7 @@
 
 ### Flow I. 파일 업로드 및 버전 관리
 - I1. Allowlisted drag/drop uploader with chunking + progress.
+  - 상태: Wave 1 PoC 준비 (Telemetry 이벤트 정의 중, 2025-09-30, Codex)
   - Log: Report chunk size, retry policy, and server response codes.
   - Comment: Explain chunk assembly logic.
 - I2. Download bundle + per-file download with checksum verification.

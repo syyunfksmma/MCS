@@ -74,7 +74,7 @@
 - SERVER: 기존 서버 폴더 구조 탐색, REV/이력/로그 관리, STL·SOLIDWORKS 뷰어 요구 정의
 - OPTION: 폴더 구조 설정, 작업할당 관리, Access 데이터 소스·테이블 매핑, 서버 드라이브/사용자/ESPRIT EDGE 버전/트래픽 관리 요구 수립
 
-> 단계 완료 시 Timeline에 기록하고, 잔여 체크박스 수를 보고한다.
+> 단계 완료 시 Timeline에 기록하고, 잔여 불릿(작업) 수를 보고한다.
 
 # Wave21 Server Control Launcher Plan (S96~S98)
 
