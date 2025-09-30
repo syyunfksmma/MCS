@@ -1,6 +1,7 @@
 'use client';
 
 import { Button, Card, Input, Space, Tooltip, Tree, Tag } from 'antd';
+import type { MouseEvent as ReactMouseEvent } from 'react';
 import type { DataNode, TreeProps } from 'antd/es/tree';
 import { useCallback, useEffect, useMemo, useState, useId } from 'react';
 import {
@@ -42,6 +43,11 @@ interface TreePanelProps {
   onGroupRename?: (groupId: string, nextName: string) => void;
   onGroupSoftDelete?: (groupId: string, isDeleted: boolean) => void;
   onGroupCreateRouting?: (groupId: string) => void;
+  onRoutingHover?: (payload: {
+    routing: ExplorerItem['revisions'][number]['routingGroups'][number]['routings'][number];
+    event: ReactMouseEvent<HTMLSpanElement>;
+  }) => void;
+  onRoutingLeave?: () => void;
 }
 
 const ROUTING_STATUS_COLOR: Record<string, string> = {
@@ -145,7 +151,9 @@ export default function TreePanel({
   onReorder,
   onGroupRename,
   onGroupSoftDelete,
-  onGroupCreateRouting
+  onGroupCreateRouting,
+  onRoutingHover,
+  onRoutingLeave
 }: TreePanelProps) {
   const [search, setSearch] = useState('');
   const [editingGroupId, setEditingGroupId] = useState<string | null>(null);
@@ -208,7 +216,11 @@ export default function TreePanel({
         parentKey: string
       ): ExplorerTreeNode => ({
         title: (
-          <span className={styles.routingTitle}>
+          <span
+            className={styles.routingTitle}
+            onMouseEnter={(event) => onRoutingHover?.({ routing, event })}
+            onMouseLeave={() => onRoutingLeave?.()}
+          >
             <span
               className={styles.statusDot}
               style={{
@@ -378,6 +390,8 @@ export default function TreePanel({
       groupDraftName,
       onGroupSoftDelete,
       onGroupCreateRouting,
+      onRoutingHover,
+      onRoutingLeave,
       commitEditing,
       stopEditing
     ]

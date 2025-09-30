@@ -37,15 +37,8 @@
   {
     "path": "docs\\sprint\\Sprint6_Routing_TaskList.md",
     "category": "task_list",
-    "incomplete_count": 4,
+    "incomplete_count": 3,
     "tasks": [
-      {
-        "line": 85,
-        "heading": "Sprint 6 Routing Task List (Workspace & Workflow) > 2. 작업 흐름 및 체크리스트 > Flow I. 파일 업로드 및 버전 관리",
-        "text": "I2. Download bundle + per-file download with checksum verification.",
-        "wave": 2,
-        "status": "pending"
-      },
       {
         "line": 88,
         "heading": "Sprint 6 Routing Task List (Workspace & Workflow) > 2. 작업 흐름 및 체크리스트 > Flow I. 파일 업로드 및 버전 관리",

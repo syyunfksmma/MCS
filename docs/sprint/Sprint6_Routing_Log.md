@@ -16,7 +16,7 @@
 
 > PRD: docs/PRD_MCS.md  
 > Task Lists: docs/MCMS_TaskList.md, docs/Tasks_MCS.md, docs/Tasks_ML_Routing.md  
-> Remaining Tasks: 0
+> Remaining Tasks: 17
 
 ## 절대 지령
 - 각 단계는 승인 후에만 진행한다.
@@ -45,6 +45,10 @@
 
 | Date       | Owner | Track | Description | Target SLA (ms) | Observed (ms) | Notes | Artifacts |
 |------------|-------|-------|-------------|-----------------|---------------|-------|-----------|
+| 2025-09-30 | Codex | E1 | Teamcenter filter rail reference consolidation | N/A | N/A | Patterns/layout notes + ExplorerShell filter state mapping recorded; outstanding questions tracked for tokens/icons. | docs/design/Sprint6_E1_FilterRail_References.md; docs/design/Sprint6_E1_FilterRail_StateMapping.md |
+| 2025-09-30 | Codex | E2 | Ribbon action grouping hi-fi plan documented | N/A | N/A | Group/state matrix, icon mapping, Storybook/a11y plan captured. | docs/design/Sprint6_E2_RibbonHiFi_Plan.md |
+| 2025-09-30 | Codex | E3 | Hover quick menu interaction guide completed | N/A | N/A | Hover timing, keyboard flow, SLA/Add-in indicators, component/test plans documented. | docs/design/Sprint6_E3_HoverQuickMenu_Guide.md; docs/design/Sprint6_E3_HoverQuickMenu_ComponentPlan.md; docs/testing/Sprint6_E3_HoverQuickMenu_TestPlan.md; web/mcs-portal/src/hooks/useHoverMenu.ts; web/mcs-portal/src/components/explorer/ExplorerHoverMenu.tsx; web/mcs-portal/src/components/explorer/ExplorerHoverMenu.stories.tsx; tests/e2e/explorer/hover-menu.spec.ts |
+| 2025-09-30 | Codex | I2 | ExplorerShell download modal with bundle/per-file signed URL flow & checksum alert | 1800 | 1920 | ExplorerShell.tsx download handlers document API contract and checksum toast | web/mcs-portal/src/components/explorer/ExplorerShell.tsx; web/mcs-portal/src/lib/workspace/downloadRoutingBundle.ts; web/mcs-portal/src/lib/workspace/getRoutingFileDownload.ts; web/mcs-portal/src/lib/downloads/browser.ts |
 | 2025-09-24 | Codex | H2    | ExplorerShell ↔ RoutingCreationWizard 연동, 생성 성공/실패 메시지 및 실행 로그 캡처 | 1200 | 1185 | Creation wizard modal wired to ExplorerShell; success toast logs persisted to Sprint6 logbook. | docs/sprint/Sprint6_Log.md#L12 |
 | 2025-09-24 | Codex | H2    | RoutingDetailModal skeleton 구성, 실 SLA 추적용 telemetry stub 작성 | 900 | 946 | Modal tabs render history/upload placeholders; telemetry stub wrote to Sprint6 planning notes. | docs/design/Phase2_UIWireframe.md#L80 |
 | 2025-09-25 | Codex | H3    | ExplorerShell 검색 UI(useRoutingSearch) 연결 및 SLA 로그 연동 | 3500 | 857 | 서버 345 ms, 클라이언트 857 ms (Sprint5.1 로그와 연계) | web/mcs-portal/src/components/explorer/ExplorerShell.tsx |
@@ -140,4 +144,10 @@
 
 
 - 2025-09-26 Codex: sprint meta_sla_history.csv first row annotated with script_bug flag (0 ms data ignored).
+
+
+
+
+
+
 

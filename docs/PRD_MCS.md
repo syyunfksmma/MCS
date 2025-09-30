@@ -16,7 +16,7 @@
 
 > PRD: docs/PRD_MCS.md  
 > Task Lists: docs/MCMS_TaskList.md, docs/Tasks_MCS.md, docs/Tasks_ML_Routing.md  
-> Remaining Tasks: 0
+> Remaining Tasks: 17
 
 ## 절대 지령
 - 각 단계는 승인 후에만 진행한다.
@@ -92,6 +92,7 @@
 ## 6. Information Architecture and Screens
 1. **Product Dashboard**
    - Layout mirrors Siemens Teamcenter X search grid: persistent left filter rail, central card/thumbnail grid, and right-side preview/chat column for contextual guidance.
+   - Reference: docs/design/Sprint6_E1_FilterRail_References.md (Sprint6 E1 filter rail patterns).
    - Global search bar, product list, create product modal.
    - Shows SolidWorks status badge and high-level KPI tiles (products, routing groups, SolidWorks linked).
 2. **Revision Workspace**
@@ -241,4 +242,5 @@
 
 ---
 2025-09-26 Codex: Updated deployment/auth assumptions for internal Windows Server install model and Windows Integrated Authentication.
+
 

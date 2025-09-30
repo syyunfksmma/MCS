@@ -2,12 +2,6 @@
   "wave1": [
     {
       "doc": "docs\\sprint\\Sprint6_Routing_TaskList.md",
-      "line": 69,
-      "heading": "Sprint 6 Routing Task List (Workspace & Workflow) > 2. 작업 흐름 및 체크리스트 > Flow I. 파일 업로드 및 버전 관리",
-      "text": "I2. Download bundle + per-file download with checksum verification."
-    },
-    {
-      "doc": "docs\\sprint\\Sprint6_Routing_TaskList.md",
       "line": 77,
       "heading": "Sprint 6 Routing Task List (Workspace & Workflow) > 2. 작업 흐름 및 체크리스트 > Flow J. SolidWorks & Explorer 연동",
       "text": "J1. SolidWorks upload/replace UI with telemetry & disabled Sync to PLM button."

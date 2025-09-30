@@ -61,7 +61,7 @@ export default async function VerifyEmailPage({ searchParams }: VerifyEmailProps
           이메일 인증이 필요합니다
         </Title>
         <Paragraph type="secondary">
-          Magic Link 메일을 열어 "지금 로그인" 버튼을 클릭하면 인증이 완료됩니다.
+          Magic Link 메일을 열어 &quot;지금 로그인&quot; 버튼을 클릭하면 인증이 완료됩니다.
         </Paragraph>
         <Alert
           type="info"
