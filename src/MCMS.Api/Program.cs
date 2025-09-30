@@ -94,5 +94,7 @@ app.UseAuthorization();
 
 app.MapControllers();
 app.MapHub<RoutingHub>("/hubs/routing");
+app.MapHub<PresenceHub>("/hubs/presence");
+app.MapHub<TreeHub>("/hubs/tree");
 
 app.Run();

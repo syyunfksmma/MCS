@@ -63,10 +63,18 @@
 | Sprint 5.1 (Search Readiness) | docs/sprint/Sprint5_1_Routing_TaskList.md | docs/sprint/Sprint5_1_Routing_Log.md | Covers FR-9 search & filters. |
 | Sprint 6 (Workspace & Workflow) | docs/sprint/Sprint6_Routing_TaskList.md | docs/sprint/Sprint6_Routing_Log.md | Uploads, versioning, SolidWorks (FR-3~FR-8). |
 | Sprint 7 (Admin & Settings) | docs/sprint/Sprint7_Routing_TaskList.md | docs/sprint/Sprint7_Routing_Log.md | Shared-drive configuration UI. |
-| Sprint 8 (Performance & Reliability) | docs/sprint/Sprint8_Routing_TaskList.md | docs/sprint/Sprint8_Routing_Log.md | Performance instrumentation & resilience. |
-| Sprint 9 (QA & UAT) | docs/sprint/Sprint9_Routing_TaskList.md | docs/sprint/Sprint9_Routing_Log.md | End-to-end testing, accessibility. |
-| Sprint 10 (Deployment & Operations) | docs/sprint/Sprint10_Routing_TaskList.md | docs/sprint/Sprint10_Routing_Log.md | Release readiness & runbooks. |
+| Sprint 8 (~~Performance & Reliability~~ Dashboard & SignalR) | docs/sprint/Sprint8_Routing_TaskList.md | docs/sprint/Sprint8_Routing_Log.md | ~~Performance instrumentation & resilience.~~ Dashboard KPI pipeline & SignalR real-time presence. |
+| Sprint 9 (~~QA & UAT~~ Menu Expansion) | docs/sprint/Sprint9_Routing_TaskList.md | docs/sprint/Sprint9_Routing_Log.md | ~~End-to-end testing, accessibility.~~ Dashboard/MCS/Server/Option menus, Esprit EDGE & 3D viewer integration. |
+| Sprint 10 (~~Deployment & Operations~~ Ribbon & Branding) | docs/sprint/Sprint10_Routing_TaskList.md | docs/sprint/Sprint10_Routing_Log.md | ~~Release readiness & runbooks.~~ Ribbon actions, filter toggles, Siemens branding & accessibility polish. |
 | Sprint 11 (Documentation & Training) | docs/sprint/Sprint11_Routing_TaskList.md | docs/sprint/Sprint11_Routing_Log.md | Training materials & knowledge transfer. |
+
+
+## QA & Continuous Execution Plan (2025-09-30)
+- Sprint 8~10 tasks run back-to-back with no idle buffer; treat deliverables as a single PoC lane.
+- Daily QA smoke (Playwright + Vitest + k6 SLA check) required before coding hand-off.
+- Track defects in docs/testing/QA_Shakeout_Log.md; triage within same day.
+- Anticipated risk areas: SignalR reconnect, Esprit EDGE handshake, 3D viewer performance. Prepare rollback toggles before enabling in demo builds.
+
 
 
 ## Absolute Directives
@@ -177,3 +185,14 @@
 
 
 
+
+## Execution Tracker (Sprint 8~10)
+| Sprint | Task | 설명 | 상태 | 비고 |
+| --- | --- | --- | --- | --- |
+| Sprint 8 | D1 | Dashboard Aggregation API 설계 및 구현 | 설계 완료 | docs/api/pending/Dashboard_Aggregation_API_Draft.md |
+| Sprint 8 | S1 | SignalR Presence/Tree Hub 설계 | 설계 완료 | docs/api/pending/SignalR_Hub_Spec.md |
+| Sprint 8 | S2 | SignalR 클라이언트 연동 | 대기 | docs/api/pending/SignalR_Hub_Spec.md |
+| Sprint 9 | M1 | 글로벌 메뉴 재구성 | 설계 완료 | docs/frontend/Menu_Expansion_Implementation.md |
+| Sprint 9 | C1 | 3D/STL 뷰어 구현 | 설계 완료 | docs/frontend/Menu_Expansion_Implementation.md |
+| Sprint 10 | R1 | ExplorerRibbon 그룹 재구성 | 설계 완료 | docs/frontend/Ribbon_Filter_Alignment.md |
+| Sprint 10 | F1 | SearchFilterRail 토글 동기화 | 설계 완료 | docs/frontend/Ribbon_Filter_Alignment.md |

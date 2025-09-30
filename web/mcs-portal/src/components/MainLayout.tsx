@@ -3,26 +3,20 @@
 import { Layout } from 'antd';
 import { ReactNode } from 'react';
 import HeaderBar from './HeaderBar';
+import GlobalTabs from './navigation/GlobalTabs';
 
-const { Sider, Content } = Layout;
+const { Content } = Layout;
 
 export default function MainLayout({ children }: { children: ReactNode }) {
   return (
-    <Layout>
+    <Layout style={{ minHeight: '100vh', background: '#f7f9fc' }}>
       <HeaderBar />
-      <Layout>
-        <Sider
-          width={240}
-          theme="light"
-          style={{ padding: '16px', borderRight: '1px solid #f0f0f0' }}
-        >
-          {/* 추후 사이드 메뉴 삽입 */}
-          <p style={{ color: '#4a4a4a' }}>메뉴 준비 중</p>
-        </Sider>
-        <Layout style={{ padding: '24px' }}>
-          <Content>{children}</Content>
-        </Layout>
-      </Layout>
+      <Content style={{ padding: '0 24px 24px' }}>
+        <div style={{ background: '#ffffff', borderRadius: 12, padding: '0 16px 16px' }}>
+          <GlobalTabs />
+          <div style={{ padding: '24px 8px 0' }}>{children}</div>
+        </div>
+      </Content>
     </Layout>
   );
 }
