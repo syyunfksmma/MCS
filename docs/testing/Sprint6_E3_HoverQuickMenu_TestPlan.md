@@ -27,6 +27,9 @@
 - Cleanup: ensure menu hides when moving to another node, no lingering portals.
 
 ## Reporting & Assets
+
+- Feature flag 토글: ExplorerShell 상단 카드에서 `feature.hover-quick-menu`를 켜고/끄며 QA 진행. 토글 변경 시 기존 Hover 메뉴는 즉시 닫혀야 합니다.
+- 스크린샷 저장 위치: `docs/design/reference/hover_menu/` (README 참고) – Storybook `PendingWithSla`, `DraftDefault` 스토리에서 1280×720 해상도로 캡처합니다.
 - Test run results appended to `docs/testing/Sprint6_E3_Status.md` (new section) once implemented.
 - GUI 이미지 캡처는 Storybook 실행 후 브라우저에서 촬영하여 `docs/design/reference/hover_menu/`에 저장하고, 로그에 파일명 기록.
 

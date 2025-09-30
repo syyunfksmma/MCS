@@ -45,6 +45,7 @@
 
 | Date       | Owner | Track | Description | Target SLA (ms) | Observed (ms) | Notes | Artifacts |
 |------------|-------|-------|-------------|-----------------|---------------|-------|-----------|
+| 2025-09-30 | Codex | G | Flow G drag/drop & soft delete regression QA after hover menu integration | N/A | N/A | Verified reorder/inline edit remain intact; Task List note added. | web/mcs-portal/src/components/explorer/ExplorerShell.tsx; web/mcs-portal/src/components/TreePanel.tsx |
 | 2025-09-30 | Codex | E1 | Teamcenter filter rail reference consolidation | N/A | N/A | Patterns/layout notes + ExplorerShell filter state mapping recorded; outstanding questions tracked for tokens/icons. | docs/design/Sprint6_E1_FilterRail_References.md; docs/design/Sprint6_E1_FilterRail_StateMapping.md |
 | 2025-09-30 | Codex | E2 | Ribbon action grouping hi-fi plan documented | N/A | N/A | Group/state matrix, icon mapping, Storybook/a11y plan captured. | docs/design/Sprint6_E2_RibbonHiFi_Plan.md |
 | 2025-09-30 | Codex | E3 | Hover quick menu interaction guide completed | N/A | N/A | Hover timing, keyboard flow, SLA/Add-in indicators, component/test plans documented. | docs/design/Sprint6_E3_HoverQuickMenu_Guide.md; docs/design/Sprint6_E3_HoverQuickMenu_ComponentPlan.md; docs/testing/Sprint6_E3_HoverQuickMenu_TestPlan.md; web/mcs-portal/src/hooks/useHoverMenu.ts; web/mcs-portal/src/components/explorer/ExplorerHoverMenu.tsx; web/mcs-portal/src/components/explorer/ExplorerHoverMenu.stories.tsx; tests/e2e/explorer/hover-menu.spec.ts |

@@ -36,6 +36,7 @@
 - SLA alert displayed triggers `routing.hoverMenu.slaAlertViewed` once per session.
 
 ## Integration Steps
+- ExplorerShell renders `hoverMenuToggleCard` (feature.hover-quick-menu) for QA toggling and instructions.
 1. Implement `useHoverMenu` hook (`open`, `close`, `focusNext`, `focusPrev`).
 2. Build `ExplorerHoverMenu` component with props above.
 3. Update `ExplorerShell` search list to render hover menu; use absolute positioning + portal to body.
