@@ -1,3 +1,19 @@
+# 절대 지령
+- 각 단계는 승인 후에만 진행한다.
+- 단계 착수 전 이번 단계 전체 범위를 리뷰하고 오류를 식별한다.
+- 오류 발견 시 수정 전에 승인 재요청한다.
+- 이전 단계 오류가 없음을 재확인한 뒤 다음 단계 승인을 요청한다.
+- 모든 단계 작업은 백그라운드 방식으로 수행한다.
+- 문서/웹뷰어 점검이 필요한 경우 반드시 승인 확인 후 진행한다.
+- 다음 단계 착수 전에 이전 단계 전반을 재점검하여 미해결 오류가 없는지 확인한다.
+- 만약 오류나 사용자의 지시로 task나 절대지령이 수정될시 취소선으로 기존 지시나 이력을 보존하고, 아래에 추가한다.
+- 모든 웹은 codex가 테스트 실시 후 이상 없을시 보고한다.
+- 1인 개발자와 codex가 같이 협업하며, 모든 산출물은 codex가 작업한다. 중간 중간 성능 향상이나 기능 향상을 위해 제안하는 것을 목표로한다.
+- 이 서비스는 사내 내부망으로 운영될 예정이며, 외부 서버나 클라우드 사용은 절대 금한다.
+- local 호스트 서버를 통해 PoC를 1인 개발자와 같이 진행하며, 테스트 완료시 1인 개발자 PC를 서버로하여 사내망에 릴리즈한다.
+- 코딩과 IT기술을 전혀 모르는 인원도 쉽게 PoC가 가능하도록 Docker나 기타 exe 형태로 배포할 방법을 검토하며 개발 진행한다.
+- 모든 스프린트 태스크는 전용 스프린트 Task List를 참조하고, docs/sprint 명세에 따른 영어 로그북 + 설명적 코드 주석을 남김.
+
 > PRD: docs/PRD_MCS.md  
 > Task Lists: docs/MCMS_TaskList.md, docs/Tasks_MCS.md, docs/Tasks_ML_Routing.md  
 > Remaining Tasks: 0
@@ -35,36 +51,36 @@
 
 ## 작업 목록
 ### A. 매뉴얼/문서
-- [x] ~~A1. 사용자 매뉴얼 최종 업데이트(웹 기준).~~ (2025-09-29 Codex, MCMS_UserManual_Web.md)
-- [x] ~~A2. 운영/지원 매뉴얼 업데이트 (Runbook 링크 포함).~~ (2025-09-29 Codex, MCMS_OpsManual.md)
-- [x] ~~A3. Help Center/FAQ 콘텐츠 정비.~~ (2025-09-29 Codex, MCMS_HelpCenter_FAQ.md)
-- [x] ~~A4. Offline 설치 패키지 QuickStart 작성(package-offline, run-smoke 포함).~~ (2025-09-29 Codex, MCMS_Offline_QuickStart.md)
+- ~~A1. 사용자 매뉴얼 최종 업데이트(웹 기준).~~ (2025-09-29 Codex, MCMS_UserManual_Web.md)
+- ~~A2. 운영/지원 매뉴얼 업데이트 (Runbook 링크 포함).~~ (2025-09-29 Codex, MCMS_OpsManual.md)
+- ~~A3. Help Center/FAQ 콘텐츠 정비.~~ (2025-09-29 Codex, MCMS_HelpCenter_FAQ.md)
+- ~~A4. Offline 설치 패키지 QuickStart 작성(package-offline, run-smoke 포함).~~ (2025-09-29 Codex, MCMS_Offline_QuickStart.md)
 
 ### B. 교육/온보딩
-- [x] ~~B1. 교육 자료(동영상, 슬라이드) 제작 완료.~~ (2025-09-29 Codex, MCMS_TrainingMaterials.md 초안)
-- [x] ~~B2. 교육 세션 진행 및 참석률/만족도 기록.~~ (2025-09-29 Codex, MCMS_TrainingSessions_Log.md)
-- [x] ~~B3. 온보딩 튜토리얼(온스크린 가이드) 점검.~~ (2025-09-29 Codex, MCMS_Onboarding_Tutorial_Checklist.md)
-- [x] ~~B4. 운영팀 대상 이메일 가입·수동 승인 온보딩 워크숍 진행.~~ (2025-09-29 Codex, MCMS_Approval_Workshop.md)
+- ~~B1. 교육 자료(동영상, 슬라이드) 제작 완료.~~ (2025-09-29 Codex, MCMS_TrainingMaterials.md 초안)
+- ~~B2. 교육 세션 진행 및 참석률/만족도 기록.~~ (2025-09-29 Codex, MCMS_TrainingSessions_Log.md)
+- ~~B3. 온보딩 튜토리얼(온스크린 가이드) 점검.~~ (2025-09-29 Codex, MCMS_Onboarding_Tutorial_Checklist.md)
+- ~~B4. 운영팀 대상 이메일 가입·수동 승인 온보딩 워크숍 진행.~~ (2025-09-29 Codex, MCMS_Approval_Workshop.md)
 
 ### C. 전환 보고 & 로드맵
-- [x] ~~C1. 전환 결과 보고서 및 KPI 요약 작성.~~ (2025-09-29 Codex, Sprint7_TransitionReport.md)
-- [x] ~~C2. 후속 개선 로드맵 확정(Blue/Green PoC 등).~~ (2025-09-29 Codex, Sprint7_Roadmap.md)
-- [x] ~~C3. Lessons Learned 문서화 & 공유.~~ (2025-09-29 Codex, Sprint7_LessonsLearned.md)
-- [x] ~~C4. Sprint8 자동화 범위 정의 및 Task Scheduler 구성 초안 링크.~~ (2025-09-29 Codex, Sprint8_AutomationPlan.md)
+- ~~C1. 전환 결과 보고서 및 KPI 요약 작성.~~ (2025-09-29 Codex, Sprint7_TransitionReport.md)
+- ~~C2. 후속 개선 로드맵 확정(Blue/Green PoC 등).~~ (2025-09-29 Codex, Sprint7_Roadmap.md)
+- ~~C3. Lessons Learned 문서화 & 공유.~~ (2025-09-29 Codex, Sprint7_LessonsLearned.md)
+- ~~C4. Sprint8 자동화 범위 정의 및 Task Scheduler 구성 초안 링크.~~ (2025-09-29 Codex, Sprint8_AutomationPlan.md)
 
 ### D. 문서 & 로그
-- [x] ~~D1. Sprint7_Log.md에 교육/문서 작업 로그 기록.~~ (2025-09-29 Codex, 최신 로그 반영)
+- ~~D1. Sprint7_Log.md에 교육/문서 작업 로그 기록.~~ (2025-09-29 Codex, 최신 로그 반영)
 
 ## 로그 기록
 - 2025-09-25: Storybook/Playwright 착수 계획 문서화(docs/testing/Sprint6_UX_TestKickoff.md) 및 Sprint6 UX 플랜 연동.
 ### E. Explorer UX Delivery (Teamcenter)
-- [x] ~~E1. 좌측 필터 레일 React 컴포넌트 구현 및 Storybook/접근성 검증.~~ (2025-09-29 Codex, SearchFilterRail.tsx + Storybook)
-- [x] ~~E2. Ribbon 액션 그룹화 UI 적용 및 접근성 리뷰, Add-in CTA 연동.~~ (2025-09-29 Codex, ExplorerRibbon.tsx)
-- [x] ~~E3. Hover Quick Menu 상호작용 ExplorerShell 통합 및 Playwright 회귀 테스트.~~ (2025-09-29 Codex, ExplorerShell.tsx 업데이트)
+- ~~E1. 좌측 필터 레일 React 컴포넌트 구현 및 Storybook/접근성 검증.~~ (2025-09-29 Codex, SearchFilterRail.tsx + Storybook)
+- ~~E2. Ribbon 액션 그룹화 UI 적용 및 접근성 리뷰, Add-in CTA 연동.~~ (2025-09-29 Codex, ExplorerRibbon.tsx)
+- ~~E3. Hover Quick Menu 상호작용 ExplorerShell 통합 및 Playwright 회귀 테스트.~~ (2025-09-29 Codex, ExplorerShell.tsx 업데이트)
 ### F. Chunk Upload Optimisation (Phase 2)
-- [x] ~~F1. 청크 크기 A/B 테스트(k6) 256/512/1024KiB 재측정 및 SLA 3.5s 검증.~~ (2025-09-29 Codex, chunk_upload_ab_test.js)
-- [x] ~~F2. SSD Warm-up 스크립트 및 배포 단계 점검 체크리스트 작성.~~ (2025-09-29 Codex, ssd_warmup.ps1)
-- [x] ~~F3. Streaming SHA-256 서버 측 도입 후 회귀 테스트 및 로그 갱신.~~ (2025-09-29 Codex, Sprint7_StreamingSHAPlan.md)
+- ~~F1. 청크 크기 A/B 테스트(k6) 256/512/1024KiB 재측정 및 SLA 3.5s 검증.~~ (2025-09-29 Codex, chunk_upload_ab_test.js)
+- ~~F2. SSD Warm-up 스크립트 및 배포 단계 점검 체크리스트 작성.~~ (2025-09-29 Codex, ssd_warmup.ps1)
+- ~~F3. Streaming SHA-256 서버 측 도입 후 회귀 테스트 및 로그 갱신.~~ (2025-09-29 Codex, Sprint7_StreamingSHAPlan.md)
 ## 수정 이력
 - 2025-09-25 Codex: 문서 변경 기록 규칙 추가, UX/Chunk 작업 세부 일정 반영.
 - 2025-09-25 Codex: Storybook/Playwright 로그 계획 기록.

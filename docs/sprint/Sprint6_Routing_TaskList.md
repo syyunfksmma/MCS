@@ -1,3 +1,19 @@
+# 절대 지령
+- 각 단계는 승인 후에만 진행한다.
+- 단계 착수 전 이번 단계 전체 범위를 리뷰하고 오류를 식별한다.
+- 오류 발견 시 수정 전에 승인 재요청한다.
+- 이전 단계 오류가 없음을 재확인한 뒤 다음 단계 승인을 요청한다.
+- 모든 단계 작업은 백그라운드 방식으로 수행한다.
+- 문서/웹뷰어 점검이 필요한 경우 반드시 승인 확인 후 진행한다.
+- 다음 단계 착수 전에 이전 단계 전반을 재점검하여 미해결 오류가 없는지 확인한다.
+- 만약 오류나 사용자의 지시로 task나 절대지령이 수정될시 취소선으로 기존 지시나 이력을 보존하고, 아래에 추가한다.
+- 모든 웹은 codex가 테스트 실시 후 이상 없을시 보고한다.
+- 1인 개발자와 codex가 같이 협업하며, 모든 산출물은 codex가 작업한다. 중간 중간 성능 향상이나 기능 향상을 위해 제안하는 것을 목표로한다.
+- 이 서비스는 사내 내부망으로 운영될 예정이며, 외부 서버나 클라우드 사용은 절대 금한다.
+- local 호스트 서버를 통해 PoC를 1인 개발자와 같이 진행하며, 테스트 완료시 1인 개발자 PC를 서버로하여 사내망에 릴리즈한다.
+- 코딩과 IT기술을 전혀 모르는 인원도 쉽게 PoC가 가능하도록 Docker나 기타 exe 형태로 배포할 방법을 검토하며 개발 진행한다.
+- 모든 스프린트 태스크는 전용 스프린트 Task List를 참조하고, docs/sprint 명세에 따른 영어 로그북 + 설명적 코드 주석을 남김.
+
 > PRD: docs/PRD_MCS.md  
 > Task Lists: docs/MCMS_TaskList.md, docs/Tasks_MCS.md, docs/Tasks_ML_Routing.md  
 > Remaining Tasks: 0
@@ -41,44 +57,44 @@
 
 ## 2. 작업 흐름 및 체크리스트
 ### Flow G. 라우팅 그룹 관리
-- [ ] G1. Drag-and-drop ordering with `/routing-groups/order` persistence.
+- G1. Drag-and-drop ordering with `/routing-groups/order` persistence.
   - UX: Match Teamcenter ribbon + selection indicators in the routing tree.
   - Log: Sprint6_Routing_Log.md -> 2025-09-23 G1 entry (mock API payload & rollback notes).
   - Test Prep: see docs/testing/Sprint6_FlowG_H_Regressions.md for regression scenarios.
   - Comment: ExplorerShell.tsx handleReorder 주석으로 optimistic update + rollback 전략 명시.
-- [ ] G2. Inline edit & soft delete 패턴 도입.
+- G2. Inline edit & soft delete 패턴 도입.
   - Log: Sprint6_Routing_Log.md -> 2025-09-24 G2 항목에 inline edit/soft delete 전략 기록.
   - Test Prep: see docs/testing/Sprint6_FlowG_H_Regressions.md for regression scenarios.
   - Comment: ExplorerShell.tsx mutateGroup 주석으로 soft delete state flag 처리 문서화.
 
 ### Flow H. 라우팅 생성 플로우
-- [ ] H1. Routing Creation Wizard (name, owner, status, notes, shared-drive check).
+- H1. Routing Creation Wizard (name, owner, status, notes, shared-drive check).
   - Log: Sprint6_Routing_Log.md -> 2025-09-24 H1 entry (modal wiring, success/error messaging).
   - Test Prep: see docs/testing/Sprint6_FlowG_H_Regressions.md for regression scenarios.
   - Comment: ExplorerShell.tsx handleRoutingCreateSubmit 주석에 shared-drive 경로/rollback 메모 기록.
-- [ ] H2. Routing Detail Modal (Overview/File Assets/History 탭).
+- H2. Routing Detail Modal (Overview/File Assets/History 탭).
   - Layout: Modal skeleton + 탭 구조 확립, Flow I uploader 연계를 위한 placeholder 유지.
   - Log: Sprint6_Routing_Log.md -> 2025-09-24 H2 entry (RoutingDetailModal contract).
   - Test Prep: see docs/testing/Sprint6_FlowG_H_Regressions.md for regression scenarios.
   - Comment: RoutingDetailModal.tsx 상단 주석에 telemetry stub/탭 구조 설명 기록.
 
 ### Flow I. 파일 업로드 및 버전 관리
-- [ ] I1. Allowlisted drag/drop uploader with chunking + progress.
+- I1. Allowlisted drag/drop uploader with chunking + progress.
   - Log: Report chunk size, retry policy, and server response codes.
   - Comment: Explain chunk assembly logic.
-- [ ] I2. Download bundle + per-file download with checksum verification.
+- I2. Download bundle + per-file download with checksum verification.
   - Log: Note bundling endpoint and checksum algorithm.
   - Comment: Document guardrails for incomplete downloads.
-- [ ] I3. Version table (`Main` toggle, legacy visibility checkbox, audit timeline).
+- I3. Version table (`Main` toggle, legacy visibility checkbox, audit timeline).
   - Log: Detail version metadata structure (`version.json`).
   - Comment: Explain UI state transitions when toggling.
 
 ### Flow J. SolidWorks & Explorer 연동
-- [ ] J1. SolidWorks upload/replace UI with telemetry & disabled Sync to PLM button.
+- J1. SolidWorks upload/replace UI with telemetry & disabled Sync to PLM button.
   - UX: Include Teamcenter-style action menu with Copy Path and Preview toggles.
   - Log: Describe telemetry fields and disabled state reason.
   - Comment: Annotate placeholder button with future integration note.
-- [ ] J2. Open-in-explorer protocol handler wiring + permission check.
+- J2. Open-in-explorer protocol handler wiring + permission check.
   - Log: Record protocol scheme, environment guard.
   - Comment: Explain security prompt handling.
 

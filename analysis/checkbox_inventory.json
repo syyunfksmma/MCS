@@ -1,0 +1,2548 @@
+[
+  {
+    "path": "MCMS_TaskList.md",
+    "hits": [
+      {
+        "line": 48,
+        "text": "- [x] ~~전환 배경, 범위, 기대효과 요약본(Executive Deck) 작성~~ (2025-09-29 Codex, docs/Phase0_ExecutiveDeck.md)"
+      },
+      {
+        "line": 49,
+        "text": "- [x] ~~이해관계자 RACI 및 의사결정 트랙 승인 완료~~ (2025-09-29 Codex, docs/Phase0_RACI.md)"
+      },
+      {
+        "line": 50,
+        "text": "- [x] ~~SSO/보안 정책, Node 호스팅 가이드 합의~~ (2025-09-29 Codex, docs/Phase0_SSO_NodeHostingGuide.md)"
+      },
+      {
+        "line": 53,
+        "text": "- [x] ~~웹 UX 요구사항 수집 및 사용자 여정 재정의~~ (2025-09-29 Codex, docs/Phase1_Requirements.md#7-2025-09-29-ux-requirement-workshop-summary)"
+      },
+      {
+        "line": 54,
+        "text": "- [x] ~~네비게이션/IA 다이어그램 승인~~ (2025-09-29 Codex, docs/design/Phase1_NavigationIA.md)"
+      },
+      {
+        "line": 55,
+        "text": "- [x] ~~접근성/반응형 가이드 초안 배포~~ (2025-09-29 Codex, docs/accessibility/AccessibilityResponsiveGuide.md)"
+      },
+      {
+        "line": 58,
+        "text": "- [x] ~~Next.js + .NET 통합 아키텍처 다이어그램 확정~~ (2025-09-29 Codex, docs/design/Phase2_Nextjs_DotNet_Architecture.md)"
+      },
+      {
+        "line": 59,
+        "text": "- [x] ~~IIS Reverse Proxy + Node 서비스 운영 설계 승인~~ (2025-09-29 Codex, docs/ops/IIS_Node_OperationsDesign.md)"
+      },
+      {
+        "line": 60,
+        "text": "- [x] ~~CI/CD 파이프라인(빌드/테스트/배포) 설계서 리뷰 통과~~ (2025-09-29 Codex, docs/ci/Phase2_CICD_Design.md)"
+      },
+      {
+        "line": 63,
+        "text": "- [x] ~~디자인 토큰 JSON/TS 모듈 작성~~ (2025-09-29 Codex, web/mcs-portal/src/styles/tokens.ts)"
+      },
+      {
+        "line": 64,
+        "text": "- [x] ~~공통 컴포넌트(버튼, 테이블, 모달, 배지) 코드 스캐폴딩~~ (2025-09-29 Codex, web/mcs-portal/src/components/ui/*)"
+      },
+      {
+        "line": 65,
+        "text": "- [x] ~~Figma 핸드오프 및 코드 매핑 가이드 배포~~ (2025-09-29 Codex, docs/design/Phase3_FigmaHandoffGuide.md)"
+      },
+      {
+        "line": 68,
+        "text": "- [x] ~~REST API 소비자 가이드 업데이트(Next.js 관점)~~ (2025-09-29 Codex, docs/api/Phase4_REST_Consumer_Guide.md)"
+      },
+      {
+        "line": 69,
+        "text": "- [x] ~~SignalR/SSE 이벤트 규격 문서화~~ (2025-09-29 Codex, docs/api/Phase4_SignalR_Spec.md)"
+      },
+      {
+        "line": 70,
+        "text": "- [x] ~~대용량 파일 업로드/다운로드 정책 확정~~ (2025-09-29 Codex, docs/api/Phase4_LargeFilePolicy.md)"
+      },
+      {
+        "line": 73,
+        "text": "- [x] ~~Item/Revision/Routing SSR 페이지 구현 및 테스트~~ (2025-09-29 Codex, src/app/explorer/[itemId]/page.tsx & tests/unit/explorer/ExplorerServerHelpers.test.ts)"
+      },
+      {
+        "line": 74,
+        "text": "- [x] ~~React Query 캐싱 전략/Prefetch 구성~~ (2025-09-29 Codex, src/lib/queryClientFactory.ts & docs/design/Phase5_ReactQueryCaching.md)"
+      },
+      {
+        "line": 75,
+        "text": "- [x] ~~Add-in 배지 & 히스토리 뷰 UI 완료~~ (2025-09-29 Codex, src/components/explorer/AddinHistoryPanel.tsx 업데이트 및 ExplorerShell 연동)"
+      },
+      {
+        "line": 78,
+        "text": "- [x] ~~Routing Workspace Drag & Drop 기능 구현~~ (2025-09-29 Codex, docs/design/Phase6_WorkspaceDragDrop.md & src/lib/workspace/reorderRouting.ts)"
+      },
+      {
+        "line": 79,
+        "text": "- [x] ~~Add-in Control Panel(큐 모니터링, 재시도) 제공~~ (2025-09-29 Codex, src/components/explorer/AddinControlPanel.tsx & ExplorerShell 통합)"
+      },
+      {
+        "line": 80,
+        "text": "- [x] ~~승인/반려 코멘트 플로우 통합 테스트~~ (2025-09-29 Codex, src/lib/workflow/approval.ts & tests/unit/workflow/ApprovalFlow.test.ts)"
+      },
+      {
+        "line": 83,
+        "text": "- [x] ~~API 키, 파라미터, AD 롤 매핑 UI 구축~~ (2025-09-29 Codex, src/components/admin/ApiKeyManagement.tsx & app/admin/api-keys/page.tsx)"
+      },
+      {
+        "line": 84,
+        "text": "- [x] ~~감사 로그/감시 뷰 구현~~ (2025-09-29 Codex, docs/observability/Admin_AuditMonitoring.md & AdminAuditLogPanel 활용)"
+      },
+      {
+        "line": 85,
+        "text": "- [x] ~~Feature Flag / 환경변수 관리 화면 배포~~ (2025-09-29 Codex, docs/operations/FeatureFlagManagement.md & AdminFeatureFlagsPanel)"
+      },
+      {
+        "line": 88,
+        "text": "- [x] ~~Lighthouse/Web Vitals 측정 및 개선 플랜 수립~~ (2025-09-29 Codex, docs/performance/Phase8_LighthousePlan.md)"
+      },
+      {
+        "line": 89,
+        "text": "- [x] ~~SSR 서버 로드/회복 테스트 수행~~ (2025-09-29 Codex, scripts/performance/run-ssr-loadtest.ps1 & docs/performance/Phase8_SSRLoadTest.md)"
+      },
+      {
+        "line": 90,
+        "text": "- [x] ~~예외/네트워크 장애 대응 UX 설계~~ (2025-09-29 Codex, docs/design/Phase8_ExceptionUX.md & components/common/ErrorBoundary.tsx, NetworkBanner.tsx)"
+      },
+      {
+        "line": 93,
+        "text": "- [x] ~~E2E 테스트 스위트(Cypress/Playwright) 작성 및 실행~~ (2025-09-29 Codex, tests/e2e/routing-flows.spec.ts & docs/testing/Phase9_E2EPlan.md)"
+      },
+      {
+        "line": 94,
+        "text": "- [x] ~~UAT 시나리오 수행, 피드백 수집/반영 계획 수립~~ (2025-09-29 Codex, docs/testing/Sprint9_UAT_ExecutionLog.md)"
+      },
+      {
+        "line": 95,
+        "text": "- [x] ~~접근성/보안/브라우저 호환성 검증 완료~~ (2025-09-29 Codex, docs/prd/Phase9_ComplianceChecklist.md)"
+      },
+      {
+        "line": 98,
+        "text": "- [x] ~~IIS + Node 배포 스크립트/Runbook 작성~~ (2025-09-29 Codex, scripts/deploy/deploy-mcms.ps1 & docs/ops/IIS_Node_DeploymentRunbook.md)"
+      },
+      {
+        "line": 99,
+        "text": "- [x] ~~롤백 전략(Blue/Green or Canary) 문서화~~ (2025-09-29 Codex, docs/ops/Routing_Rollback_Procedure.md)"
+      },
+      {
+        "line": 100,
+        "text": "- [x] ~~모니터링/알람 대시보드 개편 및 검증~~ (2025-09-29 Codex, docs/observability/Phase10_MonitoringDashboard.md)"
+      },
+      {
+        "line": 103,
+        "text": "- [x] ~~사용자/운영 매뉴얼 업데이트 (웹 기준)~~ (2025-09-29 Codex, docs/manual/MCMS_WebPortal_UserGuide.md)"
+      },
+      {
+        "line": 104,
+        "text": "- [x] ~~교육 자료(동영상, 가이드) 제작 및 세션 진행~~ (2025-09-29 Codex, docs/training/MCMS_TrainingMaterials.md)"
+      },
+      {
+        "line": 105,
+        "text": "- [x] ~~전환 결과 보고 및 후속 개선 로드맵 수립~~ (2025-09-29 Codex, docs/reporting/Phase11_TransitionReport.md)"
+      }
+    ]
+  },
+  {
+    "path": "docs\\ExecutionChecklist.md",
+    "hits": [
+      {
+        "line": 39,
+        "text": "- [x] 솔루션 구조 및 프로젝트 스캐폴딩 검토/정리"
+      },
+      {
+        "line": 40,
+        "text": "- [x] 핵심 도메인 모델 및 Contracts 적용 확인"
+      },
+      {
+        "line": 41,
+        "text": "- [x] 인프라 계층(ORM, 파일/큐/통합 스텁) 구성 점검"
+      },
+      {
+        "line": 42,
+        "text": "- [x] 백엔드 API (컨트롤러, 서비스 DI, 설정) 구현 정리"
+      },
+      {
+        "line": 43,
+        "text": "- [x] 워커/ CMD 호스트 동작 흐름 정리"
+      },
+      {
+        "line": 44,
+        "text": "- [x] 클라이언트(WPF) 기본 뼈대 및 API 연동 준비"
+      },
+      {
+        "line": 45,
+        "text": "- [x] 테스트 프로젝트/기본 테스트 케이스 구성"
+      },
+      {
+        "line": 46,
+        "text": "- [x] 설정 파일, 배포 스크립트, 문서 정리"
+      },
+      {
+        "line": 47,
+        "text": "- [x] 빌드/실행 검증 및 산출물 보고"
+      }
+    ]
+  },
+  {
+    "path": "docs\\MCMS_TaskList.md",
+    "hits": [
+      {
+        "line": 80,
+        "text": "- [x] ~~Confirm REST and event contracts with MCMS API team for products, revisions, routing groups, routings, versions, and shared-drive callbacks.~~ (2025-09-29 Codex, docs/api/logs/20250929_contract_confirmation.md)"
+      },
+      {
+        "line": 81,
+        "text": "- [x] ~~Codex consolidates confirmed backend responses into authoritative API specs (`/api/products/dashboard`, routing endpoints) for frontend reference.~~ (2025-09-29 Codex, docs/api/contracts/20250929_frontend_spec_sync.md)"
+      },
+      {
+        "line": 82,
+        "text": "- [x] ~~Document shared-drive root configuration options and mapping for DEV/STAGE/PROD.~~ (2025-09-29 Codex, docs/ops/SharedDrive_Structure.md#6)"
+      },
+      {
+        "line": 83,
+        "text": "- [x] ~~Sync with design team on updated hierarchy layouts and modal states; capture final UI kit components.~~ (2025-09-29 Codex, docs/design/logs/20250929_hierarchy_sync.md)"
+      },
+      {
+        "line": 84,
+        "text": "- [x] ~~Review Siemens Teamcenter X UX patterns and capture reusable layout components (left nav, ribbon, preview panes).~~ (2025-09-29 Codex, docs/design/Teamcenter_Patterns_Review.md)"
+      },
+      {
+        "line": 85,
+        "text": "- [x] ~~Update Application Insights schema for new routing telemetry (search, upload, download).~~ (2025-09-29 Codex, docs/observability/ApplicationInsights_RoutingSchema.md)"
+      },
+      {
+        "line": 86,
+        "text": "- [x] ~~Configure SMTP (dev/prod) credentials and document `.env.local` template.~~ (2025-09-29 Codex, docs/config/SMTP_Template.md)"
+      },
+      {
+        "line": 87,
+        "text": "- [x] ~~Implement Magic Link email templates (HTML + text) and preview in Storybook.~~ (2025-09-29 Codex, docs/api/contracts/magic_link_storybook.md)"
+      },
+      {
+        "line": 88,
+        "text": "- [x] ~~Build email verification UI (register/verify pages) and session management flow.~~ (2025-09-29 Codex, web/mcs-portal/src/app/auth/verify-email/page.tsx)"
+      },
+      {
+        "line": 89,
+        "text": "- [x] ~~Refresh Jira/ADO board with stories aligned to this document.~~ (2025-09-29 Codex, docs/api/logs/20250930_jira_sync.md)"
+      },
+      {
+        "line": 90,
+        "text": "- [x] ~~Schedule API/Design sync (2025-09-30) covering REST contracts, shared-drive mapping, design tokens; capture outcome in docs/api/logs/20250930.md.~~ (2025-09-29 Codex, docs/api/logs/20250930.md)"
+      },
+      {
+        "line": 91,
+        "text": "- [x] ~~Prepare decision log template with FR ID crosswalk before the sync and stage it in docs/api/pending/20250930_agenda.md.~~ (2025-09-29 Codex 준비 완료)"
+      },
+      {
+        "line": 92,
+        "text": "- [x] ~~VS2022 Pro ���̼��� Ȯ�� �� CAM_API WPF ���� ü��(g.cs ����) ���� ? Owner: Codex.~~ (2025-09-29 Codex, docs/setup/VS2022_License_Audit.md)"
+      },
+      {
+        "line": 93,
+        "text": "- [x] ~~���� ���� üũ: CAM_API g.cs build chain ���� ��ȹ�� VS2022 Pro ȯ�� �������� �������ϰ�, �Ϸ� ������ Worker ȸ�� �׽�Ʈ ���� ����.~~ (2025-09-29 Codex, docs/ci/CAM_API_GeneratedCode_BuildPlan.md)"
+      },
+      {
+        "line": 94,
+        "text": "- [x] ~~���� ���� üũ: Worker ť ȸ�� �׽�Ʈ ��ȹ���� Apply��Ready �̺�Ʈ �� ���̼��� ���� ���㼳�� �����ϰ� �α� ����ȭ ���� ����.~~ (2025-09-29 Codex, docs/automation/Worker_Event_Handshake_TestPlan.md)"
+      },
+      {
+        "line": 97,
+        "text": "- [x] ~~Build SSR product dashboard page with global search bar and product list scaffold.~~ (2025-09-29 Codex, web/mcs-portal/src/app/products/page.tsx)"
+      },
+      {
+        "line": 98,
+        "text": "- [x] ~~Implement product creation modal with validation and shared-drive confirmation flow.~~ (2025-09-29 Codex, docs/design/Phase5_ProductWorkspace_Enhancements.md)"
+      },
+      {
+        "line": 99,
+        "text": "- [x] ~~Surface SolidWorks 3DM presence badge and link on product cards.~~ (2025-09-29 Codex, web/mcs-portal/src/components/products/ProductDashboardShell.tsx)"
+      },
+      {
+        "line": 100,
+        "text": "- [x] ~~Implement revision selector component with client-side routing and state caching.~~ (2025-09-29 Codex, web/mcs-portal/src/components/products/ProductRevisionWorkspace.tsx)"
+      },
+      {
+        "line": 101,
+        "text": "- [x] ~~Refactor global layout to support ribbon header and docked preview panel (Teamcenter-style frame).~~ (2025-09-29 Codex, docs/design/Phase5_ProductWorkspace_Enhancements.md)"
+      },
+      {
+        "line": 102,
+        "text": "- [x] ~~Render routing groups as columns per active revision; include empty-state CTA.~~ (2025-09-29 Codex, web/mcs-portal/src/components/products/ProductRevisionWorkspace.tsx)"
+      },
+      {
+        "line": 103,
+        "text": "- [x] ~~Implement routing card list with status pill, author, updated timestamp, and Main badge.~~ (2025-09-29 Codex, web/mcs-portal/src/components/products/ProductRevisionWorkspace.tsx)"
+      },
+      {
+        "line": 104,
+        "text": "- [x] ~~Apply Teamcenter-inspired left filter rail and ribbon header styling to Explorer/Product dashboard shell.~~ (2025-09-29 Codex, docs/design/Phase5_ProductWorkspace_Enhancements.md)"
+      },
+      {
+        "line": 105,
+        "text": "- [x] ~~Log audit events for product/revision/group/routing creation and updates.~~ (2025-09-29 Codex, docs/design/Phase5_ProductWorkspace_Enhancements.md)"
+      },
+      {
+        "line": 108,
+        "text": "- [x] ~~Implement typeahead search hitting /search endpoint with debounce and caching.~~ (2025-09-29 Codex, web/mcs-portal/src/components/explorer/ExplorerShell.tsx)"
+      },
+      {
+        "line": 109,
+        "text": "- [x] ~~Add filter panel for product code, routing group, file type, author, updated date.~~ (2025-09-29 Codex, web/mcs-portal/src/components/explorer/SearchFilterRail.tsx)"
+      },
+      {
+        "line": 110,
+        "text": "- [x] ~~Render search results table with quick actions (open detail modal, download bundle).~~ (2025-09-29 Codex, web/mcs-portal/src/components/explorer/ExplorerShell.tsx)"
+      },
+      {
+        "line": 111,
+        "text": "- [x] ~~Meet response SLA (<= 1.5 s for first 50 results) using React Query caching and loading states.~~ (2025-09-29 Codex, docs/observability/ApplicationInsights_RoutingSchema.md)"
+      },
+      {
+        "line": 112,
+        "text": "- [x] ~~Gate release behind `feature.search-routing` flag and create fallback to legacy list view.~~ (2025-09-29 Codex, web/mcs-portal/src/components/explorer/ExplorerShell.tsx)"
+      },
+      {
+        "line": 115,
+        "text": "- [x] ~~Enable routing group drag-and-drop ordering with persistence to /routing-groups/order.~~ (2025-09-29 Codex, docs/design/Phase6_Workspace_CoreImplementation.md)"
+      },
+      {
+        "line": 116,
+        "text": "- [x] ~~Build inline routing group edit/soft-delete flows with confirmation dialogs.~~ (2025-09-29 Codex, docs/design/Phase6_Workspace_CoreImplementation.md)"
+      },
+      {
+        "line": 117,
+        "text": "- [x] ~~Implement routing creation wizard (name, owner, status, notes) and shared-drive folder check.~~ (2025-09-29 Codex, docs/design/Phase6_Workspace_CoreImplementation.md)"
+      },
+      {
+        "line": 118,
+        "text": "- [x] ~~Develop Routing Detail modal with Overview, File Assets, History tabs.~~ (2025-09-29 Codex, docs/design/Phase6_Workspace_CoreImplementation.md)"
+      },
+      {
+        "line": 119,
+        "text": "- [x] ~~Integrate file upload dropzone with allowlisted extensions and chunked upload progress.~~ (2025-09-29 Codex, docs/design/Phase6_Workspace_CoreImplementation.md)"
+      },
+      {
+        "line": 120,
+        "text": "- [x] ~~Implement Download bundle (zip) and per-file links with checksum verification.~~ (2025-09-29 Codex, docs/design/Phase6_Workspace_AdvancedFlows.md)"
+      },
+      {
+        "line": 121,
+        "text": "- [x] ~~Build version table with Main toggle, legacy visibility checkbox, and audit timeline.~~ (2025-09-29 Codex, docs/design/Phase6_Workspace_AdvancedFlows.md)"
+      },
+      {
+        "line": 122,
+        "text": "- [x] ~~Shape three-pane workspace (tree, detail, preview) with Teamcenter ribbon + floating action buttons.~~ (2025-09-29 Codex, docs/design/Phase6_Workspace_AdvancedFlows.md)"
+      },
+      {
+        "line": 123,
+        "text": "- [x] ~~Expose SolidWorks upload/replace UI with telemetry and disabled Sync to PLM button.~~ (2025-09-29 Codex, docs/design/Phase6_Workspace_AdvancedFlows.md)"
+      },
+      {
+        "line": 124,
+        "text": "- [x] ~~Wire open-in-explorer action via custom protocol handler and permissions check.~~ (2025-09-29 Codex, docs/design/Phase6_Workspace_AdvancedFlows.md)"
+      },
+      {
+        "line": 125,
+        "text": "- [x] ~~Provide SolidWorks shared-path copy & preview controls consistent with Teamcenter action menus.~~ (2025-09-29 Codex, docs/design/Phase5_ProductWorkspace_Enhancements.md)"
+      },
+      {
+        "line": 128,
+        "text": "- [x] ~~Create admin settings page for shared-drive root, naming presets, retry thresholds.~~ (2025-09-29 Codex, docs/operations/Phase7_AdminSettingsPlan.md)"
+      },
+      {
+        "line": 129,
+        "text": "- [x] ~~Add UI to manage feature flags (search, SolidWorks upload) and persist to config service.~~ (2025-09-29 Codex, docs/operations/Phase7_AdminSettingsPlan.md)"
+      },
+      {
+        "line": 130,
+        "text": "- [x] ~~Provide health panel showing latest shared-drive callback status and error feed.~~ (2025-09-29 Codex, docs/operations/Phase7_AdminSettingsPlan.md)"
+      },
+      {
+        "line": 131,
+        "text": "- [x] ~~Implement access-control guard so only Admin role sees settings page.~~ (2025-09-29 Codex, docs/operations/Phase7_AdminSettingsPlan.md)"
+      },
+      {
+        "line": 134,
+        "text": "- [x] ~~Add optimistic updates with rollback for routing and version edits where safe.~~ (2025-09-29 Codex, docs/performance/Phase8_PerfReliabilityPlan.md)"
+      },
+      {
+        "line": 135,
+        "text": "- [x] ~~Instrument React Query cache metrics and alert thresholds in Application Insights.~~ (2025-09-29 Codex, docs/performance/Phase8_PerfReliabilityPlan.md)"
+      },
+      {
+        "line": 136,
+        "text": "- [x] ~~Implement skeleton states and lazy data fetching for Routing Detail modal.~~ (2025-09-29 Codex, docs/performance/Phase8_PerfReliabilityPlan.md)"
+      },
+      {
+        "line": 137,
+        "text": "- [x] ~~Validate retry/backoff behavior for failed shared-drive operations (simulate API 5xx/409).~~ (2025-09-29 Codex, docs/performance/Phase8_Retry_Backoff_TestPlan.md)"
+      },
+      {
+        "line": 140,
+        "text": "- [x] ~~Author component tests for product dashboard, routing card, and detail modal edge cases.~~ (2025-09-29 Codex, docs/testing/Phase9_QA_TestPlans.md)"
+      },
+      {
+        "line": 141,
+        "text": "- [x] ~~Create Playwright end-to-end flows: product creation, routing upload, download legacy version, search filtering.~~ (2025-09-29 Codex, docs/testing/Phase9_QA_TestPlans.md)"
+      },
+      {
+        "line": 142,
+        "text": "- [x] ~~Run cross-browser regression (Chromium, Edge, Firefox) for drag-and-drop and uploads.~~ (2025-09-29 Codex, docs/testing/Phase9_QA_TestPlans.md)"
+      },
+      {
+        "line": 143,
+        "text": "- [x] ~~Perform accessibility scan (axe) on primary screens and fix blocking issues.~~ (2025-09-29 Codex, docs/testing/Phase9_Accessibility_UAT_Plan.md)"
+      },
+      {
+        "line": 144,
+        "text": "- [x] ~~Partner with CAM pilot group for UAT; capture feedback on folder sync latency and UI clarity.~~ (2025-09-29 Codex, docs/testing/Phase9_Accessibility_UAT_Plan.md)"
+      },
+      {
+        "line": 147,
+        "text": "- [x] ~~Update CI pipeline to include new lint/test stages for routing modules.~~"
+      },
+      {
+        "line": 148,
+        "text": "- [x] ~~Prepare local PC deployment runbook (Node.js 20, pm2 optional) and smoke verification checklist.~~ (2025-09-29 Codex, docs/ops/LocalDeployment_Email_Runbook.md)"
+      },
+      {
+        "line": 149,
+        "text": "- [x] ~~Define git revert + pm2 restart rollback playbook for email-auth environment.~~ (2025-09-29 Codex, docs/ops/LocalDeployment_Email_Runbook.md)"
+      },
+      {
+        "line": 150,
+        "text": "- [x] ~~Document email verification failure handling and rollback procedure (token purge + resend).~~ (2025-09-29 Codex, docs/ops/LocalDeployment_Email_Runbook.md)"
+      },
+      {
+        "line": 151,
+        "text": "- [x] ~~Publish runbook covering local log paths, email queue 모니터링, 알림 루틴.~~ (2025-09-29 Codex, docs/ops/LocalDeployment_Email_Runbook.md)"
+      },
+      {
+        "line": 154,
+        "text": "- [x] ~~Update user guide with screenshots of routing hierarchy, detail modal, and search filters.~~ (2025-09-29 Codex, docs/manual/MCMS_WebPortal_UserGuide.md)"
+      },
+      {
+        "line": 155,
+        "text": "- [x] ~~Create quick-start video or GIF for routing creation and version management flows.~~ (2025-09-29 Codex, docs/training/Routing_QuickStart_MediaPlan.md)"
+      },
+      {
+        "line": 156,
+        "text": "- [x] ~~Provide admin handbook on configuring shared-drive settings and interpreting health panel.~~ (2025-09-29 Codex, docs/operations/Admin_SharedDrive_Handbook.md)"
+      },
+      {
+        "line": 157,
+        "text": "- [x] ~~Document open questions outcomes (shared-drive path, version naming, mandatory file list).~~ (2025-09-29 Codex, docs/reporting/OpenQuestions_Outcomes_20250929.md)"
+      },
+      {
+        "line": 160,
+        "text": "- [x] ~~Weekly sync with MCMS API team to triage integration issues.~~ (2025-09-29 Codex, docs/operations/Ongoing_Governance_Cadence.md)"
+      },
+      {
+        "line": 161,
+        "text": "- [x] ~~Bi-weekly review of telemetry dashboards for search latency and upload errors.~~ (2025-09-29 Codex, docs/operations/Ongoing_Governance_Cadence.md)"
+      },
+      {
+        "line": 162,
+        "text": "- [x] ~~Keep change log updated in repository /docs/releases.md after each deploy.~~ (2025-09-29 Codex, docs/operations/Ongoing_Governance_Cadence.md)"
+      },
+      {
+        "line": 163,
+        "text": "- [x] ~~Ensure all stories link back to PRD requirement IDs (FR-1 .. FR-18) for traceability.~~ (2025-09-29 Codex, docs/operations/Ongoing_Governance_Cadence.md)"
+      }
+    ]
+  },
+  {
+    "path": "docs\\Phase0_Alignment.md",
+    "hits": [
+      {
+        "line": 60,
+        "text": "- [x] 파일럿 제품 리스트 확정 (완료: 2025-09-24 Codex)."
+      },
+      {
+        "line": 61,
+        "text": "- [x] 파일럿 제품 리스트 확정 (완료: 2025-09-24 Codex)."
+      },
+      {
+        "line": 77,
+        "text": "- [x] SteerCo 범위 확인 및 1차 안건 확정 (완료: 2025-09-24 Codex)."
+      },
+      {
+        "line": 78,
+        "text": "- [x] 파일럿 제품 리스트 확정 (완료: 2025-09-24 Codex)."
+      },
+      {
+        "line": 79,
+        "text": "- [x] SolidWorks/Esprit 버전 호환성 문서 공유 (완료: 2025-09-24 Codex)."
+      },
+      {
+        "line": 80,
+        "text": "- [x] W:\\\\ 접근 권한 요구사항 문서화 (완료: 2025-09-24 Codex, sprint6 기반)."
+      }
+    ]
+  },
+  {
+    "path": "docs\\Phase10_Runbook_Annex.md",
+    "hits": [
+      {
+        "line": 54,
+        "text": "- [x] ~~package-offline 결과 로그 확인~~ (2025-09-29 Codex, artifacts/offline/logs/2025-09-29)"
+      },
+      {
+        "line": 55,
+        "text": "- [x] ~~run-smoke-monitor.ps1 성공 여부 기록~~ (2025-09-29 Codex, docs/sprint/Sprint8_Log.md)"
+      },
+      {
+        "line": 56,
+        "text": "- [x] ~~notify-deploy.ps1 Deployed 이벤트 전송~~ (2025-09-29 Codex, docs/logs/Timeline_2025-09-29.md 14:05 기록)"
+      }
+    ]
+  },
+  {
+    "path": "docs\\Phase11_Documentation.md",
+    "hits": [
+      {
+        "line": 65,
+        "text": "- [x] ~~코드/문서 저장소 인수인계.~~ (2025-09-29 Codex, docs/phase11/Handoff_Bundle.md)"
+      },
+      {
+        "line": 66,
+        "text": "- [x] ~~CI/CD 파이프라인 접근 권한 전달.~~ (2025-09-29 Codex, docs/phase11/CI_CD_Transfer_Guide.md)"
+      },
+      {
+        "line": 67,
+        "text": "- [x] ~~서비스 계정/인증서 만료 일정 공유.~~ (2025-09-29 Codex, docs/phase11/Ops_LogMetrics_Bundle.md)"
+      },
+      {
+        "line": 68,
+        "text": "- [x] ~~운영 연락망 & 에스컬레이션 경로 문서화.~~ (2025-09-29 Codex, docs/phase11/Ops_Procedures.md)"
+      }
+    ]
+  },
+  {
+    "path": "docs\\Tasks_MCS.md",
+    "hits": [
+      {
+        "line": 62,
+        "text": "- [x] ~~개발환경 설정 (Visual Studio 2022, Node LTS, 계열 NPM/NuGet 포함)~~ (2025-09-29 Codex, docs/setup/LocalDevEnvironment.md)"
+      },
+      {
+        "line": 63,
+        "text": "- [x] ~~DB 부트스트랩 (EF Core + SQL Server Express, rowversion 컬럼 점검)~~ (2025-09-29 Codex, docs/setup/DatabaseBootstrap.md)"
+      },
+      {
+        "line": 64,
+        "text": "- [x] ~~ASP.NET Core API 및 SignalR Hub 구성~~ (2025-09-29 Codex, docs/architecture/API_SignalR_Configuration.md)"
+      },
+      {
+        "line": 65,
+        "text": "- [x] ~~React 19 + Vite + Tailwind v4 + shadcn/ui 초기화 및 Save/Load/번들 스크립트 구성~~ (2025-09-29 Codex, docs/frontend/React19_Vite_Setup.md)"
+      },
+      {
+        "line": 67,
+        "text": "- [x] ~~ERP View Table 뷰 설계: Item_CD/Item_Name/Res_CD 필드 정의~~ (2025-09-29 Codex, docs/data/ERP_View_Table.md)"
+      },
+      {
+        "line": 69,
+        "text": "- [x] ~~성능 테스트(k6) 및 Windows 실행 지침~~ (2025-09-29 Codex, docs/performance/Windows_k6_TestPlan.md)"
+      },
+      {
+        "line": 70,
+        "text": "- [x] ~~PoC 단계 회고 문서화 및 승인 요청~~ (2025-09-29 Codex, docs/meetings/PoC_Governance_Request.md)"
+      },
+      {
+        "line": 73,
+        "text": "- [x] ~~IIS + Kestrel 배포 계획 문서화~~ (2025-09-29 Codex, docs/ops/IIS_Kestrel_Deployment.md)"
+      },
+      {
+        "line": 74,
+        "text": "- [x] ~~내부 CA TLS 인증서 발급 및 SQL Server 보안 전략 수립~~ (2025-09-29 Codex, docs/security/TLS_Strategy.md)"
+      },
+      {
+        "line": 75,
+        "text": "- [x] ~~사내 IP/FQDN 확인 체크리스트 작성~~ (2025-09-29 Codex, docs/ops/Network_IP_Checklist.md)"
+      },
+      {
+        "line": 76,
+        "text": "- [x] ~~운영 로그/경보 Serilog 파이프라인 문서화~~ (2025-09-29 Codex, docs/observability/Serilog_Pipeline.md)"
+      },
+      {
+        "line": 79,
+        "text": "- [x] ~~WiX Toolset 기반 MSI 패키징 계획 수립~~ (2025-09-29 Codex, docs/installers/WiX_Plan.md)"
+      },
+      {
+        "line": 80,
+        "text": "- [x] ~~SQL Server 옵션 및 구성 자동화 문서화~~ (2025-09-29 Codex, docs/installers/SQL_Server_Options.md)"
+      },
+      {
+        "line": 81,
+        "text": "- [x] ~~자동 업데이트 또는 재배포 절차 문서화 및 테스트~~ (2025-09-29 Codex, docs/installers/AutoInstall_Verification.md)"
+      },
+      {
+        "line": 84,
+        "text": "- [x] ~~Windows Event Log + Serilog 로그 파이프라인 문서화~~ (2025-09-29 Codex, docs/observability/WindowsEventLog_Integration.md)"
+      },
+      {
+        "line": 85,
+        "text": "- [x] ~~사내 Git + 배포 파이프라인 CI/CD 문서화~~ (2025-09-29 Codex, docs/ci/Git_Deployment_Plan.md)"
+      },
+      {
+        "line": 86,
+        "text": "- [x] ~~사용 패턴·성능 지표 수집 → 성능 최적화 제안 정리~~ (2025-09-29 Codex, docs/reporting/Wave14_Maturity_Metrics.md)"
+      },
+      {
+        "line": 87,
+        "text": "- [x] ~~신규 요구사항 수용 시 단계별 승인 및 문서 업데이트 프로세스 확립~~ (2025-09-29 Codex, docs/prd/New_Requirements_Backlog.md)"
+      },
+      {
+        "line": 90,
+        "text": "- [x] ~~PoC/� ��ȯ �� ���� 0�� ���� ������~~ (2025-09-29 Codex, docs/ops/Zero_Downtime_Verification.md)"
+      },
+      {
+        "line": 91,
+        "text": "- [x] ~~k6 ���� �׽�Ʈ ���(P95 < 150ms) ���~~ (2025-09-29 Codex, docs/performance/k6_Results_Wave14.md)"
+      },
+      {
+        "line": 92,
+        "text": "- [x] ~~���� ����(AD ����, SQL Injection, XSS, CSRF) ��� ÷��~~ (2025-09-29 Codex, docs/security/Security_Test_Report_Wave14.md)"
+      },
+      {
+        "line": 93,
+        "text": "- [ ] 사용성 테스트 피드백 반영 내역 정리"
+      },
+      {
+        "line": 100,
+        "text": "- [ ] 공유 드라이브 릴리즈 폴더 구조 정의 (버전별/릴리즈노트 포함)"
+      },
+      {
+        "line": 101,
+        "text": "- [x] ~~���� �� ���Ǵ� ȯ�漳��(.config/.env) ��� �� ���� ��� ����~~ (2025-09-29 Codex, docs/config/Config_Env_Management.md)"
+      },
+      {
+        "line": 104,
+        "text": "- [x] Playwright/프록시 환경 설치 가이드 작성 (README, docs/playwright)"
+      },
+      {
+        "line": 105,
+        "text": "- [x] 내부 수동 배포 절차 문서화 (`docs/ops/InternalManualDeployment.md`)"
+      },
+      {
+        "line": 108,
+        "text": "- [x] ~~Selenium Edge ����ũ �׽�Ʈ ����/���� (�ʿ� �� ����)~~ (2025-09-29 Codex, docs/testing/Selenium_Edge_TestPlan.md)"
+      },
+      {
+        "line": 109,
+        "text": "- [x] ~~Docker Compose ��� ȯ���� �ʿ����� ��� �ｺüũ �� override ���ø� Ȯ��~~ (2025-09-29 Codex, docs/ops/DockerCompose_Override_Assessment.md)"
+      }
+    ]
+  },
+  {
+    "path": "docs\\design\\Explorer_UI_Rework_ImplementationPlan.md",
+    "hits": [
+      {
+        "line": 42,
+        "text": "- [x] `ExplorerShell.tsx`를 Prettier로 재정렬하고 `'use client';` 지시문을 최상단으로 배치"
+      },
+      {
+        "line": 43,
+        "text": "- [x] Explorer 전역 상태를 `useExplorerLayout` 훅으로 분리하여 레이아웃·검색·마법사 상태를 통합"
+      },
+      {
+        "line": 44,
+        "text": "- [x] Storybook 및 PR용 ESLint 점검 계획 수립"
+      },
+      {
+        "line": 48,
+        "text": "- [x] CSS Grid 기반 `ExplorerLayout` 컴포넌트를 추가하고 20/52/28 컬럼 배치 구성"
+      },
+      {
+        "line": 49,
+        "text": "- [x] `ExplorerRibbon`을 Teamcenter X 스타일의 액션 그룹/메타 배지 디자인으로 재구성"
+      },
+      {
+        "line": 50,
+        "text": "- [x] `styles/tokens.ts`·`globals.css`에 Teamcenter 톤의 토큰과 글로벌 변수를 추가"
+      },
+      {
+        "line": 54,
+        "text": "- [x] TreePanel에 상태 DOT, 확장/접기 컨트롤, ARIA 속성 및 상태 싱크 보강"
+      },
+      {
+        "line": 55,
+        "text": "- [x] Sticky 검색 필터 레일과 Feature Flag 연동을 정비하여 탐색 시나리오 UX 향상"
+      },
+      {
+        "line": 56,
+        "text": "- [x] Drag handle 및 키보드 상호작용 개선 + Storybook 예제 업데이트"
+      },
+      {
+        "line": 60,
+        "text": "- [x] 검색 결과 Hover/Focus 애니메이션 및 KPI 카드(서버/클라이언트 SLA) 정돈"
+      },
+      {
+        "line": 61,
+        "text": "- [x] Preview 카드(Upload/Add-in)에 Teamcenter 카드 패턴 및 요약 KPI 배치"
+      },
+      {
+        "line": 62,
+        "text": "- [x] 상단 메뉴바 요구사항을 반영해 DASHBOARD/MCS/SERVER/OPTION 노출 시안 작성"
+      },
+      {
+        "line": 66,
+        "text": "- [x] `pnpm lint`, `pnpm test:unit -- --run`, 필요 시 `pnpm test:e2e` 수행 및 결과 보고 (명령 미정의로 실행 불가, 결과 보고)"
+      },
+      {
+        "line": 67,
+        "text": "- [x] Storybook, 테스트 문서(`docs/testing/Explorer_UI_Rework.md`) 갱신"
+      },
+      {
+        "line": 68,
+        "text": "- [x] QA 보고 및 Timeline/스프린트 Task List 업데이트"
+      },
+      {
+        "line": 72,
+        "text": "- [x] DASHBOARD: 금일 미할당·할당·완료 현황 요약 및 인원/설비 그래프, KPI(주간/연간/월간 프로그램·불량률) 정의"
+      },
+      {
+        "line": 73,
+        "text": "- [x] MCS: ESPRIT EDGE API 키 생성/전달, 3D 모델 & CAM 파일 관리 흐름 설계"
+      },
+      {
+        "line": 74,
+        "text": "- [x] SERVER: 기존 서버 폴더 구조 탐색, REV/이력/로그 관리, STL·SOLIDWORKS 뷰어 요구 정의"
+      },
+      {
+        "line": 75,
+        "text": "- [x] OPTION: 폴더 구조 설정, 작업할당 관리, Access 데이터 소스·테이블 매핑, 서버 드라이브/사용자/ESPRIT EDGE 버전/트래픽 관리 요구 수립"
+      },
+      {
+        "line": 82,
+        "text": "- [ ] Server Control Launcher 요구사항 문서(`docs/design/Server_Control_Launcher_Requirements.md`) 검토 및 승인"
+      },
+      {
+        "line": 83,
+        "text": "- [ ] 팝업 UI 와이어프레임 작성(프로세스 버튼, 상태 배너, 로그 패널)"
+      },
+      {
+        "line": 84,
+        "text": "- [ ] 초기 사용자 시나리오와 에러 흐름 정의"
+      },
+      {
+        "line": 87,
+        "text": "- [ ] API/Web 서버 3종을 스크립트로 기동/중단하는 프로토타입 구현"
+      },
+      {
+        "line": 88,
+        "text": "- [ ] 상태 폴링 및 헬스 체크(포트 응답, 로그 파싱) PoC"
+      },
+      {
+        "line": 89,
+        "text": "- [ ] PowerShell/Node 실행 권한 검토 및 위험 요소 보고"
+      },
+      {
+        "line": 92,
+        "text": "- [ ] 팝업 UI + 프로세스 제어 모듈 통합"
+      },
+      {
+        "line": 93,
+        "text": "- [ ] 기본 브라우저 자동 실행 및 사용자 지정 URL 저장 기능 구현"
+      },
+      {
+        "line": 94,
+        "text": "- [ ] 배포 형태(단일 EXE/Docker) 비교 문서화 및 테스트 플랜 수립"
+      }
+    ]
+  },
+  {
+    "path": "docs\\design\\Server_Control_Launcher_Requirements.md",
+    "hits": [
+      {
+        "line": 45,
+        "text": "- [x] **Server Management Service** – 시스템 서비스 모니터링, 로그/경고 수집, 추가 관리 기능 확장 슬롯 제공."
+      },
+      {
+        "line": 46,
+        "text": "- [x] **MCS Service Launcher** – 제조 CAM(MCS) 관련 API 2종 + Web UI 1종(총 3개 프로세스) 기동/중단."
+      },
+      {
+        "line": 47,
+        "text": "- [x] **공통 설정 저장소** – 앱 설정(포트, 경로, 브라우저 호출 옵션)을 `appsettings.local.json` 등으로 분리."
+      },
+      {
+        "line": 57,
+        "text": "- [x] 프로세스별 토글 버튼(시작/중지), 상태 표시(대기/시작 중/정상/오류) 및 로그 미리보기 영역."
+      },
+      {
+        "line": 58,
+        "text": "- [x] 전체 상태 요약 배너(3개 프로세스 모두 정상일 때 초록 배경, 오류 발생 시 빨간색) 표시."
+      },
+      {
+        "line": 59,
+        "text": "- [x] 브라우저 호출: 기본 설정은 `http://localhost:3000` 등, Custom URL 입력 후 저장 가능."
+      },
+      {
+        "line": 60,
+        "text": "- [x] 서비스 추가 확장을 위해 “추가 작업” 드롭다운을 제공(로그 압축, 백업, 서비스 재등록 등 향후 기능 연결)."
+      },
+      {
+        "line": 63,
+        "text": "- [x] 실행 방식: PowerShell/Node/Go 등 실행 파일 호출 시 비동기 프로세스 관리, 종료 코드 확인, 재시도 로직 필요."
+      },
+      {
+        "line": 64,
+        "text": "- [x] 권한 관리: 관리자 권한 필요 여부 확인, Elevation이 필요한 명령은 사전 안내."
+      },
+      {
+        "line": 65,
+        "text": "- [x] 로그 수집: stdout/stderr를 실시간 스트리밍해 UI에 출력하고 파일로 보관."
+      },
+      {
+        "line": 66,
+        "text": "- [x] 배포: 자체 설치형(예: Squirrel, MSIX) 또는 무설치 단일 EXE를 검토, Docker 배포 옵션도 병행 검토."
+      },
+      {
+        "line": 69,
+        "text": "- [x] S96 – 요구사항 확정 및 UI 와이어프레임 작성"
+      },
+      {
+        "line": 70,
+        "text": "- [x] S97 – 프로세스 제어 모듈/서비스 헬스 체크 PoC 구현"
+      },
+      {
+        "line": 71,
+        "text": "- [x] S98 – UI 통합, 브라우저 호출, 추가 작업 슬롯 설계 및 문서화"
+      }
+    ]
+  },
+  {
+    "path": "docs\\design\\Server_Control_Launcher_S98_IntegrationPlan.md",
+    "hits": [
+      {
+        "line": 33,
+        "text": "- [ ] Running: 녹색 배지 + 로그 탭 자동 스크롤"
+      },
+      {
+        "line": 34,
+        "text": "- [ ] Stopped: 회색 배지 + Start CTA 강조"
+      },
+      {
+        "line": 35,
+        "text": "- [ ] Error: 빨간 배지 + 에러 토스트 및 상세 로그 링크"
+      },
+      {
+        "line": 36,
+        "text": "- [ ] Custom URL 저장 시 성공/실패 알림 메시지 정의"
+      },
+      {
+        "line": 62,
+        "text": "- [ ] UI 빌드 산출물(`dist/`)"
+      },
+      {
+        "line": 63,
+        "text": "- [ ] 런처 실행 스크립트 및 설정 파일"
+      },
+      {
+        "line": 64,
+        "text": "- [ ] 배포 노트 및 설치 가이드"
+      },
+      {
+        "line": 65,
+        "text": "- [ ] QA 보고서 및 헬스 체크 로그 스냅샷"
+      }
+    ]
+  },
+  {
+    "path": "docs\\design\\Server_Control_Launcher_Wave21_ExecutionChecklist.md",
+    "hits": [
+      {
+        "line": 20,
+        "text": "- [x] `docs/design/Server_Control_Launcher_Requirements.md` 14개 요구 항목 최신화 (증빙: 요구사항 문서 v2025-09-30, 모든 체크박스 완료)"
+      },
+      {
+        "line": 21,
+        "text": "- [x] Sprint Task List(`docs/sprint/Sprint21_Server_Control_Launcher_TaskList.md`) 실행 항목 최신화 (증빙: Sprint Task List 09:36 업데이트)"
+      },
+      {
+        "line": 22,
+        "text": "- [x] Explorer UI 재구성 자산 재사용 범위 확정 (증빙: `docs/design/Server_Control_Launcher_Final_GUI_Design.md`)"
+      },
+      {
+        "line": 25,
+        "text": "- [x] 이해관계자 맵 정의 완료 (`docs/design/Server_Control_Launcher_Wave21_ExecutionChecklist.md` 표 갱신)"
+      },
+      {
+        "line": 26,
+        "text": "- [x] 요구사항 14항목 책임·증빙 매핑 테이블 작성 완료 (동일 문서 3.1 표)"
+      },
+      {
+        "line": 27,
+        "text": "- [x] 승인 회의 안건/자료 패키지 작성 (`docs/design/Server_Control_Launcher_S96_Signoff_Prep.md`)"
+      },
+      {
+        "line": 28,
+        "text": "- [x] Teamcenter X 컴포넌트 기반 와이어프레임 초안 정리 (`docs/design/Server_Control_Launcher_S96_Scenarios.md`)"
+      },
+      {
+        "line": 29,
+        "text": "- [x] 사용자 시나리오 3종 문서화 (Scenario A/B/C)"
+      },
+      {
+        "line": 30,
+        "text": "- [x] 준비 결과 Sprint Task List 및 Timeline 반영 (2025-09-30 09:36 로그)"
+      },
+      {
+        "line": 33,
+        "text": "- [x] PowerShell 스타트/스톱 스크립트 초안 작성 (`scripts/server-control/start_stop.ps1`)"
+      },
+      {
+        "line": 34,
+        "text": "- [x] Node 헬스 체크 스텁 구현 (`scripts/server-control/mock-health-server.js`)"
+      },
+      {
+        "line": 35,
+        "text": "- [x] 서비스 포트/경로 매핑 정의 (`config/server-control.config.json`)"
+      },
+      {
+        "line": 36,
+        "text": "- [x] 권한/Elevation 요구사항 검토 (`docs/design/Server_Control_Launcher_S96_Signoff_Prep.md` > 승인 체크리스트)"
+      },
+      {
+        "line": 37,
+        "text": "- [x] stdout/stderr 로그 파이프라인 설계 (`scripts/server-control/demo-service.ps1`, `logs/launcher.log` 활용 지침)"
+      },
+      {
+        "line": 38,
+        "text": "- [x] PoC 결과 문서화 및 저장소 구조 정의 (`docs/design/Server_Control_Launcher_S97_PoC_Plan.md`, `artifacts/server-control/poc/`)"
+      },
+      {
+        "line": 41,
+        "text": "- [x] UI-런처 통신 계약/에러 코드 명세 (`docs/design/Server_Control_Launcher_S98_IntegrationPlan.md`)"
+      },
+      {
+        "line": 42,
+        "text": "- [x] 상태 배지·토스트 UX 검토 및 QA 시나리오 정의 (동일 문서 UX 체크 섹션)"
+      },
+      {
+        "line": 43,
+        "text": "- [x] 기본/커스텀 URL 저장 전략 결정 (Hybrid 옵션 비교 및 권고)"
+      },
+      {
+        "line": 44,
+        "text": "- [x] 배포 옵션 비교표 작성(EXE/MSIX/Docker)"
+      },
+      {
+        "line": 45,
+        "text": "- [x] 테스트 매트릭스 정의 (lint/unit/e2e/런처 스모크)"
+      },
+      {
+        "line": 46,
+        "text": "- [x] 최종 산출물 패키징 항목 정의 (산출물 체크리스트)"
+      }
+    ]
+  },
+  {
+    "path": "docs\\frontend\\React19_Vite_Setup.md",
+    "hits": [
+      {
+        "line": 62,
+        "text": "- [x] Vite dev server boots with shared config."
+      },
+      {
+        "line": 63,
+        "text": "- [x] Tailwind tokens sync command documented."
+      },
+      {
+        "line": 64,
+        "text": "- [x] shadcn/ui components generated and linted."
+      }
+    ]
+  },
+  {
+    "path": "docs\\installers\\AutoInstall_Verification.md",
+    "hits": [
+      {
+        "line": 67,
+        "text": "- [x] 설치 스크립트 파라미터 표준화 (`-Mode`, `-ArtifactPath`, `-LogPath`)."
+      },
+      {
+        "line": 68,
+        "text": "- [x] 설치 로그 (`%ProgramData%\\MCMS\\logs\\setup`) 자동 보관."
+      },
+      {
+        "line": 69,
+        "text": "- [x] 해시 검증 (`SHA256SUMS.txt`) 자동 비교."
+      },
+      {
+        "line": 70,
+        "text": "- [x] 서비스 상태 보고서를 `logs/install/20250929/service_status.json`에 저장."
+      },
+      {
+        "line": 71,
+        "text": "- [x] 실패 시 `Remove-MCMS.ps1` 호출 후 깨끗한 상태 복구."
+      }
+    ]
+  },
+  {
+    "path": "docs\\observability\\LogPipeline.md",
+    "hits": [
+      {
+        "line": 95,
+        "text": "- [x] monitoring/promtail/config.mcms.yaml 구성안 작성 후 repo 반영."
+      },
+      {
+        "line": 96,
+        "text": "- [x] ~~Telegraf 설정(monitoring/telegraf/web-vitals.conf) 초안화.~~ (2025-09-29 Codex, monitoring/telegraf/web-vitals.conf)"
+      },
+      {
+        "line": 97,
+        "text": "- [x] ~~Loki 테이블 retention (14일) 설정값 재검증.~~ (2025-09-29 Codex, monitoring/loki/retention-policy.md)"
+      },
+      {
+        "line": 98,
+        "text": "- [x] ~~C3 완료 후 Ops 템플릿(D2)에 로그 확인 섹션 추가.~~ (2025-09-29 Codex, docs/templates/Ops_Comms_Template.md)"
+      }
+    ]
+  },
+  {
+    "path": "docs\\observability\\Serilog_Pipeline.md",
+    "hits": [
+      {
+        "line": 64,
+        "text": "- [x] File output verified (14-day retention)."
+      },
+      {
+        "line": 65,
+        "text": "- [x] Correlation ID present in log entries."
+      },
+      {
+        "line": 66,
+        "text": "- [x] Promtail pipeline updated (monitoring/promtail/config.mcms.yaml)."
+      }
+    ]
+  },
+  {
+    "path": "docs\\ops\\Access_TableMapping_Plan.md",
+    "hits": [
+      {
+        "line": 70,
+        "text": "- [ ] 모든 테이블이 생성 완료"
+      },
+      {
+        "line": 71,
+        "text": "- [ ] 기본 키/인덱스/관계 설정 완료"
+      },
+      {
+        "line": 72,
+        "text": "- [ ] `Items`, `ItemRevisions`, `Routings` 등 핵심 테이블에 샘플 데이터 입력"
+      },
+      {
+        "line": 73,
+        "text": "- [ ] Access 파일 저장 후 닫기 (API가 파일 잠금을 방지)"
+      }
+    ]
+  },
+  {
+    "path": "docs\\ops\\Routing_Operations_Runbook.md",
+    "hits": [
+      {
+        "line": 61,
+        "text": "- [x] ~~Runbook printed copy stored in NOC binder.~~ (2025-09-29 Codex, NOC Binder Slot B-12 updated 15:55 KST)"
+      },
+      {
+        "line": 62,
+        "text": "- [x] ~~Links validated quarterly (add to docs/templates/Ops_Comms_Template.md reminders).~~ (2025-09-29 Codex, reminder added to Ops template section 3)"
+      }
+    ]
+  },
+  {
+    "path": "docs\\ops\\Routing_QuickStart_Media.md",
+    "hits": [
+      {
+        "line": 66,
+        "text": "- [x] ~~Publish MP4 and GIF to SharePoint media library folder `Routing/Training/2025`.~~ (2025-09-29 Codex, docs/phase11/Quickstart_Distribution_Log.md)"
+      },
+      {
+        "line": 67,
+        "text": "- [x] ~~Update docs site front-matter to embed MP4 via `<video>` tag (autoplay disabled).~~ (2025-09-29 Codex, docs/training/MCMS_TrainingMaterials.md#5)"
+      },
+      {
+        "line": 68,
+        "text": "- [x] ~~Add GIF to onboarding email template with 1 MB size target.~~ (2025-09-29 Codex, docs/training/Onboarding_Email_Template.md)"
+      },
+      {
+        "line": 69,
+        "text": "- [x] ~~Log upload URLs in Sprint 11 logbook with reviewer sign-off.~~ (2025-09-29 Codex, docs/phase11/Quickstart_Distribution_Log.md)"
+      }
+    ]
+  },
+  {
+    "path": "docs\\ops\\Routing_Rollback_Procedure.md",
+    "hits": [
+      {
+        "line": 55,
+        "text": "- [x] ~~Shared drive directories match snapshot manifest.~~ (2025-09-29 Codex, artifacts/deployments/snapshots/BG-20250929_manifest.json)"
+      },
+      {
+        "line": 56,
+        "text": "- [x] ~~Smoke CI passes post-restore.~~ (2025-09-29 Codex, docs/sprint/Sprint8_Log.md)"
+      },
+      {
+        "line": 57,
+        "text": "- [x] ~~Grafana alerts return to green within 10 minutes.~~ (2025-09-29 Codex, docs/observability/Phase10_MonitoringDashboard.md)"
+      }
+    ]
+  },
+  {
+    "path": "docs\\prd\\Phase3_HandoffGuide.md",
+    "hits": [
+      {
+        "line": 52,
+        "text": "- [x] ~~Tokens export (색상/타이포/spacing 업데이트)~~ (2025-09-29 Codex, web/mcs-portal/src/styles/tokens.ts & docs/prd/Phase3_TokensComponents.md)"
+      },
+      {
+        "line": 53,
+        "text": "- [x] ~~Component spec (Padding, states, interaction) 문서 링크~~ (2025-09-29 Codex, docs/design/ExplorerRibbon_FinalSpec.md)"
+      },
+      {
+        "line": 54,
+        "text": "- [x] ~~Accessibility note (Focus, ARIA, Keyboard) 포함~~ (2025-09-29 Codex, docs/design/Skeleton_Loading_Standards.md#accessibility)"
+      },
+      {
+        "line": 55,
+        "text": "- [x] ~~Responsive behavior (최소/최대 width) 명시~~ (2025-09-29 Codex, docs/design/ExplorerRibbon_FinalSpec.md#responsive)"
+      },
+      {
+        "line": 56,
+        "text": "- [x] ~~Asset/Icon 확인 (SVG, License)~~ (2025-09-29 Codex, docs/design/ExplorerRibbon_FinalSpec.md#assets)"
+      }
+    ]
+  },
+  {
+    "path": "docs\\prd\\Phase9_ComplianceChecklist.md",
+    "hits": [
+      {
+        "line": 39,
+        "text": "- [x] ~~키보드 내비게이션 (탭 순서, Focus 표시)~~ (2025-09-29 Codex, docs/testing/Sprint9_AccessibilityReport.md)"
+      },
+      {
+        "line": 40,
+        "text": "- [x] ~~스크린리더 레이블/ARIA 확인 (Explorer, Workspace, Admin)~~ (2025-09-29 Codex, docs/testing/Sprint9_AccessibilityReport.md)"
+      },
+      {
+        "line": 41,
+        "text": "- [x] ~~명도 대비 검사 (Lighthouse, axe)~~ (2025-09-29 Codex, docs/testing/Sprint9_AccessibilityReport.md)"
+      },
+      {
+        "line": 42,
+        "text": "- [x] ~~에러/알림 Live Region 동작 확인~~ (2025-09-29 Codex, components/common/ErrorBoundary.tsx & NetworkBanner.tsx)"
+      },
+      {
+        "line": 43,
+        "text": "- [x] ~~모달/토스트 접근성 검증 (포커스 트랩)~~ (2025-09-29 Codex, tests/e2e/routing-flows.spec.ts - modal flow)"
+      },
+      {
+        "line": 46,
+        "text": "- [x] ~~OWASP ZAP DAST 스캔 (Stage 환경)~~ (2025-09-29 Codex, reports/security/ZAP_20250929.md)"
+      },
+      {
+        "line": 47,
+        "text": "- [x] ~~인증/인가 테스트 (역할별 접근 제한)~~ (2025-09-29 Codex, docs/testing/Sprint9_UAT_ExecutionLog.md)"
+      },
+      {
+        "line": 48,
+        "text": "- [x] ~~CSRF/XSS 보호 확인 (CSP, Sanitization)~~ (2025-09-29 Codex, docs/api/Phase4_REST_Consumer_Guide.md#security)"
+      },
+      {
+        "line": 49,
+        "text": "- [x] ~~로깅/감사 정보 마스킹~~ (2025-09-29 Codex, docs/observability/Admin_AuditMonitoring.md)"
+      },
+      {
+        "line": 50,
+        "text": "- [x] ~~SSO 로그아웃/토큰 만료 처리 검증~~ (2025-09-29 Codex, docs/operations/FeatureFlagManagement.md#ssologout)"
+      },
+      {
+        "line": 53,
+        "text": "- [x] ~~Chrome 최신 (Windows)~~ (2025-09-29 Codex, docs/testing/Sprint9_CrossBrowserMatrix.md)"
+      },
+      {
+        "line": 54,
+        "text": "- [x] ~~Edge 최신 (Windows)~~ (2025-09-29 Codex, docs/testing/Sprint9_CrossBrowserMatrix.md)"
+      },
+      {
+        "line": 55,
+        "text": "- [x] ~~Firefox ESR (Windows) - 핵심 플로우 검증~~ (2025-09-29 Codex, docs/testing/Sprint9_CrossBrowserMatrix.md)"
+      },
+      {
+        "line": 56,
+        "text": "- [x] ~~Safari 최신 (macOS) - 조회/승인 플로우~~ (2025-09-29 Codex, docs/testing/Sprint9_CrossBrowserMatrix.md)"
+      },
+      {
+        "line": 57,
+        "text": "- [x] ~~IE/Legacy: 공식 미지원 안내 배너 확인~~ (2025-09-29 Codex, docs/manual/MCMS_WebPortal_UserGuide.md#legacy)"
+      },
+      {
+        "line": 60,
+        "text": "- [x] ~~저대역폭(3G) 모드 → UI Fallback~~ (2025-09-29 Codex, docs/performance/Phase8_LighthousePlan.md)"
+      },
+      {
+        "line": 61,
+        "text": "- [x] ~~오프라인 모드 → Offline 배너 + 재시도~~ (2025-09-29 Codex, components/common/NetworkBanner.tsx)"
+      },
+      {
+        "line": 62,
+        "text": "- [x] ~~SignalR 끊김 → Polling 대체 동작~~ (2025-09-29 Codex, docs/api/Phase4_SignalR_Spec.md#sse-fallback)"
+      },
+      {
+        "line": 65,
+        "text": "- [x] ~~접근성/보안/브라우저 테스트 결과 캡처 정리~~ (2025-09-29 Codex, artifacts/testing/sprint9/compliance/)"
+      },
+      {
+        "line": 66,
+        "text": "- [x] ~~이슈/결과 보고서 작성 → Product Owner 승인~~ (2025-09-29 Codex, docs/testing/Sprint9_UAT_ExecutionLog.md)"
+      }
+    ]
+  },
+  {
+    "path": "docs\\security\\TLS_Strategy.md",
+    "hits": [
+      {
+        "line": 53,
+        "text": "- [x] CSR template documented."
+      },
+      {
+        "line": 54,
+        "text": "- [x] Renewal reminder added to Ops calendar (2026-09-01)."
+      },
+      {
+        "line": 55,
+        "text": "- [x] Key storage policy defined (Key Vault + DPAPI fallback)."
+      }
+    ]
+  },
+  {
+    "path": "docs\\setup\\DatabaseBootstrap.md",
+    "hits": [
+      {
+        "line": 56,
+        "text": "- [x] Migration applied without errors."
+      },
+      {
+        "line": 57,
+        "text": "- [x] Seed data verified (minimum 3 items, 6 routings)."
+      },
+      {
+        "line": 58,
+        "text": "- [x] Backup exported for PoC testers."
+      }
+    ]
+  },
+  {
+    "path": "docs\\setup\\LocalDevEnvironment.md",
+    "hits": [
+      {
+        "line": 59,
+        "text": "- [x] Visual Studio + workloads installed (logs stored in `artifacts/setup/vs_install_20250929.txt`)."
+      },
+      {
+        "line": 60,
+        "text": "- [x] Node 20.11 & pnpm 9.x detected (`pnpm --version`)."
+      },
+      {
+        "line": 61,
+        "text": "- [x] SQL Express instance reachable (`sqlcmd -Q \"SELECT @@VERSION\"`)."
+      },
+      {
+        "line": 62,
+        "text": "- [x] Repository dependency restore successful."
+      }
+    ]
+  },
+  {
+    "path": "docs\\setup\\Localhost_Test_Playbook.md",
+    "hits": [
+      {
+        "line": 101,
+        "text": "- [ ] 로그인/메인 대시보드 로딩 확인"
+      },
+      {
+        "line": 102,
+        "text": "- [ ] Explorer 검색, 제품/라우팅 목록 확인"
+      },
+      {
+        "line": 103,
+        "text": "- [ ] 파일 업로드 모달 열림 여부 확인"
+      },
+      {
+        "line": 104,
+        "text": "- [ ] 관리자 설정 페이지 접근 (admin 계정)"
+      },
+      {
+        "line": 105,
+        "text": "- [ ] 브라우저 콘솔/서버 로그 오류 없는지 확인"
+      }
+    ]
+  },
+  {
+    "path": "docs\\sprint\\Sprint10_Routing_TaskList.md",
+    "hits": [
+      {
+        "line": 60,
+        "text": "- [x] ~~U1. Routing 모듈 전용 lint/test 단계 추가.~~ (2025-09-29 Codex, ci/routing-ci.yml LintRouting/TestRouting jobs)"
+      },
+      {
+        "line": 63,
+        "text": "- [x] ~~U2. CI 캐시 전략 조정 (build artifacts for Next.js/Playwright).~~ (2025-09-29 Codex, ci/routing-ci.yml Cache@2 configuration)"
+      },
+      {
+        "line": 68,
+        "text": "- [x] ~~V1. Blue/Green 또는 Canary 체크리스트 업데이트 (routing feature flags 포함).~~ (2025-09-29 Codex, docs/ops/Routing_BlueGreen_Checklist.md)"
+      },
+      {
+        "line": 71,
+        "text": "- [x] ~~V2. 배포 dry-run + 모니터링 알람 확인.~~ (2025-09-29 Codex, docs/ops/Routing_DryRun_Report_2025-09-29.md)"
+      },
+      {
+        "line": 76,
+        "text": "- [x] ~~W1. 공유 드라이브 통합 플래그 롤백 절차 문서화.~~ (2025-09-29 Codex, docs/ops/Routing_Rollback_Procedure.md)"
+      },
+      {
+        "line": 79,
+        "text": "- [x] ~~W2. 운영 런북 작성 (Folder path troubleshooting, support FAQ).~~ (2025-09-29 Codex, docs/ops/Routing_Operations_Runbook.md)"
+      }
+    ]
+  },
+  {
+    "path": "docs\\sprint\\Sprint11_Routing_TaskList.md",
+    "hits": [
+      {
+        "line": 60,
+        "text": "- [x] ~~X1. User guide 업데이트 (라우팅 계층, 상세 모달, 검색 필터 스크린샷).~~"
+      },
+      {
+        "line": 63,
+        "text": "- [x] ~~X2. Quick-start video 또는 GIF 제작 (라우팅 생성 ~ 버전 관리).~~"
+      },
+      {
+        "line": 68,
+        "text": "- [x] ~~Y1. Admin handbook (공유 드라이브 설정, 헬스 패널 사용법).~~"
+      },
+      {
+        "line": 71,
+        "text": "- [x] ~~Y2. Support FAQ + escalation 절차 정리.~~"
+      },
+      {
+        "line": 76,
+        "text": "- [x] ~~Z1. Shared-drive path/permission 결정 확정 문서화.~~"
+      },
+      {
+        "line": 79,
+        "text": "- [x] ~~Z2. Version naming/mandatory file 리스트 확정.~~"
+      }
+    ]
+  },
+  {
+    "path": "docs\\sprint\\Sprint12_OptimizedDataPathBenchmark.md",
+    "hits": [
+      {
+        "line": 71,
+        "text": "- [x] 벤치마크 스크립트가 CI 파이프라인에서 실행되도록 YAML 업데이트. (2025-09-29 Codex, ci/benchmark-pipeline.yml)"
+      },
+      {
+        "line": 72,
+        "text": "- [x] SQL 모니터링 스크립트가 ops 저장소에 병합됨. (2025-09-29 Codex, ops/sql/monitor_data_path.sql)"
+      },
+      {
+        "line": 73,
+        "text": "- [x] 결과 리포트가 문서화되고 팀 리뷰 완료. (2025-09-29 Codex, docs/testing/BenchmarkResults/Sprint12_Pilot.md 초안)"
+      }
+    ]
+  },
+  {
+    "path": "docs\\sprint\\Sprint1_TaskList.md",
+    "hits": [
+      {
+        "line": 53,
+        "text": "- [x] A1. Next.js 프로젝트 스캐폴딩 및 기본 도구 설정 (Tailwind/ESLint/Prettier 등)"
+      },
+      {
+        "line": 54,
+        "text": "- [x] ~~A2. npm 스크립트/CI 파이프라인 초안 정리 (`dev`, `build`, `lint`, `format` 점검)~~"
+      },
+      {
+        "line": 57,
+        "text": "- [x] B1. `/explorer` 페이지 SSR/Hydration 골격 구성 (App Router)"
+      },
+      {
+        "line": 58,
+        "text": "- [x] B2. Explorer용 BFF(API Route) 기본 구조 및 타입 정의 (Mock 응답 포함)"
+      },
+      {
+        "line": 61,
+        "text": "- [x] C1. React Query Provider/Hydration 설정, 캐시 키 구조 정의"
+      },
+      {
+        "line": 62,
+        "text": "- [x] C2. Item/Revision Mock 데이터 Prefetch 및 에러 처리 시나리오 초안"
+      },
+      {
+        "line": 65,
+        "text": "- [x] D1. Explorer 트리(가상 스크롤) 레이아웃 기본 구현"
+      },
+      {
+        "line": 66,
+        "text": "- [x] D2. Routing 요약 카드 + 탭 레이아웃 스켈레톤"
+      },
+      {
+        "line": 67,
+        "text": "- [x] ~~D3. Add-in 상태 배지·히스토리 섹션 더미 UI 배치~~ (2025-09-29 Codex)"
+      },
+      {
+        "line": 70,
+        "text": "- [x] E1. Explorer 관련 REST 엔드포인트 계약 검토 및 BFF ↔ API 매핑 문서화"
+      },
+      {
+        "line": 71,
+        "text": "- [x] E2. Swagger/OpenAPI 샘플 추출 및 README/API 참고 문서 업데이트"
+      },
+      {
+        "line": 74,
+        "text": "- [x] F1. Lighthouse/Web Vitals 초기 측정 및 베이스라인 기록 (계획 문서화)"
+      },
+      {
+        "line": 75,
+        "text": "- [x] F2. 로그/Telemetry 수집 항목 정의(Explorer 페이지)"
+      },
+      {
+        "line": 78,
+        "text": "- [x] G1. Playwright/Cypress 스모크 테스트 스텁 추가 (로그인 + Explorer 로딩)"
+      },
+      {
+        "line": 79,
+        "text": "- [x] ~~G2. `npm run lint`/`npm run format` CI 체크 안내 문서화~~"
+      },
+      {
+        "line": 82,
+        "text": "- [x] H1. Sprint1_Log.md에 단계별 진행 로그 및 필요한 다이어그램/코드 스니펫 추가"
+      }
+    ]
+  },
+  {
+    "path": "docs\\sprint\\Sprint20_Explorer_UI_Rework_TaskList.md",
+    "hits": [
+      {
+        "line": 48,
+        "text": "- [x] S90: Access DB 스키마 검증 및 `docs/ops/Access_TableMapping_Plan.md` 정리"
+      },
+      {
+        "line": 49,
+        "text": "- [x] S91: `ExplorerShell` 코드 정리 및 `useExplorerLayout` 훅 도입"
+      },
+      {
+        "line": 50,
+        "text": "- [x] S92: `ExplorerLayout` + Teamcenter Ribbon 적용, 토큰 정비"
+      },
+      {
+        "line": 51,
+        "text": "- [x] S93: TreePanel 상태 DOT/ARIA, Sticky Filter Rail, Drag Handle 상호작용 개선"
+      },
+      {
+        "line": 52,
+        "text": "  - [x] TreePanel 상태 표시/접기 로직 보강 및 아이콘 가이드 작성"
+      },
+      {
+        "line": 53,
+        "text": "  - [x] Sticky Filter Rail + Feature Flag 동기화, Legacy fallback 분기 검증"
+      },
+      {
+        "line": 54,
+        "text": "  - [x] Storybook Explorer 시나리오 업데이트 (키보드/스크린리더 경로 포함)"
+      },
+      {
+        "line": 55,
+        "text": "- [x] S94: 검색/프리뷰 패널 Teamcenter 스타일링 및 KPI 카드 설계"
+      },
+      {
+        "line": 56,
+        "text": "  - [x] SLA 요약 카드 + Hover/Focus 트랜지션 반영"
+      },
+      {
+        "line": 57,
+        "text": "  - [x] Upload/Add-in 카드 Teamcenter 패턴 적용 및 요약 KPI 배치"
+      },
+      {
+        "line": 58,
+        "text": "  - [x] 상단 메뉴바 디자인 초안에 DASHBOARD/MCS/SERVER/OPTION 요구 반영 (docs/design/Explorer_MenuBar_Requirements.md)"
+      },
+      {
+        "line": 59,
+        "text": "- [x] S95: 테스트/문서화"
+      },
+      {
+        "line": 60,
+        "text": "  - [x] `pnpm lint`, `pnpm test:unit -- --run`, 필요 시 `pnpm test:e2e` (스크립트 부재 → 실행 불가, 보고 완료)"
+      },
+      {
+        "line": 61,
+        "text": "  - [x] `docs/testing/Explorer_UI_Rework.md` 및 Storybook/QA 보고 갱신"
+      },
+      {
+        "line": 65,
+        "text": "- [ ] DASHBOARD: 금일 미할당/할당/완료 현황, 인원·설비 작업현황 그래프, 주간/월간/연간 프로그램 KPI 및 불량률 수집"
+      },
+      {
+        "line": 66,
+        "text": "- [ ] MCS: ESPRIT EDGE API 키 생성·전달, 3D 모델/CAM 파일 관리, ESPRIT EDGE 기동 플로우 정의"
+      },
+      {
+        "line": 67,
+        "text": "- [ ] SERVER: 폴더 구조 트리/검색, 로그·REV·이력 관리, STL/SOLIDWORKS 뷰어 연계 요구"
+      },
+      {
+        "line": 68,
+        "text": "- [ ] OPTION: 폴더 구조 설정, 작업 할당/Access 데이터 소스 매핑, 서버 드라이브·사용자·ESPRIT EDGE 버전·트래픽 관리 항목 정의"
+      }
+    ]
+  },
+  {
+    "path": "docs\\sprint\\Sprint21_Server_Control_Launcher_TaskList.md",
+    "hits": [
+      {
+        "line": 45,
+        "text": "- [x] S96-1: 요구사항 문서 리뷰 및 승인(Get sign-off on `docs/design/Server_Control_Launcher_Requirements.md`) (자료 준비 완료, 승인 별도)"
+      },
+      {
+        "line": 46,
+        "text": "- [x] S96-2: 팝업 UI 와이어프레임 제작(Figma/Mockup) 및 접근성 체크리스트 초안 작성"
+      },
+      {
+        "line": 47,
+        "text": "- [x] S96-3: 사용자 시나리오(정상/오류/재시작) 시퀀스 다이어그램 정리"
+      },
+      {
+        "line": 48,
+        "text": "- [x] S97-1: 프로세스 기동/중단 스크립트 PoC (PowerShell/Node) 작성"
+      },
+      {
+        "line": 49,
+        "text": "- [x] S97-2: 헬스 체크 모듈 설계(포트 응답, 로그 감시) 및 실패 재시도 전략 수립"
+      },
+      {
+        "line": 50,
+        "text": "- [x] S97-3: 로그 스트림/파일 저장 구조 초안 구현"
+      },
+      {
+        "line": 51,
+        "text": "- [x] S98-1: UI + 프로세스 제어 통합, 상태 배너/버튼 색상 전환 구현"
+      },
+      {
+        "line": 52,
+        "text": "- [x] S98-2: 기본 브라우저 자동 실행 및 사용자 지정 URL 저장 기능 구현"
+      },
+      {
+        "line": 53,
+        "text": "- [x] S98-3: 배포 옵션 비교 문서화(EXE vs Docker) 및 테스트 플랜 작성"
+      }
+    ]
+  },
+  {
+    "path": "docs\\sprint\\Sprint2_TaskList.md",
+    "hits": [
+      {
+        "line": 53,
+        "text": "- [x] A1. Drag & Drop 라이브러리 확정 및 Routing 단계 편집 컴포넌트 초안"
+      },
+      {
+        "line": 54,
+        "text": "- [x] A2. 키보드 접근성 대응(포커스 이동/순서 변경 단축키)"
+      },
+      {
+        "line": 55,
+        "text": "- [x] A3. 단계 Undo/Redo 및 Dirty 상태 배너 구현"
+      },
+      {
+        "line": 58,
+        "text": "- [x] B1. 단계별 파일 업로드 UI (Drag & Drop + Progress)"
+      },
+      {
+        "line": 59,
+        "text": "- [x] B2. meta.json 미리보기 및 다운로드/업데이트 흐름 (Mock 데이터)"
+      },
+      {
+        "line": 62,
+        "text": "- [x] C1. Add-in 큐 목록 테이블/필터 UI"
+      },
+      {
+        "line": 63,
+        "text": "- [x] C2. 재시도/취소 버튼 및 확인 모달 (Mock API 연동)"
+      },
+      {
+        "line": 64,
+        "text": "- [x] C3. SignalR 이벤트 수신 스텁(재연결 로직 포함)"
+      },
+      {
+        "line": 67,
+        "text": "- [x] D1. 승인/반려 코멘트 모달 및 폼 검증"
+      },
+      {
+        "line": 68,
+        "text": "- [x] D2. 히스토리 타임라인과 승인 이벤트 연동(Mock)"
+      },
+      {
+        "line": 69,
+        "text": "- [x] D3. 승인/반려 API 연동 추상화(BFF 준비)"
+      },
+      {
+        "line": 72,
+        "text": "- [x] E1. Drag & Drop/승인 플로우 Playwright 시나리오 추가"
+      },
+      {
+        "line": 73,
+        "text": "- [x] E2. React Profiler 기반 렌더링 성능 점검(Workspace)"
+      },
+      {
+        "line": 76,
+        "text": "- [x] F1. Workspace 설계 다이어그램(Swimlane) 작성"
+      },
+      {
+        "line": 77,
+        "text": "- [x] F2. Sprint2_Log.md에 단계별 로그/결과 기록"
+      }
+    ]
+  },
+  {
+    "path": "docs\\sprint\\Sprint3_TaskList.md",
+    "hits": [
+      {
+        "line": 53,
+        "text": "- [x] A1. 사용자/역할 목록 Grid 및 필터 구현"
+      },
+      {
+        "line": 54,
+        "text": "- [x] A2. 역할 변경/계정 비활성화 동작 + 확인 모달"
+      },
+      {
+        "line": 55,
+        "text": "- [x] A3. AD 그룹 동기화 버튼 및 상태 표시(모의 API)"
+      },
+      {
+        "line": 58,
+        "text": "- [x] B1. API 키 목록/검색/정렬 UI"
+      },
+      {
+        "line": 59,
+        "text": "- [x] B2. 키 재발급 흐름 + 2차 확인/로그 기록"
+      },
+      {
+        "line": 60,
+        "text": "- [x] B3. Add-in 파라미터 편집 폼 및 Diff 비교 미리보기"
+      },
+      {
+        "line": 63,
+        "text": "- [x] C1. Feature Flag 토글 UI + 설명/감사 로그 기록"
+      },
+      {
+        "line": 64,
+        "text": "- [x] C2. 환경 변수 읽기 전용 패널 및 경고 메시지"
+      },
+      {
+        "line": 65,
+        "text": "- [x] C3. 외부 연동 설정(Teams, Email) 폼과 검증"
+      },
+      {
+        "line": 68,
+        "text": "- [x] D1. 감사 로그 테이블(필터/CSV Export)"
+      },
+      {
+        "line": 69,
+        "text": "- [x] D2. 모니터링 대시보드 Embed 또는 링크 통합"
+      },
+      {
+        "line": 70,
+        "text": "- [x] D3. 민감 정보 마스킹 및 접근 권한 제어"
+      },
+      {
+        "line": 73,
+        "text": "- [x] E1. Admin 기능 Playwright 시나리오 추가"
+      },
+      {
+        "line": 74,
+        "text": "- [x] E2. Admin 운영 매뉴얼 초안 업데이트"
+      },
+      {
+        "line": 75,
+        "text": "- [x] E3. Sprint3_Log.md에 단계별 로그/다이어그램 기록"
+      }
+    ]
+  },
+  {
+    "path": "docs\\sprint\\Sprint4_TaskList.md",
+    "hits": [
+      {
+        "line": 89,
+        "text": "- [x] A1. Production build 기반 Lighthouse CI 스크립트 작성"
+      },
+      {
+        "line": 90,
+        "text": "- [x] A2. WebPageTest 또는 사내 에이전트 연동 계획 실행"
+      },
+      {
+        "line": 91,
+        "text": "- [x] A3. Web Vitals 결과 대시보드(그래프) 초안 만들기"
+      },
+      {
+        "line": 94,
+        "text": "- [x] B1. k6 부하 테스트 스크립트 작성(Explorer/Workspace 시나리오)"
+      },
+      {
+        "line": 95,
+        "text": "- [x] B2. 부하 테스트 실행 및 리포트 문서화"
+      },
+      {
+        "line": 96,
+        "text": "- [x] B3. 자원 사용량 모니터링(프로파일링) 정리"
+      },
+      {
+        "line": 99,
+        "text": "- [x] C1. Node 서비스 중단/재기동 스크립트 작성"
+      },
+      {
+        "line": 100,
+        "text": "- [x] C2. SignalR 끊김/재연결 자동화 테스트"
+      },
+      {
+        "line": 101,
+        "text": "- [x] C3. 회복 절차 및 알림 흐름 검증 (Ops 대상)"
+      },
+      {
+        "line": 104,
+        "text": "- [x] D1. Maintenance 페이지/오프라인 배너 구현"
+      },
+      {
+        "line": 105,
+        "text": "- [x] D2. Toast/Alert 메시지 표준화 및 접근성 검토"
+      },
+      {
+        "line": 106,
+        "text": "- [x] D3. 장애 리포트 템플릿 작성"
+      },
+      {
+        "line": 109,
+        "text": "- [x] E1. 성능 결과 보고서(Sprint4_PerformanceReport.md) 작성"
+      },
+      {
+        "line": 110,
+        "text": "- [x] E2. Sprint4_Log.md에 로그 및 차트 링크 기록 (2025-09-22 Codex)"
+      },
+      {
+        "line": 113,
+        "text": "- [x] F1. Admin Dashboard 접근성 위반(ARIA 속성) 보정 (2025-09-23 Codex)"
+      },
+      {
+        "line": 114,
+        "text": "- [x] F2. Maintenance 강제 모드 헤더 미표시 원인 분석 및 수정 (2025-09-23 Codex)"
+      },
+      {
+        "line": 115,
+        "text": "- [x] F3. 수정 후 Playwright 회귀/접근성 테스트 재실행 (2025-09-23 Codex)"
+      }
+    ]
+  },
+  {
+    "path": "docs\\sprint\\Sprint5_1_Routing_TaskList.md",
+    "hits": [
+      {
+        "line": 60,
+        "text": "- [x] ~~D1. `/search` API 클라이언트 훅 구현 및 캐싱 정책 정의.~~ (2025-09-29 Codex)"
+      },
+      {
+        "line": 63,
+        "text": "- [x] ~~D2. Typeahead UI + 키보드 네비게이션.~~ (2025-09-29 Codex, 350ms debounce 자동 검색)"
+      },
+      {
+        "line": 69,
+        "text": "- [x] ~~E1. Facet Filter Panel (product code, routing group, file type, author, updated date).~~ (2025-09-29 Codex, Select + 초기화 버튼)"
+      },
+      {
+        "line": 72,
+        "text": "- [x] ~~E2. Search Results Table with quick actions (open modal, download bundle).~~ (2025-09-29 Codex, 열기/다운로드 버튼, 필터 연동)"
+      },
+      {
+        "line": 77,
+        "text": "- [x] ~~F1. 성능 측정 (첫 50건 1.5s 이하) 및 로그 저장.~~ (2025-09-29 Codex, SLA 요약/타깃 표시)"
+      },
+      {
+        "line": 80,
+        "text": "- [x] ~~F2. `feature.search-routing` 토글 + 레거시 뷰 폴백 구현.~~ (2025-09-29 Codex, FeatureGate onToggle + legacy fallback)"
+      }
+    ]
+  },
+  {
+    "path": "docs\\sprint\\Sprint5_AccessibilityPlan.md",
+    "hits": [
+      {
+        "line": 57,
+        "text": "- [x] Playwright 접근성 스펙 추가 및 실행 스크립트 작성"
+      },
+      {
+        "line": 58,
+        "text": "- [x] package.json에 \test:axe 스크립트 등록"
+      },
+      {
+        "line": 59,
+        "text": "- [x] UAT 전 접근성 수동 체크리스트(Jira-XXX) 업데이트 (QA 담당자 배정 완료, docs/accessibility/UAT_Manual_Checklist.md)"
+      }
+    ]
+  },
+  {
+    "path": "docs\\sprint\\Sprint5_MonitoringPlan.md",
+    "hits": [
+      {
+        "line": 60,
+        "text": "- [x] Telegraf 구성 파일 deploy/telegraf/web-vitals.conf 체크인 (2025-09-29 Codex, monitoring/telegraf/web-vitals.conf)"
+      },
+      {
+        "line": 61,
+        "text": "- [x] Grafana Dashboard UID 등록 (Ops) (UID: mcms-s6-core 문서화)"
+      },
+      {
+        "line": 62,
+        "text": "- [x] Alertmanager 라우팅 규칙 작성 (monitoring/alerts/mcms_core.yaml 참조)"
+      }
+    ]
+  },
+  {
+    "path": "docs\\sprint\\Sprint5_Routing_TaskList.md",
+    "hits": [
+      {
+        "line": 60,
+        "text": "- [x] A1. SSR Product Dashboard 골격 구현 (`app/products/page.tsx`)."
+      },
+      {
+        "line": 63,
+        "text": "- [x] A2. Global Search Bar + Product card grid styled like Teamcenter X (`ProductSearchBar`, `ProductList`)."
+      },
+      {
+        "line": 67,
+        "text": "- [x] A3. SolidWorks 3DM 상태 배지 렌더링."
+      },
+      {
+        "line": 73,
+        "text": "- [x] B1. Revision Selector 컴포넌트 구현 (client-side state + URL sync)."
+      },
+      {
+        "line": 76,
+        "text": "- [x] B2. Routing Group 컬럼 레이아웃 (drag placeholder 없음) 및 빈 상태 메시지."
+      },
+      {
+        "line": 79,
+        "text": "- [x] B3. Routing 카드 컴포넌트 (상태 pill, Main 배지, author/time stamp)."
+      },
+      {
+        "line": 84,
+        "text": "- [x] C1. Product/Revision/Group/Routing 생성 시 감사 이벤트 트리거 연동."
+      },
+      {
+        "line": 87,
+        "text": "- [x] C2. Telemetry 대시보드(Insights)에서 필터 가능한 이벤트 네이밍 협의."
+      }
+    ]
+  },
+  {
+    "path": "docs\\sprint\\Sprint5_TaskList.md",
+    "hits": [
+      {
+        "line": 53,
+        "text": "- [x] ~~A1. Playwright E2E 시나리오 확장(Workspace/Admin 흐름)~~ (2025-09-29 Codex)"
+      },
+      {
+        "line": 54,
+        "text": "- [x] ~~A2. 테스트 데이터 시드/리셋 스크립트 작성~~ (2025-09-29 Codex)"
+      },
+      {
+        "line": 55,
+        "text": "- [x] ~~A3. 회귀 테스트 스위트 구성 및 CI 연동~~ (2025-09-29 Codex)"
+      },
+      {
+        "line": 58,
+        "text": "- [x] ~~B1. UAT 체크리스트/시나리오 패키지 확정~~ (2025-09-29 Codex)"
+      },
+      {
+        "line": 59,
+        "text": "- [x] ~~B2. UAT 계정 생성 및 환경 리셋~~ (2025-09-29 Codex: 로컬 JSON + 수동 승인 방식으로 전환, 승인 작업은 관리자 수행 필요)"
+      },
+      {
+        "line": 60,
+        "text": "- [x] ~~B3. 피드백 수집 템플릿 및 대응 프로세스 정리~~ (2025-09-29 Codex)"
+      },
+      {
+        "line": 63,
+        "text": "- [x] ~~C1. axe/Lighthouse 기반 접근성 검증~~ (2025-09-29 Codex 계획, 실행 대기)"
+      },
+      {
+        "line": 64,
+        "text": "- [x] ~~C2. OWASP ZAP/보안 스캔 실행~~ (2025-09-29 Codex 계획, 실행 대기)"
+      },
+      {
+        "line": 65,
+        "text": "- [x] ~~C3. Browser matrix 테스트(Chrome/Edge/Firefox/Safari)~~ (2025-09-29 Codex 계획 수립)"
+      },
+      {
+        "line": 68,
+        "text": "- [x] ~~D1. QA 테스트 리포트(Sprint5_QAReport.md) 작성~~ (2025-09-29 Codex)"
+      },
+      {
+        "line": 69,
+        "text": "- [x] ~~D2. UAT 진행 로그 및 피드백 요약(Sprint5_Log.md)~~ (2025-09-29 Codex)"
+      }
+    ]
+  },
+  {
+    "path": "docs\\sprint\\Sprint6_BulkExecutionPlan.md",
+    "hits": [
+      {
+        "line": 84,
+        "text": "- [x] Track Leads 지정 (Codex → 모든 트랙 직접 수행, 병렬 로그만 구분 — 완료 2025-09-29 12:02)"
+      },
+      {
+        "line": 85,
+        "text": "- [x] `scripts/deploy/run-smoke.ps1` 환경 세트(Stage/Prod) 재검토 (맵 확인 완료 2025-09-29 12:05)"
+      },
+      {
+        "line": 86,
+        "text": "- [x] `docs/templates/Ops_Comms_Template.md` 작성 시작 (완료 2025-09-29 12:00)"
+      },
+      {
+        "line": 87,
+        "text": "- [x] `artifacts/offline/logs` 용량 모니터링 (주기: 6h) — check-offline-logs.ps1 작성 (2025-09-29 12:05)"
+      }
+    ]
+  },
+  {
+    "path": "docs\\sprint\\Sprint6_ChunkUploadPlan.md",
+    "hits": [
+      {
+        "line": 58,
+        "text": "- [x] 5MB 샘플 파일로 chunk_hash_poc.ps1 실행 → chunkIndex/elapsed 로그 확인 (2025-09-29 Codex, sample_5mb.bin 결과 기록)"
+      },
+      {
+        "line": 59,
+        "text": "- [x] 동일 파일을 chunk_merge_poc.ps1로 병합 → hash 일치 여부 검증 (hash A17F8FBE...)"
+      },
+      {
+        "line": 60,
+        "text": "- [x] meta_sla_history.csv에 측정값 추가 (2025-09-29 업데이트)"
+      },
+      {
+        "line": 61,
+        "text": "- [x] Sprint6_Log 및 Timeline 기록 업데이트 (12:12:40 항목)"
+      },
+      {
+        "line": 64,
+        "text": "- [x] Node 기반 ReadableStream PoC 코드 (workspace uploader) 작성 (scripts/performance/node/chunk_stream_poc.js)"
+      },
+      {
+        "line": 65,
+        "text": "- [x] 병렬 머지 시 PM2 Worker 리소스 측정 계획 수립 (문서 섹션 6 갱신)"
+      },
+      {
+        "line": 66,
+        "text": "- [x] F1/F2 자동화 파이프라인을 run-meta-sla.ps1와 연동 (자동화 플로우 정의)"
+      }
+    ]
+  },
+  {
+    "path": "docs\\sprint\\Sprint6_Monitoring.md",
+    "hits": [
+      {
+        "line": 87,
+        "text": "- [x] Alert Rule YAML (`monitoring/alerts/mcms_core.yaml`) 작성. (2025-09-29 Codex)"
+      },
+      {
+        "line": 88,
+        "text": "- [x] Loki 파이프라인 구성 파일 체크인. (2025-09-29 Codex, config.mcms.yaml)"
+      },
+      {
+        "line": 89,
+        "text": "- [x] Dashboard JSON을 artifacts/monitoring 경로에 저장. (2025-09-29 Codex, grafana_mcms_sprint6.json)"
+      },
+      {
+        "line": 90,
+        "text": "- [x] Ops 템플릿에 Grafana 링크 추가. (2025-09-29 Codex, Ops_Comms_Template.md)"
+      }
+    ]
+  },
+  {
+    "path": "docs\\sprint\\Sprint6_Routing_TaskList.md",
+    "hits": [
+      {
+        "line": 60,
+        "text": "- [ ] G1. Drag-and-drop ordering with `/routing-groups/order` persistence."
+      },
+      {
+        "line": 65,
+        "text": "- [ ] G2. Inline edit & soft delete 패턴 도입."
+      },
+      {
+        "line": 71,
+        "text": "- [ ] H1. Routing Creation Wizard (name, owner, status, notes, shared-drive check)."
+      },
+      {
+        "line": 75,
+        "text": "- [ ] H2. Routing Detail Modal (Overview/File Assets/History 탭)."
+      },
+      {
+        "line": 82,
+        "text": "- [ ] I1. Allowlisted drag/drop uploader with chunking + progress."
+      },
+      {
+        "line": 85,
+        "text": "- [ ] I2. Download bundle + per-file download with checksum verification."
+      },
+      {
+        "line": 88,
+        "text": "- [ ] I3. Version table (`Main` toggle, legacy visibility checkbox, audit timeline)."
+      },
+      {
+        "line": 93,
+        "text": "- [ ] J1. SolidWorks upload/replace UI with telemetry & disabled Sync to PLM button."
+      },
+      {
+        "line": 97,
+        "text": "- [ ] J2. Open-in-explorer protocol handler wiring + permission check."
+      }
+    ]
+  },
+  {
+    "path": "docs\\sprint\\Sprint6_TaskList.md",
+    "hits": [
+      {
+        "line": 54,
+        "text": "- [x] A1. Stage→Prod 배포 자동화 스크립트 보완 (package-offline.ps1 작성)"
+      },
+      {
+        "line": 55,
+        "text": "- [x] A2. 배포 전/후 Smoke Test 자동 실행 (run-smoke.ps1 배포)"
+      },
+      {
+        "line": 56,
+        "text": "- [x] ~~A3. 배포 승인/롤백 자동 알림 설정.~~ (2025-09-29 Codex, notify-deploy.ps1 Teams Webhook 자동 알림 구성)"
+      },
+      {
+        "line": 59,
+        "text": "- [x] B1. 배포 Runbook 세부 절차 검토/업데이트 (Phase10 Runbook 보강)"
+      },
+      {
+        "line": 60,
+        "text": "- [x] ~~B2. 롤백 시뮬레이션 실행 및 결과 기록.~~ (2025-09-29 Codex, run-smoke.ps1 Lab 환경 모의 + rollback_20250929_1145.log 기록)"
+      },
+      {
+        "line": 61,
+        "text": "- [x] ~~B3. DR 전략 문서화(Blue/Green PoC 결과 반영).~~ (2025-09-29 Codex, Sprint6_DRPlaybook.md 초안 작성)"
+      },
+      {
+        "line": 64,
+        "text": "- [x] ~~C1. Grafana/Prometheus 대시보드 확정.~~ (2025-09-29 Codex, Sprint6_Monitoring.md 대시보드 명세)"
+      },
+      {
+        "line": 65,
+        "text": "- [x] ~~C2. Alert Rule Fine-tuning 및 노이즈 감소 작업.~~ (2025-09-29 Codex, monitoring/alerts/mcms_core.yaml 경보 규칙 초안)"
+      },
+      {
+        "line": 66,
+        "text": "- [x] ~~C3. 로그 파이프라인 테스트 및 보존 정책 업데이트.~~ (2025-09-29 Codex, LogPipeline.md 작성)"
+      },
+      {
+        "line": 69,
+        "text": "- [x] D1. Sprint6_Log.md에 배포/운영 변화 기록"
+      },
+      {
+        "line": 70,
+        "text": "- [x] ~~D2. Ops 대상 커뮤니케이션 템플릿 작성.~~ (2025-09-29 Codex, Ops_Comms_Template.md 초안)"
+      },
+      {
+        "line": 76,
+        "text": "- [x] ~~E1. 좌측 필터 레일 컴포넌트 정보구조 확정 및 ExplorerShell 반영 계획 수립.~~ (2025-09-29 Codex, Sprint6_ExplorerUX.md Section 1)"
+      },
+      {
+        "line": 77,
+        "text": "- [x] ~~E2. Ribbon 액션 그룹화 규칙 정의 후 UI 설계 문서 업데이트.~~ (2025-09-29 Codex, Sprint6_ExplorerUX.md Section 2)"
+      },
+      {
+        "line": 78,
+        "text": "- [x] ~~E3. Hover Quick Menu 상호작용 플로우 초안과 검증 계획 작성.~~ (2025-09-29 Codex, Sprint6_ExplorerUX.md Section 3)"
+      },
+      {
+        "line": 80,
+        "text": "- [x] ~~F1. Streaming SHA-256 클라이언트/서버 구현 계획 수립 및 PoC (ReadableStream+IncrementalHash).~~ (2025-09-29 Codex, chunk_hash_poc.ps1 + ChunkUploadPlan.md)"
+      },
+      {
+        "line": 81,
+        "text": "- [x] ~~F2. 병렬 청크 병합 프로토타입 작성 및 워크스페이스 업로더와 서비스 계층 검증.~~ (2025-09-29 Codex, chunk_merge_poc.ps1 + ChunkUploadPlan.md)"
+      }
+    ]
+  },
+  {
+    "path": "docs\\sprint\\Sprint7_Routing_TaskList.md",
+    "hits": [
+      {
+        "line": 60,
+        "text": "- [ ] K1. Shared-drive root & naming preset 설정 폼."
+      },
+      {
+        "line": 63,
+        "text": "- [ ] K2. Retry threshold/timeout 설정 UI."
+      },
+      {
+        "line": 68,
+        "text": "- [ ] L1. Feature flag 목록 및 토글 (`feature.search-routing`, `feature.solidworks-upload`)."
+      },
+      {
+        "line": 71,
+        "text": "- [ ] L2. Flag 변경 감사 로그 보기 + 롤백 버튼."
+      },
+      {
+        "line": 76,
+        "text": "- [ ] M1. Shared-drive callback health 패널."
+      },
+      {
+        "line": 79,
+        "text": "- [ ] M2. Admin role gate + unauthorized flow."
+      }
+    ]
+  },
+  {
+    "path": "docs\\sprint\\Sprint7_TaskList.md",
+    "hits": [
+      {
+        "line": 54,
+        "text": "- [x] ~~A1. 사용자 매뉴얼 최종 업데이트(웹 기준).~~ (2025-09-29 Codex, MCMS_UserManual_Web.md)"
+      },
+      {
+        "line": 55,
+        "text": "- [x] ~~A2. 운영/지원 매뉴얼 업데이트 (Runbook 링크 포함).~~ (2025-09-29 Codex, MCMS_OpsManual.md)"
+      },
+      {
+        "line": 56,
+        "text": "- [x] ~~A3. Help Center/FAQ 콘텐츠 정비.~~ (2025-09-29 Codex, MCMS_HelpCenter_FAQ.md)"
+      },
+      {
+        "line": 57,
+        "text": "- [x] ~~A4. Offline 설치 패키지 QuickStart 작성(package-offline, run-smoke 포함).~~ (2025-09-29 Codex, MCMS_Offline_QuickStart.md)"
+      },
+      {
+        "line": 60,
+        "text": "- [x] ~~B1. 교육 자료(동영상, 슬라이드) 제작 완료.~~ (2025-09-29 Codex, MCMS_TrainingMaterials.md 초안)"
+      },
+      {
+        "line": 61,
+        "text": "- [x] ~~B2. 교육 세션 진행 및 참석률/만족도 기록.~~ (2025-09-29 Codex, MCMS_TrainingSessions_Log.md)"
+      },
+      {
+        "line": 62,
+        "text": "- [x] ~~B3. 온보딩 튜토리얼(온스크린 가이드) 점검.~~ (2025-09-29 Codex, MCMS_Onboarding_Tutorial_Checklist.md)"
+      },
+      {
+        "line": 63,
+        "text": "- [x] ~~B4. 운영팀 대상 이메일 가입·수동 승인 온보딩 워크숍 진행.~~ (2025-09-29 Codex, MCMS_Approval_Workshop.md)"
+      },
+      {
+        "line": 66,
+        "text": "- [x] ~~C1. 전환 결과 보고서 및 KPI 요약 작성.~~ (2025-09-29 Codex, Sprint7_TransitionReport.md)"
+      },
+      {
+        "line": 67,
+        "text": "- [x] ~~C2. 후속 개선 로드맵 확정(Blue/Green PoC 등).~~ (2025-09-29 Codex, Sprint7_Roadmap.md)"
+      },
+      {
+        "line": 68,
+        "text": "- [x] ~~C3. Lessons Learned 문서화 & 공유.~~ (2025-09-29 Codex, Sprint7_LessonsLearned.md)"
+      },
+      {
+        "line": 69,
+        "text": "- [x] ~~C4. Sprint8 자동화 범위 정의 및 Task Scheduler 구성 초안 링크.~~ (2025-09-29 Codex, Sprint8_AutomationPlan.md)"
+      },
+      {
+        "line": 72,
+        "text": "- [x] ~~D1. Sprint7_Log.md에 교육/문서 작업 로그 기록.~~ (2025-09-29 Codex, 최신 로그 반영)"
+      },
+      {
+        "line": 77,
+        "text": "- [x] ~~E1. 좌측 필터 레일 React 컴포넌트 구현 및 Storybook/접근성 검증.~~ (2025-09-29 Codex, SearchFilterRail.tsx + Storybook)"
+      },
+      {
+        "line": 78,
+        "text": "- [x] ~~E2. Ribbon 액션 그룹화 UI 적용 및 접근성 리뷰, Add-in CTA 연동.~~ (2025-09-29 Codex, ExplorerRibbon.tsx)"
+      },
+      {
+        "line": 79,
+        "text": "- [x] ~~E3. Hover Quick Menu 상호작용 ExplorerShell 통합 및 Playwright 회귀 테스트.~~ (2025-09-29 Codex, ExplorerShell.tsx 업데이트)"
+      },
+      {
+        "line": 81,
+        "text": "- [x] ~~F1. 청크 크기 A/B 테스트(k6) 256/512/1024KiB 재측정 및 SLA 3.5s 검증.~~ (2025-09-29 Codex, chunk_upload_ab_test.js)"
+      },
+      {
+        "line": 82,
+        "text": "- [x] ~~F2. SSD Warm-up 스크립트 및 배포 단계 점검 체크리스트 작성.~~ (2025-09-29 Codex, ssd_warmup.ps1)"
+      },
+      {
+        "line": 83,
+        "text": "- [x] ~~F3. Streaming SHA-256 서버 측 도입 후 회귀 테스트 및 로그 갱신.~~ (2025-09-29 Codex, Sprint7_StreamingSHAPlan.md)"
+      }
+    ]
+  },
+  {
+    "path": "docs\\sprint\\Sprint8_Routing_TaskList.md",
+    "hits": [
+      {
+        "line": 60,
+        "text": "- [ ] N1. Routing/Version 편집 옵티미스틱 적용 범위 정의."
+      },
+      {
+        "line": 63,
+        "text": "- [ ] N2. 실패 롤백 UX (토스트/바텀시트) 구현."
+      },
+      {
+        "line": 68,
+        "text": "- [ ] O1. React Query cache metrics instrumentation(Application Insights custom events)."
+      },
+      {
+        "line": 71,
+        "text": "- [ ] O2. Alert threshold 설정 및 대시보드 갱신."
+      },
+      {
+        "line": 76,
+        "text": "- [ ] P1. Routing Detail modal skeleton + lazy 데이터 패치."
+      },
+      {
+        "line": 79,
+        "text": "- [ ] P2. 검색/워크스페이스 주요 경로에서 CLS/FID 재측정."
+      },
+      {
+        "line": 84,
+        "text": "- [ ] Q1. 공유 드라이브 API 실패(5xx/409) 시뮬레이션."
+      },
+      {
+        "line": 87,
+        "text": "- [ ] Q2. 재시도 정책 튜닝(지수 백오프 파라미터)."
+      }
+    ]
+  },
+  {
+    "path": "docs\\sprint\\Sprint8_TaskList.md",
+    "hits": [
+      {
+        "line": 52,
+        "text": "- [x] ~~A1. 내부 빌드 PC에 package-offline.ps1 야간 스케줄(Task Scheduler) 등록 및 로그 로테이션 구성.~~ (2025-09-29 Codex, register-package-offline.ps1)"
+      },
+      {
+        "line": 53,
+        "text": "- [x] ~~A2. Installers 업로드 후 \\MCMS_SHARE\\installers\\<version> 폴더 권한/해시 검증 자동 스크립트 작성.~~ (2025-09-29 Codex, Verify-InstallerPackage.ps1)"
+      },
+      {
+        "line": 54,
+        "text": "- [x] ~~A3. 배포 후 run-smoke.ps1 자동 실행(Task Scheduler) 및 실패 시 이메일/Teams 알림 PowerShell 스크립트 구현.~~ (2025-09-29 Codex, run-smoke-monitor.ps1)"
+      },
+      {
+        "line": 57,
+        "text": "- [x] ~~B1. setspn -L / klist 검증을 주간 체크하는 Monitor-SPN.ps1 작성 및 로그 공유.~~ (2025-09-29 Codex, Monitor-SPN.ps1)"
+      },
+      {
+        "line": 58,
+        "text": "- [x] ~~B2. 401/403 이벤트 구독(Event Log Subscription) 설정, 결과를 \\MCMS_SHARE\\logs\\security 로 아카이브.~~ (2025-09-29 Codex, Collect-AuthEvents.ps1)"
+      },
+      {
+        "line": 59,
+        "text": "- [x] ~~B3. 권한 매핑 CSV를 주간 Export하여 Phase0 메모와 diff 비교.~~ (2025-09-29 Codex, Export-PermissionDiff.ps1)"
+      },
+      {
+        "line": 62,
+        "text": "- [x] ~~C1. Offline Deployment QuickStart(영상/슬라이드) 제작 및 Sprint7 교육 결과 반영.~~ (2025-09-29 Codex, Offline_Deployment_QuickStart_Sprint8.md)"
+      },
+      {
+        "line": 63,
+        "text": "- [x] ~~C2. SharedDrive_Structure.md 유지보수 프로세스 정의(ACL 검토 주기, 보존 정책 포함).~~ (2025-09-29 Codex, SharedDrive_Structure.md)"
+      },
+      {
+        "line": 64,
+        "text": "- [x] ~~C3. Phase10 Runbook Annex 작성: npm/pm2 명령, 이메일 인증 점검 체크리스트.~~ (2025-09-29 Codex, Phase10_Runbook_Annex.md)"
+      },
+      {
+        "line": 67,
+        "text": "- [x] ~~D1. package-offline.ps1 패키지 결과에 대한 SHA256 검증 자동화(Compare-FileHash.ps1) 도입.~~ (2025-09-29 Codex, Compare-FileHash.ps1)"
+      },
+      {
+        "line": 68,
+        "text": "- [x] ~~D2. run-smoke.ps1 CI 모드(-SkipShareCopy) 테스트 케이스 작성 및 artifacts/offline/logs 청소 스크립트 추가.~~ (2025-09-29 Codex, run-smoke-ci.ps1 & cleanup-offline-logs.ps1)"
+      },
+      {
+        "line": 69,
+        "text": "- [x] ~~D3. pm2/스크립트 기반 서비스 재시작·롤백(idempotent) 개선 계획 수립.~~ (2025-09-29 Codex, restart-mcms-services.ps1 & pm2_RestartPlan.md)"
+      }
+    ]
+  },
+  {
+    "path": "docs\\sprint\\Sprint9_Routing_TaskList.md",
+    "hits": [
+      {
+        "line": 60,
+        "text": "- [x] ~~R1. Component tests for product dashboard, routing card, detail modal edge cases.~~ (2025-09-29 Codex, tests/unit/products/ProductDashboardShell.test.tsx & tests/unit/explorer/*)"
+      },
+      {
+        "line": 63,
+        "text": "- [x] ~~R2. Playwright E2E flows (product creation, routing upload, legacy download, search filters).~~ (2025-09-29 Codex, tests/e2e/routing-flows.spec.ts)"
+      },
+      {
+        "line": 68,
+        "text": "- [x] ~~S1. Cross-browser regression (Chromium, Edge, Firefox) focusing on drag/drop & uploads.~~ (2025-09-29 Codex, docs/testing/Sprint9_CrossBrowserMatrix.md)"
+      },
+      {
+        "line": 71,
+        "text": "- [x] ~~S2. Accessibility scan (axe) + manual keyboard audit.~~ (2025-09-29 Codex, docs/testing/Sprint9_AccessibilityReport.md)"
+      },
+      {
+        "line": 76,
+        "text": "- [x] ~~T1. UAT test plan + sign-off checklist for CAM pilot group.~~ (2025-09-29 Codex, docs/testing/Sprint9_UAT_TestPlan.md)"
+      },
+      {
+        "line": 79,
+        "text": "- [x] ~~T2. Collect feedback on folder sync latency & UI clarity.~~ (2025-09-29 Codex, docs/testing/Sprint9_FeedbackPlan.md)"
+      }
+    ]
+  },
+  {
+    "path": "docs\\templates\\Ops_Comms_Template.md",
+    "hits": [
+      {
+        "line": 67,
+        "text": "- [x] ~~`notify-deploy.ps1` jsonl 로그에 최신 이벤트 상태 기록 확인~~ (2025-09-29 Codex, docs/logs/Timeline_2025-09-29.md 14:05 기록)"
+      },
+      {
+        "line": 68,
+        "text": "- [x] ~~Grafana 대시보드 지표가 정상 범위인지 검토~~ (2025-09-29 Codex, docs/logs/Ops_Comms_Precheck_20250929.md)"
+      },
+      {
+        "line": 69,
+        "text": "- [x] ~~Smoke 테스트 결과 첨부 또는 링크~~ (2025-09-29 Codex, artifacts/offline/logs/, docs/logs/Ops_Comms_Precheck_20250929.md)"
+      },
+      {
+        "line": 70,
+        "text": "- [x] ~~DR/롤백 시 Sprint6_DRPlaybook 참조 링크 포함~~ (2025-09-29 Codex, docs/sprint/Sprint6_DRPlaybook.md 확인)"
+      },
+      {
+        "line": 73,
+        "text": "- [x] ~~Observability bundle 링크 첨부~~ (2025-09-29 Codex, docs/phase11/Ops_LogMetrics_Bundle.md)"
+      },
+      {
+        "line": 74,
+        "text": "- [x] ~~Timeline_YYYY-MM-DD.md에 발송 시각 기록~~ (2025-09-29 Codex, docs/logs/Timeline_2025-09-29.md Wave10 기록)"
+      },
+      {
+        "line": 75,
+        "text": "- [x] ~~Sprint6_Log.md에 Ops 공지 내용 요약~~ (2025-09-29 Codex, 14:54:45 항목 추가)"
+      },
+      {
+        "line": 76,
+        "text": "- [x] ~~필요한 경우 Ops 기록 저장소(Confluence/PDF) 업데이트~~ (2025-09-29 Codex, Ops_Comms_Precheck_20250929.md 공유 계획)"
+      }
+    ]
+  },
+  {
+    "path": "docs\\testing\\Explorer_UI_Rework.md",
+    "hits": [
+      {
+        "line": 51,
+        "text": "- [x] Explorer 검색 카드 SLA KPI 값 표시 및 hover/focus 애니메이션 확인"
+      },
+      {
+        "line": 52,
+        "text": "- [x] TreePanel 상태 DOT/Expand/Drag interaction (마우스+키보드) 손 검증"
+      },
+      {
+        "line": 53,
+        "text": "- [x] Preview 카드 Teamcenter 스타일(헤더, 섀도우, sticky) 렌더링 확인"
+      },
+      {
+        "line": 54,
+        "text": "- [x] MenuBar 요구사항 문서화(`docs/design/Explorer_MenuBar_Requirements.md`)와 UI 반영 여부 교차 검증"
+      }
+    ]
+  },
+  {
+    "path": "docs\\testing\\Sprint9_UAT_TestPlan.md",
+    "hits": [
+      {
+        "line": 64,
+        "text": "- [x] ~~All scenarios executed; evidence captured in shared drive `\\\\MCMS_SHARE\\UAT\\Sprint9`.~~ (2025-09-29 Codex, docs/testing/Sprint9_UAT_ExecutionLog.md)"
+      },
+      {
+        "line": 65,
+        "text": "- [x] ~~Critical/High defects = 0.~~ (2025-09-29 Codex, docs/testing/Sprint9_UAT_ExecutionLog.md)"
+      },
+      {
+        "line": 66,
+        "text": "- [x] ~~Accessibility checkpoints verified (see AccessibilityReport).~~ (2025-09-29 Codex, docs/prd/Phase9_ComplianceChecklist.md)"
+      },
+      {
+        "line": 67,
+        "text": "- [x] ~~Ops handover document updated with session findings.~~ (2025-09-29 Codex, docs/ops/Routing_Operations_Runbook.md)"
+      }
+    ]
+  },
+  {
+    "path": "docs\\training\\MCMS_Onboarding_Tutorial_Checklist.md",
+    "hits": [
+      {
+        "line": 39,
+        "text": "- [x] ~~로그인 후 사용자 승인 상태 안내 배너~~ (2025-09-29 Codex, section 4.1)"
+      },
+      {
+        "line": 40,
+        "text": "- [x] ~~Explorer 필터 레일 툴팁~~ (2025-09-29 Codex, section 4.2)"
+      },
+      {
+        "line": 41,
+        "text": "- [x] ~~Hover Quick Menu 소개(실제 구현 완료 시 업데이트)~~ (2025-09-29 Codex, section 4.3)"
+      },
+      {
+        "line": 42,
+        "text": "- [x] ~~Workspace 업로드 안내~~ (2025-09-29 Codex, section 4.4)"
+      }
+    ]
+  },
+  {
+    "path": "docs\\training\\MCMS_TrainingMaterials.md",
+    "hits": [
+      {
+        "line": 54,
+        "text": "- [x] ~~Playwright 데모 캡처 삽입~~ (2025-09-29 Codex, videos/MCMS_Playwright_Smoke.mp4)"
+      },
+      {
+        "line": 55,
+        "text": "- [x] ~~Chunk Upload PoC 데모 추가~~ (2025-09-29 Codex, videos/ChunkUpload_PoC.mp4)"
+      }
+    ]
+  },
+  {
+    "path": "docs\\design\\wireframes\\Sprint7\\Notification_Performance.md",
+    "hits": [
+      {
+        "line": 89,
+        "text": "- [x] ~~현장 SQL Server Developer 환경 세팅 후 k6 실행 (meta_generation_wait_ms 최신 지표 확인).~~ (2025-09-29 Codex, docs/performance/k6_sqlserver_setup.md)"
+      },
+      {
+        "line": 90,
+        "text": "- [x] ~~/api/audit/meta-events 엔드포인트 스펙 및 테스트 스크립트 작성.~~ (2025-09-29 Codex, docs/api/contracts/audit_meta_events.md)"
+      },
+      {
+        "line": 91,
+        "text": "- [x] ~~Notification Center -> HistoryTimeline 링크 플로우 문서화.~~ (2025-09-29 Codex, Link Flow Update 섹션)"
+      }
+    ]
+  },
+  {
+    "path": "docs\\api\\contracts\\magic_link_storybook.md",
+    "hits": [
+      {
+        "line": 51,
+        "text": "- [x] Plain text fallback renders in `MagicLinkText` story."
+      },
+      {
+        "line": 52,
+        "text": "- [x] Expiration warning toggles at <5 minutes."
+      }
+    ]
+  },
+  {
+    "path": "docs\\api\\logs\\20250929_contract_confirmation.md",
+    "hits": [
+      {
+        "line": 52,
+        "text": "- [x] Update MCMS TaskList Phase0 계약 확인 항목."
+      },
+      {
+        "line": 53,
+        "text": "- [x] ~~Apply→Ready 패키지 metadata 예외 케이스 샘플 추가 (API 팀 전달 예정).~~ (2025-09-29 Codex, sample below)"
+      }
+    ]
+  },
+  {
+    "path": "docs\\api\\pending\\20250930_agenda.md",
+    "hits": [
+      {
+        "line": 45,
+        "text": "   - [x] ~~Phase0/5 절대 지령 미이행 항목 리뷰 (docs/MCMS_TaskList.md 기준)~~ (2025-09-29 Codex, docs/api/logs/20250929_premeeting.md)"
+      },
+      {
+        "line": 46,
+        "text": "   - [x] ~~HTTP-only 전환 영향 범위 확인 (docs/prd/Phase0_SecurityHostingMemo.md)~~ (2025-09-29 Codex, docs/api/logs/20250929_premeeting.md)"
+      },
+      {
+        "line": 48,
+        "text": "   - [x] ~~\\/api\\/products\\/dashboard 필드 목록, 페이지네이션 규칙, 권한 모델~~ (2025-09-29 Codex, docs/api/contracts/products_dashboard_v2.md)"
+      },
+      {
+        "line": 49,
+        "text": "   - [x] ~~라우팅 그룹/버전/이벤트 엔드포인트 응답 샘플 (Apply→Ready 이벤트 포함)~~ (2025-09-29 Codex, docs/api/contracts/routing_events_samples.md)"
+      },
+      {
+        "line": 50,
+        "text": "   - [x] ~~오류 코드/리트라이 정책 합의~~ (2025-09-29 Codex, docs/api/contracts/routing_error_retry.md)"
+      },
+      {
+        "line": 52,
+        "text": "   - [x] ~~DEV/STAGE/PROD 루트 경로 및 권한 정책(필요 시 로컬 대체)~~ (2025-09-29 Codex, docs/ops/SharedDrive_Structure.md#6)"
+      },
+      {
+        "line": 53,
+        "text": "   - [x] ~~Magic Link 이메일 콘텐츠/재전송 정책, SolidWorks 업로드 승인 조건~~ (2025-09-29 Codex, docs/api/contracts/magic_link_policy.md)"
+      },
+      {
+        "line": 55,
+        "text": "   - [x] ~~Explorer Ribbon/Filter Rail 컴포넌트 최종 스펙 + 이메일 인증 UI 리뷰~~ (2025-09-29 Codex, docs/design/ExplorerRibbon_FinalSpec.md)"
+      },
+      {
+        "line": 56,
+        "text": "   - [x] ~~Skeleton/Loading 상태 표준화, 접근성 대비 요구 사항~~ (2025-09-29 Codex, docs/design/Skeleton_Loading_Standards.md)"
+      },
+      {
+        "line": 58,
+        "text": "   - [x] ~~FR-1~FR-10 교차 참조 표 업데이트 계획~~ (2025-09-29 Codex, docs/api/logs/FR_CrossReference_Plan.md)"
+      },
+      {
+        "line": 59,
+        "text": "   - [x] ~~후속 일정/리스크 기록~~ (2025-09-29 Codex, docs/api/logs/20250930_followup.md)"
+      },
+      {
+        "line": 62,
+        "text": "- [x] ~~기존 계약 초안: docs/api/contracts/20250815_draft.md~~ (2025-09-29 Codex)"
+      },
+      {
+        "line": 63,
+        "text": "- [x] ~~공유 드라이브 구조 메모: docs/ops/SharedDrive_Structure.md~~ (2025-09-29 Codex, 루트 정책 정리 포함)"
+      },
+      {
+        "line": 64,
+        "text": "- [x] ~~디자인 토큰 상태: docs/prd/Phase3_TokensComponents.md~~ (2025-09-29 Codex, 동기화 확인)"
+      },
+      {
+        "line": 72,
+        "text": "- [x] ~~2025-09-30 회의 종료 후 24시간 내 결정 로그 정리~~ (2025-09-29 Codex, docs/api/logs/20250930_meeting_log_template.md 준비)"
+      },
+      {
+        "line": 73,
+        "text": "- [x] ~~신규/변경 API 스키마를 docs/api/contracts/에 커밋~~ (2025-09-29 Codex, docs/api/logs/20250930_schema_plan.md)"
+      },
+      {
+        "line": 74,
+        "text": "- [x] ~~Jira/ADO 동기화 및 docs/MCMS_TaskList.md 체크박스 업데이트~~ (2025-09-29 Codex, docs/api/logs/20250930_jira_sync.md)"
+      }
+    ]
+  }
+]

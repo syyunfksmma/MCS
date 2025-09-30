@@ -1,3 +1,19 @@
+# 절대 지령
+- 각 단계는 승인 후에만 진행한다.
+- 단계 착수 전 이번 단계 전체 범위를 리뷰하고 오류를 식별한다.
+- 오류 발견 시 수정 전에 승인 재요청한다.
+- 이전 단계 오류가 없음을 재확인한 뒤 다음 단계 승인을 요청한다.
+- 모든 단계 작업은 백그라운드 방식으로 수행한다.
+- 문서/웹뷰어 점검이 필요한 경우 반드시 승인 확인 후 진행한다.
+- 다음 단계 착수 전에 이전 단계 전반을 재점검하여 미해결 오류가 없는지 확인한다.
+- 만약 오류나 사용자의 지시로 task나 절대지령이 수정될시 취소선으로 기존 지시나 이력을 보존하고, 아래에 추가한다.
+- 모든 웹은 codex가 테스트 실시 후 이상 없을시 보고한다.
+- 1인 개발자와 codex가 같이 협업하며, 모든 산출물은 codex가 작업한다. 중간 중간 성능 향상이나 기능 향상을 위해 제안하는 것을 목표로한다.
+- 이 서비스는 사내 내부망으로 운영될 예정이며, 외부 서버나 클라우드 사용은 절대 금한다.
+- local 호스트 서버를 통해 PoC를 1인 개발자와 같이 진행하며, 테스트 완료시 1인 개발자 PC를 서버로하여 사내망에 릴리즈한다.
+- 코딩과 IT기술을 전혀 모르는 인원도 쉽게 PoC가 가능하도록 Docker나 기타 exe 형태로 배포할 방법을 검토하며 개발 진행한다.
+- 모든 스프린트 태스크는 전용 스프린트 Task List를 참조하고, docs/sprint 명세에 따른 영어 로그북 + 설명적 코드 주석을 남김.
+
 > PRD: docs/PRD_MCS.md  
 > Task Lists: docs/MCMS_TaskList.md, docs/Tasks_MCS.md, docs/Tasks_ML_Routing.md  
 > Remaining Tasks: 0
@@ -34,36 +50,36 @@
 
 ## 작업 목록
 ### A. 환경 & 빌드 구성
-- [x] A1. Next.js 프로젝트 스캐폴딩 및 기본 도구 설정 (Tailwind/ESLint/Prettier 등)
-- [x] ~~A2. npm 스크립트/CI 파이프라인 초안 정리 (`dev`, `build`, `lint`, `format` 점검)~~
+- A1. Next.js 프로젝트 스캐폴딩 및 기본 도구 설정 (Tailwind/ESLint/Prettier 등)
+- ~~A2. npm 스크립트/CI 파이프라인 초안 정리 (`dev`, `build`, `lint`, `format` 점검)~~
 
 ### B. SSR & BFF 골격
-- [x] B1. `/explorer` 페이지 SSR/Hydration 골격 구성 (App Router)
-- [x] B2. Explorer용 BFF(API Route) 기본 구조 및 타입 정의 (Mock 응답 포함)
+- B1. `/explorer` 페이지 SSR/Hydration 골격 구성 (App Router)
+- B2. Explorer용 BFF(API Route) 기본 구조 및 타입 정의 (Mock 응답 포함)
 
 ### C. 데이터 & 상태 관리
-- [x] C1. React Query Provider/Hydration 설정, 캐시 키 구조 정의
-- [x] C2. Item/Revision Mock 데이터 Prefetch 및 에러 처리 시나리오 초안
+- C1. React Query Provider/Hydration 설정, 캐시 키 구조 정의
+- C2. Item/Revision Mock 데이터 Prefetch 및 에러 처리 시나리오 초안
 
 ### D. UI/UX 스켈레톤
-- [x] D1. Explorer 트리(가상 스크롤) 레이아웃 기본 구현
-- [x] D2. Routing 요약 카드 + 탭 레이아웃 스켈레톤
-- [x] ~~D3. Add-in 상태 배지·히스토리 섹션 더미 UI 배치~~ (2025-09-29 Codex)
+- D1. Explorer 트리(가상 스크롤) 레이아웃 기본 구현
+- D2. Routing 요약 카드 + 탭 레이아웃 스켈레톤
+- ~~D3. Add-in 상태 배지·히스토리 섹션 더미 UI 배치~~ (2025-09-29 Codex)
 
 ### E. API/문서 연동
-- [x] E1. Explorer 관련 REST 엔드포인트 계약 검토 및 BFF ↔ API 매핑 문서화
-- [x] E2. Swagger/OpenAPI 샘플 추출 및 README/API 참고 문서 업데이트
+- E1. Explorer 관련 REST 엔드포인트 계약 검토 및 BFF ↔ API 매핑 문서화
+- E2. Swagger/OpenAPI 샘플 추출 및 README/API 참고 문서 업데이트
 
 ### F. 성능 & 관측
-- [x] F1. Lighthouse/Web Vitals 초기 측정 및 베이스라인 기록 (계획 문서화)
-- [x] F2. 로그/Telemetry 수집 항목 정의(Explorer 페이지)
+- F1. Lighthouse/Web Vitals 초기 측정 및 베이스라인 기록 (계획 문서화)
+- F2. 로그/Telemetry 수집 항목 정의(Explorer 페이지)
 
 ### G. 테스트 & 검증
-- [x] G1. Playwright/Cypress 스모크 테스트 스텁 추가 (로그인 + Explorer 로딩)
-- [x] ~~G2. `npm run lint`/`npm run format` CI 체크 안내 문서화~~
+- G1. Playwright/Cypress 스모크 테스트 스텁 추가 (로그인 + Explorer 로딩)
+- ~~G2. `npm run lint`/`npm run format` CI 체크 안내 문서화~~
 
 ### H. 문서 & 로그
-- [x] H1. Sprint1_Log.md에 단계별 진행 로그 및 필요한 다이어그램/코드 스니펫 추가
+- H1. Sprint1_Log.md에 단계별 진행 로그 및 필요한 다이어그램/코드 스니펫 추가
 
 ## 로그 기록
 - (예) 2025-09-21 Codex — Task A1 완료, Tailwind/Prettier 설정 및 lint 검증 통과.
