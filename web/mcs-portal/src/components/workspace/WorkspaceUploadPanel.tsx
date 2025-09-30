@@ -12,7 +12,11 @@ import {
 } from 'antd';
 import type { RcFile, UploadProps } from 'antd/es/upload/interface';
 import { useMemo, useState } from 'react';
-import { uploadRoutingFileChunks } from '@/lib/uploads/uploadRoutingFileChunks';
+import {
+  uploadRoutingFileChunks,
+  type ChunkUploadProgress
+} from '@/lib/uploads/uploadRoutingFileChunks';
+import { useRoutingUploadTelemetry } from '@/lib/telemetry/useRoutingUploadTelemetry';
 import type { ExplorerRouting } from '@/types/explorer';
 
 const { Paragraph, Text } = Typography;
@@ -35,6 +39,15 @@ interface WorkspaceUploadPanelProps {
   routing?: ExplorerRouting | null;
 }
 
+const ALLOWED_EXTENSIONS = new Set([
+  '.nc',
+  '.esprit',
+  '.esp',
+  '.json',
+  '.mprj',
+  '.stl'
+]);
+
 const formatSize = (size: number) => {
   if (size >= 1_000_000) {
     return `${(size / 1_000_000).toFixed(1)} MB`;
@@ -45,13 +58,20 @@ const formatSize = (size: number) => {
   return `${size} B`;
 };
 
+const getExtension = (fileName: string) => {
+  const index = fileName.lastIndexOf('.');
+  return index >= 0 ? fileName.slice(index).toLowerCase() : '';
+};
+
+const isAllowedFile = (fileName: string) => ALLOWED_EXTENSIONS.has(getExtension(fileName));
+
 const inferFileType = (fileName: string): string => {
-  const lowered = fileName.toLowerCase();
-  if (lowered.endsWith('.nc')) return 'nc';
-  if (lowered.endsWith('.esprit') || lowered.endsWith('.esp')) return 'esprit';
-  if (lowered.endsWith('.json')) return 'meta';
-  if (lowered.endsWith('.mprj')) return 'mprj';
-  if (lowered.endsWith('.stl')) return 'stl';
+  const ext = getExtension(fileName);
+  if (ext === '.nc') return 'nc';
+  if (ext === '.esprit' || ext === '.esp') return 'esprit';
+  if (ext === '.json') return 'meta';
+  if (ext === '.mprj') return 'mprj';
+  if (ext === '.stl') return 'stl';
   return 'other';
 };
 
@@ -59,6 +79,8 @@ export default function WorkspaceUploadPanel({
   routing
 }: WorkspaceUploadPanelProps) {
   const [entries, setEntries] = useState<UploadEntry[]>([]);
+  const { beginUpload, logChunk, logFailure, logComplete, reset } =
+    useRoutingUploadTelemetry();
 
   const clearCompleted = () => {
     setEntries((prev) => prev.filter((entry) => entry.status !== 'success'));
@@ -70,9 +92,13 @@ export default function WorkspaceUploadPanel({
       multiple: true,
       showUploadList: false,
       disabled: !routing,
-      beforeUpload: () => {
+      beforeUpload: (file) => {
         if (!routing) {
-          message.warning('Routing을 선택한 뒤 업로드하세요.');
+          message.warning('Select a routing before uploading.');
+          return Upload.LIST_IGNORE;
+        }
+        if (!isAllowedFile(file.name)) {
+          message.error('Unsupported file type. Allowed: NC, Esprit, JSON, MPRJ, STL.');
           return Upload.LIST_IGNORE;
         }
         return true;
@@ -84,9 +110,16 @@ export default function WorkspaceUploadPanel({
         }
 
         const file = options.file as RcFile;
+        if (!isAllowedFile(file.name)) {
+          message.error('Unsupported file type.');
+          options.onError?.(new Error('Unsupported file type'));
+          return;
+        }
+
         const id = file.uid;
         const controller = new AbortController();
         const uploadedBy = 'workspace.user';
+        const uploadStartedAt = Date.now();
 
         setEntries((prev) => [
           ...prev,
@@ -101,24 +134,6 @@ export default function WorkspaceUploadPanel({
           }
         ]);
 
-        const updateProgress = (loadedBytes: number, totalBytes: number) => {
-          const percent =
-            totalBytes === 0 ? 0 : Math.round((loadedBytes / totalBytes) * 100);
-          setEntries((prev) =>
-            prev.map((entry) =>
-              entry.id === id
-                ? {
-                    ...entry,
-                    progress: Math.min(100, Math.max(0, percent)),
-                    status: percent >= 100 ? 'success' : entry.status,
-                    completedAt: percent >= 100 ? new Date() : entry.completedAt
-                  }
-                : entry
-            )
-          );
-          options.onProgress?.({ percent });
-        };
-
         const abortListener = () => {
           controller.abort();
           setEntries((prev) =>
@@ -127,23 +142,75 @@ export default function WorkspaceUploadPanel({
                 ? {
                     ...entry,
                     status: 'cancelled',
-                    errorMessage: '사용자가 업로드를 취소했습니다.'
+                    completedAt: new Date()
                   }
                 : entry
             )
           );
-          message.warning(`업로드 취소됨: ${file.name}`);
+          options.onError?.(new Error('Upload cancelled'));
         };
 
-        if (options.signal) {
-          if (options.signal.aborted) {
-            abortListener();
-            return;
-          }
-          options.signal.addEventListener('abort', abortListener, {
-            once: true
-          });
+        if (options.signal?.aborted) {
+          abortListener();
+          reset();
+          return;
         }
+
+        options.signal?.addEventListener('abort', abortListener);
+
+        beginUpload({
+          fileCount: 1,
+          totalSize: file.size,
+          userId: uploadedBy,
+          uploadId: id
+        });
+
+        let totalChunks = 0;
+        let lastLoadedBytes = 0;
+        let lastChunkIndex = 0;
+        let lastChunkTimestamp = Date.now();
+
+        const handleProgress = (progress: ChunkUploadProgress) => {
+          totalChunks = progress.totalChunks;
+          const percent =
+            progress.totalBytes === 0
+              ? 0
+              : Math.round((progress.loadedBytes / progress.totalBytes) * 100);
+
+          setEntries((prev) =>
+            prev.map((entry) =>
+              entry.id === id
+                ? {
+                    ...entry,
+                    progress: Math.min(100, Math.max(0, percent)),
+                    status: percent >= 100 ? 'success' : entry.status,
+                    completedAt:
+                      percent >= 100 ? new Date() : entry.completedAt
+                  }
+                : entry
+            )
+          );
+
+          options.onProgress?.({ percent });
+
+          if (progress.chunkIndex > lastChunkIndex) {
+            const chunkSize = Math.max(
+              0,
+              progress.loadedBytes - lastLoadedBytes
+            );
+            const elapsedMs = Math.max(0, Date.now() - lastChunkTimestamp);
+
+            logChunk({
+              chunkIndex: progress.chunkIndex,
+              chunkSize,
+              elapsedMs
+            });
+
+            lastChunkIndex = progress.chunkIndex;
+            lastLoadedBytes = progress.loadedBytes;
+            lastChunkTimestamp = Date.now();
+          }
+        };
 
         try {
           await uploadRoutingFileChunks({
@@ -151,20 +218,32 @@ export default function WorkspaceUploadPanel({
             file,
             fileType: inferFileType(file.name),
             uploadedBy,
-            onProgress: (progress) =>
-              updateProgress(progress.loadedBytes, progress.totalBytes),
+            onProgress: handleProgress,
             signal: controller.signal
           });
 
-          updateProgress(file.size, file.size);
-          message.success(`업로드 완료: ${file.name}`);
+          handleProgress({
+            chunkIndex: Math.max(lastChunkIndex, totalChunks),
+            totalChunks: totalChunks || lastChunkIndex || 1,
+            loadedBytes: file.size,
+            totalBytes: file.size
+          });
+
+          logComplete({
+            totalChunks: totalChunks || lastChunkIndex || 1,
+            totalDurationMs: Date.now() - uploadStartedAt
+          });
+
+          message.success(`Upload complete: ${file.name}`);
           options.onSuccess?.({}, file);
         } catch (err) {
           if (controller.signal.aborted) {
             return;
           }
+
           const description =
-            err instanceof Error ? err.message : '알 수 없는 오류';
+            err instanceof Error ? err.message : 'Unexpected error';
+
           setEntries((prev) =>
             prev.map((entry) =>
               entry.id === id
@@ -177,14 +256,31 @@ export default function WorkspaceUploadPanel({
                 : entry
             )
           );
-          message.error(`업로드 실패: ${description}`);
+
+          message.error(`Upload failed: ${description}`);
+
+          logFailure({
+            errorCode:
+              err instanceof Error && err.name ? err.name : 'UploadError',
+            retryCount: 0,
+            lastChunkIndex
+          });
+
           options.onError?.(err as Error);
         } finally {
+          reset();
           options.signal?.removeEventListener('abort', abortListener);
         }
       }
     }),
-    [routing]
+    [
+      routing,
+      beginUpload,
+      logChunk,
+      logFailure,
+      logComplete,
+      reset
+    ]
   );
 
   return (
@@ -201,8 +297,7 @@ export default function WorkspaceUploadPanel({
           Drag & drop files here or click to browse
         </p>
         <p className="ant-upload-hint text-xs text-gray-500">
-          지원 확장자: NC, Esprit, meta.json 등 · 업로드 시 checksum 검증이
-          수행됩니다.
+          Allowed extensions: NC, Esprit, meta.json. Checksum validation runs on upload.
         </p>
       </Upload.Dragger>
       {entries.length ? (
@@ -231,7 +326,7 @@ export default function WorkspaceUploadPanel({
                         {entry.name}
                       </Text>
                       <Paragraph type="secondary" className="mb-0 text-xs">
-                        {formatSize(entry.size)} · Routing {entry.routingCode} ·{' '}
+                        {formatSize(entry.size)} - Routing {entry.routingCode} - {' '}
                         {entry.status}
                       </Paragraph>
                       {entry.errorMessage ? (

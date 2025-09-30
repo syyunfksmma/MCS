@@ -61,3 +61,29 @@
 - 각 Wave 완료 즉시 관련 문서 불릿 끝에 완료 메모 추가, docs/sprint/Sprint*_Log.md와 Timeline 갱신.
 - QA: 기능별 테스트 문서(Sprint6_FlowG_H_Regressions.md 등)에서 성공/실패 로그 업데이트.
 - 배포 준비: Wave 5 종료 후 통합 리그레션 및 Explorer UI 데모 녹화.
+## 20-Task Acceleration Batch
+| 순번 | Wave | 위치 | 항목 | 상태/메모 |
+| --- | --- | --- | --- | --- |
+| 1 | 1 | docs/sprint/Sprint6_Routing_TaskList.md#L60 | G1. Drag-and-drop ordering with `/routing-groups/order` persistence. | 완료 (2025-09-30, Codex) |
+| 2 | 1 | docs/sprint/Sprint6_Routing_TaskList.md#L65 | G2. Inline edit & soft delete 항목 | 완료 (2025-09-30, Codex) |
+| 3 | 1 | docs/sprint/Sprint6_Routing_TaskList.md#L71 | H1. Routing Creation Wizard | 진행중 – 요구사항 재정리 |
+| 4 | 1 | docs/sprint/Sprint6_Routing_TaskList.md#L75 | H2. Routing Detail Modal | 진행중 – UX 흐름 정리 |
+| 5 | 1 | docs/sprint/Sprint6_Routing_TaskList.md#L82 | I1. Drag/Drop 업로더 PoC | 진행중 – Telemetry 헬퍼 적용 |
+| 6 | 1 | docs/sprint/Sprint8_Routing_TaskList.md#L76 | P1. Routing Detail modal skeleton | 진행중 – Lazy 로딩 정비 |
+| 7 | 2 | docs/sprint/Sprint20_Explorer_UI_Rework_TaskList.md#L67 | SERVER 섹션 정비 | 대기 – Wave2 착수 |
+| 8 | 2 | docs/sprint/Sprint6_Routing_TaskList.md#L85 | I2. 번들 다운로드 + 체크섬 | 대기 |
+| 9 | 2 | docs/sprint/Sprint6_Routing_TaskList.md#L88 | I3. 버전 테이블 | 대기 |
+| 10 | 2 | docs/sprint/Sprint6_Routing_TaskList.md#L93 | J1. SolidWorks 업로드 UI | 대기 |
+| 11 | 2 | docs/sprint/Sprint6_Routing_TaskList.md#L97 | J2. Explorer 프로토콜 핸들러 | 대기 |
+| 12 | 2 | docs/sprint/Sprint7_Routing_TaskList.md#L68 | L1. Feature Flag 생성/비활성화 | 대기 |
+| 13 | 3 | docs/sprint/Sprint7_Routing_TaskList.md#L60 | K1. 공유 드라이브 preset | 대기 |
+| 14 | 3 | docs/sprint/Sprint7_Routing_TaskList.md#L63 | K2. Retry/Timeout UI | 대기 |
+| 15 | 3 | docs/sprint/Sprint7_Routing_TaskList.md#L71 | L2. Flag 감사 로그/토글 | 대기 |
+| 16 | 3 | docs/sprint/Sprint7_Routing_TaskList.md#L76 | M1. Callback Health 모니터링 | 대기 |
+| 17 | 3 | docs/sprint/Sprint7_Routing_TaskList.md#L79 | M2. Admin Role Gate | 대기 |
+| 18 | 3 | docs/sprint/Sprint8_Routing_TaskList.md#L60 | N1. Routing/Version 캐싱 리팩토링 | 대기 |
+| 19 | 4 | docs/sprint/Sprint8_Routing_TaskList.md#L63 | N2. 단일 뷰 UX 개선 | 대기 |
+| 20 | 4 | docs/sprint/Sprint8_Routing_TaskList.md#L68 | O1. React Query Metrics 계측 | 대기 |
+
+잔여 Task 총계: 25건 (Wave1 4, Wave2 6, Wave3 6, Wave4 4, Wave5 5).
+

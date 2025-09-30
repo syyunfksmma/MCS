@@ -57,14 +57,14 @@
 
 ## 2. 작업 흐름 및 체크리스트
 ### Flow G. 라우팅 그룹 관리
-- G1. Drag-and-drop ordering with `/routing-groups/order` persistence.
-  - 상태: Wave 1 진행중 (2025-09-30, Codex)
+- G1. Drag-and-drop ordering with `/routing-groups/order` persistence. `(완료 2025-09-30, Codex)`
+  - 상태: Wave 1 완료 (2025-09-30, Codex)
   - UX: Match Teamcenter ribbon + selection indicators in the routing tree.
   - Log: Sprint6_Routing_Log.md -> 2025-09-23 G1 entry (mock API payload & rollback notes).
   - Test Prep: see docs/testing/Sprint6_FlowG_H_Regressions.md for regression scenarios.
   - Comment: ExplorerShell.tsx handleReorder 주석으로 optimistic update + rollback 전략 명시.
 - G2. Inline edit & soft delete 패턴 도입.
-  - 상태: Wave 1 설계 진행중 (2025-09-30, Codex)
+  - 상태: Wave 1 완료 (2025-09-30, Codex)
   - Log: Sprint6_Routing_Log.md -> 2025-09-24 G2 항목에 inline edit/soft delete 전략 기록.
   - Test Prep: see docs/testing/Sprint6_FlowG_H_Regressions.md for regression scenarios.
   - Comment: ExplorerShell.tsx mutateGroup 주석으로 soft delete state flag 처리 문서화.

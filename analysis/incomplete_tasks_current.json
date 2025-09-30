@@ -37,31 +37,15 @@
   {
     "path": "docs\\sprint\\Sprint6_Routing_TaskList.md",
     "category": "task_list",
-    "incomplete_count": 9,
+    "incomplete_count": 7,
     "tasks": [
-      {
-        "line": 60,
-        "heading": "Sprint 6 Routing Task List (Workspace & Workflow) > 2. 작업 흐름 및 체크리스트 > Flow G. 라우팅 그룹 관리",
-        "text": "G1. Drag-and-drop ordering with `/routing-groups/order` persistence.",
-        "wave": 1,
-        "status": "in_progress",
-        "note": "Drag&Drop 설계"
-      },
-      {
-        "line": 65,
-        "heading": "Sprint 6 Routing Task List (Workspace & Workflow) > 2. 작업 흐름 및 체크리스트 > Flow G. 라우팅 그룹 관리",
-        "text": "G2. Inline edit & soft delete 패턴 도입.",
-        "wave": 1,
-        "status": "in_progress",
-        "note": "Inline edit 설계"
-      },
       {
         "line": 71,
         "heading": "Sprint 6 Routing Task List (Workspace & Workflow) > 2. 작업 흐름 및 체크리스트 > Flow H. 라우팅 생성 플로우",
         "text": "H1. Routing Creation Wizard (name, owner, status, notes, shared-drive check).",
         "wave": 1,
         "status": "in_progress",
-        "note": "Wizard 요구사항 검토"
+        "note": "Wizard 요구사항 재정리 및 코드 연동 준비"
       },
       {
         "line": 75,
@@ -69,7 +53,7 @@
         "text": "H2. Routing Detail Modal (Overview/File Assets/History 탭).",
         "wave": 1,
         "status": "in_progress",
-        "note": "Modal UX 정리"
+        "note": "Modal UX 흐름 및 상태 관리 정리"
       },
       {
         "line": 82,
@@ -77,7 +61,7 @@
         "text": "I1. Allowlisted drag/drop uploader with chunking + progress.",
         "wave": 1,
         "status": "in_progress",
-        "note": "업로더 Telemetry"
+        "note": "업로더 Telemetry 헬퍼/Alert 설계"
       },
       {
         "line": 85,
@@ -138,7 +122,9 @@
       {
         "line": 71,
         "heading": "Sprint 7 Routing Task List (Admin & Settings) > 2. 작업 흐름 및 체크리스트 > Flow L. 피처 플래그 관리",
-        "text": "L2. Flag 변경 감사 로그 보기 + 롤백 버튼."
+        "text": "L2. Flag 변경 감사 로그 보기 + 롤백 버튼.",
+        "wave": 3,
+        "status": "pending"
       },
       {
         "line": 76,
@@ -164,12 +150,16 @@
       {
         "line": 60,
         "heading": "Sprint 8 Routing Task List (Performance & Reliability) > 2. 작업 흐름 및 체크리스트 > Flow N. 옵티미스틱 업데이트",
-        "text": "N1. Routing/Version 편집 옵티미스틱 적용 범위 정의."
+        "text": "N1. Routing/Version 편집 옵티미스틱 적용 범위 정의.",
+        "wave": 3,
+        "status": "pending"
       },
       {
         "line": 63,
         "heading": "Sprint 8 Routing Task List (Performance & Reliability) > 2. 작업 흐름 및 체크리스트 > Flow N. 옵티미스틱 업데이트",
-        "text": "N2. 실패 롤백 UX (토스트/바텀시트) 구현."
+        "text": "N2. 실패 롤백 UX (토스트/바텀시트) 구현.",
+        "wave": 4,
+        "status": "pending"
       },
       {
         "line": 68,
@@ -196,17 +186,23 @@
       {
         "line": 79,
         "heading": "Sprint 8 Routing Task List (Performance & Reliability) > 2. 작업 흐름 및 체크리스트 > Flow P. UX 성능 개선",
-        "text": "P2. 검색/워크스페이스 주요 경로에서 CLS/FID 재측정."
+        "text": "P2. 검색/워크스페이스 주요 경로에서 CLS/FID 재측정.",
+        "wave": 4,
+        "status": "pending"
       },
       {
         "line": 84,
         "heading": "Sprint 8 Routing Task List (Performance & Reliability) > 2. 작업 흐름 및 체크리스트 > Flow Q. 재시도/백오프 검증",
-        "text": "Q1. 공유 드라이브 API 실패(5xx/409) 시뮬레이션."
+        "text": "Q1. 공유 드라이브 API 실패(5xx/409) 시뮬레이션.",
+        "wave": 5,
+        "status": "pending"
       },
       {
         "line": 87,
         "heading": "Sprint 8 Routing Task List (Performance & Reliability) > 2. 작업 흐름 및 체크리스트 > Flow Q. 재시도/백오프 검증",
-        "text": "Q2. 재시도 정책 튜닝(지수 백오프 파라미터)."
+        "text": "Q2. 재시도 정책 튜닝(지수 백오프 파라미터).",
+        "wave": 5,
+        "status": "pending"
       }
     ]
   }
