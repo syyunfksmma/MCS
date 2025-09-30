@@ -20,21 +20,21 @@
 - 의존성: Sprint6 → Sprint7 → Sprint8 → Sprint20 순으로 누적 기능이 열리므로 Wave 순서를 유지한다.
 - 품질 게이트: 각 Wave 종료 시 Docs 로그 업데이트, 테스트 계획 재확인, 배포 전 내역 리뷰.
 
-## Wave 1 – Routing Workspace 초안 정렬 (D+0 ~ D+2)
+## Wave 1 – Routing Workspace 초안 정렬 (D+0 ~ D+2) — 진행중
 - Sprint6_Routing_TaskList.md#L60: G1 Drag-and-drop 정렬 UX 및 /routing-groups/order API 연동.
 - Sprint6_Routing_TaskList.md#L65: G2 Inline Edit + Soft Delete 구현 및 롤백 로직 정비.
 - Sprint6_Routing_TaskList.md#L71: H1 Routing 생성 마법사(공유 드라이브 체크 포함) UI/서비스 결선.
 - Sprint6_Routing_TaskList.md#L75: H2 Routing 상세 모달(Overview/File Assets/History 탭) 기본 플로우 구축.
 - Sprint6_Routing_TaskList.md#L82: I1 Drag/Drop 업로더(청크 업로드, 진행률) PoC 완성 및 Telemetry 기록.
 
-## Wave 2 – 자산 전송 및 SolidWorks 연동 (D+2 ~ D+4)
+## Wave 2 – 자산 전송 및 SolidWorks 연동 (D+2 ~ D+4) — 예정
 - Sprint6_Routing_TaskList.md#L85: I2 다운로드 번들·체크섬 검증 및 에러 가드레일 처리.
 - Sprint6_Routing_TaskList.md#L88: I3 버전 테이블(Main 토글/Legacy 노출/감사 타임라인) 상태 관리.
 - Sprint6_Routing_TaskList.md#L93: J1 SolidWorks 업로드/교체 UI와 Telemetry Stub 마감.
 - Sprint6_Routing_TaskList.md#L97: J2 Explorer 프로토콜 핸들러 권한 검사 및 Deep Link 테스트.
 - Sprint7_Routing_TaskList.md#L60: K1 공유 드라이브 루트/네이밍 Preset 정책 확정 및 적용 스크립트.
 
-## Wave 3 – 운영 정책 및 플래그 거버넌스 (D+4 ~ D+6)
+## Wave 3 – 운영 정책 및 플래그 거버넌스 (D+4 ~ D+6) — 대기
 - Sprint7_Routing_TaskList.md#L63: K2 재시도/타임아웃 UI 구성과 백엔드 한계 값 보완.
 - Sprint7_Routing_TaskList.md#L68: L1 Feature Flag 생성/비활성화 API (eature.search-routing, eature.solidworks-upload).
 - Sprint7_Routing_TaskList.md#L71: L2 Flag 감사 로그·One-click Toggle UX 마감.
@@ -42,14 +42,14 @@
 - Sprint7_Routing_TaskList.md#L79: M2 Admin Role Gate 및 인증 실패 UX 점검.
 - Sprint8_Routing_TaskList.md#L60: N1 Routing/Version 캐싱 레이어 성능 리팩토링.
 
-## Wave 4 – 성능/신뢰성 Hardening (D+6 ~ D+8)
+## Wave 4 – 성능/신뢰성 Hardening (D+6 ~ D+8) — 대기
 - Sprint8_Routing_TaskList.md#L63: N2 단일 뷰 UX 개선(캐시 Warm-up, Pagination).
 - Sprint8_Routing_TaskList.md#L68: O1 React Query Cache Metrics (Application Insights 커스텀 이벤트).
 - Sprint8_Routing_TaskList.md#L71: O2 Alert Threshold 조정 및 자동 알람 루틴.
 - Sprint8_Routing_TaskList.md#L76: P1 Routing Detail 모달 Skeleton + Lazy Loading 배치.
 - Sprint8_Routing_TaskList.md#L79: P2 검색/라우팅 UX Core Web Vitals(CLS/FID) 튜닝.
 
-## Wave 5 – 예외 대응 및 Explorer UI 확장 (D+8 ~ D+10)
+## Wave 5 – 예외 대응 및 Explorer UI 확장 (D+8 ~ D+10) — 대기
 - Sprint8_Routing_TaskList.md#L84: Q1 오류 코드(5xx/409) 자동 복구 및 재시도 정책.
 - Sprint8_Routing_TaskList.md#L87: Q2 예외 핸들링 가이드(사용자 메시지/서버 재시도 매트릭스).
 - Sprint20_Explorer_UI_Rework_TaskList.md#L65: Dashboards(계약/공정/모듈 KPI) 위젯 설계 및 데이터 매핑.
