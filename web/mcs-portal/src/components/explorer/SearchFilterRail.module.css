@@ -1,0 +1,57 @@
+.rail {
+  position: sticky;
+  top: calc(var(--explorer-ribbon-height) + var(--explorer-gap));
+  z-index: 4;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid var(--explorer-panel-border);
+  border-radius: 12px;
+  padding: 12px 16px;
+  box-shadow: var(--explorer-shadow-level1);
+  backdrop-filter: blur(4px);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.title {
+  font: var(--explorer-font-caption);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #5c6270;
+}
+
+.options :global(.ant-space-item) {
+  flex: 0 0 auto;
+}
+
+.options :global(.ant-select) {
+  min-width: 176px;
+}
+
+.resetButton {
+  min-width: 0;
+}
+
+@media (max-width: 960px) {
+  .rail {
+    position: static;
+    box-shadow: none;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.95);
+  }
+
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .options :global(.ant-select) {
+    min-width: 148px;
+  }
+}

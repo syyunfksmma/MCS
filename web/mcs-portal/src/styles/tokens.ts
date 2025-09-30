@@ -10,7 +10,10 @@ export const designTokens = {
     surfaceAlt: '#F5F7FA',
     text: '#1B1F29',
     textMuted: '#5C6270',
-    border: '#D9DEE7'
+    border: '#D9DEE7',
+    teamcenterTeal: '#009999',
+    neutralBackground: '#F5F7FA',
+    panelBorder: '#D8DFE8'
   },
   spacing: {
     none: '0px',
@@ -36,7 +39,14 @@ export const designTokens = {
     sizeSm: '14px',
     sizeMd: '16px',
     sizeLg: '20px',
-    sizeXl: '24px'
+    sizeXl: '24px',
+    heading: "600 16px/1.4 'Inter', 'Segoe UI', sans-serif",
+    body: "400 14px/1.6 'Inter', 'Segoe UI', sans-serif",
+    caption: "400 12px/1.4 'Inter', 'Segoe UI', sans-serif"
+  },
+  layout: {
+    ribbonHeight: '64px',
+    contentGutter: '24px'
   },
   elevation: {
     level1: '0px 2px 8px rgba(24, 32, 68, 0.08)',
@@ -46,7 +56,10 @@ export const designTokens = {
 
 export type DesignTokens = typeof designTokens;
 
-export const getToken = <T extends keyof DesignTokens, K extends keyof DesignTokens[T]>(
+export const getToken = <
+  T extends keyof DesignTokens,
+  K extends keyof DesignTokens[T]
+>(
   category: T,
   key: K
 ): DesignTokens[T][K] => designTokens[category][key];

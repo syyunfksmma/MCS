@@ -1,5 +1,12 @@
-import { Button, Card, Divider, Space, Tooltip } from 'antd';
+import { Button, Tooltip } from 'antd';
+import type { ReactNode } from 'react';
 import type { ExplorerRouting } from '@/types/explorer';
+import styles from './ExplorerRibbon.module.css';
+
+type ClassValue = string | false | null | undefined;
+
+const composeClassNames = (...values: ClassValue[]) =>
+  values.filter(Boolean).join(' ');
 
 interface ExplorerRibbonProps {
   selectedRouting: ExplorerRouting | null;
@@ -20,45 +27,104 @@ export default function ExplorerRibbon({
 }: ExplorerRibbonProps) {
   const isRoutingSelected = Boolean(selectedRouting);
   const routingCode = selectedRouting?.code;
+  const routingStatus = selectedRouting?.status ?? '대기';
 
   return (
-    <Card title="Explorer Ribbon" bordered>
-      <Space size="large" className="flex flex-wrap" role="toolbar" aria-label="Explorer 작업 리본">
+    <div className={styles.root}>
+      <div
+        className={styles.groups}
+        role="toolbar"
+        aria-label="Explorer 작업 리본"
+      >
         <ActionGroup label="작업">
-          <Button type="link" disabled={!isRoutingSelected} onClick={onOpenSelected} aria-label="선택한 Routing 열기">
+          <Button
+            type="text"
+            className={composeClassNames(
+              styles.actionButton,
+              isRoutingSelected && styles.actionButtonPrimary
+            )}
+            disabled={!isRoutingSelected}
+            onClick={onOpenSelected}
+            aria-label="선택한 Routing 열기"
+          >
             {routingCode ? `${routingCode} 열기` : '열기'}
           </Button>
-          <Button type="link" onClick={onOpenWizard} aria-label="Routing 생성 마법사 열기">
+          <Button
+            type="text"
+            className={composeClassNames(
+              styles.actionButton,
+              styles.actionButtonPrimary
+            )}
+            onClick={onOpenWizard}
+            aria-label="새 Routing 만들기"
+          >
             새 Routing
           </Button>
         </ActionGroup>
-        <Divider type="vertical" />
-        <ActionGroup label="배포">
-          <Button type="link" onClick={onShowUploadPanel} aria-label="Workspace 업로드 패널로 이동">
+        <ActionGroup label="흐름">
+          <Button
+            type="text"
+            className={styles.actionButton}
+            onClick={onShowUploadPanel}
+            aria-label="Workspace 업로드로 이동"
+          >
             Workspace 업로드
           </Button>
-          <Tooltip title={isRoutingSelected ? '다운로드 준비 중' : 'Routing 선택 후 사용 가능'}>
-            <Button type="link" disabled={!isRoutingSelected} onClick={onDownloadSelected} aria-label="Routing 다운로드">
+          <Tooltip
+            title={
+              isRoutingSelected
+                ? '다운로드 준비'
+                : 'Routing 선택 후 이용 가능합니다'
+            }
+          >
+            <Button
+              type="text"
+              className={styles.actionButton}
+              disabled={!isRoutingSelected}
+              onClick={onDownloadSelected}
+              aria-label="Routing 다운로드"
+            >
               다운로드
             </Button>
           </Tooltip>
         </ActionGroup>
-        <Divider type="vertical" />
-        <ActionGroup label="관리">
-          <Button type="link" onClick={onShowAddinPanel} aria-label="Add-in 상태 패널 보기">
-            Add-in 상태
+        <ActionGroup label="도구">
+          <Button
+            type="text"
+            className={styles.actionButton}
+            onClick={onShowAddinPanel}
+            aria-label="Add-in 패널로 이동"
+          >
+            Add-in 콘솔
           </Button>
         </ActionGroup>
-      </Space>
-    </Card>
+      </div>
+      <div className={styles.meta} aria-live="polite">
+        {isRoutingSelected ? (
+          <>
+            <span className={styles.metaLabel}>선택</span>
+            <span className={styles.metaBadge}>{routingCode}</span>
+            <span className={styles.metaStatus}>{routingStatus}</span>
+          </>
+        ) : (
+          <span className={styles.metaPlaceholder}>Routing 미선택</span>
+        )}
+      </div>
+    </div>
   );
 }
 
-function ActionGroup({ label, children }: { label: string; children: React.ReactNode }) {
+function ActionGroup({
+  label,
+  children
+}: {
+  label: string;
+  children: ReactNode;
+}) {
   return (
-    <div className="flex flex-col gap-2" aria-label={`${label} 그룹`}>
-      <span className="text-xs text-gray-500">{label}</span>
-      <Space size="small">{children}</Space>
+    <div className={styles.group} aria-label={`${label} 그룹`}>
+      <span className={styles.groupLabel}>{label}</span>
+      <div className={styles.groupActions}>{children}</div>
     </div>
   );
 }

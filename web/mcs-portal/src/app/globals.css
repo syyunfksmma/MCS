@@ -4,6 +4,16 @@
 
 :root {
   color-scheme: light;
+  --explorer-accent: #009999;
+  --explorer-neutral-bg: #f5f7fa;
+  --explorer-panel-border: #d8dfe8;
+  --explorer-ribbon-height: 64px;
+  --explorer-content-gutter: 24px;
+  --explorer-gap: 16px;
+  --explorer-font-heading: 600 16px/1.4 'Inter', 'Segoe UI', sans-serif;
+  --explorer-font-body: 400 14px/1.6 'Inter', 'Segoe UI', sans-serif;
+  --explorer-font-caption: 400 12px/1.4 'Inter', 'Segoe UI', sans-serif;
+  --explorer-shadow-level1: 0px 2px 8px rgba(24, 32, 68, 0.08);
 }
 
 body {
