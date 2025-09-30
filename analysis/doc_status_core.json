@@ -1,0 +1,1867 @@
+[
+  {
+    "path": "docs\\accessibility\\AccessibilityResponsiveGuide.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\accessibility\\UAT_Manual_Checklist.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\api\\contracts\\20250815_draft.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\api\\contracts\\20250929_frontend_spec_sync.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\api\\contracts\\audit_meta_events.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\api\\contracts\\magic_link_policy.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\api\\contracts\\magic_link_storybook.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\api\\contracts\\products_dashboard_v2.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\api\\contracts\\routing_error_retry.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\api\\contracts\\routing_events_samples.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\api\\logs\\20250929_contract_confirmation.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\api\\logs\\20250929_premeeting.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\api\\logs\\20250930.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\api\\logs\\20250930_followup.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\api\\logs\\20250930_jira_sync.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\api\\logs\\20250930_meeting_log_template.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\api\\logs\\20250930_schema_plan.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\api\\logs\\FR_CrossReference_Plan.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\api\\ML_Addin_Integration_Spec.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\api\\ML_Routing_API_Extensions.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\api\\pending\\20250930_agenda.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\api\\Phase4_LargeFilePolicy.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\api\\Phase4_REST_Consumer_Guide.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\api\\Phase4_SignalR_Spec.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\architecture\\API_SignalR_Configuration.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\architecture\\ML_Routing_Orchestration.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\automation\\pm2_RestartPlan.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\automation\\Sprint8_AutomationPlan.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\automation\\Worker_Event_Handshake_TestPlan.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\BuildAndTestReport.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\CAM_WebService_ImplementationPlan.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\ci\\AzureDevOps_Migration_Plan.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\ci\\CAM_API_GeneratedCode_BuildPlan.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\ci\\Git_Deployment_Plan.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\ci\\ML_Routing_CI_Extension.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\ci\\Phase2_CICD_Design.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\ci\\Pipeline_HealthCheck.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\ci\\ReleaseNotes_Automation.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\ci\\Secret_Inventory.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\ci\\TestCoverage_Report.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\config\\Config_Env_Management.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\config\\ConfigurationGuide.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\config\\SMTP_Template.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\data\\ERP_View_Table.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\design\\EmailVerification_UI.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\design\\Explorer_MenuBar_Requirements.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\design\\Explorer_UI_Gap.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\design\\Explorer_UI_Rework_ImplementationPlan.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\design\\Explorer_UI_Rework_Proposal.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\design\\ExplorerRibbon_FinalSpec.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\design\\logs\\20250929_asset_scan.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\design\\logs\\20250929_hierarchy_sync.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\design\\Nextjs_ML_Integration_Design.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\design\\Phase1_NavigationIA.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\design\\Phase1_RequirementsReview.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\design\\Phase2_Nextjs_DotNet_Architecture.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\design\\Phase2_UIWireframe.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\design\\Phase3_AddinIntegration.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\design\\Phase3_FigmaHandoffGuide.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\design\\Phase4_WDriveMapping.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\design\\Phase5_ProductWorkspace_Enhancements.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\design\\Phase5_ReactQueryCaching.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\design\\Phase6_Workspace_AdvancedFlows.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\design\\Phase6_Workspace_CoreImplementation.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\design\\Phase6_WorkspaceDragDrop.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\design\\Phase8_ExceptionUX.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\design\\Server_Control_Launcher_Final_GUI_Design.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\design\\Server_Control_Launcher_QAPlan.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\design\\Server_Control_Launcher_Requirements.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\design\\Server_Control_Launcher_S96_Scenarios.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\design\\Server_Control_Launcher_S96_Signoff_Prep.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\design\\Server_Control_Launcher_S97_PoC_Plan.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\design\\Server_Control_Launcher_S98_IntegrationPlan.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\design\\Server_Control_Launcher_Server_MCS_Config.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\design\\Server_Control_Launcher_UI_TestPlan.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\design\\Server_Control_Launcher_Wave21_ExecutionChecklist.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\design\\Skeleton_Loading_Standards.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\design\\Sprint6_Explorer_UX_Plan.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\design\\Sprint7_GUI_Metatask.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\design\\Teamcenter_Patterns_Review.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\design\\wireframes\\Sprint7\\Notification_Performance.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\ExecutionChecklist.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\frontend\\React19_Vite_Setup.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\implementation\\AsyncIncrementalLoading.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\implementation\\Explorer_API_Integration.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\implementation\\FileStorage_Meta_Optimization.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\implementation\\ML_Addin_Workflow.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\implementation\\ML_Routing_Nextjs_Baseline.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\implementation\\ML_Routing_UI_Components.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\implementation\\ML_Service_PoC_Plan.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\implementation\\Observability_DataFlow.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\implementation\\Phase1_NextjsSetup.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\implementation\\Phase2_ApiEnhancements.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\implementation\\Phase3_WorkerQueueProcessing.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\installers\\AutoInstall_Verification.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\installers\\Rollback_TestPlan.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\installers\\SQL_Server_Options.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\installers\\WiX_Plan.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\logs\\Localhost_Test_Log_2025-09-29.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\logs\\Ops_Comms_Precheck_20250929.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\logs\\Timeline_2025-09-29.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\logs\\Timeline_2025-09-30.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\logs\\Wave15_TaskPlan.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\logs\\Wave18_TaskPlan.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\manual\\MCMS_HelpCenter_FAQ.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\manual\\MCMS_Offline_QuickStart.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\manual\\MCMS_OpsManual.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\manual\\MCMS_UserManual_Web.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\manual\\MCMS_WebPortal_UserGuide.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\manual\\SharedDrive_Structure.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\MCMS_TaskList.md",
+    "category": "task_list",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\meetings\\PoC_Communication_Plan.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\meetings\\PoC_Governance_Request.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\meetings\\PoC_Kickoff_Log.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\meetings\\PoC_Review_Checklist.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\meetings\\PoC_Status_Summary.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\observability\\Admin_AuditMonitoring.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\observability\\ApplicationInsights_RoutingSchema.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\observability\\LogPipeline.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\observability\\ML_Routing_Operational_Monitoring.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\observability\\Phase10_MonitoringDashboard.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\observability\\Serilog_Pipeline.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\observability\\WindowsEventLog_Integration.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\operations\\Admin_SharedDrive_Handbook.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\operations\\DataAsset_Catalog.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\operations\\FeatureFlagManagement.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\operations\\Ongoing_Governance_Cadence.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\operations\\Phase7_AdminSettingsPlan.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\operations\\SharedDrive_RetentionPlan.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\operations\\Test_Gating_Policy.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\ops\\Access_Migration.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\ops\\Access_TableMapping_Plan.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\ops\\Disaster_Recovery_Test_Report.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\ops\\DisasterRecovery_RegressionSignoff.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\ops\\DockerCompose_Override_Assessment.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\ops\\ESPRIT_Addin_Deployment.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\ops\\FileStorage_EventMonitoring.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\ops\\IIS_Kestrel_Deployment.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\ops\\IIS_Node_DeploymentRunbook.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\ops\\IIS_Node_OperationsDesign.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\ops\\InternalManualDeployment.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\ops\\LocalDeployment_Email_Runbook.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\ops\\ML_Service_HostingPlan.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\ops\\Network_IP_Checklist.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\ops\\RegistryPolicy.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\ops\\Routing_AdminHandbook.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\ops\\Routing_BlueGreen_Checklist.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\ops\\Routing_DryRun_Report_2025-09-29.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\ops\\Routing_Operations_Runbook.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\ops\\Routing_QuickStart_Media.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\ops\\Routing_Rollback_Procedure.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\ops\\Routing_SharedDrive_Decisions.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\ops\\Routing_SupportFAQ.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\ops\\Routing_UserGuide.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\ops\\Routing_Versioning_Policy.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\ops\\SharedDrive_Structure.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\ops\\Zero_Downtime_Verification.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\performance\\k6_Results_Wave14.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\performance\\k6_sqlserver_setup.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\performance\\Phase8_LighthousePlan.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\performance\\Phase8_PerfReliabilityPlan.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\performance\\Phase8_Retry_Backoff_TestPlan.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\performance\\Phase8_SSRLoadTest.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\performance\\Windows_k6_TestPlan.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\Phase0_Alignment.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\Phase0_ExecutiveDeck.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\Phase0_RACI.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\Phase0_SSO_NodeHostingGuide.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\Phase10_DeploymentOps.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\Phase10_Runbook_Annex.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\phase11\\CI_CD_Transfer_Guide.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\phase11\\Documentation_Status.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\phase11\\Handoff_Bundle.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\phase11\\Ops_LogMetrics_Bundle.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\phase11\\Ops_Procedures.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\phase11\\Quickstart_Distribution_Log.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\Phase11_Documentation.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\Phase1_Requirements.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\Phase2_Architecture.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\Phase3_BackendPlan.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\Phase4_ClientPlan.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\Phase5_FileWorkflow.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\Phase6_Security.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\Phase7_Performance.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\Phase8_PilotMigration.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\Phase9_QA_UAT.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\playwright\\CorporatePlaywrightPolicy.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\prd\\ML_Routing_PRD_Mapping.md",
+    "category": "prd",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\prd\\ML_Routing_RequirementsBridge.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\prd\\New_Requirements_Backlog.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\prd\\Phase0_PRD.md",
+    "category": "prd",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\prd\\Phase0_RACI.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\prd\\Phase0_SecurityHostingMemo.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\prd\\Phase10_DeploymentRunbook.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\prd\\Phase10_MonitoringPlan.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\prd\\Phase10_Overview.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\prd\\Phase10_PRD.md",
+    "category": "prd",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\prd\\Phase10_RollbackStrategy.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\prd\\Phase11_Overview.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\prd\\Phase11_PRD.md",
+    "category": "prd",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\prd\\Phase11_TrainingPlan.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\prd\\Phase11_TransitionReport.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\prd\\Phase11_UserOpsManual.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\prd\\Phase1_AccessibilityGuide.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\prd\\Phase1_IA.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\prd\\Phase1_PRD.md",
+    "category": "prd",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\prd\\Phase1_UXRequirements.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\prd\\Phase2_Architecture.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\prd\\Phase2_CICD.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\prd\\Phase2_Hosting.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\prd\\Phase2_PRD.md",
+    "category": "prd",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\prd\\Phase3_DesignSystem.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\prd\\Phase3_HandoffGuide.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\prd\\Phase3_PRD.md",
+    "category": "prd",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\prd\\Phase3_TokensComponents.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\prd\\Phase4_Overview.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\prd\\Phase4_PRD.md",
+    "category": "prd",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\prd\\Phase4_RealTimeFilePolicy.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\prd\\Phase4_RESTGuide.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\prd\\Phase5_AddinHistoryUI.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\prd\\Phase5_CachingStrategy.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\prd\\Phase5_ExplorerPlan.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\prd\\Phase5_Overview.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\prd\\Phase5_PRD.md",
+    "category": "prd",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\prd\\Phase6_AddinControlPlan.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\prd\\Phase6_ApprovalFlowTestPlan.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\prd\\Phase6_Overview.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\prd\\Phase6_PRD.md",
+    "category": "prd",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\prd\\Phase6_WorkspacePlan.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\prd\\Phase7_AdminConsolePlan.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\prd\\Phase7_FeatureFlagPolicy.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\prd\\Phase7_LoggingMonitoringPlan.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\prd\\Phase7_Overview.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\prd\\Phase7_PRD.md",
+    "category": "prd",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\prd\\Phase8_LoadRecoveryPlan.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\prd\\Phase8_Overview.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\prd\\Phase8_PerformancePlan.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\prd\\Phase8_PRD.md",
+    "category": "prd",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\prd\\Phase8_ResilienceUX.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\prd\\Phase9_ComplianceChecklist.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\prd\\Phase9_E2EPlan.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\prd\\Phase9_Overview.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\prd\\Phase9_PRD.md",
+    "category": "prd",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\prd\\Phase9_UATPlan.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\PRD_AbsoluteConditions.md",
+    "category": "prd",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\PRD_MCS.md",
+    "category": "prd",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\PRD_ML_Routing.md",
+    "category": "prd",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\QA\\Checkbox_Clearance_Plan.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\QA\\Server_Control_Launcher_Code_Audit_Plan.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\reporting\\OpenQuestions_Outcomes_20250929.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\reporting\\Phase11_TransitionReport.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\reporting\\Reporting_Plan.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\reporting\\Sprint7_LessonsLearned.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\reporting\\Sprint7_Roadmap.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\reporting\\Sprint7_TransitionReport.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\reporting\\Translation_Log.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\reporting\\Wave14_Maturity_Metrics.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\security\\Security_Test_Report_Wave14.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\security\\TLS_Strategy.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\setup\\DatabaseBootstrap.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\setup\\LocalDevEnvironment.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\setup\\Localhost_Test_Playbook.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\setup\\VS2022_License_Audit.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\sprint\\Sprint10_Routing_Log.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\sprint\\Sprint10_Routing_TaskList.md",
+    "category": "task_list",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\sprint\\Sprint11_Routing_Log.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\sprint\\Sprint11_Routing_TaskList.md",
+    "category": "task_list",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\sprint\\Sprint12_OptimizedDataPathBenchmark.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\sprint\\Sprint1_APIContract.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\sprint\\Sprint1_CIChecklist.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\sprint\\Sprint1_CIPlan.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\sprint\\Sprint1_ExplorerFlow.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\sprint\\Sprint1_Log.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\sprint\\Sprint1_PerformanceBaseline.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\sprint\\Sprint1_PrefetchPlan.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\sprint\\Sprint1_TaskList.md",
+    "category": "task_list",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\sprint\\Sprint1_TelemetryPlan.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\sprint\\Sprint20_Explorer_UI_Rework_TaskList.md",
+    "category": "task_list",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\sprint\\Sprint21_Server_Control_Launcher_TaskList.md",
+    "category": "task_list",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\sprint\\Sprint2_AddinControlPanel.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\sprint\\Sprint2_ApprovalWorkflow.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\sprint\\Sprint2_DragDropRouting.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\sprint\\Sprint2_KeyboardShortcuts.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\sprint\\Sprint2_Log.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\sprint\\Sprint2_MetaJsonRules.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\sprint\\Sprint2_ProfilerPlan.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\sprint\\Sprint2_Swimlane.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\sprint\\Sprint2_TaskList.md",
+    "category": "task_list",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\sprint\\Sprint2_WorkspaceState.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\sprint\\Sprint2_WorkspaceUpload.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\sprint\\Sprint3_AdminConsole.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\sprint\\Sprint3_ApiKeys.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\sprint\\Sprint3_FeatureFlags.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\sprint\\Sprint3_Log.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\sprint\\Sprint3_TaskList.md",
+    "category": "task_list",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\sprint\\Sprint4_Log.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\sprint\\Sprint4_MaintenancePlaybook.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\sprint\\Sprint4_PerformancePlan.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\sprint\\Sprint4_PerformanceReport.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\sprint\\Sprint4_ResiliencePlan.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\sprint\\Sprint4_TaskList.md",
+    "category": "task_list",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\sprint\\Sprint5_1_Routing_Log.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\sprint\\Sprint5_1_Routing_TaskList.md",
+    "category": "task_list",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\sprint\\Sprint5_AccessibilityPlan.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\sprint\\Sprint5_Log.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\sprint\\Sprint5_MonitoringPlan.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\sprint\\Sprint5_QAReport.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\sprint\\Sprint5_Routing_Log.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\sprint\\Sprint5_Routing_TaskList.md",
+    "category": "task_list",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\sprint\\Sprint5_TaskList.md",
+    "category": "task_list",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\sprint\\Sprint5_UAT_Checklist.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\sprint\\Sprint5_UAT_Feedback.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\sprint\\Sprint6_BulkExecutionPlan.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\sprint\\Sprint6_ChunkUploadPlan.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\sprint\\Sprint6_DRPlaybook.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\sprint\\Sprint6_ExplorerUX.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\sprint\\Sprint6_Log.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\sprint\\Sprint6_Monitoring.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\sprint\\Sprint6_Routing_Log.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\sprint\\Sprint6_Routing_TaskList.md",
+    "category": "task_list",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\sprint\\Sprint6_TaskList.md",
+    "category": "task_list",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\sprint\\Sprint7_Log.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\sprint\\Sprint7_Routing_Log.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\sprint\\Sprint7_Routing_TaskList.md",
+    "category": "task_list",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\sprint\\Sprint7_StreamingSHAPlan.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\sprint\\Sprint7_TaskList.md",
+    "category": "task_list",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\sprint\\Sprint8_Log.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\sprint\\Sprint8_Routing_Log.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\sprint\\Sprint8_Routing_TaskList.md",
+    "category": "task_list",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\sprint\\Sprint8_TaskList.md",
+    "category": "task_list",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\sprint\\Sprint9_Routing_Log.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\sprint\\Sprint9_Routing_TaskList.md",
+    "category": "task_list",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\Tasks_MCS.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\Tasks_ML_Routing.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\templates\\Ops_Comms_Template.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\testing\\BenchmarkResults\\Sprint12_Pilot.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\testing\\Explorer_UI_Rework.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\testing\\ML_Routing_IntegrationPlan.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\testing\\ML_Routing_PerfPlan.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\testing\\ML_Routing_UAT_Plan.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\testing\\ML_Routing_UnitPlan.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\testing\\Phase9_Accessibility_UAT_Plan.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\testing\\Phase9_E2EPlan.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\testing\\Phase9_QA_TestPlans.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\testing\\Selenium_Edge_TestPlan.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\testing\\Sprint6_FlowG_H_Regressions.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\testing\\Sprint6_UX_TestKickoff.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\testing\\Sprint9_AccessibilityReport.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\testing\\Sprint9_CrossBrowserMatrix.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\testing\\Sprint9_FeedbackPlan.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\testing\\Sprint9_UAT_ExecutionLog.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\testing\\Sprint9_UAT_TestPlan.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\training\\MCMS_Approval_Workshop.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\training\\MCMS_Onboarding_Tutorial_Checklist.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\training\\MCMS_TrainingMaterials.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\training\\MCMS_TrainingSessions_Log.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\training\\Offline_Deployment_QuickStart_Sprint8.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\training\\Onboarding_Email_Template.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\training\\Routing_QuickStart_MediaPlan.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\training\\Translation_Matrix.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "docs\\training\\Workshop_Planner.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "MCMS_TaskList.md",
+    "category": "task_list",
+    "has_directive": false
+  },
+  {
+    "path": "monitoring\\loki\\retention-policy.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "packages\\Newtonsoft.Json.13.0.3\\README.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "PRD_MCS.md",
+    "category": "prd",
+    "has_directive": false
+  },
+  {
+    "path": "README.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "reports\\security\\ZAP_20250929.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "scripts\\deploy\\README.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "web\\mcs-portal\\README.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "web\\mcs-portal\\scripts\\performance\\README.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "web\\mcs-portal\\test-results\\accessibility\\axe-report-20250929.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "web\\mcs-portal\\test-results\\browser\\matrix-20250929.md",
+    "category": "other",
+    "has_directive": false
+  },
+  {
+    "path": "web\\mcs-portal\\test-results\\security\\zap-report-20250929.md",
+    "category": "other",
+    "has_directive": false
+  }
+]

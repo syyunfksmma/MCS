@@ -6,7 +6,7 @@
       "name": "API-A",
       "description": "ESPRIT EDGE API Gateway",
       "command": "pwsh.exe",
-      "arguments": "-File ./scripts/server-control/demo-service.ps1 -ServiceName API-A",
+      "arguments": "-File ./scripts/server-control/demo-service.ps1 -ServiceName API-A -StopSignalPath ./scripts/server-control/signals/API-A.stop",
       "healthUrl": "http://localhost:7800/health/apiA",
       "workingDirectory": "./"
     },
@@ -14,7 +14,7 @@
       "name": "API-B",
       "description": "CAM Job Management API",
       "command": "pwsh.exe",
-      "arguments": "-File ./scripts/server-control/demo-service.ps1 -ServiceName API-B",
+      "arguments": "-File ./scripts/server-control/demo-service.ps1 -ServiceName API-B -StopSignalPath ./scripts/server-control/signals/API-B.stop",
       "healthUrl": "http://localhost:7800/health/apiB",
       "workingDirectory": "./"
     },
@@ -22,7 +22,7 @@
       "name": "Web-UI",
       "description": "Server Control Launcher React Shell",
       "command": "pwsh.exe",
-      "arguments": "-File ./scripts/server-control/demo-service.ps1 -ServiceName Web-UI",
+      "arguments": "-File ./scripts/server-control/demo-service.ps1 -ServiceName Web-UI -StopSignalPath ./scripts/server-control/signals/Web-UI.stop",
       "healthUrl": "http://localhost:7800/health/web",
       "workingDirectory": "./"
     }

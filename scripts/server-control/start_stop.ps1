@@ -4,18 +4,52 @@ param(
 
 $ErrorActionPreference = 'Stop'
 
+function Resolve-AbsolutePath {
+    param(
+        [Parameter(Mandatory = $true)][string]$BasePath,
+        [Parameter(Mandatory = $true)][string]$Path
+    )
+    if ([string]::IsNullOrWhiteSpace($Path)) {
+        return $BasePath
+    }
+    if ([System.IO.Path]::IsPathRooted($Path)) {
+        return (Resolve-Path -Path $Path -ErrorAction Stop).Path
+    }
+    $candidate = Join-Path -Path $BasePath -ChildPath $Path
+    try {
+        return (Resolve-Path -Path $candidate -ErrorAction Stop).Path
+    } catch {
+        return $candidate
+    }
+}
+
 function Initialize-LauncherConfig {
     param([string]$Path)
     if (!(Test-Path -Path $Path)) {
         throw "Launcher configuration not found at $Path"
     }
-    $json = Get-Content -Path $Path -Raw | ConvertFrom-Json
+    $resolvedConfig = (Resolve-Path -Path $Path -ErrorAction Stop).Path
+    $configRoot = Split-Path -Parent $resolvedConfig
+    $json = Get-Content -Path $resolvedConfig -Raw | ConvertFrom-Json
     if (-not $json.services) {
         throw "Launcher configuration must include a services collection."
     }
-    if (-not (Test-Path -Path $json.logDirectory)) {
-        New-Item -ItemType Directory -Path $json.logDirectory | Out-Null
+
+    $logSetting = if ([string]::IsNullOrWhiteSpace($json.logDirectory)) { '.' } else { $json.logDirectory }
+    $logDirectory = Resolve-AbsolutePath -BasePath $configRoot -Path $logSetting
+    if (-not (Test-Path -Path $logDirectory)) {
+        New-Item -ItemType Directory -Path $logDirectory -Force | Out-Null
     }
+    $json.logDirectory = $logDirectory
+
+    foreach ($svc in $json.services) {
+        $workingDirSetting = if ([string]::IsNullOrWhiteSpace($svc.workingDirectory)) { '.' } else { $svc.workingDirectory }
+        $svc.workingDirectory = Resolve-AbsolutePath -BasePath $configRoot -Path $workingDirSetting
+        if (-not $svc.PSObject.Properties.Match('logPrefix')) {
+            $svc | Add-Member -MemberType NoteProperty -Name logPrefix -Value ($svc.name -replace '\s','-') -Force
+        }
+    }
+
     $Global:LauncherConfig = $json
     if (-not $Global:LauncherState) {
         $Global:LauncherState = @{}
@@ -34,20 +68,45 @@ function Write-LauncherLog {
     Write-Host $line
 }
 
+function Get-LogTargets {
+    param([psobject]$Service)
+    $prefix = if ($Service.logPrefix) { $Service.logPrefix } else { $Service.name }
+    $prefix = $prefix.ToLower()
+    return @{
+        StdOut = Join-Path $Global:LauncherConfig.logDirectory "$prefix-stdout.log"
+        StdErr = Join-Path $Global:LauncherConfig.logDirectory "$prefix-stderr.log"
+    }
+}
+
 function Start-LauncherService {
     param([Parameter(Mandatory=$true)][string]$Name)
     $service = $Global:LauncherConfig.services | Where-Object { $_.name -eq $Name }
     if (-not $service) {
         throw "Service '$Name' not defined in configuration."
     }
-    if ($Global:LauncherState.ContainsKey($Name) -and $Global:LauncherState[$Name].Id -and -not ($Global:LauncherState[$Name].HasExited)) {
+    if ($Global:LauncherState.ContainsKey($Name) -and $Global:LauncherState[$Name] -and -not ($Global:LauncherState[$Name].HasExited)) {
         Write-LauncherLog "Service '$Name' already running (PID $($Global:LauncherState[$Name].Id))." 'WARN'
         return $Global:LauncherState[$Name]
     }
-    $startInfo = @{ FilePath = $service.command }
-    if ($service.arguments) { $startInfo.ArgumentList = $service.arguments }
-    if ($service.workingDirectory) { $startInfo.WorkingDirectory = $service.workingDirectory }
-    $process = Start-Process @startInfo -PassThru -WindowStyle Hidden
+
+    $logTargets = Get-LogTargets -Service $service
+    $startInfo = @{
+        FilePath = $service.command
+        WorkingDirectory = $service.workingDirectory
+        RedirectStandardOutput = $true
+        RedirectStandardError  = $true
+        UseNewWindow = $false
+    }
+    if ($service.arguments) {
+        $startInfo.ArgumentList = $service.arguments
+    }
+
+    $process = Start-Process @startInfo -PassThru
+    $process.add_OutputDataReceived({ param($sender,$args) if ($args.Data) { Add-Content -Path $logTargets.StdOut -Value $args.Data } })
+    $process.add_ErrorDataReceived({ param($sender,$args) if ($args.Data) { Add-Content -Path $logTargets.StdErr -Value $args.Data } })
+    $process.BeginOutputReadLine()
+    $process.BeginErrorReadLine()
+
     $Global:LauncherState[$Name] = $process
     Write-LauncherLog "Started service '$Name' (PID $($process.Id))."
     return $process
@@ -64,15 +123,16 @@ function Stop-LauncherService {
         Write-LauncherLog "Stopping service '$Name' (PID $($process.Id))."
         try {
             $process.CloseMainWindow() | Out-Null
-            Start-Sleep -Seconds 2
-            if (-not $process.HasExited) {
+            if (-not $process.WaitForExit(5000)) {
                 $process.Kill()
+                $process.WaitForExit()
             }
         } catch {
             Write-LauncherLog "Force stopping service '$Name': $_" 'WARN'
-            try { $process.Kill() } catch {}
+            try { $process.Kill(); $process.WaitForExit() } catch {}
         }
     }
+    if ($process) { $process.Dispose() }
     $Global:LauncherState.Remove($Name)
 }
 
@@ -103,7 +163,19 @@ function Get-LauncherHealth {
                 $response = Invoke-WebRequest -Uri $svc.healthUrl -TimeoutSec 3
                 $health = @{ code = $response.StatusCode; body = $response.Content }
             } catch {
-                $health = @{ code = 0; body = $_.Exception.Message }
+                $exception = $_.Exception
+                $code = if ($exception.Response) { $exception.Response.StatusCode.value__ } else { 0 }
+                $body = if ($exception.Response) {
+                    try {
+                        $reader = New-Object System.IO.StreamReader($exception.Response.GetResponseStream())
+                        $reader.ReadToEnd()
+                    } catch {
+                        $exception.Message
+                    }
+                } else {
+                    $exception.Message
+                }
+                $health = @{ code = $code; body = $body }
             }
         }
         $result += [pscustomobject]@{

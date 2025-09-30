@@ -1,8 +1,4 @@
-> PRD: docs/PRD_MCS.md  
-> Task Lists: docs/MCMS_TaskList.md, docs/Tasks_MCS.md, docs/Tasks_ML_Routing.md  
-> Remaining Tasks: 0
-
-## 절대 지령
+# 절대 지령
 - 각 단계는 승인 후에만 진행한다.
 - 단계 착수 전 이번 단계 전체 범위를 리뷰하고 오류를 식별한다.
 - 오류 발견 시 수정 전에 승인 재요청한다.
@@ -17,41 +13,7 @@
 - local 호스트 서버를 통해 PoC를 1인 개발자와 같이 진행하며, 테스트 완료시 1인 개발자 PC를 서버로하여 사내망에 릴리즈한다.
 - 코딩과 IT기술을 전혀 모르는 인원도 쉽게 PoC가 가능하도록 Docker나 기타 exe 형태로 배포할 방법을 검토하며 개발 진행한다.
 - 모든 스프린트 태스크는 전용 스프린트 Task List를 참조하고, docs/sprint 명세에 따른 영어 로그북 + 설명적 코드 주석을 남김.
-# ML Routing Automation Task List
 
-## 절대 조건
-- 각 단계는 승인 후에만 진행한다.
-- 단계 착수 전 이번 단계 전체 범위를 리뷰하고 오류를 식별한다.
-- 오류 발견 시 수정 전에 승인 재요청한다.
-- 이전 단계 오류가 없음을 재확인한 뒤 다음 단계 승인을 요청한다.
-- 모든 단계 작업은 백그라운드 방식으로 수행한다.
-- 문서/웹뷰어 점검이 필요한 경우 반드시 승인 확인 후 진행한다.
-- Task list 체크박스를 하나씩 업데이트하면서 문서를 업데이트 한다.
-
-> 절대 조건을 위반한 태스크는 무효 처리되며 재승인이 필요하다.
-
-## 설계 (Design)
-- [ ] 요구사항 워크숍 개최 및 PRD 리뷰를 통해 ML 데이터 요구 정의
-- [x] ~~Next.js ��������/Ʈ�� UX ���̾������� �ۼ�~~ (2025-09-29 Codex, docs/design/Nextjs_ML_Integration_Design.md)
-- [ ] ML 파이프라인 아키텍처 문서화 (피처, 모델, 서빙 흐름)
-- [ ] ESPRIT Add-in ↔ API 연동 시나리오 정의 및 API 스펙 업데이트
-
-## 구현 (Implementation)
-- [ ] Next.js 프로젝트 생성 및 기본 레이아웃/테마 적용
-- [ ] 트리 뷰, 라우팅 상세 패널, ML 추천 패널 컴포넌트 개발
-- [ ] ML 서빙 레이어(FastAPI) PoC 구현 및 MCMS API 연동
-- [ ] ESPRIT Add-in 수정: 외부 API에서 값 수신 후 팝업 자동채움
-- [ ] MCMS API 확장: 라우팅 추천/승인 엔드포인트, meta.json API 보강
-
-## 테스트 (Testing)
-- [ ] 단위 테스트: Item/Routing 서비스, ML 추천 API, Next.js 컴포넌트 스냅샷
-- [ ] 통합 테스트: API ↔ ML 서빙 ↔ UI 흐름 검증
-- [ ] 부하 테스트: 동시 10~30명 시나리오 응답 시간 측정
-- [ ] UAT: 주니어/시니어 사용자 피드백 수집 및 수정 반영
-
-## 배포 (Deployment)
-- [ ] CI/CD 파이프라인에 Next.js 빌드 및 배포 단계 추가
-- [ ] ML 서빙 컨테이너/인프라 설정 (Docker/K8s 또는 Windows 서비스)
-- [ ] ESPRIT Add-in 신규 버전 패키징 및 배포 매뉴얼 업데이트
-- [ ] 운영 모니터링 대시보드 구성 (API/ML/Queue 지표)
-
+# ML Routing Task List (폐기)
+- 2025-09-30 Codex: 머신러닝 기반 라우팅 과제는 현 스코프에서 제외되어 모든 Task 체크리스트를 폐기함.
+- 관련 히스토리는 git 로그를 통해 확인 가능하며, 추후 머신러닝 요구가 재검토될 때 새 Task List를 생성할 것.

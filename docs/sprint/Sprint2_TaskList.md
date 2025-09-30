@@ -1,3 +1,19 @@
+# 절대 지령
+- 각 단계는 승인 후에만 진행한다.
+- 단계 착수 전 이번 단계 전체 범위를 리뷰하고 오류를 식별한다.
+- 오류 발견 시 수정 전에 승인 재요청한다.
+- 이전 단계 오류가 없음을 재확인한 뒤 다음 단계 승인을 요청한다.
+- 모든 단계 작업은 백그라운드 방식으로 수행한다.
+- 문서/웹뷰어 점검이 필요한 경우 반드시 승인 확인 후 진행한다.
+- 다음 단계 착수 전에 이전 단계 전반을 재점검하여 미해결 오류가 없는지 확인한다.
+- 만약 오류나 사용자의 지시로 task나 절대지령이 수정될시 취소선으로 기존 지시나 이력을 보존하고, 아래에 추가한다.
+- 모든 웹은 codex가 테스트 실시 후 이상 없을시 보고한다.
+- 1인 개발자와 codex가 같이 협업하며, 모든 산출물은 codex가 작업한다. 중간 중간 성능 향상이나 기능 향상을 위해 제안하는 것을 목표로한다.
+- 이 서비스는 사내 내부망으로 운영될 예정이며, 외부 서버나 클라우드 사용은 절대 금한다.
+- local 호스트 서버를 통해 PoC를 1인 개발자와 같이 진행하며, 테스트 완료시 1인 개발자 PC를 서버로하여 사내망에 릴리즈한다.
+- 코딩과 IT기술을 전혀 모르는 인원도 쉽게 PoC가 가능하도록 Docker나 기타 exe 형태로 배포할 방법을 검토하며 개발 진행한다.
+- 모든 스프린트 태스크는 전용 스프린트 Task List를 참조하고, docs/sprint 명세에 따른 영어 로그북 + 설명적 코드 주석을 남김.
+
 > PRD: docs/PRD_MCS.md  
 > Task Lists: docs/MCMS_TaskList.md, docs/Tasks_MCS.md, docs/Tasks_ML_Routing.md  
 > Remaining Tasks: 0
@@ -34,31 +50,31 @@
 
 ## 작업 목록
 ### A. Workspace Drag & Drop
-- [x] A1. Drag & Drop 라이브러리 확정 및 Routing 단계 편집 컴포넌트 초안
-- [x] A2. 키보드 접근성 대응(포커스 이동/순서 변경 단축키)
-- [x] A3. 단계 Undo/Redo 및 Dirty 상태 배너 구현
+- A1. Drag & Drop 라이브러리 확정 및 Routing 단계 편집 컴포넌트 초안
+- A2. 키보드 접근성 대응(포커스 이동/순서 변경 단축키)
+- A3. 단계 Undo/Redo 및 Dirty 상태 배너 구현
 
 ### B. 파일 관리 + meta.json
-- [x] B1. 단계별 파일 업로드 UI (Drag & Drop + Progress)
-- [x] B2. meta.json 미리보기 및 다운로드/업데이트 흐름 (Mock 데이터)
+- B1. 단계별 파일 업로드 UI (Drag & Drop + Progress)
+- B2. meta.json 미리보기 및 다운로드/업데이트 흐름 (Mock 데이터)
 
 ### C. Add-in Control Panel
-- [x] C1. Add-in 큐 목록 테이블/필터 UI
-- [x] C2. 재시도/취소 버튼 및 확인 모달 (Mock API 연동)
-- [x] C3. SignalR 이벤트 수신 스텁(재연결 로직 포함)
+- C1. Add-in 큐 목록 테이블/필터 UI
+- C2. 재시도/취소 버튼 및 확인 모달 (Mock API 연동)
+- C3. SignalR 이벤트 수신 스텁(재연결 로직 포함)
 
 ### D. 승인/반려 워크플로우
-- [x] D1. 승인/반려 코멘트 모달 및 폼 검증
-- [x] D2. 히스토리 타임라인과 승인 이벤트 연동(Mock)
-- [x] D3. 승인/반려 API 연동 추상화(BFF 준비)
+- D1. 승인/반려 코멘트 모달 및 폼 검증
+- D2. 히스토리 타임라인과 승인 이벤트 연동(Mock)
+- D3. 승인/반려 API 연동 추상화(BFF 준비)
 
 ### E. 테스트 & 성능
-- [x] E1. Drag & Drop/승인 플로우 Playwright 시나리오 추가
-- [x] E2. React Profiler 기반 렌더링 성능 점검(Workspace)
+- E1. Drag & Drop/승인 플로우 Playwright 시나리오 추가
+- E2. React Profiler 기반 렌더링 성능 점검(Workspace)
 
 ### F. 문서 & 로그
-- [x] F1. Workspace 설계 다이어그램(Swimlane) 작성
-- [x] F2. Sprint2_Log.md에 단계별 로그/결과 기록
+- F1. Workspace 설계 다이어그램(Swimlane) 작성
+- F2. Sprint2_Log.md에 단계별 로그/결과 기록
 
 ## 로그 기록
 - (작성 예정)
