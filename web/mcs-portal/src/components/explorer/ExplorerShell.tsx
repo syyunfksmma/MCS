@@ -420,6 +420,35 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
 
   const hoverMenuEnabled = isFeatureEnabled('feature.hover-quick-menu');
 
+  const hoverMenuToggleCard = (
+    <Card title="Experimental – Hover Quick Menu" bordered size="small">
+      <FeatureGate
+        flag="feature.hover-quick-menu"
+        onToggle={(enabled) => {
+          if (!enabled) {
+            closeHoverMenu({ immediate: true });
+          }
+        }}
+        fallback={
+          <Alert
+            type="info"
+            showIcon
+            message="Hover Quick Menu disabled"
+            description="Toggle to preview SLA badges, pinning, and approval quick actions."
+          />
+        }
+      >
+        <Alert
+          type="success"
+          showIcon
+          message="Hover Quick Menu enabled"
+          description="Move the pointer over routings to open the experimental quick menu."
+        />
+      </FeatureGate>
+      <Text type="secondary">Screenshots should be captured via Storybook ExplorerHoverMenu stories.</Text>
+    </Card>
+  );
+
   useEffect(() => {
     if (!hoverMenuEnabled && isHoverMenuOpen) {
       closeHoverMenu({ immediate: true });
@@ -1955,7 +1984,8 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
           <Tabs defaultActiveKey="summary" items={tabs} />
         )}
       </Card>
-      <FeatureGate
+      {hoverMenuToggleCard}
+            <FeatureGate
         flag="feature.search-routing"
         onToggle={handleSearchFeatureToggle}
         fallback={legacySearchFallback}

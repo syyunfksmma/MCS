@@ -83,6 +83,7 @@
   - Log: Sprint6_Routing_Log.md -> 2025-09-24 G2 항목에 inline edit/soft delete 전략 기록.
   - Test Prep: see docs/testing/Sprint6_FlowG_H_Regressions.md for regression scenarios.
   - Comment: ExplorerShell.tsx mutateGroup 주석으로 soft delete state flag 처리 문서화.
+  - QA: (검증 2025-09-30 18:35, Codex) - Hover Quick Menu 통합 이후 Drag&Drop/Soft delete 동작 재확인, 영향 없음.
 
 ### Flow H. 라우팅 생성 플로우
 - H1. Routing Creation Wizard (name, owner, status, notes, shared-drive check).
