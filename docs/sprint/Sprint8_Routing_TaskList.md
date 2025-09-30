@@ -74,6 +74,7 @@
 
 ### Flow P. UX 성능 개선
 - P1. Routing Detail modal skeleton + lazy 데이터 패치.
+  - 완료: (완료 2025-09-30, Codex) - ExplorerShell Ribbon 연동 및 상세 모달 lazy 데이터 로딩 구현
   - Log: Provide before/after load metrics.
   - Comment: Document data prefetch boundaries.
 - P2. 검색/워크스페이스 주요 경로에서 CLS/FID 재측정.

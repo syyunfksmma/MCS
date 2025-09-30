@@ -12,7 +12,7 @@ export const metadata = {
 };
 
 export default async function ExplorerPage() {
-  const queryClient = new QueryClient();
+  const queryClient = createQueryClient();
   await queryClient.prefetchQuery({
     queryKey: explorerKeys.list(),
     queryFn: fetchExplorerData

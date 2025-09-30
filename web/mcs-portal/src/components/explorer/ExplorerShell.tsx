@@ -57,7 +57,7 @@ import type {
   ExplorerResponse
 } from '@/types/explorer';
 
-import type { RoutingSearchItem, RoutingSearchResult } from '@/types/search';
+import type { RoutingSearchItem } from '@/types/search';
 
 interface ExplorerShellProps {
   initialData: ExplorerResponse;
@@ -400,7 +400,7 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
       setDetailModalOpen(false);
       setDetailActiveTab('summary');
     }
-  }, [selectedRouting]);
+  }, [selectedRouting, setDetailActiveTab, setDetailModalOpen]);
 
   const getSelectedRoutingContext = useCallback(() => {
     if (!selectedRouting) {
@@ -408,7 +408,7 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
     }
 
     return findRoutingContext(itemsState, selectedRouting.id);
-  }, [itemsState, selectedRouting]);
+  }, [itemsState, selectedRouting, setSelectedRouting]);
 
   const scrollToCard = useCallback((elementId: string) => {
     const element = document.getElementById(elementId);
@@ -439,16 +439,16 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
         routingCode: selectedRouting.code
       }
     });
-  }, [selectedRouting]);
+  }, [logRoutingEvent, message, selectedRouting, setDetailActiveTab, setDetailModalOpen]);
 
   const handleDetailModalClose = useCallback(() => {
     setDetailModalOpen(false);
     setDetailActiveTab('summary');
-  }, []);
+  }, [setDetailActiveTab, setDetailModalOpen]);
 
   const handleDetailTabChange = useCallback((key: string) => {
     setDetailActiveTab(key);
-  }, []);
+  }, [setDetailActiveTab]);
 
   const handleRibbonOpenWizard = useCallback(() => {
     const context = getSelectedRoutingContext();
@@ -466,7 +466,7 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
 
       group: context.group
     });
-  }, [getSelectedRoutingContext]);
+  }, [getSelectedRoutingContext, message, setWizardContext]);
 
   const handleRibbonDownload = useCallback(() => {
     if (!selectedRouting) {
@@ -476,7 +476,7 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
     }
 
     message.info('다운로드 기능은 Sprint8에서 활성화될 예정입니다.');
-  }, [selectedRouting]);
+  }, [message, selectedRouting]);
 
   const handleShowUploadPanel = useCallback(() => {
     scrollToCard('workspace-upload-card');
@@ -488,7 +488,7 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
 
   useEffect(() => {
     setItemsState(items);
-  }, [items]);
+  }, [items, setItemsState]);
 
   useEffect(() => {
     return () => {
@@ -515,7 +515,7 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
   const findRoutingById = useCallback(
     (routingId: string) => findRoutingInCollection(itemsState, routingId),
 
-    [itemsState]
+    [itemsState, message, setWizardContext]
   );
 
   const summaryItems = useMemo(() => {
@@ -966,12 +966,12 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
       message.error('Unable to locate routing group.');
     },
 
-    [itemsState]
+    [itemsState, message, setWizardContext]
   );
 
   const handleWizardCancel = useCallback(() => {
     setWizardContext(null);
-  }, []);
+  }, [setWizardContext]);
 
   const handleWizardSubmit = useCallback(
 
@@ -1317,7 +1317,15 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
 
       setSelectedRoutingFromItems,
 
-      wizardContext
+      wizardContext,
+
+      createRouting,
+
+      logRoutingEvent,
+
+      message,
+
+      setWizardContext
 
     ]
 
@@ -1421,7 +1429,7 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
       );
     },
 
-    [isSearchFeatureEnabled, message, searchMutation]
+    [isSearchFeatureEnabled, message, searchMutation, setLastSearchError, setSearchResult]
   );
 
   const handleSearch = useCallback(
@@ -1445,7 +1453,7 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
       executeSearch(nextTerm, true);
     },
 
-    [executeSearch, isSearchFeatureEnabled, message, searchTerm]
+    [executeSearch, isSearchFeatureEnabled, searchTerm, setSearchTerm]
   );
 
   const handleSearchChange = useCallback(
@@ -1477,7 +1485,7 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
       }, 350);
     },
 
-    [executeSearch, isSearchFeatureEnabled]
+    [executeSearch, isSearchFeatureEnabled, setLastSearchError, setSearchResult, setSearchTerm, typeaheadTimeoutRef]
   );
 
   const handleSelectSearchRouting = useCallback(
@@ -1493,7 +1501,7 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
       setSelectedRouting(next);
     },
 
-    [findRoutingById]
+    [findRoutingById, setSelectedRouting]
   );
 
   const addinBadgeStatus = selectedRouting ? 'queued' : 'idle';
@@ -1508,7 +1516,7 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
     setGroupFilter(undefined);
 
     setStatusFilter(undefined);
-  }, []);
+  }, [setGroupFilter, setProductFilter, setStatusFilter]);
 
   const resetSearchExperience = useCallback(() => {
     if (typeaheadTimeoutRef.current) {
@@ -1522,7 +1530,7 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
     setLastSearchError(null);
 
     clearFilters();
-  }, [clearFilters]);
+  }, [clearFilters, setLastSearchError, setSearchResult, setSearchTerm]);
 
   const handleSearchFeatureToggle = useCallback(
     (nextEnabled: boolean) => {
@@ -1547,7 +1555,7 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
       }
     },
 
-    [message, resetSearchExperience]
+    [message, resetSearchExperience, setIsSearchFeatureEnabled, setLegacyFilterTerm]
   );
 
   const legacyRoutingItems = useMemo<LegacyRoutingListItem[]>(() => {
@@ -1614,7 +1622,7 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
 
   const legacyTotalCount = legacyRoutingItems.length;
 
-  const searchItems: RoutingSearchItem[] = searchResult?.items ?? [];
+  const searchItems = useMemo<RoutingSearchItem[]>(() => searchResult?.items ?? [], [searchResult]);
   const termSnapshot = searchTerm || legacyFilterTerm || '';
 
   const productOptions = useMemo(() => {
@@ -1806,6 +1814,24 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
               }
               onReset={clearFilters}
             />
+            <Input.Search
+              value={searchTerm}
+              onChange={(event) => handleSearchChange(event.target.value)}
+              onSearch={handleSearch}
+              placeholder="Routing \ucf54드 / \uc81c품 / \uc0c1태 \uac80\uc0c9"
+              allowClear
+              enterButton="Search"
+              aria-label="Routing \uac80\uc0c9"
+              disabled={!isSearchFeatureEnabled}
+            />
+            {lastSearchError ? (
+              <Alert
+                type="error"
+                message={lastSearchError}
+                showIcon
+                className="mt-2"
+              />
+            ) : null}
             <div className={styles.slaGrid}>
               <div className={styles.slaCard}>
                 <span className={styles.slaLabel}>서버 SLA</span>
