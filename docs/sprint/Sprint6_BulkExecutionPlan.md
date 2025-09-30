@@ -66,9 +66,9 @@
 ## 실행 순서
 1. 병렬 트랙 킥오프 미팅 로그를 Timeline에 기록하고 notify-deploy.ps1로 승인 알림 테스트.
 2. 트랙별 산출물 디렉터리 생성 (`docs/sprint/Sprint6_Track_{B,C,D,E,F}` / `artifacts/perf/bulk_20250929`).
-3. 각 작업 착수 시 `Sprint6_Log.md`에 In-Progress 기록, 완료 시 산출물 경로 + 체크박스 갱신.
+3. 각 작업 착수 시 `Sprint6_Log.md`에 In-Progress 기록, 완료 시 산출물 경로 + 불릿 상태 갱신.
 4. 매 2시간마다 notify 스크립트로 진행 상황을 Teams에 브로드캐스트하고 jsonl에 적재.
-5. 하루 종료 시 잔여 체크박스 수를 Timeline·Sprint 로그에 동기화.
+5. 하루 종료 시 잔여 불릿(작업) 수를 Timeline·Sprint 로그에 동기화.
 
 ## 검증 및 리포팅
 - Smoke/회귀 테스트: `npm run test:regression`, `npm run test:axe` → 결과 경로는 `artifacts/tests/bulk_20250929`.
