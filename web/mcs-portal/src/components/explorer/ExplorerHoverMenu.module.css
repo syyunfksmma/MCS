@@ -1,0 +1,81 @@
+.root {
+  position: absolute;
+  z-index: 1200;
+  min-width: 216px;
+  max-width: 260px;
+  padding: 12px;
+  border-radius: 12px;
+  background-color: var(--color-neutral-0, #ffffff);
+  box-shadow: 0 12px 24px rgba(15, 23, 42, 0.18);
+  border: 1px solid var(--color-neutral-200, #e2e8f0);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.badgeRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.badgeRow code {
+  font-size: 12px;
+  padding: 2px 6px;
+  border-radius: 999px;
+  background-color: var(--color-status-alert-subtle, #fee2e2);
+  color: var(--color-status-alert-text, #991b1b);
+}
+
+.actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.actionButton {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  background-color: var(--color-neutral-50, #f8fafc);
+  transition: border-color 120ms ease, background-color 120ms ease;
+}
+
+.actionButton:hover,
+.actionButton:focus-visible {
+  border-color: var(--color-teamcenter-teal, #0f766e);
+  background-color: var(--color-neutral-0, #ffffff);
+  outline: none;
+}
+
+.actionButton[aria-disabled='true'] {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  color: var(--color-neutral-600, #475569);
+}
+
+.pinnedTag {
+  background-color: var(--color-neutral-100, #f1f5f9);
+  border-radius: 999px;
+  padding: 2px 6px;
+  font-size: 12px;
+}
+
+.addinTag {
+  background-color: var(--color-info-subtle, #e0f2fe);
+  color: var(--color-info-strong, #0369a1);
+  border-radius: 999px;
+  padding: 2px 6px;
+  font-size: 12px;
+}

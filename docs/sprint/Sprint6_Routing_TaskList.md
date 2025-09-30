@@ -16,7 +16,7 @@
 
 > PRD: docs/PRD_MCS.md  
 > Task Lists: docs/MCMS_TaskList.md, docs/Tasks_MCS.md, docs/Tasks_ML_Routing.md  
-> Remaining Tasks: 0
+> Remaining Tasks: 17
 
 ## 절대 지령
 - 각 단계는 승인 후에만 진행한다.
@@ -56,6 +56,21 @@
 - 로그 지침: 모든 활동은 docs/sprint/Sprint6_Routing_Log.md에 영어로 작성하고, 복잡한 로직에는 영어 주석을 삽입한다.
 
 ## 2. 작업 흐름 및 체크리스트
+### Flow E. Explorer Filter & Ribbon Foundations
+- E1. Teamcenter filter rail reference consolidation. (완료 2025-09-30, Codex) 
+  - 산출물: docs/design/Sprint6_E1_FilterRail_References.md 정리본.
+  - Log: Sprint6_Routing_Log.md -> 2025-09-30 E1 entry (filter rail patterns, outstanding questions).
+  - Comment: Teamcenter 패턴 정리 및 Phase6 토큰/React Query 연동 고려사항 문서화.
+  - Note: ExplorerShell 필터/검색 상태 매핑 문서화 (docs/design/Sprint6_E1_FilterRail_StateMapping.md).
+- E2. Ribbon action grouping hi-fi 계획. `(완료 2025-09-30, Codex)`
+  - 산출물: docs/design/Sprint6_E2_RibbonHiFi_Plan.md 하이파이 설계.
+  - Log: Sprint6_Routing_Log.md -> 2025-09-30 E2 entry (ribbon state matrix, Storybook 계획).
+  - Comment: Teamcenter 그룹 구조/권한 토글 정의 및 아이콘 매핑 확정.
+- E3. Hover quick menu interaction guidelines. `(완료 2025-09-30, Codex)`
+  - 산출물: docs/design/Sprint6_E3_HoverQuickMenu_Guide.md 가이드.
+  - Log: Sprint6_Routing_Log.md -> 2025-09-30 E3 entry (hover timing, accessibility, QA plan).
+  - Comment: SLA 경고 아이콘, Add-in 상태 배지 연동 규칙 명문화.
+  - Note: Component/Test 계획 정리 (docs/design/Sprint6_E3_HoverQuickMenu_ComponentPlan.md, docs/testing/Sprint6_E3_HoverQuickMenu_TestPlan.md) + ExplorerHoverMenu.tsx/useHoverMenu.ts 반영, Storybook/Playwright stub 준비.
 ### Flow G. 라우팅 그룹 관리
 - G1. Drag-and-drop ordering with `/routing-groups/order` persistence. `(완료 2025-09-30, Codex)`
   - 상태: Wave 1 완료 (2025-09-30, Codex)
@@ -91,6 +106,7 @@
   - Log: Report chunk size, retry policy, and server response codes.
   - Comment: Explain chunk assembly logic.
 - I2. Download bundle + per-file download with checksum verification.
+  - 완료: (완료 2025-09-30, Codex) - ExplorerShell 다운로드 모달 구현, 번들/개별 파일 API 연동 및 체크섬 표시
   - Log: Note bundling endpoint and checksum algorithm.
   - Comment: Document guardrails for incomplete downloads.
 - I3. Version table (`Main` toggle, legacy visibility checkbox, audit timeline).
@@ -120,4 +136,8 @@
 
 
 > 2025-09-26 Codex: Flow G/H tasks reverted to [ ] pending ExplorerShell integration.
+
+
+
+
 

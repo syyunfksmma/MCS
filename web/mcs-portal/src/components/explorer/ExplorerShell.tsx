@@ -13,14 +13,19 @@ import {
   Button,
   Divider,
   Tag,
+  Modal,
   message
 } from 'antd';
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import type { MouseEvent as ReactMouseEvent } from 'react';
 
 import TreePanel, { TreePanelReorderPayload } from '@/components/TreePanel';
+import ExplorerHoverMenu from '@/components/explorer/ExplorerHoverMenu';
 
 import FeatureGate from '@/components/features/FeatureGate';
+import { useHoverMenu } from '@/hooks/useHoverMenu';
+import { isFeatureEnabled } from '@/lib/featureFlags';
 
 import RoutingCreationWizard, {
   type RoutingCreationInput
@@ -45,6 +50,9 @@ import { useRoutingDetail } from '@/hooks/useRoutingDetail';
 import { useRoutingSearch } from '@/hooks/useRoutingSearch';
 import { orderRoutingGroups } from '@/lib/routingGroups';
 import { logRoutingEvent } from '@/lib/telemetry/routing';
+import { downloadFromUrl } from '@/lib/downloads/browser';
+import { downloadRoutingBundle } from '@/lib/workspace/downloadRoutingBundle';
+import { getRoutingFileDownload } from '@/lib/workspace/getRoutingFileDownload';
 import { renameRoutingGroup } from '@/lib/workspace/renameRoutingGroup';
 import { createRouting } from '@/lib/workspace/createRouting';
 import { toggleRoutingGroupDeletion } from '@/lib/workspace/toggleRoutingGroupDeletion';
@@ -54,7 +62,8 @@ import type {
   ExplorerRevision,
   ExplorerRouting,
   ExplorerRoutingGroup,
-  ExplorerResponse
+  ExplorerResponse,
+  ExplorerFile
 } from '@/types/explorer';
 
 import type { RoutingSearchItem } from '@/types/search';
@@ -386,6 +395,11 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
   const [detailActiveTab, setDetailActiveTab] = useState('summary');
 
   const searchMutation = useRoutingSearch();
+  const [downloadModalOpen, setDownloadModalOpen] = useState(false);
+  const [downloadLoading, setDownloadLoading] = useState(false);
+  const [downloadError, setDownloadError] = useState<string | null>(null);
+  const [downloadMeta, setDownloadMeta] = useState<{ checksum?: string; fileName?: string } | null>(null);
+
 
   const routingDetailQuery = useRoutingDetail(selectedRouting, {
     enabled: isDetailModalOpen && Boolean(selectedRouting)
@@ -394,6 +408,23 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
     routingDetailQuery.isLoading || routingDetailQuery.isFetching;
   const detailError =
     routingDetailQuery.error instanceof Error ? routingDetailQuery.error : null;
+
+  const {
+    context: hoverMenuContext,
+    isOpen: isHoverMenuOpen,
+    open: openHoverMenu,
+    scheduleClose: scheduleHoverMenuClose,
+    cancelClose: cancelHoverMenuClose,
+    close: closeHoverMenu
+  } = useHoverMenu({ openDelay: 200, closeDelay: 150 });
+
+  const hoverMenuEnabled = isFeatureEnabled('feature.hover-quick-menu');
+
+  useEffect(() => {
+    if (!hoverMenuEnabled && isHoverMenuOpen) {
+      closeHoverMenu({ immediate: true });
+    }
+  }, [hoverMenuEnabled, isHoverMenuOpen, closeHoverMenu]);
 
   useEffect(() => {
     if (!selectedRouting) {
@@ -408,7 +439,7 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
     }
 
     return findRoutingContext(itemsState, selectedRouting.id);
-  }, [itemsState, selectedRouting, setSelectedRouting]);
+  }, [itemsState, selectedRouting]);
 
   const scrollToCard = useCallback((elementId: string) => {
     const element = document.getElementById(elementId);
@@ -439,7 +470,7 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
         routingCode: selectedRouting.code
       }
     });
-  }, [logRoutingEvent, message, selectedRouting, setDetailActiveTab, setDetailModalOpen]);
+  }, [selectedRouting, setDetailActiveTab, setDetailModalOpen]);
 
   const handleDetailModalClose = useCallback(() => {
     setDetailModalOpen(false);
@@ -466,7 +497,7 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
 
       group: context.group
     });
-  }, [getSelectedRoutingContext, message, setWizardContext]);
+  }, [getSelectedRoutingContext, setWizardContext]);
 
   const handleRibbonDownload = useCallback(() => {
     if (!selectedRouting) {
@@ -475,8 +506,84 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
       return;
     }
 
-    message.info('다운로드 기능은 Sprint8에서 활성화될 예정입니다.');
-  }, [message, selectedRouting]);
+    setDownloadModalOpen(true);
+    setDownloadError(null);
+    setDownloadMeta(null);
+  }, [selectedRouting, setDownloadModalOpen, setDownloadError, setDownloadMeta]);
+
+  const handleDownloadModalClose = useCallback(() => {
+    setDownloadModalOpen(false);
+    setDownloadLoading(false);
+    setDownloadError(null);
+    setDownloadMeta(null);
+  }, [setDownloadError, setDownloadLoading, setDownloadModalOpen, setDownloadMeta]);
+
+  const handleBundleDownload = useCallback(async () => {
+    if (!selectedRouting) {
+      return;
+    }
+
+    setDownloadLoading(true);
+    setDownloadError(null);
+
+    try {
+      const result = await downloadRoutingBundle({ routingId: selectedRouting.id });
+      downloadFromUrl(
+        result.downloadUrl,
+        result.fileName ?? `${selectedRouting.code}.zip`
+      );
+      if (result.revoke) {
+        setTimeout(() => result.revoke?.(), 1000);
+      }
+      setDownloadMeta({
+        checksum: result.checksum ?? undefined,
+        fileName: result.fileName ?? `${selectedRouting.code}.zip`
+      });
+      message.success(`번들 다운로드를 시작했습니다: ${selectedRouting.code}`);
+    } catch (error) {
+      const description =
+        error instanceof Error ? error.message : String(error);
+      setDownloadError(description);
+      message.error(`번들 다운로드에 실패했습니다: ${description}`);
+    } finally {
+      setDownloadLoading(false);
+    }
+  }, [selectedRouting, setDownloadError, setDownloadLoading, setDownloadMeta]);
+
+  const handleFileDownload = useCallback(
+    async (file: ExplorerFile) => {
+      if (!selectedRouting) {
+        return;
+      }
+
+      setDownloadLoading(true);
+      setDownloadError(null);
+
+      try {
+        const result = await getRoutingFileDownload({
+          routingId: selectedRouting.id,
+          file
+        });
+        downloadFromUrl(result.downloadUrl, result.fileName ?? file.name);
+        if (result.revoke) {
+          setTimeout(() => result.revoke?.(), 1000);
+        }
+        setDownloadMeta({
+          checksum: result.checksum ?? undefined,
+          fileName: result.fileName ?? file.name
+        });
+        message.success(`${file.name} 다운로드를 시작했습니다.`);
+      } catch (error) {
+        const description =
+          error instanceof Error ? error.message : String(error);
+        setDownloadError(description);
+        message.error(`파일 다운로드에 실패했습니다: ${description}`);
+      } finally {
+        setDownloadLoading(false);
+      }
+    },
+    [selectedRouting, setDownloadError, setDownloadLoading, setDownloadMeta]
+  );
 
   const handleShowUploadPanel = useCallback(() => {
     scrollToCard('workspace-upload-card');
@@ -491,12 +598,21 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
   }, [items, setItemsState]);
 
   useEffect(() => {
+    if (!selectedRouting) {
+      setDownloadModalOpen(false);
+      setDownloadError(null);
+      setDownloadMeta(null);
+      setDownloadLoading(false);
+    }
+  }, [selectedRouting, setDownloadError, setDownloadLoading, setDownloadMeta, setDownloadModalOpen]);
+
+  useEffect(() => {
     return () => {
       if (typeaheadTimeoutRef.current) {
         clearTimeout(typeaheadTimeoutRef.current);
       }
     };
-  }, []);
+  }, [typeaheadTimeoutRef]);
 
   useEffect(() => {
     if (!selectedRouting) {
@@ -510,12 +626,12 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
     } else if (refreshed !== selectedRouting) {
       setSelectedRouting(refreshed);
     }
-  }, [itemsState, selectedRouting]);
+  }, [itemsState, selectedRouting, setSelectedRouting]);
 
   const findRoutingById = useCallback(
     (routingId: string) => findRoutingInCollection(itemsState, routingId),
 
-    [itemsState, message, setWizardContext]
+    [itemsState]
   );
 
   const summaryItems = useMemo(() => {
@@ -581,7 +697,7 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
       setSelectedRouting(refreshed);
     },
 
-    []
+    [setSelectedRouting]
   );
 
   const reorderPersistingRef = useRef(false);
@@ -966,7 +1082,7 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
       message.error('Unable to locate routing group.');
     },
 
-    [itemsState, message, setWizardContext]
+    [itemsState, setWizardContext]
   );
 
   const handleWizardCancel = useCallback(() => {
@@ -1319,12 +1435,6 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
 
       wizardContext,
 
-      createRouting,
-
-      logRoutingEvent,
-
-      message,
-
       setWizardContext
 
     ]
@@ -1429,7 +1539,7 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
       );
     },
 
-    [isSearchFeatureEnabled, message, searchMutation, setLastSearchError, setSearchResult]
+    [isSearchFeatureEnabled, searchMutation, setLastSearchError, setSearchResult]
   );
 
   const handleSearch = useCallback(
@@ -1504,6 +1614,61 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
     [findRoutingById, setSelectedRouting]
   );
 
+
+  const handleHoverMenuViewDetail = useCallback(
+    (routingId: string) => {
+      handleSelectSearchRouting(routingId);
+      setDetailModalOpen(true);
+      setDetailActiveTab('summary');
+    },
+    [handleSelectSearchRouting, setDetailActiveTab, setDetailModalOpen]
+  );
+
+  const handleHoverMenuOpenUploads = useCallback(
+    (routingId: string) => {
+      handleSelectSearchRouting(routingId);
+      window.setTimeout(() => handleShowUploadPanel(), 0);
+    },
+    [handleSelectSearchRouting, handleShowUploadPanel]
+  );
+
+  const handleHoverMenuApprove = useCallback((routingId: string) => {
+    void routingId;
+    message.info('Approve flow coming soon.');
+  }, []);
+  const handleHoverMenuPinToggle = useCallback(
+    (routingId: string, nextPinned: boolean) => {
+      const action = nextPinned ? 'Pinning ' : 'Unpinning ';
+      message.info(action + routingId + ' (placeholder)');
+    },
+    []
+  );
+
+  const handleTreeRoutingHover = useCallback(
+    ({ routing, event }: { routing: ExplorerRouting; event: ReactMouseEvent<HTMLElement>; }) => {
+      if (!hoverMenuEnabled) {
+        return;
+      }
+      cancelHoverMenuClose();
+      const anchorRect = (event.currentTarget as HTMLElement).getBoundingClientRect();
+      openHoverMenu({
+        routingId: routing.id,
+        routingCode: routing.code,
+        status: routing.status,
+        origin: 'tree',
+        anchorRect,
+        canApprove: routing.status === 'PendingApproval'
+      });
+    },
+    [hoverMenuEnabled, cancelHoverMenuClose, openHoverMenu]
+  );
+
+  const handleTreeRoutingLeave = useCallback(() => {
+    if (!hoverMenuEnabled) {
+      return;
+    }
+    scheduleHoverMenuClose();
+  }, [hoverMenuEnabled, scheduleHoverMenuClose]);
   const addinBadgeStatus = selectedRouting ? 'queued' : 'idle';
 
   const addinBadgeMessage = selectedRouting
@@ -1530,7 +1695,7 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
     setLastSearchError(null);
 
     clearFilters();
-  }, [clearFilters, setLastSearchError, setSearchResult, setSearchTerm]);
+  }, [clearFilters, setLastSearchError, setSearchResult, setSearchTerm, typeaheadTimeoutRef]);
 
   const handleSearchFeatureToggle = useCallback(
     (nextEnabled: boolean) => {
@@ -1555,7 +1720,7 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
       }
     },
 
-    [message, resetSearchExperience, setIsSearchFeatureEnabled, setLegacyFilterTerm]
+    [resetSearchExperience, setIsSearchFeatureEnabled, setLegacyFilterTerm]
   );
 
   const legacyRoutingItems = useMemo<LegacyRoutingListItem[]>(() => {
@@ -1756,6 +1921,8 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
       onGroupRename={handleGroupRename}
       onGroupSoftDelete={handleGroupSoftDelete}
       onGroupCreateRouting={handleGroupCreateRouting}
+      onRoutingHover={hoverMenuEnabled ? handleTreeRoutingHover : undefined}
+      onRoutingLeave={hoverMenuEnabled ? handleTreeRoutingLeave : undefined}
     />
   );
 
@@ -1882,18 +2049,51 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
                   <List.Item
                     className={styles.resultItem}
                     data-active={isActive}
-                    onMouseEnter={() => setHoveredResultId(item.routingId)}
-                    onMouseLeave={() =>
-                      setHoveredResultId((prev) =>
-                        prev === item.routingId ? null : prev
-                      )
-                    }
-                    onFocus={() => setHoveredResultId(item.routingId)}
-                    onBlur={() =>
-                      setHoveredResultId((prev) =>
-                        prev === item.routingId ? null : prev
-                      )
-                    }
+                    onMouseEnter={(event) => {
+                      setHoveredResultId(item.routingId);
+                      if (hoverMenuEnabled) {
+                        cancelHoverMenuClose();
+                        const anchorRect = (event.currentTarget as HTMLElement).getBoundingClientRect();
+                        openHoverMenu({
+                          routingId: item.routingId,
+                          routingCode: item.routingCode,
+                          status: item.status,
+                          origin: 'search',
+                          anchorRect,
+                          canApprove: item.status === 'PendingApproval'
+                        });
+                      }
+                    }}
+                    onMouseLeave={() => {
+                      setHoveredResultId((prev) => (prev === item.routingId ? null : prev));
+                      if (hoverMenuEnabled) {
+                        scheduleHoverMenuClose();
+                      }
+                    }}
+                    onFocus={(event) => {
+                      setHoveredResultId(item.routingId);
+                      if (hoverMenuEnabled) {
+                        cancelHoverMenuClose();
+                        const anchorRect = (event.currentTarget as HTMLElement).getBoundingClientRect();
+                        openHoverMenu(
+                          {
+                            routingId: item.routingId,
+                            routingCode: item.routingCode,
+                            status: item.status,
+                            origin: 'search',
+                            anchorRect,
+                            canApprove: item.status === 'PendingApproval'
+                          },
+                          { immediate: true }
+                        );
+                      }
+                    }}
+                    onBlur={() => {
+                      setHoveredResultId((prev) => (prev === item.routingId ? null : prev));
+                      if (hoverMenuEnabled) {
+                        scheduleHoverMenuClose();
+                      }
+                    }}
                   >
                     <div className={styles.resultHeader}>
                       <div className={styles.resultTitle}>
@@ -1993,6 +2193,71 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
         main={mainColumn}
         aside={previewColumn}
       />
+      <Modal
+        open={downloadModalOpen}
+        onCancel={handleDownloadModalClose}
+        title={selectedRouting ? `${selectedRouting.code} 다운로드` : 'Routing 다운로드'}
+        footer={null}
+        destroyOnClose
+      >
+        <Space direction="vertical" size="middle" className="w-full">
+          <Button
+            type="primary"
+            block
+            onClick={handleBundleDownload}
+            loading={downloadLoading}
+            disabled={!selectedRouting}
+          >
+            {selectedRouting ? `${selectedRouting.code} 번들(.zip) 다운로드` : 'Routing을 선택하세요'}
+          </Button>
+          {downloadError ? (
+            <Alert type="error" showIcon message={downloadError} />
+          ) : null}
+          {downloadMeta ? (
+            <Alert
+              type="success"
+              showIcon
+              message="다운로드 정보"
+              description={
+                <div className="flex flex-col gap-1">
+                  <div>파일명: {downloadMeta.fileName}</div>
+                  {downloadMeta.checksum ? (
+                    <div>Checksum: <code>{downloadMeta.checksum}</code></div>
+                  ) : null}
+                </div>
+              }
+            />
+          ) : null}
+          <Divider />
+          <Text strong>개별 파일 다운로드</Text>
+          {selectedRouting && selectedRouting.files.length ? (
+            <List
+              dataSource={selectedRouting.files}
+              renderItem={(file) => (
+                <List.Item
+                  actions={[
+                    <Button
+                      key="download"
+                      type="link"
+                      onClick={() => handleFileDownload(file)}
+                      loading={downloadLoading}
+                    >
+                      다운로드
+                    </Button>
+                  ]}
+                >
+                  <List.Item.Meta
+                    title={file.name}
+                    description={`유형: ${file.type}`}
+                  />
+                </List.Item>
+              )}
+            />
+          ) : (
+            <Empty description="다운로드 가능한 파일이 없습니다." />
+          )}
+        </Space>
+      </Modal>
       <RoutingDetailModal
         open={isDetailModalOpen}
         routing={selectedRouting}
@@ -2012,6 +2277,18 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
           group={wizardContext.group}
           onCancel={handleWizardCancel}
           onSubmit={handleWizardSubmit}
+        />
+      ) : null}
+      {hoverMenuEnabled && hoverMenuContext ? (
+        <ExplorerHoverMenu
+          context={hoverMenuContext}
+          onClose={() => closeHoverMenu({ immediate: true })}
+          cancelClose={cancelHoverMenuClose}
+          scheduleClose={scheduleHoverMenuClose}
+          onViewDetail={handleHoverMenuViewDetail}
+          onOpenUploads={handleHoverMenuOpenUploads}
+          onApprove={handleHoverMenuApprove}
+          onPinToggle={handleHoverMenuPinToggle}
         />
       ) : null}
     </>
