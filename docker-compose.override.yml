@@ -1,0 +1,21 @@
+version: '3.9'
+
+services:
+  api:
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      Logging__LogLevel__Default: Information
+      Logging__LogLevel__Microsoft: Warning
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
+
+  ml-fastapi:
+    profiles:
+      - default
+      - ml
+    environment:
+      UVICORN_RELOAD: 'true'
+    ports:
+      - '8081:8080'
+    volumes:
+      - ./ml/app:/app/app:ro

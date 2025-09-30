@@ -17,7 +17,9 @@
     "test:data:seed": "node scripts/testing/seed-test-data.mjs",
     "test:data:reset": "node scripts/testing/reset-test-data.mjs",
     "test:regression": "npm run test:data:reset && npm run test:data:seed && npm run test:e2e && npm run test:axe",
-    "test:unit": "vitest run"
+    "test:unit": "vitest run",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
   },
   "dependencies": {
     "@ant-design/icons": "5.3.4",
@@ -32,25 +34,30 @@
   "devDependencies": {
     "@axe-core/playwright": "^4.10.2",
     "@playwright/test": "^1.55.0",
+    "@storybook/addon-essentials": "^8.2.9",
+    "@storybook/addon-interactions": "^8.2.9",
+    "@storybook/nextjs": "^8.2.9",
+    "@storybook/testing-library": "^0.2.2",
+    "@testing-library/jest-dom": "^6.4.2",
+    "@testing-library/react": "^14.3.1",
+    "@testing-library/user-event": "^14.6.1",
     "@types/node": "20.12.12",
     "@types/react": "18.2.58",
     "@types/react-dom": "18.2.19",
     "@typescript-eslint/eslint-plugin": "^7.2.0",
+    "@vitejs/plugin-react": " ^4.1.0 ",
     "autoprefixer": "^10.4.21",
     "eslint": "8.57.0",
     "eslint-config-next": "^14.2.32",
     "eslint-config-prettier": "^10.1.8",
+    "jsdom": "^24.1.0",
     "lighthouse": "^12.0.0",
     "postcss": "^8.5.6",
     "prettier": "^3.6.2",
     "selenium-webdriver": "^4.24.0",
+    "storybook": "^8.2.9",
     "tailwindcss": "^3.4.13",
     "typescript": "5.4.5",
-    "vitest": "^1.5.0",
-    "@testing-library/react": "^14.3.1",
-    "@testing-library/jest-dom": "^6.4.2",
-    "@testing-library/user-event": "^14.6.1",
-    "jsdom": "^24.1.0",
-    "@vitejs/plugin-react": " ^4.1.0 "
+    "vitest": "^1.5.0"
   }
 }

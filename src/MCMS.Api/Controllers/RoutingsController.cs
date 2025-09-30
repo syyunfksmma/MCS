@@ -1,4 +1,7 @@
+using System;
 using System.Collections.Generic;
+using System.Threading;
+using MCMS.Api.Notifications;
 using MCMS.Core.Abstractions;
 using MCMS.Core.Contracts.Dtos;
 using MCMS.Core.Contracts.Requests;
@@ -12,11 +15,16 @@ public class RoutingsController : ControllerBase
 {
     private readonly IRoutingService _routingService;
     private readonly IRoutingApprovalService _routingApprovalService;
+    private readonly IRoutingEventPublisher _routingEvents;
 
-    public RoutingsController(IRoutingService routingService, IRoutingApprovalService routingApprovalService)
+    public RoutingsController(
+        IRoutingService routingService,
+        IRoutingApprovalService routingApprovalService,
+        IRoutingEventPublisher routingEvents)
     {
         _routingService = routingService;
         _routingApprovalService = routingApprovalService;
+        _routingEvents = routingEvents;
     }
 
     [HttpGet("by-revision/{revisionId:guid}")]
@@ -37,6 +45,7 @@ public class RoutingsController : ControllerBase
     public async Task<ActionResult<RoutingDto>> CreateAsync([FromBody] CreateRoutingRequest request, CancellationToken cancellationToken)
     {
         var routing = await _routingService.CreateRoutingAsync(request, cancellationToken);
+        await _routingEvents.PublishRoutingUpdatedAsync(routing);
         return CreatedAtAction(nameof(GetAsync), new { routingId = routing.Id }, routing);
     }
 
@@ -45,6 +54,7 @@ public class RoutingsController : ControllerBase
     {
         request = request with { RoutingId = routingId };
         var routing = await _routingService.UpdateRoutingAsync(request, cancellationToken);
+        await _routingEvents.PublishRoutingUpdatedAsync(routing);
         return Ok(routing);
     }
 
@@ -53,6 +63,7 @@ public class RoutingsController : ControllerBase
     {
         request = request with { RoutingId = routingId };
         var routing = await _routingService.ReviewRoutingAsync(request, cancellationToken);
+        await _routingEvents.PublishRoutingUpdatedAsync(routing);
         return Ok(routing);
     }
 
@@ -63,6 +74,7 @@ public class RoutingsController : ControllerBase
         try
         {
             var routing = await _routingApprovalService.RequestApprovalAsync(request, cancellationToken);
+            await _routingEvents.PublishRoutingUpdatedAsync(routing);
             return Ok(routing);
         }
         catch (KeyNotFoundException)
@@ -82,6 +94,7 @@ public class RoutingsController : ControllerBase
         try
         {
             var routing = await _routingApprovalService.ApproveAsync(request, cancellationToken);
+            await _routingEvents.PublishRoutingUpdatedAsync(routing);
             return Ok(routing);
         }
         catch (KeyNotFoundException)
@@ -101,6 +114,7 @@ public class RoutingsController : ControllerBase
         try
         {
             var routing = await _routingApprovalService.RejectAsync(request, cancellationToken);
+            await _routingEvents.PublishRoutingUpdatedAsync(routing);
             return Ok(routing);
         }
         catch (KeyNotFoundException)

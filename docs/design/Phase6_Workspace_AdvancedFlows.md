@@ -15,7 +15,7 @@
 - 모든 스프린트 태스크는 전용 스프린트 Task List를 참조하고, docs/sprint 명세에 따른 영어 로그북 + 설명적 코드 주석을 남김.
 
 > PRD: docs/PRD_MCS.md  
-> Task Lists: docs/MCMS_TaskList.md, docs/Tasks_MCS.md, docs/Tasks_ML_Routing.md  
+> Task Lists: docs/MCMS_TaskList.md, docs/Tasks_MCS.md, ~~docs/Tasks_ML_Routing.md~~ (폐기 2025-09-30)  
 > Remaining Tasks: 0
 
 ## 절대 지령
@@ -39,6 +39,7 @@
 - API: `POST /api/routings/{id}/bundle` → zip 생성, 응답으로 signed URL 반환.
 - 개별 파일: `GET /api/routings/{id}/files/{fileId}` signed URL + checksum 헤더.
 - FE: `DownloadMenu.tsx`에서 bundle/단일 선택, 완료 후 토스트 출력.
+- 검증: (2025-09-30 18:45, Codex) – openapi_mcs.yaml에 `/bundle` 엔드포인트 부재 확인. 백엔드 계약 확정 필요; FE는 checksum 미포함 응답 시 경고 토스트 처리 예정.
 - 무결성: 다운로드 후 `sha256` 비교, 실패 시 재시도 버튼.
 
 ## 2. Version Table (Main Toggle & Audit)
@@ -46,6 +47,7 @@
 - Main toggle → `PATCH /api/routings/{id}/versions/{versionId}` with `isMain`.
 - Legacy visibility 체크박스: soft-hide flag 저장.
 - Audit timeline: `HistoryTab`와 동일한 `AuditEntry` 모델 재활용.
+- 검증: (2025-09-30 18:47, Codex) – Version table UI 미구현, `/versions` 패치 계약 필요. Telemetry 필드(MarkMain) 문서화 완료.
 
 ## 3. Three-Pane Workspace Layout
 - 레이아웃: 좌측 트리(20%), 중앙 상세(55%), 우측 프리뷰(25%).
@@ -57,12 +59,14 @@
 - 텔레메트리: `solidworks_replace_attempt/success/failure` 이벤트.
 - Sync to PLM 버튼은 disabled + tooltip("PoC scope 제외").
 
+- 검증: (2025-09-30 18:55, Codex) – SolidWorks UI 요구사항 재확인, replace confirm/telemetry 이벤트 목록 문서화. FE 구현 미착수.
 ## 5. Open-in-Explorer Protocol Handler
 - Windows protocol `mcms-explorer://` 등록 가이드 문서화.
 - FE: 버튼 클릭 시 `window.location.href = 'mcms-explorer://?path=...'`.
 - 권한 체크: API `GET /api/users/me/permissions`에서 `canOpenExplorer` 확인.
 - 실패 시 fallback으로 UNC 경로 복사 알림.
 
+- 검증: (2025-09-30 18:57, Codex) – 프로토콜 핸들러 요구사항 확인(`mcms-explorer://`), 권한 체크 및 fallback 정책 유지. QA 가이드에 추가 예정.
 ## 테스트 & 후속
 - Playwright: `routing-download.spec.ts`, `routing-protocol.spec.ts` 작성.
 - Ops 문서: `docs/ops/OpenInExplorer_Setup.md` 초안 예정.
