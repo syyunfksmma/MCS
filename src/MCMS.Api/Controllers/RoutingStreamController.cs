@@ -1,4 +1,5 @@
 using System.Text;
+using System.Threading;
 using MCMS.Api.Streaming;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,6 +9,7 @@ namespace MCMS.Api.Controllers;
 [Route("stream")]
 public class RoutingStreamController : ControllerBase
 {
+    private static readonly TimeSpan HeartbeatInterval = TimeSpan.FromSeconds(25);
     private readonly IRoutingEventStream _eventStream;
 
     public RoutingStreamController(IRoutingEventStream eventStream)
@@ -26,8 +28,34 @@ public class RoutingStreamController : ControllerBase
         await Response.WriteAsync("retry: 5000\n\n", cancellationToken);
         await Response.Body.FlushAsync(cancellationToken);
 
-        await foreach (var sse in _eventStream.SubscribeAsync(HttpContext.RequestAborted))
+        await using var enumerator = _eventStream.SubscribeAsync(HttpContext.RequestAborted).GetAsyncEnumerator(cancellationToken);
+        using var heartbeatTimer = new PeriodicTimer(HeartbeatInterval);
+
+        while (!cancellationToken.IsCancellationRequested)
         {
+            var heartbeatTask = heartbeatTimer.WaitForNextTickAsync(cancellationToken).AsTask();
+            var moveNextTask = enumerator.MoveNextAsync().AsTask();
+
+            var completed = await Task.WhenAny(moveNextTask, heartbeatTask);
+
+            if (completed == heartbeatTask)
+            {
+                if (!heartbeatTask.Result)
+                {
+                    break;
+                }
+
+                await Response.WriteAsync(": keep-alive\n\n", cancellationToken);
+                await Response.Body.FlushAsync(cancellationToken);
+                continue;
+            }
+
+            if (!moveNextTask.Result)
+            {
+                break;
+            }
+
+            var sse = enumerator.Current;
             var builder = new StringBuilder();
             if (!string.IsNullOrWhiteSpace(sse.Id))
             {
