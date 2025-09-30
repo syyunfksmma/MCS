@@ -55,4 +55,5 @@
 - Wave 1 설계 산출물 리뷰 후 사용자 승인 요청.
 - 업로더 PoC Telemetry instrumentation 결과 검증.
 - SolidWorks 연동 UI mock 데모 초안 준비.
-
+### Wave Execution Updates
+- 2025-09-30 13:00 Codex: Wave 1 세부 설계 단계 착수, G1~I1 상세 문서화 진행.

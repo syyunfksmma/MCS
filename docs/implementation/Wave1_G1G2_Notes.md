@@ -47,3 +47,28 @@
 - [ ] Drag-and-drop mock 데이터 구성.
 - [ ] Telemetry schema 정의 (reorder-success, reorder-fail, inline-edit-save, inline-edit-error).
 - [ ] Undo timer UX 시나리오 프로토타입.
+
+## API 계약 초안
+- `POST /routing-groups/order`
+  - Request: `{ "routingGroups": [ { "id": string, "order": int } ] }`
+  - Response: `204 No Content` on success.
+  - 오류 코드: `409` (동시 업데이트), `422` (유효성 실패), `500` (서버 오류).
+- `PATCH /routing-groups/{id}`
+  - Body: `{ "name": string?, "isDeleted": boolean? }`
+  - Soft Delete 시 `isDeleted=true`, 서버는 `deletedAt` 타임스탬프 기록.
+
+## 상태 머신
+```
+[Idle] --dragStart--> [Dragging] --dropSuccess--> [Persisting] --200--> [Idle]
+                                          \--error--> [Rollback] -> [Idle]
+[Idle] --editStart--> [Editing] --save--> [Persisting] --ok--> [Idle]
+                                          \--error--> [ErrorToast]
+[Idle] --delete--> [SoftDeleted] --undo--> [Idle]
+                                   \--timer expire--> [Deleted]
+```
+
+## 남은 과제
+- [ ] Drag&Drop animation 세부값(FPS, easing) 확정.
+- [ ] Soft Delete undo timer UX mock (Figma) 첨부.
+- [ ] 동시 편집 충돌 시 재시도 정책 문서화.
+

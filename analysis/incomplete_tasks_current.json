@@ -7,22 +7,30 @@
       {
         "line": 65,
         "heading": "Sprint20 Explorer UI Rework Task List > 메뉴바 세부 요구 체크리스트",
-        "text": "DASHBOARD: 금일 미할당/할당/완료 현황, 인원·설비 작업현황 그래프, 주간/월간/연간 프로그램 KPI 및 불량률 수집"
+        "text": "DASHBOARD: 금일 미할당/할당/완료 현황, 인원·설비 작업현황 그래프, 주간/월간/연간 프로그램 KPI 및 불량률 수집",
+        "wave": 5,
+        "status": "pending"
       },
       {
         "line": 66,
         "heading": "Sprint20 Explorer UI Rework Task List > 메뉴바 세부 요구 체크리스트",
-        "text": "MCS: ESPRIT EDGE API 키 생성·전달, 3D 모델/CAM 파일 관리, ESPRIT EDGE 기동 플로우 정의"
+        "text": "MCS: ESPRIT EDGE API 키 생성·전달, 3D 모델/CAM 파일 관리, ESPRIT EDGE 기동 플로우 정의",
+        "wave": 5,
+        "status": "pending"
       },
       {
         "line": 67,
         "heading": "Sprint20 Explorer UI Rework Task List > 메뉴바 세부 요구 체크리스트",
-        "text": "SERVER: 폴더 구조 트리/검색, 로그·REV·이력 관리, STL/SOLIDWORKS 뷰어 연계 요구"
+        "text": "SERVER: 폴더 구조 트리/검색, 로그·REV·이력 관리, STL/SOLIDWORKS 뷰어 연계 요구",
+        "wave": 2,
+        "status": "pending"
       },
       {
         "line": 68,
         "heading": "Sprint20 Explorer UI Rework Task List > 메뉴바 세부 요구 체크리스트",
-        "text": "OPTION: 폴더 구조 설정, 작업 할당/Access 데이터 소스 매핑, 서버 드라이브·사용자·ESPRIT EDGE 버전·트래픽 관리 항목 정의"
+        "text": "OPTION: 폴더 구조 설정, 작업 할당/Access 데이터 소스 매핑, 서버 드라이브·사용자·ESPRIT EDGE 버전·트래픽 관리 항목 정의",
+        "wave": 5,
+        "status": "pending"
       }
     ]
   },
@@ -34,47 +42,70 @@
       {
         "line": 60,
         "heading": "Sprint 6 Routing Task List (Workspace & Workflow) > 2. 작업 흐름 및 체크리스트 > Flow G. 라우팅 그룹 관리",
-        "text": "G1. Drag-and-drop ordering with `/routing-groups/order` persistence."
+        "text": "G1. Drag-and-drop ordering with `/routing-groups/order` persistence.",
+        "wave": 1,
+        "status": "in_progress",
+        "note": "Drag&Drop 설계"
       },
       {
         "line": 65,
         "heading": "Sprint 6 Routing Task List (Workspace & Workflow) > 2. 작업 흐름 및 체크리스트 > Flow G. 라우팅 그룹 관리",
-        "text": "G2. Inline edit & soft delete 패턴 도입."
+        "text": "G2. Inline edit & soft delete 패턴 도입.",
+        "wave": 1,
+        "status": "in_progress",
+        "note": "Inline edit 설계"
       },
       {
         "line": 71,
         "heading": "Sprint 6 Routing Task List (Workspace & Workflow) > 2. 작업 흐름 및 체크리스트 > Flow H. 라우팅 생성 플로우",
-        "text": "H1. Routing Creation Wizard (name, owner, status, notes, shared-drive check)."
+        "text": "H1. Routing Creation Wizard (name, owner, status, notes, shared-drive check).",
+        "wave": 1,
+        "status": "in_progress",
+        "note": "Wizard 요구사항 검토"
       },
       {
         "line": 75,
         "heading": "Sprint 6 Routing Task List (Workspace & Workflow) > 2. 작업 흐름 및 체크리스트 > Flow H. 라우팅 생성 플로우",
-        "text": "H2. Routing Detail Modal (Overview/File Assets/History 탭)."
+        "text": "H2. Routing Detail Modal (Overview/File Assets/History 탭).",
+        "wave": 1,
+        "status": "in_progress",
+        "note": "Modal UX 정리"
       },
       {
         "line": 82,
         "heading": "Sprint 6 Routing Task List (Workspace & Workflow) > 2. 작업 흐름 및 체크리스트 > Flow I. 파일 업로드 및 버전 관리",
-        "text": "I1. Allowlisted drag/drop uploader with chunking + progress."
+        "text": "I1. Allowlisted drag/drop uploader with chunking + progress.",
+        "wave": 1,
+        "status": "in_progress",
+        "note": "업로더 Telemetry"
       },
       {
         "line": 85,
         "heading": "Sprint 6 Routing Task List (Workspace & Workflow) > 2. 작업 흐름 및 체크리스트 > Flow I. 파일 업로드 및 버전 관리",
-        "text": "I2. Download bundle + per-file download with checksum verification."
+        "text": "I2. Download bundle + per-file download with checksum verification.",
+        "wave": 2,
+        "status": "pending"
       },
       {
         "line": 88,
         "heading": "Sprint 6 Routing Task List (Workspace & Workflow) > 2. 작업 흐름 및 체크리스트 > Flow I. 파일 업로드 및 버전 관리",
-        "text": "I3. Version table (`Main` toggle, legacy visibility checkbox, audit timeline)."
+        "text": "I3. Version table (`Main` toggle, legacy visibility checkbox, audit timeline).",
+        "wave": 2,
+        "status": "pending"
       },
       {
         "line": 93,
         "heading": "Sprint 6 Routing Task List (Workspace & Workflow) > 2. 작업 흐름 및 체크리스트 > Flow J. SolidWorks & Explorer 연동",
-        "text": "J1. SolidWorks upload/replace UI with telemetry & disabled Sync to PLM button."
+        "text": "J1. SolidWorks upload/replace UI with telemetry & disabled Sync to PLM button.",
+        "wave": 2,
+        "status": "pending"
       },
       {
         "line": 97,
         "heading": "Sprint 6 Routing Task List (Workspace & Workflow) > 2. 작업 흐름 및 체크리스트 > Flow J. SolidWorks & Explorer 연동",
-        "text": "J2. Open-in-explorer protocol handler wiring + permission check."
+        "text": "J2. Open-in-explorer protocol handler wiring + permission check.",
+        "wave": 2,
+        "status": "pending"
       }
     ]
   },
@@ -86,17 +117,23 @@
       {
         "line": 60,
         "heading": "Sprint 7 Routing Task List (Admin & Settings) > 2. 작업 흐름 및 체크리스트 > Flow K. 설정 페이지",
-        "text": "K1. Shared-drive root & naming preset 설정 폼."
+        "text": "K1. Shared-drive root & naming preset 설정 폼.",
+        "wave": 3,
+        "status": "pending"
       },
       {
         "line": 63,
         "heading": "Sprint 7 Routing Task List (Admin & Settings) > 2. 작업 흐름 및 체크리스트 > Flow K. 설정 페이지",
-        "text": "K2. Retry threshold/timeout 설정 UI."
+        "text": "K2. Retry threshold/timeout 설정 UI.",
+        "wave": 3,
+        "status": "pending"
       },
       {
         "line": 68,
         "heading": "Sprint 7 Routing Task List (Admin & Settings) > 2. 작업 흐름 및 체크리스트 > Flow L. 피처 플래그 관리",
-        "text": "L1. Feature flag 목록 및 토글 (`feature.search-routing`, `feature.solidworks-upload`)."
+        "text": "L1. Feature flag 목록 및 토글 (`feature.search-routing`, `feature.solidworks-upload`).",
+        "wave": 2,
+        "status": "pending"
       },
       {
         "line": 71,
@@ -106,12 +143,16 @@
       {
         "line": 76,
         "heading": "Sprint 7 Routing Task List (Admin & Settings) > 2. 작업 흐름 및 체크리스트 > Flow M. 상태 패널 & 접근 제어",
-        "text": "M1. Shared-drive callback health 패널."
+        "text": "M1. Shared-drive callback health 패널.",
+        "wave": 3,
+        "status": "pending"
       },
       {
         "line": 79,
         "heading": "Sprint 7 Routing Task List (Admin & Settings) > 2. 작업 흐름 및 체크리스트 > Flow M. 상태 패널 & 접근 제어",
-        "text": "M2. Admin role gate + unauthorized flow."
+        "text": "M2. Admin role gate + unauthorized flow.",
+        "wave": 3,
+        "status": "pending"
       }
     ]
   },
@@ -133,17 +174,24 @@
       {
         "line": 68,
         "heading": "Sprint 8 Routing Task List (Performance & Reliability) > 2. 작업 흐름 및 체크리스트 > Flow O. 모니터링 및 캐시 메트릭",
-        "text": "O1. React Query cache metrics instrumentation(Application Insights custom events)."
+        "text": "O1. React Query cache metrics instrumentation(Application Insights custom events).",
+        "wave": 4,
+        "status": "pending"
       },
       {
         "line": 71,
         "heading": "Sprint 8 Routing Task List (Performance & Reliability) > 2. 작업 흐름 및 체크리스트 > Flow O. 모니터링 및 캐시 메트릭",
-        "text": "O2. Alert threshold 설정 및 대시보드 갱신."
+        "text": "O2. Alert threshold 설정 및 대시보드 갱신.",
+        "wave": 4,
+        "status": "pending"
       },
       {
         "line": 76,
         "heading": "Sprint 8 Routing Task List (Performance & Reliability) > 2. 작업 흐름 및 체크리스트 > Flow P. UX 성능 개선",
-        "text": "P1. Routing Detail modal skeleton + lazy 데이터 패치."
+        "text": "P1. Routing Detail modal skeleton + lazy 데이터 패치.",
+        "wave": 1,
+        "status": "in_progress",
+        "note": "Modal UX 정리"
       },
       {
         "line": 79,
