@@ -1,88 +1,194 @@
 'use client';
 
 import { useMemo } from 'react';
-import { Modal, Tabs, Empty, Descriptions, Timeline } from 'antd';
-import type { ExplorerRouting } from '@/types/explorer';
+import {
+  Modal,
+  Tabs,
+  Empty,
+  Descriptions,
+  Timeline,
+  Alert,
+  Spin,
+  Button
+} from 'antd';
+import type { ExplorerRouting, RoutingDetailResponse } from '@/types/explorer';
 
 interface RoutingDetailModalProps {
   open: boolean;
   routing: ExplorerRouting | null;
+  detail?: RoutingDetailResponse | null;
+  loading?: boolean;
+  error?: Error | null;
+  activeTab: string;
   onClose: () => void;
+  onRetry?: () => void;
   onTabChange?: (tabKey: string) => void;
 }
+
+const DEFAULT_TAB = 'summary';
+
+const formatTimestamp = (value: string) => {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) {
+    return value;
+  }
+  return date.toLocaleString();
+};
 
 export default function RoutingDetailModal({
   open,
   routing,
+  detail,
+  loading = false,
+  error = null,
+  activeTab,
   onClose,
+  onRetry,
   onTabChange
 }: RoutingDetailModalProps) {
+  const resolvedRouting = detail?.routing ?? routing;
+
   const tabs = useMemo(() => {
-    if (!routing) {
+    if (!resolvedRouting) {
       return [
         {
-          key: 'summary',
+          key: DEFAULT_TAB,
           label: 'Summary',
-          children: <Empty description="라우팅을 선택하세요" />
+          children: <Empty description="Select a routing to view details" />
         }
       ];
     }
 
-    return [
-      {
-        key: 'summary',
-        label: 'Summary',
+    const history = detail?.history ?? [];
+    const files = resolvedRouting.files ?? [];
+    const uploads = detail?.uploads ?? [];
+
+    const summaryTab = {
+      key: 'summary',
+      label: 'Summary',
+      children: (
+        <Descriptions bordered column={1} size="small">
+          <Descriptions.Item label="Routing Code">
+            {resolvedRouting.code}
+          </Descriptions.Item>
+          <Descriptions.Item label="Status">
+            {resolvedRouting.status}
+          </Descriptions.Item>
+          <Descriptions.Item label="CAM Revision">
+            {resolvedRouting.camRevision}
+          </Descriptions.Item>
+          <Descriptions.Item label="Owner">
+            {resolvedRouting.owner ?? '—'}
+          </Descriptions.Item>
+          <Descriptions.Item label="Shared Drive Ready">
+            {resolvedRouting.sharedDriveReady ? 'Yes' : 'No'}
+          </Descriptions.Item>
+          <Descriptions.Item label="Notes">
+            {resolvedRouting.notes ?? '—'}
+          </Descriptions.Item>
+        </Descriptions>
+      )
+    };
+
+    const historyTab = {
+      key: 'history',
+      label: 'History',
+      children: history.length ? (
+        <Timeline>
+          {history.map((event) => (
+            <Timeline.Item key={event.id} color="blue">
+              <div className="flex flex-col gap-1">
+                <span className="text-sm font-medium">
+                  {formatTimestamp(event.timestamp)}
+                </span>
+                <span className="text-sm">{event.action}</span>
+                <span className="text-xs text-gray-500">{event.actor}</span>
+                {event.description ? (
+                  <span className="text-xs text-gray-500">
+                    {event.description}
+                  </span>
+                ) : null}
+              </div>
+            </Timeline.Item>
+          ))}
+        </Timeline>
+      ) : (
+        <Empty description="No history yet" />
+      )
+    };
+
+    const filesTab = {
+      key: 'files',
+      label: 'Files',
+      children: files.length ? (
+        <ul className="list-disc pl-5">
+          {files.map((file) => (
+            <li key={file.id}>{file.name}</li>
+          ))}
+        </ul>
+      ) : (
+        <Empty description="No files uploaded" />
+      )
+    };
+
+    const items = [summaryTab, historyTab, filesTab];
+
+    if (uploads.length) {
+      items.push({
+        key: 'uploads',
+        label: 'Uploads',
         children: (
-          <Descriptions bordered column={1} size="small">
-            <Descriptions.Item label="Routing Code">
-              {routing.code}
-            </Descriptions.Item>
-            <Descriptions.Item label="Status">
-              {routing.status}
-            </Descriptions.Item>
-            <Descriptions.Item label="CAM Revision">
-              {routing.camRevision}
-            </Descriptions.Item>
-            <Descriptions.Item label="Owner">{routing.owner}</Descriptions.Item>
-          </Descriptions>
-        )
-      },
-      {
-        key: 'history',
-        label: 'History',
-        children: (
-          <Timeline>
-            <Timeline.Item color="blue">Mock · 생성됨</Timeline.Item>
-            <Timeline.Item color="green">Mock · 승인됨</Timeline.Item>
-          </Timeline>
-        )
-      },
-      {
-        key: 'files',
-        label: 'Files',
-        children: routing.files.length ? (
-          <ul className="list-disc pl-5">
-            {routing.files.map((file) => (
-              <li key={file.id}>{file.name}</li>
+          <ul className="list-disc pl-5 text-sm">
+            {uploads.map((upload) => (
+              <li key={upload.fileId}>
+                {upload.fileName} - {upload.state} - {Math.round(upload.progress)}%
+              </li>
             ))}
           </ul>
-        ) : (
-          <Empty description="파일이 없습니다" />
         )
-      }
-    ];
-  }, [routing]);
+      });
+    }
+
+    return items;
+  }, [detail, resolvedRouting]);
+
+  const handleTabChange = onTabChange ?? (() => undefined);
 
   return (
     <Modal
       open={open}
       onCancel={onClose}
-      onOk={onClose}
-      width={720}
-      title="Routing Detail"
-      destroyOnClose
+      footer={null}
+      width={760}
+      title={resolvedRouting ? `Routing: ${resolvedRouting.code}` : 'Routing Detail'}
+      destroyOnClose={false}
     >
-      <Tabs defaultActiveKey="summary" items={tabs} onChange={onTabChange} />
+      {error ? (
+        <Alert
+          type="error"
+          showIcon
+          message="Failed to load routing detail"
+          description={error.message}
+          action={
+            onRetry ? (
+              <Button type="primary" size="small" onClick={onRetry}>
+                Retry
+              </Button>
+            ) : null
+          }
+          className="mb-4"
+        />
+      ) : null}
+      {loading ? (
+        <div className="flex justify-center py-6">
+          <Spin tip="Loading routing detail..." />
+        </div>
+      ) : null}
+      <Tabs
+        activeKey={tabs.some((tab) => tab.key === activeTab) ? activeTab : DEFAULT_TAB}
+        items={tabs}
+        onChange={handleTabChange}
+      />
     </Modal>
   );
 }

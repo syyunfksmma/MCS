@@ -57,7 +57,7 @@
 - `docs/design/Explorer_UI_Rework_ImplementationPlan.md` (Wave21 섹션)
 
 ## 로그/보고 규칙
-- 각 Task 완료 시 체크박스 갱신 후 Timeline에 시각, 담당, 남은 체크박스 수 기록.
+- 각 Task 완료 시 불릿 상태 갱신 후 Timeline에 시각, 담당, 남은 불릿(작업) 수 기록.
 - 테스트/빌드 실행 실패 시 원인과 후속 계획을 문서화하고 보고한다.
 
 ## Progress Update 2025-09-30 09:36

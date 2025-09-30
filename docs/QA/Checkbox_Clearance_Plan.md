@@ -31,8 +31,8 @@
 => Wave 5 총 10 (잔여 3는 마무리)
 
 ## Execution Guidelines
-1. 각 Wave 종료 시 관련 문서의 체크박스 업데이트 + Timeline 로그 기록.
-2. 체크박스 완료 근거(코드/문서/테스트 결과)를 Sprint Task 또는 QA 보고서에 첨부.
+1. 각 Wave 종료 시 관련 문서의 불릿 상태 갱신 + Timeline 로그 기록.
+2. 불릿 항목 완료 근거(코드/문서/테스트 결과)를 Sprint Task 또는 QA 보고서에 첨부.
 3. 승인 이슈는 별도 Task로 분리해 Wave에 포함시키지 않음.
 
 ## Ownership & Scheduling

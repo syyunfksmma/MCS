@@ -17,7 +17,7 @@
 # Server Control Launcher Wave21 Execution Checklist (완료 보고)
 
 ## 공통 선행 조건
-- `docs/design/Server_Control_Launcher_Requirements.md` 14개 요구 항목 최신화 (증빙: 요구사항 문서 v2025-09-30, 모든 체크박스 완료)
+- `docs/design/Server_Control_Launcher_Requirements.md` 14개 요구 항목 최신화 (증빙: 요구사항 문서 v2025-09-30, 모든 불릿 항목 완료)
 - Sprint Task List(`docs/sprint/Sprint21_Server_Control_Launcher_TaskList.md`) 실행 항목 최신화 (증빙: Sprint Task List 09:36 업데이트)
 - Explorer UI 재구성 자산 재사용 범위 확정 (증빙: `docs/design/Server_Control_Launcher_Final_GUI_Design.md`)
 

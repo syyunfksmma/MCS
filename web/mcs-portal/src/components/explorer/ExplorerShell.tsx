@@ -16,7 +16,7 @@ import {
   message
 } from 'antd';
 
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import TreePanel, { TreePanelReorderPayload } from '@/components/TreePanel';
 
@@ -30,6 +30,8 @@ import WorkspaceUploadPanel from '@/components/workspace/WorkspaceUploadPanel';
 
 import AddinHistoryPanel from './AddinHistoryPanel';
 
+import RoutingDetailModal from './RoutingDetailModal';
+
 import SearchFilterRail from './SearchFilterRail';
 
 import ExplorerRibbon from './ExplorerRibbon';
@@ -38,8 +40,14 @@ import styles from './ExplorerShell.module.css';
 import { useExplorerLayout } from '@/hooks/useExplorerLayout';
 
 import { useExplorerData } from '@/hooks/useExplorerData';
+import { useRoutingDetail } from '@/hooks/useRoutingDetail';
 
 import { useRoutingSearch } from '@/hooks/useRoutingSearch';
+import { orderRoutingGroups } from '@/lib/routingGroups';
+import { logRoutingEvent } from '@/lib/telemetry/routing';
+import { renameRoutingGroup } from '@/lib/workspace/renameRoutingGroup';
+import { createRouting } from '@/lib/workspace/createRouting';
+import { toggleRoutingGroupDeletion } from '@/lib/workspace/toggleRoutingGroupDeletion';
 
 import type {
   ExplorerItem,
@@ -49,7 +57,7 @@ import type {
   ExplorerResponse
 } from '@/types/explorer';
 
-import type { RoutingSearchItem, RoutingSearchResult } from '@/types/search';
+import type { RoutingSearchItem } from '@/types/search';
 
 interface ExplorerShellProps {
   initialData: ExplorerResponse;
@@ -80,6 +88,17 @@ type RoutingContext = {
 
   routing: ExplorerRouting;
 };
+
+type RoutingGroupOrderPlan = {
+  revisionId: string;
+  orderedGroupIds: string[];
+};
+
+interface ComputeReorderOutcome {
+  updated: boolean;
+  nextItems: ExplorerItem[];
+  groupOrders: RoutingGroupOrderPlan[];
+}
 
 const STATUS_TAG_COLOR: Record<string, string> = {
   Approved: 'green',
@@ -169,6 +188,141 @@ const cloneGroup = (group: ExplorerRoutingGroup): ExplorerRoutingGroup => ({
   routings: group.routings.map(cloneRouting)
 });
 
+function computeReorderOutcome(
+  items: ExplorerItem[],
+  payload: TreePanelReorderPayload
+): ComputeReorderOutcome {
+  let updated = false;
+  const groupOrders: RoutingGroupOrderPlan[] = [];
+
+  const nextItems = items.map((item) => {
+    let itemChanged = false;
+
+    const nextRevisions = item.revisions.map((revision) => {
+      if (payload.entityType === 'group') {
+        const dragIndex = revision.routingGroups.findIndex(
+          (group) => group.id === payload.dragKey
+        );
+
+        const dropIndex = revision.routingGroups.findIndex(
+          (group) => group.id === payload.dropKey
+        );
+
+        if (dragIndex === -1 || dropIndex === -1) {
+          return revision;
+        }
+
+        const normalizedGroups = revision.routingGroups.map(cloneGroup);
+
+        const [moved] = normalizedGroups.splice(dragIndex, 1);
+
+        const targetIndex = normalizedGroups.findIndex(
+          (group) => group.id === payload.dropKey
+        );
+
+        if (targetIndex === -1) {
+          return revision;
+        }
+
+        const insertIndex =
+          payload.position === 'after' ? targetIndex + 1 : targetIndex;
+
+        normalizedGroups.splice(insertIndex, 0, moved);
+
+        const withDisplayOrder = normalizedGroups.map((group, index) => ({
+          ...group,
+
+          displayOrder: index + 1
+        }));
+
+        groupOrders.push({
+          revisionId: revision.id,
+          orderedGroupIds: withDisplayOrder.map((group) => group.id)
+        });
+
+        updated = true;
+        itemChanged = true;
+
+        return {
+          ...revision,
+
+          routingGroups: withDisplayOrder
+        };
+      }
+
+      if (payload.entityType === 'routing') {
+        let groupChanged = false;
+
+        const nextGroups = revision.routingGroups.map((group) => {
+          const dragIndex = group.routings.findIndex(
+            (routing) => routing.id === payload.dragKey
+          );
+
+          const dropIndex = group.routings.findIndex(
+            (routing) => routing.id === payload.dropKey
+          );
+
+          if (dragIndex === -1 || dropIndex === -1) {
+            return group;
+          }
+
+          const newRoutings = group.routings.map(cloneRouting);
+
+          const [moved] = newRoutings.splice(dragIndex, 1);
+
+          const targetIndex = newRoutings.findIndex(
+            (routing) => routing.id === payload.dropKey
+          );
+
+          if (targetIndex === -1) {
+            return group;
+          }
+
+          const insertIndex =
+            payload.position === 'after' ? targetIndex + 1 : targetIndex;
+
+          newRoutings.splice(insertIndex, 0, moved);
+
+          groupChanged = true;
+          updated = true;
+
+          return {
+            ...group,
+
+            routings: newRoutings
+          };
+        });
+
+        if (groupChanged) {
+          itemChanged = true;
+
+          return {
+            ...revision,
+
+            routingGroups: nextGroups
+          };
+        }
+      }
+
+      return revision;
+    });
+
+    return itemChanged
+      ? {
+          ...item,
+
+          revisions: nextRevisions
+        }
+      : item;
+  });
+
+  return {
+    updated,
+    nextItems,
+    groupOrders
+  };
+}
+
 export default function ExplorerShell({ initialData }: ExplorerShellProps) {
   const { data, isFetching, isError, error } = useExplorerData(initialData);
 
@@ -228,7 +382,25 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
     typeaheadTimeoutRef
   } = useExplorerLayout(items);
 
+  const [isDetailModalOpen, setDetailModalOpen] = useState(false);
+  const [detailActiveTab, setDetailActiveTab] = useState('summary');
+
   const searchMutation = useRoutingSearch();
+
+  const routingDetailQuery = useRoutingDetail(selectedRouting, {
+    enabled: isDetailModalOpen && Boolean(selectedRouting)
+  });
+  const detailLoading =
+    routingDetailQuery.isLoading || routingDetailQuery.isFetching;
+  const detailError =
+    routingDetailQuery.error instanceof Error ? routingDetailQuery.error : null;
+
+  useEffect(() => {
+    if (!selectedRouting) {
+      setDetailModalOpen(false);
+      setDetailActiveTab('summary');
+    }
+  }, [selectedRouting, setDetailActiveTab, setDetailModalOpen]);
 
   const getSelectedRoutingContext = useCallback(() => {
     if (!selectedRouting) {
@@ -236,7 +408,7 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
     }
 
     return findRoutingContext(itemsState, selectedRouting.id);
-  }, [itemsState, selectedRouting]);
+  }, [itemsState, selectedRouting, setSelectedRouting]);
 
   const scrollToCard = useCallback((elementId: string) => {
     const element = document.getElementById(elementId);
@@ -252,13 +424,31 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
 
   const handleRibbonOpenSelected = useCallback(() => {
     if (!selectedRouting) {
-      message.info('Routing을 먼저 선택하세요.');
+      message.info('Please select a routing first.');
 
       return;
     }
 
-    scrollToCard('explorer-summary-card');
-  }, [scrollToCard, selectedRouting]);
+    setDetailModalOpen(true);
+    setDetailActiveTab('summary');
+
+    logRoutingEvent({
+      name: 'routing.wave1.detail.open',
+      properties: {
+        routingId: selectedRouting.id,
+        routingCode: selectedRouting.code
+      }
+    });
+  }, [logRoutingEvent, message, selectedRouting, setDetailActiveTab, setDetailModalOpen]);
+
+  const handleDetailModalClose = useCallback(() => {
+    setDetailModalOpen(false);
+    setDetailActiveTab('summary');
+  }, [setDetailActiveTab, setDetailModalOpen]);
+
+  const handleDetailTabChange = useCallback((key: string) => {
+    setDetailActiveTab(key);
+  }, [setDetailActiveTab]);
 
   const handleRibbonOpenWizard = useCallback(() => {
     const context = getSelectedRoutingContext();
@@ -276,7 +466,7 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
 
       group: context.group
     });
-  }, [getSelectedRoutingContext]);
+  }, [getSelectedRoutingContext, message, setWizardContext]);
 
   const handleRibbonDownload = useCallback(() => {
     if (!selectedRouting) {
@@ -286,7 +476,7 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
     }
 
     message.info('다운로드 기능은 Sprint8에서 활성화될 예정입니다.');
-  }, [selectedRouting]);
+  }, [message, selectedRouting]);
 
   const handleShowUploadPanel = useCallback(() => {
     scrollToCard('workspace-upload-card');
@@ -298,7 +488,7 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
 
   useEffect(() => {
     setItemsState(items);
-  }, [items]);
+  }, [items, setItemsState]);
 
   useEffect(() => {
     return () => {
@@ -325,7 +515,7 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
   const findRoutingById = useCallback(
     (routingId: string) => findRoutingInCollection(itemsState, routingId),
 
-    [itemsState]
+    [itemsState, message, setWizardContext]
   );
 
   const summaryItems = useMemo(() => {
@@ -394,140 +584,114 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
     []
   );
 
-  const applyReorder = useCallback(
-    (payload: TreePanelReorderPayload) => {
-      let updated = false;
+  const reorderPersistingRef = useRef(false);
+  const renameInFlightRef = useRef<Set<string>>(new Set());
+  const softDeleteInFlightRef = useRef<Set<string>>(new Set());
 
-      const nextItems = itemsState.map((item) => {
-        let itemChanged = false;
+  const persistReorder = useCallback(
+    async (payload: TreePanelReorderPayload) => {
+      if (reorderPersistingRef.current) {
+        message.info('이전 순서 저장이 진행 중입니다. 잠시 후 다시 시도해주세요.');
+        return;
+      }
 
-        const nextRevisions = item.revisions.map((revision) => {
-          if (payload.entityType === 'group') {
-            const dragIndex = revision.routingGroups.findIndex(
-              (group) => group.id === payload.dragKey
-            );
+      const previousItems = itemsState;
 
-            const dropIndex = revision.routingGroups.findIndex(
-              (group) => group.id === payload.dropKey
-            );
+      const { updated, nextItems, groupOrders } = computeReorderOutcome(
+        itemsState,
+        payload
+      );
 
-            if (dragIndex === -1 || dropIndex === -1) {
-              return revision;
-            }
+      if (!updated) {
+        message.warning('Reorder 요청이 적용되지 않았습니다.');
+        return;
+      }
 
-            const normalizedGroups = revision.routingGroups.map(cloneGroup);
+      setItemsState(nextItems);
+      setSelectedRoutingFromItems(selectedRouting?.id ?? null, nextItems);
 
-            const [moved] = normalizedGroups.splice(dragIndex, 1);
-
-            const targetIndex = normalizedGroups.findIndex(
-              (group) => group.id === payload.dropKey
-            );
-
-            const insertIndex =
-              payload.position === 'after' ? targetIndex + 1 : targetIndex;
-
-            normalizedGroups.splice(insertIndex, 0, moved);
-
-            const withDisplayOrder = normalizedGroups.map((group, index) => ({
-              ...group,
-
-              displayOrder: index + 1
-            }));
-
-            itemChanged = true;
-
-            updated = true;
-
-            return {
-              ...revision,
-
-              routingGroups: withDisplayOrder
-            };
+      if (payload.entityType !== 'group' || groupOrders.length === 0) {
+        logRoutingEvent({
+          name: 'routing.wave1.reorder.local-applied',
+          properties: {
+            entityType: payload.entityType,
+            dragKey: payload.dragKey,
+            dropKey: payload.dropKey
           }
-
-          if (payload.entityType === 'routing') {
-            const nextGroups = revision.routingGroups.map(cloneGroup);
-
-            let groupChanged = false;
-
-            const groupsWithRoutingUpdate = nextGroups.map((group) => {
-              const dragIndex = group.routings.findIndex(
-                (routing) => routing.id === payload.dragKey
-              );
-
-              const dropIndex = group.routings.findIndex(
-                (routing) => routing.id === payload.dropKey
-              );
-
-              if (dragIndex === -1 || dropIndex === -1) {
-                return group;
-              }
-
-              const newRoutings = group.routings.map(cloneRouting);
-
-              const [moved] = newRoutings.splice(dragIndex, 1);
-
-              const targetIndex = newRoutings.findIndex(
-                (routing) => routing.id === payload.dropKey
-              );
-
-              const insertIndex =
-                payload.position === 'after' ? targetIndex + 1 : targetIndex;
-
-              newRoutings.splice(insertIndex, 0, moved);
-
-              groupChanged = true;
-
-              return {
-                ...group,
-
-                routings: newRoutings
-              };
-            });
-
-            if (groupChanged) {
-              itemChanged = true;
-
-              updated = true;
-
-              return {
-                ...revision,
-
-                routingGroups: groupsWithRoutingUpdate
-              };
-            }
-          }
-
-          return revision;
         });
 
-        return itemChanged
-          ? {
-              ...item,
+        message.success('Routing 순서를 업데이트했습니다.');
+        return;
+      }
 
-              revisions: nextRevisions
-            }
-          : item;
-      });
+      reorderPersistingRef.current = true;
+      const startTime =
+        typeof performance !== 'undefined' ? performance.now() : Date.now();
 
-      if (updated) {
-        setItemsState(nextItems);
+      try {
+        await Promise.all(
+          groupOrders.map((plan) =>
+            orderRoutingGroups({
+              revisionId: plan.revisionId,
+              orderedGroupIds: plan.orderedGroupIds
+            })
+          )
+        );
 
-        setSelectedRoutingFromItems(selectedRouting?.id ?? null, nextItems);
+        logRoutingEvent({
+          name: 'routing.wave1.reorder.success',
+          properties: {
+            revisionId: groupOrders.map((plan) => plan.revisionId).join(','),
+            dragKey: payload.dragKey,
+            dropKey: payload.dropKey
+          },
+          measurements: {
+            durationMs:
+              (typeof performance !== 'undefined' ? performance.now() : Date.now()) -
+              startTime
+          }
+        });
 
-        message.success('Routing tree order updated.');
-      } else {
-        message.warning('Reorder request could not be applied.');
+        message.success('Routing 그룹 순서를 저장했습니다.');
+      } catch (error) {
+        logRoutingEvent({
+          name: 'routing.wave1.reorder.fail',
+          properties: {
+            revisionId: groupOrders.map((plan) => plan.revisionId).join(','),
+            error: error instanceof Error ? error.message : String(error)
+          }
+        });
+
+        message.error('그룹 순서 저장에 실패하여 이전 상태로 롤백했습니다.');
+
+        setItemsState(previousItems);
+        setSelectedRoutingFromItems(selectedRouting?.id ?? null, previousItems);
+      } finally {
+        reorderPersistingRef.current = false;
       }
     },
+    [itemsState, selectedRouting?.id, setItemsState, setSelectedRoutingFromItems]
+  );
 
-    [itemsState, selectedRouting?.id, setSelectedRoutingFromItems]
+  const handleReorder = useCallback(
+    (payload: TreePanelReorderPayload) => {
+      void persistReorder(payload);
+    },
+    [persistReorder]
   );
 
   const handleGroupRename = useCallback(
     (groupId: string, nextName: string) => {
-      const timestamp = new Date().toISOString();
+      const trimmed = nextName.trim();
 
+      if (!trimmed) {
+        message.warning('그룹 이름은 비워둘 수 없습니다.');
+
+        return;
+      }
+
+      const previousItems = itemsState;
+      const timestamp = new Date().toISOString();
       let updated = false;
 
       const nextItems = itemsState.map((item) => {
@@ -540,13 +704,12 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
             }
 
             updated = true;
-
             itemChanged = true;
 
             return {
               ...group,
 
-              name: nextName,
+              name: trimmed,
 
               updatedAt: timestamp,
 
@@ -573,25 +736,86 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
       });
 
       if (!updated) {
-        message.warning('Group rename skipped (target not found).');
+        message.warning('대상 그룹을 찾지 못했습니다.');
 
         return;
       }
 
       setItemsState(nextItems);
-
       setSelectedRoutingFromItems(selectedRouting?.id ?? null, nextItems);
 
-      message.success(`Group renamed to ${nextName}.`);
-    },
+      logRoutingEvent({
+        name: 'routing.wave1.group.rename.local-applied',
+        properties: { groupId, name: trimmed }
+      });
 
-    [itemsState, selectedRouting?.id, setSelectedRoutingFromItems]
+      if (renameInFlightRef.current.has(groupId)) {
+        message.info('이전 이름 저장이 완료될 때까지 잠시 기다려주세요.');
+
+        return;
+      }
+
+      renameInFlightRef.current.add(groupId);
+
+      void renameRoutingGroup({ groupId, name: trimmed })
+        .then((result) => {
+          logRoutingEvent({
+            name: 'routing.wave1.group.rename.success',
+            properties: { groupId, name: trimmed }
+          });
+
+          if (result.updatedAt || result.updatedBy) {
+            setItemsState((current) =>
+              current.map((item) => ({
+                ...item,
+                revisions: item.revisions.map((revision) => ({
+                  ...revision,
+                  routingGroups: revision.routingGroups.map((group) =>
+                    group.id === groupId
+                      ? {
+                          ...group,
+                          updatedAt: result.updatedAt ?? group.updatedAt,
+                          updatedBy: result.updatedBy ?? group.updatedBy
+                        }
+                      : group
+                  )
+                }))
+              }))
+            );
+          }
+
+          message.success(`Group renamed to ${trimmed}.`);
+        })
+        .catch((error) => {
+          logRoutingEvent({
+            name: 'routing.wave1.group.rename.fail',
+            properties: {
+              groupId,
+              name: trimmed,
+              error: error instanceof Error ? error.message : String(error)
+            }
+          });
+
+          message.error('그룹 이름 저장에 실패하여 이전 상태로 복구했습니다.');
+          setItemsState(previousItems);
+          setSelectedRoutingFromItems(selectedRouting?.id ?? null, previousItems);
+        })
+        .finally(() => {
+          renameInFlightRef.current.delete(groupId);
+        });
+    },
+    [
+      itemsState,
+      selectedRouting?.id,
+      setItemsState,
+      setSelectedRoutingFromItems
+    ]
   );
 
   const handleGroupSoftDelete = useCallback(
     (groupId: string, isDeleted: boolean) => {
+      const previousItems = itemsState;
       const timestamp = new Date().toISOString();
-
       let updated = false;
 
       const nextItems = itemsState.map((item) => {
@@ -604,7 +828,6 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
             }
 
             updated = true;
-
             itemChanged = true;
 
             return {
@@ -637,21 +860,85 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
       });
 
       if (!updated) {
-        message.warning('No matching group to update.');
+        message.warning('대상 그룹을 찾지 못했습니다.');
 
         return;
       }
 
       setItemsState(nextItems);
-
       setSelectedRoutingFromItems(selectedRouting?.id ?? null, nextItems);
 
-      message.success(
-        isDeleted ? 'Group marked as deleted.' : 'Group restored.'
-      );
-    },
+      logRoutingEvent({
+        name: 'routing.wave1.group.soft-delete.local-applied',
+        properties: { groupId, isDeleted }
+      });
 
-    [itemsState, selectedRouting?.id, setSelectedRoutingFromItems]
+      if (softDeleteInFlightRef.current.has(groupId)) {
+        message.info('이전 삭제/복원 요청이 처리되는 중입니다. 잠시 후 다시 시도해주세요.');
+
+        return;
+      }
+
+      softDeleteInFlightRef.current.add(groupId);
+
+      void toggleRoutingGroupDeletion({ groupId, isDeleted })
+        .then((result) => {
+          logRoutingEvent({
+            name: 'routing.wave1.group.soft-delete.success',
+            properties: { groupId, isDeleted }
+          });
+
+          if (result.synchronizedAt) {
+            setItemsState((current) =>
+              current.map((item) => ({
+                ...item,
+                revisions: item.revisions.map((revision) => ({
+                  ...revision,
+                  routingGroups: revision.routingGroups.map((group) =>
+                    group.id === groupId
+                      ? {
+                          ...group,
+                          updatedAt: result.synchronizedAt
+                        }
+                      : group
+                  )
+                }))
+              }))
+            );
+          }
+
+          message.success(
+            isDeleted ? '그룹을 삭제 상태로 표시했습니다.' : '그룹을 복원했습니다.'
+          );
+        })
+        .catch((error) => {
+          logRoutingEvent({
+            name: 'routing.wave1.group.soft-delete.fail',
+            properties: {
+              groupId,
+              isDeleted,
+              error: error instanceof Error ? error.message : String(error)
+            }
+          });
+
+          message.error(
+            isDeleted
+              ? '그룹 삭제 표시 저장에 실패하여 이전 상태로 복구했습니다.'
+              : '그룹 복원 저장에 실패하여 이전 상태로 복구했습니다.'
+          );
+          setItemsState(previousItems);
+          setSelectedRoutingFromItems(selectedRouting?.id ?? null, previousItems);
+        })
+        .finally(() => {
+          softDeleteInFlightRef.current.delete(groupId);
+        });
+    },
+    [
+      itemsState,
+      selectedRouting?.id,
+      setItemsState,
+      setSelectedRoutingFromItems
+    ]
   );
 
   const handleGroupCreateRouting = useCallback(
@@ -679,95 +966,373 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
       message.error('Unable to locate routing group.');
     },
 
-    [itemsState]
+    [itemsState, message, setWizardContext]
   );
 
   const handleWizardCancel = useCallback(() => {
     setWizardContext(null);
-  }, []);
+  }, [setWizardContext]);
 
   const handleWizardSubmit = useCallback(
+
     async (input: RoutingCreationInput) => {
+
       if (!wizardContext) {
+
         return;
+
       }
 
-      const newRouting: ExplorerRouting = {
+
+
+      const context = wizardContext;
+
+      const previousItems = itemsState;
+
+      const previousSelectedId = selectedRouting?.id ?? null;
+
+      const now = new Date().toISOString();
+
+      const fallbackSharedDrivePath =
+
+        context.group.sharedDrivePath ?? context.item.code;
+
+
+
+      const optimisticRouting: ExplorerRouting = {
+
         id: createClientId(),
 
         code: input.code,
 
         status: input.status,
 
-        camRevision: wizardContext.revision.code,
+        camRevision: context.revision.code,
 
         owner: input.owner,
 
         notes: input.notes,
 
-        sharedDrivePath:
-          wizardContext.group.sharedDrivePath ?? wizardContext.item.code,
+        sharedDrivePath: fallbackSharedDrivePath,
 
         sharedDriveReady: input.sharedDriveReady,
 
-        createdAt: new Date().toISOString(),
+        createdAt: now,
 
-        updatedAt: new Date().toISOString(),
+        updatedAt: now,
 
         files: []
+
       };
 
+
+
       const nextItems = itemsState.map((item) => {
-        if (item.id !== wizardContext.item.id) {
+
+        if (item.id !== context.item.id) {
+
           return item;
+
         }
 
+
+
         const nextRevisions = item.revisions.map((revision) => {
-          if (revision.id !== wizardContext.revision.id) {
+
+          if (revision.id !== context.revision.id) {
+
             return revision;
+
           }
 
+
+
           const nextGroups = revision.routingGroups.map((group) => {
-            if (group.id !== wizardContext.group.id) {
+
+            if (group.id !== context.group.id) {
+
               return group;
+
             }
 
+
+
             return {
+
               ...group,
 
-              updatedAt: new Date().toISOString(),
+              updatedAt: now,
 
               updatedBy: 'explorer.ui',
 
-              routings: [newRouting, ...group.routings.map(cloneRouting)]
+              routings: [optimisticRouting, ...group.routings.map(cloneRouting)]
+
             };
+
           });
 
+
+
           return {
+
             ...revision,
 
             routingGroups: nextGroups
+
           };
+
         });
 
+
+
         return {
+
           ...item,
 
           revisions: nextRevisions
+
         };
+
       });
+
+
 
       setItemsState(nextItems);
 
-      setSelectedRouting(newRouting);
+      setSelectedRouting(optimisticRouting);
 
-      message.success(`Routing ${input.code} created.`);
 
-      setWizardContext(null);
+
+      logRoutingEvent({
+
+        name: 'routing.wave1.create.local-applied',
+
+        properties: {
+
+          groupId: context.group.id,
+
+          routingCode: input.code
+
+        }
+
+      });
+
+
+
+      try {
+
+        const result = await createRouting({
+
+          groupId: context.group.id,
+
+          revisionId: context.revision.id,
+
+          revisionCode: context.revision.code,
+
+          itemId: context.item.id,
+
+          itemCode: context.item.code,
+
+          code: input.code,
+
+          status: input.status,
+
+          owner: input.owner,
+
+          notes: input.notes,
+
+          sharedDriveReady: input.sharedDriveReady,
+
+          sharedDrivePath: context.group.sharedDrivePath
+
+        });
+
+
+
+        const routingFromApi: ExplorerRouting = {
+
+          ...optimisticRouting,
+
+          ...result.routing,
+
+          files: result.routing.files?.map((file) => ({ ...file })) ?? []
+
+        };
+
+
+
+        setItemsState((current) =>
+
+          current.map((item) => {
+
+            if (item.id !== context.item.id) {
+
+              return item;
+
+            }
+
+
+
+            const nextRevisions = item.revisions.map((revision) => {
+
+              if (revision.id !== context.revision.id) {
+
+                return revision;
+
+              }
+
+
+
+              const nextGroups = revision.routingGroups.map((group) => {
+
+                if (group.id !== context.group.id) {
+
+                  return group;
+
+                }
+
+
+
+                return {
+
+                  ...group,
+
+                  updatedAt: routingFromApi.updatedAt ?? now,
+
+                  updatedBy: 'explorer.api',
+
+                  routings: [
+
+                    routingFromApi,
+
+                    ...group.routings.filter(
+
+                      (routing) => routing.id !== optimisticRouting.id
+
+                    )
+
+                  ]
+
+                };
+
+              });
+
+
+
+              return {
+
+                ...revision,
+
+                routingGroups: nextGroups
+
+              };
+
+            });
+
+
+
+            return {
+
+              ...item,
+
+              revisions: nextRevisions
+
+            };
+
+          })
+
+        );
+
+
+
+        setSelectedRouting(routingFromApi);
+
+        setWizardContext(null);
+
+
+
+        logRoutingEvent({
+
+          name: 'routing.wave1.create.success',
+
+          properties: {
+
+            groupId: context.group.id,
+
+            routingId: routingFromApi.id,
+
+            routingCode: routingFromApi.code
+
+          }
+
+        });
+
+
+
+        message.success(`Routing ${routingFromApi.code} created.`);
+
+      } catch (error) {
+
+        logRoutingEvent({
+
+          name: 'routing.wave1.create.fail',
+
+          properties: {
+
+            groupId: context.group.id,
+
+            routingCode: input.code,
+
+            error: error instanceof Error ? error.message : String(error)
+
+          }
+
+        });
+
+
+
+        setItemsState(previousItems);
+
+        setSelectedRoutingFromItems(previousSelectedId, previousItems);
+
+        message.error('Failed to create routing. Changes were reverted.');
+
+
+
+        throw error;
+
+      }
+
     },
 
-    [itemsState, wizardContext]
+    [
+
+      itemsState,
+
+      selectedRouting?.id,
+
+      setItemsState,
+
+      setSelectedRouting,
+
+      setSelectedRoutingFromItems,
+
+      wizardContext,
+
+      createRouting,
+
+      logRoutingEvent,
+
+      message,
+
+      setWizardContext
+
+    ]
+
   );
+
+
+
 
   const tabs = useMemo(
     () => [
@@ -864,7 +1429,7 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
       );
     },
 
-    [isSearchFeatureEnabled, message, searchMutation]
+    [isSearchFeatureEnabled, message, searchMutation, setLastSearchError, setSearchResult]
   );
 
   const handleSearch = useCallback(
@@ -888,7 +1453,7 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
       executeSearch(nextTerm, true);
     },
 
-    [executeSearch, isSearchFeatureEnabled, message, searchTerm]
+    [executeSearch, isSearchFeatureEnabled, searchTerm, setSearchTerm]
   );
 
   const handleSearchChange = useCallback(
@@ -920,7 +1485,7 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
       }, 350);
     },
 
-    [executeSearch, isSearchFeatureEnabled]
+    [executeSearch, isSearchFeatureEnabled, setLastSearchError, setSearchResult, setSearchTerm, typeaheadTimeoutRef]
   );
 
   const handleSelectSearchRouting = useCallback(
@@ -936,7 +1501,7 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
       setSelectedRouting(next);
     },
 
-    [findRoutingById]
+    [findRoutingById, setSelectedRouting]
   );
 
   const addinBadgeStatus = selectedRouting ? 'queued' : 'idle';
@@ -951,7 +1516,7 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
     setGroupFilter(undefined);
 
     setStatusFilter(undefined);
-  }, []);
+  }, [setGroupFilter, setProductFilter, setStatusFilter]);
 
   const resetSearchExperience = useCallback(() => {
     if (typeaheadTimeoutRef.current) {
@@ -965,7 +1530,7 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
     setLastSearchError(null);
 
     clearFilters();
-  }, [clearFilters]);
+  }, [clearFilters, setLastSearchError, setSearchResult, setSearchTerm]);
 
   const handleSearchFeatureToggle = useCallback(
     (nextEnabled: boolean) => {
@@ -990,7 +1555,7 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
       }
     },
 
-    [message, resetSearchExperience]
+    [message, resetSearchExperience, setIsSearchFeatureEnabled, setLegacyFilterTerm]
   );
 
   const legacyRoutingItems = useMemo<LegacyRoutingListItem[]>(() => {
@@ -1057,7 +1622,7 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
 
   const legacyTotalCount = legacyRoutingItems.length;
 
-  const searchItems: RoutingSearchItem[] = searchResult?.items ?? [];
+  const searchItems = useMemo<RoutingSearchItem[]>(() => searchResult?.items ?? [], [searchResult]);
   const termSnapshot = searchTerm || legacyFilterTerm || '';
 
   const productOptions = useMemo(() => {
@@ -1187,7 +1752,7 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
         const next = findRoutingById(routingId);
         setSelectedRouting(next);
       }}
-      onReorder={applyReorder}
+      onReorder={handleReorder}
       onGroupRename={handleGroupRename}
       onGroupSoftDelete={handleGroupSoftDelete}
       onGroupCreateRouting={handleGroupCreateRouting}
@@ -1249,6 +1814,24 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
               }
               onReset={clearFilters}
             />
+            <Input.Search
+              value={searchTerm}
+              onChange={(event) => handleSearchChange(event.target.value)}
+              onSearch={handleSearch}
+              placeholder="Routing \ucf54드 / \uc81c품 / \uc0c1태 \uac80\uc0c9"
+              allowClear
+              enterButton="Search"
+              aria-label="Routing \uac80\uc0c9"
+              disabled={!isSearchFeatureEnabled}
+            />
+            {lastSearchError ? (
+              <Alert
+                type="error"
+                message={lastSearchError}
+                showIcon
+                className="mt-2"
+              />
+            ) : null}
             <div className={styles.slaGrid}>
               <div className={styles.slaCard}>
                 <span className={styles.slaLabel}>서버 SLA</span>
@@ -1409,6 +1992,17 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
         tree={treeColumn}
         main={mainColumn}
         aside={previewColumn}
+      />
+      <RoutingDetailModal
+        open={isDetailModalOpen}
+        routing={selectedRouting}
+        detail={routingDetailQuery.data}
+        loading={detailLoading}
+        error={detailError}
+        activeTab={detailActiveTab}
+        onTabChange={handleDetailTabChange}
+        onClose={handleDetailModalClose}
+        onRetry={routingDetailQuery.refetch}
       />
       {wizardContext ? (
         <RoutingCreationWizard
