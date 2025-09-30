@@ -2,6 +2,7 @@ using System.IO;
 using FluentValidation.AspNetCore;
 using MCMS.Api.Hubs;
 using MCMS.Api.Notifications;
+using MCMS.Api.Streaming;
 using MCMS.Infrastructure;
 using MCMS.Infrastructure.Persistence;
 using Microsoft.AspNetCore.HttpLogging;
@@ -42,6 +43,7 @@ builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddMcmsInfrastructure(builder.Configuration);
 
 builder.Services.AddSignalR();
+builder.Services.AddSingleton<IRoutingEventStream, RoutingEventStream>();
 builder.Services.AddSingleton<IRoutingEventPublisher, RoutingEventPublisher>();
 
 builder.Services.AddCors(options =>

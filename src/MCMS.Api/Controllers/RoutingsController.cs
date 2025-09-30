@@ -45,7 +45,7 @@ public class RoutingsController : ControllerBase
     public async Task<ActionResult<RoutingDto>> CreateAsync([FromBody] CreateRoutingRequest request, CancellationToken cancellationToken)
     {
         var routing = await _routingService.CreateRoutingAsync(request, cancellationToken);
-        await _routingEvents.PublishRoutingUpdatedAsync(routing);
+        await _routingEvents.PublishRoutingUpdatedAsync(routing, cancellationToken);
         return CreatedAtAction(nameof(GetAsync), new { routingId = routing.Id }, routing);
     }
 
@@ -54,7 +54,7 @@ public class RoutingsController : ControllerBase
     {
         request = request with { RoutingId = routingId };
         var routing = await _routingService.UpdateRoutingAsync(request, cancellationToken);
-        await _routingEvents.PublishRoutingUpdatedAsync(routing);
+        await _routingEvents.PublishRoutingUpdatedAsync(routing, cancellationToken);
         return Ok(routing);
     }
 
@@ -63,7 +63,7 @@ public class RoutingsController : ControllerBase
     {
         request = request with { RoutingId = routingId };
         var routing = await _routingService.ReviewRoutingAsync(request, cancellationToken);
-        await _routingEvents.PublishRoutingUpdatedAsync(routing);
+        await _routingEvents.PublishRoutingUpdatedAsync(routing, cancellationToken);
         return Ok(routing);
     }
 
@@ -74,7 +74,7 @@ public class RoutingsController : ControllerBase
         try
         {
             var routing = await _routingApprovalService.RequestApprovalAsync(request, cancellationToken);
-            await _routingEvents.PublishRoutingUpdatedAsync(routing);
+            await _routingEvents.PublishRoutingUpdatedAsync(routing, cancellationToken);
             return Ok(routing);
         }
         catch (KeyNotFoundException)
@@ -94,7 +94,7 @@ public class RoutingsController : ControllerBase
         try
         {
             var routing = await _routingApprovalService.ApproveAsync(request, cancellationToken);
-            await _routingEvents.PublishRoutingUpdatedAsync(routing);
+            await _routingEvents.PublishRoutingUpdatedAsync(routing, cancellationToken);
             return Ok(routing);
         }
         catch (KeyNotFoundException)
@@ -114,7 +114,7 @@ public class RoutingsController : ControllerBase
         try
         {
             var routing = await _routingApprovalService.RejectAsync(request, cancellationToken);
-            await _routingEvents.PublishRoutingUpdatedAsync(routing);
+            await _routingEvents.PublishRoutingUpdatedAsync(routing, cancellationToken);
             return Ok(routing);
         }
         catch (KeyNotFoundException)

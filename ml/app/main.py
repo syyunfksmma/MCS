@@ -1,6 +1,10 @@
+import logging
 from datetime import datetime
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Response
 from pydantic import BaseModel
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger("mcms.ml_stub")
 
 app = FastAPI(
     title="MCMS ML Stub",
@@ -21,6 +25,7 @@ class PredictResponse(BaseModel):
     decision: str
     reason: str
     generated_at: datetime
+    deprecated: bool = True
 
 
 @app.get("/health", response_model=dict)
@@ -29,9 +34,16 @@ def health() -> dict:
 
 
 @app.post("/predict", response_model=PredictResponse)
-def predict(request: PredictRequest) -> PredictResponse:
+def predict(request: PredictRequest, response: Response) -> PredictResponse:
     if not request.routing_id:
         raise HTTPException(status_code=400, detail="routing_id is required")
+
+    logger.warning(
+        "Deprecated ML predict invoked for routing_id=%s revision_id=%s; returning stub response.",
+        request.routing_id,
+        request.revision_id
+    )
+    response.headers["X-MCMS-ML-Deprecated"] = "true"
 
     return PredictResponse(
         routing_id=request.routing_id,
