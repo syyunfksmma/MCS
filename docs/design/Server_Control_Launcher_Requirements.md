@@ -15,7 +15,7 @@
 - 모든 스프린트 태스크는 전용 스프린트 Task List를 참조하고, docs/sprint 명세에 따른 영어 로그북 + 설명적 코드 주석을 남김.
 
 > PRD: docs/PRD_MCS.md  
-> Task Lists: docs/MCMS_TaskList.md, docs/Tasks_MCS.md, docs/Tasks_ML_Routing.md  
+> Task Lists: docs/MCMS_TaskList.md, docs/Tasks_MCS.md, ~~docs/Tasks_ML_Routing.md~~ (폐기 2025-09-30)  
 > Absolute Directives:
 > - 각 단계는 승인 후에만 진행한다.
 > - 단계 착수 전 이번 단계 전체 범위를 리뷰하고 오류를 식별한다.

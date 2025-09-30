@@ -18,8 +18,8 @@
 
 ## Wave Structure
 - **Wave 1 (20 items)**: `docs/design/Explorer_UI_Rework_ImplementationPlan.md` (9), `docs/ExecutionChecklist.md` (2), `docs/design/Server_Control_Launcher_S96_Signoff_Prep.md` (4), `docs/design/Server_Control_Launcher_S98_IntegrationPlan.md` (5)
-- **Wave 2 (20 items)**: `docs/Tasks_ML_Routing.md` 항목 1~20
-- **Wave 3 (20 items)**: `docs/Tasks_ML_Routing.md` 항목 21~32 (12), `docs/setup/Localhost_Test_Playbook.md` (5), `docs/sprint/Sprint20_Explorer_UI_Rework_TaskList.md` (4)
+- **Wave 2 (20 items)**: `~~docs/Tasks_ML_Routing.md~~ (폐기 2025-09-30)` 항목 1~20
+- **Wave 3 (20 items)**: `~~docs/Tasks_ML_Routing.md~~ (폐기 2025-09-30)` 항목 21~32 (12), `docs/setup/Localhost_Test_Playbook.md` (5), `docs/sprint/Sprint20_Explorer_UI_Rework_TaskList.md` (4)
 - **Wave 4 (20 items)**: `docs/sprint/Sprint6_Routing_TaskList.md` (9), `docs/sprint/Sprint7_Routing_TaskList.md` (6), `docs/sprint/Sprint8_Routing_TaskList.md` 항목 1~5 (5)
 - **Wave 5 (3 items)**: `docs/sprint/Sprint8_Routing_TaskList.md` 잔여 3, `docs/templates/Ops_Comms_Template.md` (1), `docs/Tasks_MCS.md` (2) → 총 6? 조정
 

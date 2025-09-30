@@ -1,5 +1,6 @@
+version: '3.9'
+
 services:
-  # ~~old~~ db service (Azure SQL Edge) 는 LSA 오류로 비활성화되었습니다. 로컬 SQL Server Developer/Express 인스턴스를 사용하세요.
   api:
     build:
       context: .
@@ -7,12 +8,43 @@ services:
     container_name: mcms-api
     environment:
       ASPNETCORE_URLS: http://0.0.0.0:5229
-      ConnectionStrings__McmsDatabase: Server=host.docker.internal,1433;Database=MCMS;User Id=sa;Password=${SA_PASSWORD};TrustServerCertificate=True;Encrypt=False
+      ConnectionStrings__McmsDatabase: Server=host.docker.internal,1433;Database=MCMS;User Id=sa;Password=;TrustServerCertificate=True;Encrypt=False
       FileStorage__RootPath: /app/storage
       FileStorage__JsonWorkerCount: 6
       FileStorage__MaxParallelJsonWrites: 2
-      FileStorage__EnableMetaCaching: true
+      FileStorage__EnableMetaCaching: 'true'
+      SignalR__RoutingHub: http://mcms-api:5229/hubs/routing
     ports:
-      - "5229:5229"
+      - '5229:5229'
     volumes:
       - ./docker-data/storage:/app/storage
+    networks:
+      - mcms-backplane
+
+  ml-fastapi:
+    build:
+      context: .
+      dockerfile: docker/ml/Dockerfile
+    container_name: mcms-ml
+    environment:
+      UVICORN_HOST: 0.0.0.0
+      UVICORN_PORT: 8080
+      MCMS_API_BASE_URL: http://mcms-api:5229
+      MCMS_STORAGE_ROOT: /tmp/ml-artifacts
+    volumes:
+      - ./docker-data/ml-artifacts:/tmp/ml-artifacts
+    expose:
+      - '8080'
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:8080/health']
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    networks:
+      - mcms-backplane
+    profiles:
+      - ml
+
+networks:
+  mcms-backplane:
+    driver: bridge

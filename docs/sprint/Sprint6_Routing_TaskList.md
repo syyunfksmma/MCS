@@ -15,7 +15,7 @@
 - 모든 스프린트 태스크는 전용 스프린트 Task List를 참조하고, docs/sprint 명세에 따른 영어 로그북 + 설명적 코드 주석을 남김.
 
 > PRD: docs/PRD_MCS.md  
-> Task Lists: docs/MCMS_TaskList.md, docs/Tasks_MCS.md, docs/Tasks_ML_Routing.md  
+> Task Lists: docs/MCMS_TaskList.md, docs/Tasks_MCS.md, ~~docs/Tasks_ML_Routing.md~~ (폐기 2025-09-30)  
 > Remaining Tasks: 17
 
 ## 절대 지령
@@ -122,6 +122,7 @@
 - J2. Open-in-explorer protocol handler wiring + permission check.
   - Log: Record protocol scheme, environment guard.
   - Comment: Explain security prompt handling.
+  - Analysis: (2025-09-30 18:57, Codex) – Explorer 프로토콜 권한/팝업 정책 재확인, FE wiring 미착수.
 
 ## 3. 검증
 - Chunked upload failure 시나리오 재현 및 로그에 대응 전략 기록.

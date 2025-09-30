@@ -1,5 +1,7 @@
 using System.IO;
 using FluentValidation.AspNetCore;
+using MCMS.Api.Hubs;
+using MCMS.Api.Notifications;
 using MCMS.Infrastructure;
 using MCMS.Infrastructure.Persistence;
 using Microsoft.AspNetCore.HttpLogging;
@@ -39,11 +41,17 @@ builder.Services.AddFluentValidationAutoValidation();
 
 builder.Services.AddMcmsInfrastructure(builder.Configuration);
 
+builder.Services.AddSignalR();
+builder.Services.AddSingleton<IRoutingEventPublisher, RoutingEventPublisher>();
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("Default", policy =>
     {
-        policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+        policy
+            .AllowAnyOrigin()
+            .AllowAnyHeader()
+            .AllowAnyMethod();
     });
 });
 
@@ -83,5 +91,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapHub<RoutingHub>("/hubs/routing");
 
 app.Run();

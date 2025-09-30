@@ -15,7 +15,7 @@
 - 모든 스프린트 태스크는 전용 스프린트 Task List를 참조하고, docs/sprint 명세에 따른 영어 로그북 + 설명적 코드 주석을 남김.
 
 > PRD: docs/PRD_MCS.md  
-> Task Lists: docs/MCMS_TaskList.md, docs/Tasks_MCS.md, docs/Tasks_ML_Routing.md  
+> Task Lists: docs/MCMS_TaskList.md, docs/Tasks_MCS.md, ~~docs/Tasks_ML_Routing.md~~ (폐기 2025-09-30)  
 > Remaining Tasks: 0
 
 ## 절대 지령
@@ -40,7 +40,7 @@
 | 영역 | 도구 | 주기 |
 |---|---|---|
 | Web Vitals | Lighthouse CI, WebPageTest 사내 에이전트 | 주 1회 |
-| Runtime Metrics | Next.js telemetry, Prometheus Exporter | 실시간 |
+| Runtime Metrics | Windows Performance Monitor, PowerShell 진단 | 실시간 |
 | 사용자 모니터링 | RUM (Elastic APM Browser) | 지속 |
 
 - Lighthouse CI: `next build && next start` 후 사내 테스트 URL 대상으로 실행
