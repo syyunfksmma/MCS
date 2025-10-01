@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
@@ -236,7 +236,7 @@
       <DependentUpon>MachineTemplateEditWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Common\Helpers\FileFinder.cs" />
-    <Compile Include="Generated\WpfStubs.cs" />
+
     <Compile Include="Setup\Model\MachineTemplates.cs" />
     <Compile Include="Setup\Services\MachinePackageManger.cs" />
     <Compile Include="Setup\UI\Views\ProgramInfoSetupWindow.xaml.cs">
@@ -352,4 +352,12 @@
   </Target>
   -->
   <Target Name="UnregisterAssembly" />
+
+  <PropertyGroup>
+    <EnableWpfStubs Condition="'$(EnableWpfStubs)'==''">false</EnableWpfStubs>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(EnableWpfStubs)'=='true'">
+    <Compile Include="Generated\WpfStubs.cs" />
+  </ItemGroup>
 </Project>

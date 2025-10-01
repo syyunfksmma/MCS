@@ -41,7 +41,10 @@ export function getAzureAdConfig(): AzureAdConfig | undefined {
     return undefined;
   }
 
-  const authority = rawAuthority || `https://login.microsoftonline.com/${tenantId}`;
+  const authority = rawAuthority;
+  if (!authority) {
+    return undefined;
+  }
 
   const redirectUri =
     process.env.NEXT_PUBLIC_AZURE_AD_REDIRECT_URI?.trim() ||
@@ -82,3 +85,4 @@ function parseCsv(value: string): string[] {
     .map((entry) => entry.trim())
     .filter((entry) => entry.length > 0);
 }
+
