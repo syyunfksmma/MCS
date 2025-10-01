@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging.Abstractions;
 using MCMS.Core.Contracts.Requests;
 using MCMS.Core.Domain.Entities;
@@ -26,7 +27,8 @@ public class RoutingApprovalServiceTests
         var historyService = new HistoryService(context);
         var auditLogService = new AuditLogService(context);
         var commandQueue = new InMemoryCommandQueue();
-        var routingService = new RoutingService(context, historyService, commandQueue, new EspritAutomationServiceStub(NullLogger<EspritAutomationServiceStub>.Instance));
+        var memoryCache = new MemoryCache(new MemoryCacheOptions());
+        var routingService = new RoutingService(context, historyService, commandQueue, new EspritAutomationServiceStub(NullLogger<EspritAutomationServiceStub>.Instance), memoryCache, NullLogger<RoutingService>.Instance);
 
         var item = new Item
         {
@@ -81,7 +83,8 @@ public class RoutingApprovalServiceTests
         var historyService = new HistoryService(context);
         var auditLogService = new AuditLogService(context);
         var commandQueue = new InMemoryCommandQueue();
-        var routingService = new RoutingService(context, historyService, commandQueue, new EspritAutomationServiceStub(NullLogger<EspritAutomationServiceStub>.Instance));
+        var memoryCache = new MemoryCache(new MemoryCacheOptions());
+        var routingService = new RoutingService(context, historyService, commandQueue, new EspritAutomationServiceStub(NullLogger<EspritAutomationServiceStub>.Instance), memoryCache, NullLogger<RoutingService>.Instance);
         var sut = new RoutingApprovalService(context, historyService, routingService, commandQueue, auditLogService);
 
         await Assert.ThrowsAsync<KeyNotFoundException>(

@@ -14,4 +14,6 @@ export interface RoutingMeta {
   metaPath: string;
   files: RoutingMetaFile[];
   latestHistoryId?: string | null;
+  requiresResync?: boolean;
+  missingFiles?: string[];
 }

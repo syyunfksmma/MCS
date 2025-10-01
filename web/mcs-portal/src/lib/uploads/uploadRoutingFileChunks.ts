@@ -1,5 +1,3 @@
-'use client';
-
 import { getApiBaseUrl } from '@/lib/env';
 import type { RoutingMeta } from '@/types/routing';
 import { createStreamingSha256 } from './streamingHash';
@@ -18,27 +16,38 @@ export interface UploadRoutingFileChunksOptions {
   uploadedBy: string;
   isPrimary?: boolean;
   chunkSizeBytes?: number;
-  maxConcurrentUploads?: number;
   signal?: AbortSignal;
   onProgress?: (progress: ChunkUploadProgress) => void;
 }
 
 const DEFAULT_CHUNK_SIZE = 256 * 1024;
-const DEFAULT_MAX_CONCURRENT_UPLOADS = 3;
 
-function resolveApiUrl(path: string): string {
+class MissingPartsError extends Error {
+  constructor(message: string, readonly missingParts: number[]) {
+    super(message);
+    this.name = 'MissingPartsError';
+  }
+}
+
+const resolveApiUrl = (path: string) => {
   const base = getApiBaseUrl();
   if (!base) return path;
   return `${base.replace(/\/$/, '')}${path}`;
-}
+};
+
+type StartSessionResponse = {
+  sessionId: string;
+  totalChunks: number;
+};
 
 async function startChunkSession(
   options: UploadRoutingFileChunksOptions,
   totalChunks: number
-) {
+): Promise<StartSessionResponse> {
   const endpoint = resolveApiUrl(
     `/api/routings/${options.routingId}/files/chunks/start`
   );
+
   const payload = {
     fileName: options.file.name,
     fileType: options.fileType,
@@ -75,13 +84,12 @@ async function putChunk(
   routingId: string,
   sessionId: string,
   chunkIndex: number,
-  chunk: ArrayBuffer | Uint8Array,
+  chunk: Uint8Array,
   signal?: AbortSignal
 ) {
   const endpoint = resolveApiUrl(
     `/api/routings/${routingId}/files/chunks/${sessionId}`
   );
-  const payload = chunk instanceof Uint8Array ? chunk : new Uint8Array(chunk);
 
   const response = await fetch(endpoint, {
     method: 'PUT',
@@ -90,7 +98,7 @@ async function putChunk(
       'X-Chunk-Index': String(chunkIndex)
     },
     credentials: 'include',
-    body: payload,
+    body: chunk,
     signal
   });
 
@@ -112,6 +120,7 @@ async function completeSession(
   const endpoint = resolveApiUrl(
     `/api/routings/${routingId}/files/chunks/${sessionId}/complete`
   );
+
   const payload = {
     checksum,
     isPrimary
@@ -127,65 +136,68 @@ async function completeSession(
     signal
   });
 
-  if (!response.ok) {
-    const message = await response.text();
-    throw new Error(
-      `Chunk upload completion failed (${response.status}): ${message || 'no body'}`
-    );
+  if (response.ok) {
+    return (await response.json()) as RoutingMeta;
   }
 
-  return (await response.json()) as RoutingMeta;
+  if (response.status === 409) {
+    try {
+      const payload = await response.json();
+      if (Array.isArray(payload?.missingParts)) {
+        throw new MissingPartsError(
+          payload?.message ?? 'Upload session is missing chunks.',
+          payload.missingParts as number[]
+        );
+      }
+      throw new Error(payload?.message ?? 'Upload session conflict.');
+    } catch (error) {
+      if (error instanceof MissingPartsError) {
+        throw error;
+      }
+      throw new Error(`Upload session conflict (${response.status}).`);
+    }
+  }
+
+  const message = await response.text();
+  throw new Error(
+    `Failed to complete chunk upload (${response.status}): ${message || 'no body'}`
+  );
 }
 
-async function fallbackArrayBufferUpload(
+async function readChunk(
+  file: File,
+  chunkIndex: number,
+  chunkSize: number,
+  signal?: AbortSignal
+): Promise<Uint8Array> {
+  if (signal?.aborted) {
+    throw new DOMException('Upload aborted', 'AbortError');
+  }
+
+  const start = chunkIndex * chunkSize;
+  const end = Math.min(start + chunkSize, file.size);
+  const blob = file.slice(start, end);
+  const buffer = await blob.arrayBuffer();
+  return new Uint8Array(buffer);
+}
+
+async function reuploadMissingParts(
   options: UploadRoutingFileChunksOptions,
-  totalChunks: number
-): Promise<RoutingMeta> {
-  const chunkSize = options.chunkSizeBytes ?? DEFAULT_CHUNK_SIZE;
-  const buffer = new Uint8Array(await options.file.arrayBuffer());
-  const hasher = createStreamingSha256();
-  hasher.update(buffer);
-  const checksum = await hasher.digest();
-
-  const { sessionId } = await startChunkSession(options, totalChunks);
-  options.onProgress?.({
-    chunkIndex: 0,
-    totalChunks,
-    loadedBytes: 0,
-    totalBytes: options.file.size
-  });
-
-  let bytesUploaded = 0;
-
-  for (let chunkIndex = 0; chunkIndex < totalChunks; chunkIndex += 1) {
-    const start = chunkIndex * chunkSize;
-    const end = Math.min(start + chunkSize, buffer.byteLength);
-    const view = buffer.subarray(start, end);
-
-    await putChunk(
-      options.routingId,
-      sessionId,
-      chunkIndex,
-      view,
-      options.signal
-    );
-    bytesUploaded += view.byteLength;
-
+  sessionId: string,
+  chunkSize: number,
+  missingParts: number[]
+) {
+  const totalChunks = Math.max(1, Math.ceil(options.file.size / chunkSize));
+  for (const index of missingParts) {
+    const chunk = await readChunk(options.file, index, chunkSize, options.signal);
+    await putChunk(options.routingId, sessionId, index, chunk, options.signal);
     options.onProgress?.({
-      chunkIndex: chunkIndex + 1,
+      chunkIndex: index + 1,
       totalChunks,
-      loadedBytes: bytesUploaded,
+      loadedBytes: options.file.size,
       totalBytes: options.file.size
     });
   }
-
-  return completeSession(
-    options.routingId,
-    sessionId,
-    checksum,
-    options.isPrimary ?? false,
-    options.signal
-  );
 }
 
 export async function uploadRoutingFileChunks(
@@ -193,113 +205,28 @@ export async function uploadRoutingFileChunks(
 ): Promise<RoutingMeta> {
   const chunkSize = options.chunkSizeBytes ?? DEFAULT_CHUNK_SIZE;
   const totalChunks = Math.max(1, Math.ceil(options.file.size / chunkSize));
-  const maxConcurrentUploads = Math.max(
-    1,
-    options.maxConcurrentUploads ?? DEFAULT_MAX_CONCURRENT_UPLOADS
-  );
-
-  if (typeof options.file.stream !== 'function') {
-    return fallbackArrayBufferUpload(options, totalChunks);
-  }
 
   const { sessionId } = await startChunkSession(options, totalChunks);
-  const reader = options.file
-    .stream()
-    .getReader();
-  const inFlight = new Set<Promise<void>>();
+
   const hasher = createStreamingSha256();
-
-  let chunkIndex = 0;
-  let buffer = new Uint8Array(chunkSize);
-  let bufferOffset = 0;
   let bytesUploaded = 0;
-  let completedChunks = 0;
 
-  const dispatchChunkAsync = async (length: number) => {
-    const payload = buffer.subarray(0, length);
-    const copy = new Uint8Array(payload);
-    const currentIndex = chunkIndex;
-    chunkIndex += 1;
-
-    buffer = new Uint8Array(chunkSize);
-    bufferOffset = 0;
-
-    const uploadPromise = putChunk(
-      options.routingId,
-      sessionId,
-      currentIndex,
-      copy,
-      options.signal
-    ).then(() => {
-      completedChunks += 1;
-      bytesUploaded += length;
-      options.onProgress?.({
-        chunkIndex: completedChunks,
-        totalChunks,
-        loadedBytes: bytesUploaded,
-        totalBytes: options.file.size
-      });
+  for (let index = 0; index < totalChunks; index += 1) {
+    const chunk = await readChunk(options.file, index, chunkSize, options.signal);
+    hasher.update(chunk);
+    await putChunk(options.routingId, sessionId, index, chunk, options.signal);
+    bytesUploaded += chunk.length;
+    options.onProgress?.({
+      chunkIndex: index + 1,
+      totalChunks,
+      loadedBytes: Math.min(bytesUploaded, options.file.size),
+      totalBytes: options.file.size
     });
+  }
 
-    inFlight.add(uploadPromise);
-    uploadPromise.finally(() => {
-      inFlight.delete(uploadPromise);
-    });
-
-    if (inFlight.size >= maxConcurrentUploads) {
-      await Promise.race(inFlight);
-    }
-  };
-
-  options.onProgress?.({
-    chunkIndex: 0,
-    totalChunks,
-    loadedBytes: 0,
-    totalBytes: options.file.size
-  });
+  const checksum = await hasher.digest();
 
   try {
-    while (true) {
-      if (options.signal?.aborted) {
-        throw new DOMException('Upload aborted', 'AbortError');
-      }
-
-      const { value, done } = await reader.read();
-
-      if (value) {
-        let consumed = 0;
-        while (consumed < value.length) {
-          const remainingInChunk = chunkSize - bufferOffset;
-          const take = Math.min(remainingInChunk, value.length - consumed);
-          const slice = value.subarray(consumed, consumed + take);
-
-          hasher.update(slice);
-          buffer.set(slice, bufferOffset);
-          bufferOffset += take;
-          consumed += take;
-
-          if (bufferOffset === chunkSize) {
-            await dispatchChunkAsync(bufferOffset);
-          }
-        }
-      }
-
-      if (done) {
-        break;
-      }
-    }
-
-    if (chunkIndex === 0 && bufferOffset === 0) {
-      await dispatchChunkAsync(0);
-    } else if (bufferOffset > 0) {
-      await dispatchChunkAsync(bufferOffset);
-    }
-
-    if (inFlight.size > 0) {
-      await Promise.all(Array.from(inFlight));
-    }
-
-    const checksum = await hasher.digest();
     return await completeSession(
       options.routingId,
       sessionId,
@@ -307,9 +234,18 @@ export async function uploadRoutingFileChunks(
       options.isPrimary ?? false,
       options.signal
     );
-  } finally {
-    reader.releaseLock();
+  } catch (error) {
+    if (error instanceof MissingPartsError) {
+      await reuploadMissingParts(options, sessionId, chunkSize, error.missingParts);
+      return await completeSession(
+        options.routingId,
+        sessionId,
+        checksum,
+        options.isPrimary ?? false,
+        options.signal
+      );
+    }
+
+    throw error;
   }
 }
-
-

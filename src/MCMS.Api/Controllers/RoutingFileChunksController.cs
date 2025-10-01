@@ -1,6 +1,7 @@
 using MCMS.Core.Abstractions;
 using MCMS.Core.Contracts.Dtos;
 using MCMS.Core.Contracts.Requests;
+using MCMS.Core.Exceptions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
@@ -82,6 +83,25 @@ public class RoutingFileChunksController : ControllerBase
         }
     }
 
+    [HttpGet("{sessionId:guid}")]
+    [ProducesResponseType(typeof(ChunkUploadStatusDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<ChunkUploadStatusDto>> GetStatusAsync(
+        Guid routingId,
+        Guid sessionId,
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            var status = await _chunkUploadService.GetStatusAsync(routingId, sessionId, cancellationToken);
+            return Ok(status);
+        }
+        catch (KeyNotFoundException)
+        {
+            return NotFound();
+        }
+    }
+
     [HttpPost("{sessionId:guid}/complete")]
     [ProducesResponseType(typeof(RoutingMetaDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -105,6 +125,11 @@ public class RoutingFileChunksController : ControllerBase
         {
             _logger.LogWarning(ex, "Unable to complete session {SessionId}", sessionId);
             return Conflict(new { message = ex.Message });
+        }
+        catch (MissingChunksException ex)
+        {
+            _logger.LogWarning("Session {SessionId} missing chunks: {Missing}", sessionId, string.Join(",", ex.MissingChunks));
+            return Conflict(new { message = ex.Message, missingParts = ex.MissingChunks });
         }
         catch (ArgumentException ex)
         {

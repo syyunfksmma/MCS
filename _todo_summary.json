@@ -1,0 +1,916 @@
+[
+  {
+    "path": "docs\\frontend\\Ribbon_Filter_Alignment.md",
+    "count": 6,
+    "items": [
+      {
+        "line": 38,
+        "text": "- [ ] ExplorerRibbon 버튼/그룹 재작성."
+      },
+      {
+        "line": 39,
+        "text": "- [ ] Approval/Add-in API 통합 및 토스트 처리."
+      },
+      {
+        "line": 40,
+        "text": "- [ ] SearchFilterRail ↔ ExplorerShell 상태 동기화."
+      },
+      {
+        "line": 41,
+        "text": "- [ ] IndexedDB recentRouting 캐시 구현."
+      },
+      {
+        "line": 42,
+        "text": "- [ ] 테마 토큰/스토리북 업데이트."
+      },
+      {
+        "line": 43,
+        "text": "- [ ] 접근성 리포트 작성."
+      }
+    ]
+  },
+  {
+    "path": "docs\\implementation\\Wave1_G1G2_Notes.md",
+    "count": 6,
+    "items": [
+      {
+        "line": 47,
+        "text": "- [ ] Drag-and-drop mock 데이터 구성."
+      },
+      {
+        "line": 48,
+        "text": "- [ ] Telemetry schema 정의 (reorder-success, reorder-fail, inline-edit-save, inline-edit-error)."
+      },
+      {
+        "line": 49,
+        "text": "- [ ] Undo timer UX 시나리오 프로토타입."
+      },
+      {
+        "line": 71,
+        "text": "- [ ] Drag&Drop animation 세부값(FPS, easing) 확정."
+      },
+      {
+        "line": 72,
+        "text": "- [ ] Soft Delete undo timer UX mock (Figma) 첨부."
+      },
+      {
+        "line": 73,
+        "text": "- [ ] 동시 편집 충돌 시 재시도 정책 문서화."
+      }
+    ]
+  },
+  {
+    "path": "docs\\meetings\\PoC_Review_Checklist.md",
+    "count": 6,
+    "items": [
+      {
+        "line": 40,
+        "text": "| 환경 구성 검증 | docs/setup/LocalDevEnvironment.md 기준 검토 | [ ] | Codex |"
+      },
+      {
+        "line": 41,
+        "text": "| DB 마이그레이션 확인 | DatabaseBootstrap 실행 로그 확인 | [ ] | API 리드 |"
+      },
+      {
+        "line": 42,
+        "text": "| 성능 테스트 결과 | Windows k6 p95 < 20s 확인 | [ ] | Ops |"
+      },
+      {
+        "line": 43,
+        "text": "| 계약/로그 문서화 | docs/api/logs/20250929_contract_confirmation.md 첨부 | [ ] | Codex |"
+      },
+      {
+        "line": 44,
+        "text": "| 공유 드라이브 ACL | SharedDrive_Structure 정책 적용 확인 | [ ] | Ops |"
+      },
+      {
+        "line": 45,
+        "text": "| 회의 로그 확정 | docs/api/logs/20250930.md 정식 배포 | [ ] | Codex |"
+      }
+    ]
+  },
+  {
+    "path": "docs\\frontend\\Menu_Expansion_Implementation.md",
+    "count": 5,
+    "items": [
+      {
+        "line": 55,
+        "text": "- [ ] GlobalTabs + NavigationContext 생성."
+      },
+      {
+        "line": 56,
+        "text": "- [ ] Dashboard 페이지 구성."
+      },
+      {
+        "line": 57,
+        "text": "- [ ] ThreeViewer + Esprit UI 구현."
+      },
+      {
+        "line": 58,
+        "text": "- [ ] Server/Option API 계약 최종화 및 프론트 통합."
+      },
+      {
+        "line": 59,
+        "text": "- [ ] QA 시나리오 작성 및 Shakeout Log 업데이트."
+      }
+    ]
+  },
+  {
+    "path": "docs\\testing\\QA_Shakeout_Log.md",
+    "count": 5,
+    "items": [
+      {
+        "line": 12,
+        "text": "- [ ] Playwright smoke: `npm run test:e2e -- --grep @smoke` (2025-10-01 실패 - @smoke 태그 미정의로 실행 불가)"
+      },
+      {
+        "line": 13,
+        "text": "- [ ] Vitest unit core: `npm run test:unit` (2025-10-01 실패 - jsdom `getComputedStyle` 미구현 및 clipboard mock 미호출)"
+      },
+      {
+        "line": 14,
+        "text": "- [ ] k6 SLA check: `npm run perf:k6 -- --vus 50 --duration 2m` (2025-10-01 실패 - scripts/performance/k6-workspace.js 15:26 구문 오류)"
+      },
+      {
+        "line": 15,
+        "text": "- [ ] Accessibility spot check: `npm run test:axe` (2025-10-01 실패 - Playwright 브라우저 다운로드 SSL 차단)"
+      },
+      {
+        "line": 16,
+        "text": "- [ ] Review SignalR reconnect logs (devtools console)"
+      }
+    ]
+  },
+  {
+    "path": "docs\\api\\pending\\SignalR_Hub_Spec.md",
+    "count": 4,
+    "items": [
+      {
+        "line": 65,
+        "text": "- [ ] PresenceHub/TreeHub 클래스 생성."
+      },
+      {
+        "line": 66,
+        "text": "- [ ] SignalR 인증 핸들러 with JWT."
+      },
+      {
+        "line": 67,
+        "text": "- [ ] 프론트 훅 + 상태 배지 구현."
+      },
+      {
+        "line": 68,
+        "text": "- [ ] QA: 연결 끊김 시나리오 녹화."
+      }
+    ]
+  },
+  {
+    "path": "docs\\implementation\\Wave1_I1_Telemetry.md",
+    "count": 4,
+    "items": [
+      {
+        "line": 41,
+        "text": "- [ ] Telemetry helper (useRoutingUploadTelemetry.ts) 설계."
+      },
+      {
+        "line": 42,
+        "text": "- [ ] Backend aggregation DTO 정의 (RoutingUploadLog)."
+      },
+      {
+        "line": 43,
+        "text": "- [ ] Loki 파이프라인 샘플 로그 작성."
+      },
+      {
+        "line": 44,
+        "text": "- [ ] Alert 규칙 YAML 초안 (monitoring/alerts/mcms_routing_upload.yaml)."
+      }
+    ]
+  },
+  {
+    "path": "docs\\implementation\\Wave2_Prep.md",
+    "count": 4,
+    "items": [
+      {
+        "line": 27,
+        "text": "- [ ] SolidWorks 샘플 파일 3종 확보(STEP, SLDDRW, STL)."
+      },
+      {
+        "line": 28,
+        "text": "- [ ] Explorer Shell 프로토콜 테스트 환경 구성 (테스트 PC 레지스트리 스크립트)."
+      },
+      {
+        "line": 29,
+        "text": "- [ ] 공유 드라이브 경로 정책 문서 초안(`docs/ops/Routing_SharedDrive_Decisions.md`)과 정합성 검토."
+      },
+      {
+        "line": 30,
+        "text": "- [ ] 번들 다운로드 API 응답 포맷 검증 (`zip + manifest.json`)."
+      }
+    ]
+  },
+  {
+    "path": "docs\\sprint\\Sprint6_Monitoring.md",
+    "count": 4,
+    "items": [
+      {
+        "line": 87,
+        "text": "- Alert Rule YAML (`monitoring/alerts/mcms_core.yaml`) 작성. (2025-09-29 Codex)"
+      },
+      {
+        "line": 88,
+        "text": "- Loki 파이프라인 구성 파일 체크인. (2025-09-29 Codex, config.mcms.yaml)"
+      },
+      {
+        "line": 89,
+        "text": "- Dashboard JSON을 artifacts/monitoring 경로에 저장. (2025-09-29 Codex, grafana_mcms_sprint6.json)"
+      },
+      {
+        "line": 90,
+        "text": "- Ops 템플릿에 Grafana 링크 추가. (2025-09-29 Codex, Ops_Comms_Template.md)"
+      }
+    ]
+  },
+  {
+    "path": "docs\\training\\Translation_Matrix.md",
+    "count": 4,
+    "items": [
+      {
+        "line": 40,
+        "text": "| MCMS_TrainingMaterials.md | 한국어 | [ ] 영어 번역 필요 | Training Lead |"
+      },
+      {
+        "line": 41,
+        "text": "| Onboarding_Email_Template.md | 한국어 | [ ] 영어 버전 준비 | Comms |"
+      },
+      {
+        "line": 42,
+        "text": "| Ops_Procedures.md | 한국어 | [ ] 영어 요약 | Ops |"
+      },
+      {
+        "line": 43,
+        "text": "| Reporting_Plan.md | 한국어 | [ ] 영어 요약 | Codex |"
+      }
+    ]
+  },
+  {
+    "path": "docs\\api\\pending\\Dashboard_Aggregation_API_Draft.md",
+    "count": 3,
+    "items": [
+      {
+        "line": 78,
+        "text": "- ETL 웹훅 경로 확정 및 캐시 무효화 wiring."
+      },
+      {
+        "line": 79,
+        "text": "- React Query hook(useDashboardSummary) 초안 작성."
+      },
+      {
+        "line": 80,
+        "text": "- k6 시나리오에 `/api/dashboard/summary` P95 측정 추가."
+      }
+    ]
+  },
+  {
+    "path": "docs\\prd\\Phase10_MonitoringPlan.md",
+    "count": 3,
+    "items": [
+      {
+        "line": 67,
+        "text": "- `scripts/monitoring/summarize-auth-log.ps1` 작성."
+      },
+      {
+        "line": 68,
+        "text": "- pm2 healthcheck 템플릿 작성 및 문서화."
+      },
+      {
+        "line": 69,
+        "text": "- Lighthouse 결과를 Excel/Notion에 자동 업로드."
+      }
+    ]
+  },
+  {
+    "path": "docs\\prd\\Phase10_RollbackStrategy.md",
+    "count": 3,
+    "items": [
+      {
+        "line": 66,
+        "text": "- `scripts/deploy/rollback-local.ps1` 작성 (git revert + npm start 자동화)."
+      },
+      {
+        "line": 67,
+        "text": "- pm2 프로세스 목록/로그 백업 스크립트 추가."
+      },
+      {
+        "line": 68,
+        "text": "- 롤백 훈련을 분기마다 1회 수행."
+      }
+    ]
+  },
+  {
+    "path": "docs\\prd\\Phase11_TrainingPlan.md",
+    "count": 3,
+    "items": [
+      {
+        "line": 56,
+        "text": "- 교육 장소/장비 예약"
+      },
+      {
+        "line": 57,
+        "text": "- 튜토리얼 스크립트 작성"
+      },
+      {
+        "line": 58,
+        "text": "- Add-in 연동 실습 시뮬레이터 준비"
+      }
+    ]
+  },
+  {
+    "path": "docs\\prd\\Phase11_TransitionReport.md",
+    "count": 3,
+    "items": [
+      {
+        "line": 58,
+        "text": "- 실제 KPI 데이터 수집(Phase 8/9 결과)"
+      },
+      {
+        "line": 59,
+        "text": "- Exec Review 일정 확정"
+      },
+      {
+        "line": 60,
+        "text": "- Roadmap 항목별 PoC 계획 초안 작성"
+      }
+    ]
+  },
+  {
+    "path": "docs\\prd\\Phase11_UserOpsManual.md",
+    "count": 3,
+    "items": [
+      {
+        "line": 65,
+        "text": "- 스크린샷/비디오 캡처 일정 확보"
+      },
+      {
+        "line": 66,
+        "text": "- 다국어(영문) 필요 여부 결정"
+      },
+      {
+        "line": 67,
+        "text": "- 문서 접근 권한 레벨 정의"
+      }
+    ]
+  },
+  {
+    "path": "docs\\prd\\Phase1_AccessibilityGuide.md",
+    "count": 3,
+    "items": [
+      {
+        "line": 72,
+        "text": "- 색각 보정 테마(High Contrast) 여부 논의"
+      },
+      {
+        "line": 73,
+        "text": "- 다국어 지원 필요성 검토(일/영)"
+      },
+      {
+        "line": 74,
+        "text": "- 모바일 대응 여부 Phase 6에서 재검토"
+      }
+    ]
+  },
+  {
+    "path": "docs\\prd\\Phase2_CICD.md",
+    "count": 3,
+    "items": [
+      {
+        "line": 80,
+        "text": "- `scripts/deploy/rollback-local.ps1` 작성."
+      },
+      {
+        "line": 81,
+        "text": "- `npm run smtp:check`를 배포 전 필수 절차로 추가."
+      },
+      {
+        "line": 82,
+        "text": "- GitHub Actions(옵션)에서 lint/test 파이프라인 템플릿 초안 작성."
+      }
+    ]
+  },
+  {
+    "path": "docs\\prd\\Phase2_Hosting.md",
+    "count": 3,
+    "items": [
+      {
+        "line": 84,
+        "text": "- `npm run start`/`pm2 restart` 절차 체크리스트 업데이트"
+      },
+      {
+        "line": 85,
+        "text": "- 로그 로테이션 PowerShell 스크립트 작성"
+      },
+      {
+        "line": 86,
+        "text": "- 이메일 발송 실패 시 재시도 정책 문서화"
+      }
+    ]
+  },
+  {
+    "path": "docs\\prd\\Phase3_DesignSystem.md",
+    "count": 3,
+    "items": [
+      {
+        "line": 76,
+        "text": "- Tailwind + Mantine/Ant Design 혼합 여부 결정"
+      },
+      {
+        "line": 77,
+        "text": "- 아이콘 세트(Phosphor vs Fluent) 확정"
+      },
+      {
+        "line": 78,
+        "text": "- 반응형 Table 가이드(모바일 대응) 검토"
+      }
+    ]
+  },
+  {
+    "path": "docs\\prd\\Phase3_TokensComponents.md",
+    "count": 3,
+    "items": [
+      {
+        "line": 110,
+        "text": "- 아이콘 패키지 확정(Phosphor 예상)"
+      },
+      {
+        "line": 111,
+        "text": "- Design token 자동 동기화(Style Dictionary 도입 여부)"
+      },
+      {
+        "line": 112,
+        "text": "- 다크 모드/고대비 지원 기준 논의"
+      }
+    ]
+  },
+  {
+    "path": "docs\\prd\\Phase4_RESTGuide.md",
+    "count": 3,
+    "items": [
+      {
+        "line": 74,
+        "text": "- Admin API 인증(권한) 세부 정책 문서화"
+      },
+      {
+        "line": 75,
+        "text": "- Rate limit 값 확정 (기본 100 req/min)"
+      },
+      {
+        "line": 76,
+        "text": "- 일부 엔드포인트 GraphQL 전환 검토(장기)"
+      }
+    ]
+  },
+  {
+    "path": "docs\\prd\\Phase4_RealTimeFilePolicy.md",
+    "count": 3,
+    "items": [
+      {
+        "line": 69,
+        "text": "- 파일 암호화 필요성 검토(Phase 6 보안 회의)"
+      },
+      {
+        "line": 70,
+        "text": "- SignalR Scale-out (Redis Backplane) 필요 여부 모니터링"
+      },
+      {
+        "line": 71,
+        "text": "- SSE 이벤트를 위한 Server Sent Events polyfill 지원 고려"
+      }
+    ]
+  },
+  {
+    "path": "docs\\prd\\Phase5_AddinHistoryUI.md",
+    "count": 3,
+    "items": [
+      {
+        "line": 68,
+        "text": "- Add-in 로그 API 확장 필요 여부 검토"
+      },
+      {
+        "line": 69,
+        "text": "- 히스토리 페이징 전략(무한 스크롤 vs 버튼)"
+      },
+      {
+        "line": 70,
+        "text": "- Toast/알림 메시지 문구 확정 (PO와 협의)"
+      }
+    ]
+  },
+  {
+    "path": "docs\\prd\\Phase5_CachingStrategy.md",
+    "count": 3,
+    "items": [
+      {
+        "line": 72,
+        "text": "- 캐시 Persist 필요 여부 검토 (SessionStorage)"
+      },
+      {
+        "line": 73,
+        "text": "- React Query Devtools 배포 환경에서 비활성화"
+      },
+      {
+        "line": 74,
+        "text": "- SignalR 이벤트 발생 시 Batch Update (queryClient.batch)"
+      }
+    ]
+  },
+  {
+    "path": "docs\\prd\\Phase6_AddinControlPlan.md",
+    "count": 3,
+    "items": [
+      {
+        "line": 65,
+        "text": "- Retry/Cancel API 확정 (백엔드 협의)"
+      },
+      {
+        "line": 66,
+        "text": "- Add-in 로그 보존 기간 정책 확인"
+      },
+      {
+        "line": 67,
+        "text": "- Panel 레이아웃(Wide/Drawer) 최종 결정"
+      }
+    ]
+  },
+  {
+    "path": "docs\\prd\\Phase6_ApprovalFlowTestPlan.md",
+    "count": 3,
+    "items": [
+      {
+        "line": 65,
+        "text": "- Mock Add-in API 일정 확정"
+      },
+      {
+        "line": 66,
+        "text": "- 병행 승인 Lock 전략(낙관적 vs 비관적) 확정"
+      },
+      {
+        "line": 67,
+        "text": "- QA 자동화: Playwright 시나리오 작성 계획"
+      }
+    ]
+  },
+  {
+    "path": "docs\\prd\\Phase6_WorkspacePlan.md",
+    "count": 3,
+    "items": [
+      {
+        "line": 72,
+        "text": "- 그룹 단계 지원 여부(PO와 협의)"
+      },
+      {
+        "line": 73,
+        "text": "- Insert 지점 Preview 디자인확정"
+      },
+      {
+        "line": 74,
+        "text": "- 히스토리 기록 포맷 (단계 변경 diff)"
+      }
+    ]
+  },
+  {
+    "path": "docs\\prd\\Phase7_AdminConsolePlan.md",
+    "count": 3,
+    "items": [
+      {
+        "line": 65,
+        "text": "- AD 그룹 동기화 주기 확정 (자동/수동)"
+      },
+      {
+        "line": 66,
+        "text": "- 2FA 도입 여부 결정 (키 재발급)"
+      },
+      {
+        "line": 67,
+        "text": "- Feature Flag 접근 권한 세분화 (Admin/Operator)"
+      }
+    ]
+  },
+  {
+    "path": "docs\\prd\\Phase7_FeatureFlagPolicy.md",
+    "count": 3,
+    "items": [
+      {
+        "line": 59,
+        "text": "- 토글 UI Prototype → Phase 8에서 테스트"
+      },
+      {
+        "line": 60,
+        "text": "- Secret Rotation 주기 명시 (6개월)"
+      },
+      {
+        "line": 61,
+        "text": "- LaunchDarkly 등 외부 서비스 도입 가능성 검토"
+      }
+    ]
+  },
+  {
+    "path": "docs\\prd\\Phase7_LoggingMonitoringPlan.md",
+    "count": 3,
+    "items": [
+      {
+        "line": 55,
+        "text": "- 감사 로그 Schema 확정 (TraceId, RequestId 포함)"
+      },
+      {
+        "line": 56,
+        "text": "- Grafana 권한 모델 사전 협의"
+      },
+      {
+        "line": 57,
+        "text": "- Alert Rule 템플릿 작성"
+      }
+    ]
+  },
+  {
+    "path": "docs\\prd\\Phase8_LoadRecoveryPlan.md",
+    "count": 3,
+    "items": [
+      {
+        "line": 60,
+        "text": "- k6 테스트 데이터(토큰) 준비"
+      },
+      {
+        "line": 61,
+        "text": "- Chaos 스크립트 운영 승인 확보"
+      },
+      {
+        "line": 62,
+        "text": "- 회복 지표(Mean Time to Recovery) 목표 확정"
+      }
+    ]
+  },
+  {
+    "path": "docs\\prd\\Phase8_PerformancePlan.md",
+    "count": 3,
+    "items": [
+      {
+        "line": 67,
+        "text": "- RUM 도입 시 개인정보 취급 정책 검토"
+      },
+      {
+        "line": 68,
+        "text": "- WebPageTest 에이전트 설치 일정 확정"
+      },
+      {
+        "line": 69,
+        "text": "- Edge Cache 적용 여부 논의(Infra 팀)"
+      }
+    ]
+  },
+  {
+    "path": "docs\\prd\\Phase8_ResilienceUX.md",
+    "count": 3,
+    "items": [
+      {
+        "line": 59,
+        "text": "- 정적 Maintenance 페이지 디자인 필요"
+      },
+      {
+        "line": 60,
+        "text": "- 장애 상태 페이지 URL 확정(Ops)"
+      },
+      {
+        "line": 61,
+        "text": "- 자동화 테스트 케이스(오류 처리) 작성"
+      }
+    ]
+  },
+  {
+    "path": "docs\\prd\\Phase9_ComplianceChecklist.md",
+    "count": 3,
+    "items": [
+      {
+        "line": 69,
+        "text": "- axe DevTools 라이선스 확인 → 2025-10-02 보안팀 확인 예정 (Ticket SEC-582)"
+      },
+      {
+        "line": 70,
+        "text": "- ZAP 스캔 시간/허용 대상 협의(보안팀) → 완료 (SEC-580), 매월 1회 스케줄링"
+      },
+      {
+        "line": 71,
+        "text": "- macOS 테스트 장비 확보 → 완료 (Device ID QA-MAC-03)"
+      }
+    ]
+  },
+  {
+    "path": "docs\\prd\\Phase9_E2EPlan.md",
+    "count": 3,
+    "items": [
+      {
+        "line": 68,
+        "text": "- Playwright Docker 이미지 준비"
+      },
+      {
+        "line": 69,
+        "text": "- Test data reset 스크립트"
+      },
+      {
+        "line": 70,
+        "text": "- 선택형 모바일 뷰 테스트 여부 검토"
+      }
+    ]
+  },
+  {
+    "path": "docs\\prd\\Phase9_UATPlan.md",
+    "count": 3,
+    "items": [
+      {
+        "line": 70,
+        "text": "- UAT 설문(만족도) 양식 준비"
+      },
+      {
+        "line": 71,
+        "text": "- 세션 녹화/기록 방식 확정"
+      },
+      {
+        "line": 72,
+        "text": "- UAT 회의실 예약 및 장비 체크"
+      }
+    ]
+  },
+  {
+    "path": "docs\\sprint\\Sprint1_APIContract.md",
+    "count": 3,
+    "items": [
+      {
+        "line": 76,
+        "text": "- MCMS API 실제 엔드포인트 URI 확정 (Phase 4 문서 참고)."
+      },
+      {
+        "line": 77,
+        "text": "- 인증 헤더 전달 (AAD 토큰 → API JWT 변환)."
+      },
+      {
+        "line": 78,
+        "text": "- 에러 코드 맵핑 정의."
+      }
+    ]
+  },
+  {
+    "path": "docs\\sprint\\Sprint3_ApiKeys.md",
+    "count": 3,
+    "items": [
+      {
+        "line": 56,
+        "text": "- 감사 로그에 발급/폐기 이벤트 기록 (Feature Flag `admin.apikey.audit` 활성화 시)."
+      },
+      {
+        "line": 57,
+        "text": "- 실제 BFF 연동 시 KMS/Secrets Manager에 전체 키 저장."
+      },
+      {
+        "line": 58,
+        "text": "- 만료 예정 키 Slack 알림 자동화."
+      }
+    ]
+  },
+  {
+    "path": "docs\\sprint\\Sprint5_MonitoringPlan.md",
+    "count": 3,
+    "items": [
+      {
+        "line": 60,
+        "text": "- Telegraf 구성 파일 deploy/telegraf/web-vitals.conf 체크인 (2025-09-29 Codex, monitoring/telegraf/web-vitals.conf)"
+      },
+      {
+        "line": 61,
+        "text": "- Grafana Dashboard UID 등록 (Ops) (UID: mcms-s6-core 문서화)"
+      },
+      {
+        "line": 62,
+        "text": "- Alertmanager 라우팅 규칙 작성 (monitoring/alerts/mcms_core.yaml 참조)"
+      }
+    ]
+  },
+  {
+    "path": "docs\\sprint\\Sprint6_ChunkUploadPlan.md",
+    "count": 3,
+    "items": [
+      {
+        "line": 64,
+        "text": "- Node 기반 ReadableStream PoC 코드 (workspace uploader) 작성 (scripts/performance/node/chunk_stream_poc.js)"
+      },
+      {
+        "line": 65,
+        "text": "- 병렬 머지 시 PM2 Worker 리소스 측정 계획 수립 (문서 섹션 6 갱신)"
+      },
+      {
+        "line": 66,
+        "text": "- F1/F2 자동화 파이프라인을 run-meta-sla.ps1와 연동 (자동화 플로우 정의)"
+      }
+    ]
+  },
+  {
+    "path": "docs\\sprint\\Sprint6_DRPlaybook.md",
+    "count": 3,
+    "items": [
+      {
+        "line": 94,
+        "text": "- C1~C3 작업 완료 후 Grafana 대시보드 ID 및 Alert Rule 링크 추가."
+      },
+      {
+        "line": 95,
+        "text": "- Ops 커뮤니케이션 템플릿(D2)에서 DR 메시지 블록 정의."
+      },
+      {
+        "line": 96,
+        "text": "- Blue/Green 전환 자동화 스크립트(`Deploy-BlueGreen.ps1`) 초안 작성."
+      }
+    ]
+  },
+  {
+    "path": "docs\\prd\\Phase5_ExplorerPlan.md",
+    "count": 2,
+    "items": [
+      {
+        "line": 69,
+        "text": "- ML 추천 섹션 자리 확보(우측 하단) → Phase 6 이후 구현"
+      },
+      {
+        "line": 70,
+        "text": "- 즐겨찾기 기능(핀 고정) 사양 확정"
+      }
+    ]
+  },
+  {
+    "path": "docs\\sprint\\Sprint1_PerformanceBaseline.md",
+    "count": 2,
+    "items": [
+      {
+        "line": 48,
+        "text": "- CI 파이프라인에 Lighthouse CI 또는 WebPageTest 에이전트 연결 (Phase 8)"
+      },
+      {
+        "line": 49,
+        "text": "- Explorer 초기 렌더링 컴포넌트 수를 기반으로 TTFB 목표 검증"
+      }
+    ]
+  },
+  {
+    "path": "docs\\sprint\\Sprint1_PrefetchPlan.md",
+    "count": 2,
+    "items": [
+      {
+        "line": 49,
+        "text": "- 실제 API 연동 시 상태/에러 매핑 검토."
+      },
+      {
+        "line": 50,
+        "text": "- SignalR 업데이트와 Query invalidation 연결 (Sprint 2 예정)."
+      }
+    ]
+  },
+  {
+    "path": "docs\\sprint\\Sprint1_TelemetryPlan.md",
+    "count": 2,
+    "items": [
+      {
+        "line": 50,
+        "text": "- React Query `queryClient.setDefaultOptions`에 logger 연동"
+      },
+      {
+        "line": 51,
+        "text": "- SignalR 이벤트에 대한 telemetry 이벤트 정의"
+      }
+    ]
+  },
+  {
+    "path": "docs\\design\\Teamcenter_Patterns_Review.md",
+    "count": 1,
+    "items": [
+      {
+        "line": 48,
+        "text": "- Import Teamcenter iconography replacements (Feather/Phosphor mapping) by 2025-10-05."
+      }
+    ]
+  },
+  {
+    "path": "docs\\observability\\LogPipeline.md",
+    "count": 1,
+    "items": [
+      {
+        "line": 95,
+        "text": "- monitoring/promtail/config.mcms.yaml 구성안 작성 후 repo 반영."
+      }
+    ]
+  },
+  {
+    "path": "docs\\sprint\\Sprint1_CIChecklist.md",
+    "count": 1,
+    "items": [
+      {
+        "line": 53,
+        "text": "- 설치 패키지 생성 전에 scripts\\deploy\\run-smoke.ps1 -Suite Lint를 호출해 로컬 Smoke 수준 검증을 자동화한다."
+      }
+    ]
+  }
+]

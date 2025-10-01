@@ -57,7 +57,7 @@ const ROUTING_STATUS_COLOR: Record<string, string> = {
   Draft: '#94a3b8'
 };
 
-const DEFAULT_STATUS_COLOR = '#94a3b8';
+const DEFAULT_STATUS_COLOR = 'var(--color-status-draft)';
 
 const cloneNode = (node: ExplorerTreeNode): ExplorerTreeNode => ({
   ...node,

@@ -3,6 +3,7 @@ import { ReactNode, Suspense } from 'react';
 import MainLayout from '../components/MainLayout';
 import ReactQueryProvider from '../components/providers/ReactQueryProvider';
 import MaintenanceGate from '@/components/maintenance/MaintenanceGate';
+import AuthProvider from '@/components/providers/AuthProvider';
 
 export const metadata = {
   title: 'MCS Portal',
@@ -12,11 +13,13 @@ export const metadata = {
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
-      <body className="bg-slate-50 text-neutral-900">
+      <body className="bg-surface-canvas text-primary">
         <ReactQueryProvider>
           <Suspense fallback={null}>
             <MaintenanceGate>
-              <MainLayout>{children}</MainLayout>
+              <AuthProvider>
+                <MainLayout>{children}</MainLayout>
+              </AuthProvider>
             </MaintenanceGate>
           </Suspense>
         </ReactQueryProvider>

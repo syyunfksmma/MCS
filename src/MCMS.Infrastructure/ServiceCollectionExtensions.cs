@@ -41,6 +41,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IRoutingFileService, RoutingFileService>();
         services.AddScoped<IRoutingChunkUploadService, RoutingChunkUploadService>();
         services.AddScoped<IRoutingSearchService, RoutingSearchService>();
+        services.AddScoped<IOperationsAlertService, OperationsAlertService>();
         services.AddScoped<IHistoryService, HistoryService>();
         services.AddScoped<IAuditLogService, AuditLogService>();
         services.AddScoped<IAddinJobService, AddinJobService>();

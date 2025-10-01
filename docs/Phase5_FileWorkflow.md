@@ -143,3 +143,7 @@
 - CAS 저장소에 대한 백업 전략 (Object Storage Cross-Region Replication vs. 오프사이트 테이프) 비교.
 - 업로드 세션 정리 정책(30일 미완료 세션 자동 정리 등) 확정.
 
+
+## 구현 메모 (2025-10-01)
+- FileStorageService에 Object Storage replica 옵션(`EnableObjectStorageReplica`, `ObjectStorageReplicaPath`)을 추가해 로컬 CAS 쓰기 후 즉시 복제하도록 구성했습니다.
+- 멀티파트 청크 업로드 세션이 완료될 때 누락된 파트를 감지하면 `MissingChunksException`을 발생시키고, API는 409 응답에 `missingParts` 배열을 포함해 재시도를 지시합니다.

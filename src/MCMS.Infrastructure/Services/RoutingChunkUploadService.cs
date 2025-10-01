@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using MCMS.Core.Abstractions;
 using MCMS.Core.Contracts.Dtos;
 using MCMS.Core.Contracts.Requests;
+using MCMS.Core.Exceptions;
 using MCMS.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
@@ -113,6 +114,24 @@ public class RoutingChunkUploadService : IRoutingChunkUploadService
         }
     }
 
+    public async Task<ChunkUploadStatusDto> GetStatusAsync(Guid routingId, Guid sessionId, CancellationToken cancellationToken = default)
+    {
+        var session = GetSession(sessionId, routingId);
+        await session.Gate.WaitAsync(cancellationToken).ConfigureAwait(false);
+        try
+        {
+            var received = session.ReceivedChunks.OrderBy(index => index).ToArray();
+            var missing = session.GetMissingChunks();
+            session.Touch(_sessionTtl);
+            StoreSession(session);
+            return new ChunkUploadStatusDto(session.SessionId, session.RoutingId, session.TotalChunks, received, missing, session.ExpiresAt);
+        }
+        finally
+        {
+            session.Gate.Release();
+        }
+    }
+
     public async Task<RoutingMetaDto> CompleteSessionAsync(Guid routingId, Guid sessionId, CompleteChunkUploadRequest request, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(request);
@@ -124,9 +143,16 @@ public class RoutingChunkUploadService : IRoutingChunkUploadService
         {
             EnsureSessionActive(session);
 
-            if (session.ReceivedChunks.Count != session.TotalChunks)
+            var missingChunks = session.GetMissingChunks();
+            if (missingChunks.Count > 0)
             {
-                throw new InvalidOperationException($"Session {sessionId} is missing chunks: expected {session.TotalChunks}, received {session.ReceivedChunks.Count}.");
+                _logger.LogWarning(
+                    "Chunk upload session {SessionId} missing {MissingCount} chunk(s): {MissingChunks}",
+                    sessionId,
+                    missingChunks.Count,
+                    string.Join(",", missingChunks));
+
+                throw new MissingChunksException(sessionId, missingChunks);
             }
 
             var mergedPath = session.GetMergedPath();
@@ -343,9 +369,23 @@ public class RoutingChunkUploadService : IRoutingChunkUploadService
         public SemaphoreSlim Gate { get; } = new(1, 1);
         public HashSet<int> ReceivedChunks { get; } = new();
 
-        public void MarkChunkReceived(int index)
+        public IReadOnlyCollection<int> GetMissingChunks()
         {
-            ReceivedChunks.Add(index);
+            if (ReceivedChunks.Count == TotalChunks)
+            {
+                return Array.Empty<int>();
+            }
+
+            var missing = new List<int>();
+            for (var index = 0; index < TotalChunks; index++)
+            {
+                if (!ReceivedChunks.Contains(index))
+                {
+                    missing.Add(index);
+                }
+            }
+
+            return missing;
         }
 
         public string GetChunkPath(int index)

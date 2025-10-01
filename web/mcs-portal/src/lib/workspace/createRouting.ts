@@ -1,5 +1,5 @@
 import { getApiBaseUrl } from '@/lib/env';
-import type { ExplorerRouting, RoutingStatus } from '@/types/explorer';
+import type { ExplorerFile, ExplorerRouting, RoutingStatus } from '@/types/explorer';
 
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -26,10 +26,72 @@ export interface CreateRoutingResponse {
   message?: string;
 }
 
+interface ServerCreateRoutingRequest {
+  itemRevisionId: string;
+  routingCode: string;
+  isPrimary: boolean;
+  steps: unknown[];
+  files: unknown[];
+  requestedBy: string;
+  clientRequestId: string;
+}
+
+interface RoutingDto {
+  id: string;
+  itemRevisionId: string;
+  routingCode: string;
+  status: RoutingStatus;
+  camRevision: string;
+  isPrimary: boolean;
+  files: Array<{
+    id: string;
+    fileName: string;
+    fileType: string;
+  }>;
+}
+
+const mapManagedFileType = (value: string): ExplorerFile['type'] => {
+  switch (value.toLowerCase()) {
+    case 'esprit':
+      return 'esprit';
+    case 'nc':
+      return 'nc';
+    case 'meta':
+      return 'meta';
+    default:
+      return 'other';
+  }
+};
+
+const mapRoutingDtoToExplorer = (
+  dto: RoutingDto,
+  fallback: CreateRoutingRequest
+): ExplorerRouting => ({
+  id: dto.id ?? createClientRoutingId(),
+  code: dto.routingCode ?? fallback.code,
+  status: dto.status ?? fallback.status,
+  camRevision: dto.camRevision ?? fallback.revisionCode,
+  owner: fallback.owner,
+  notes: fallback.notes,
+  sharedDrivePath: fallback.sharedDrivePath ?? fallback.itemCode,
+  sharedDriveReady: fallback.sharedDriveReady,
+  createdAt: new Date().toISOString(),
+  updatedAt: new Date().toISOString(),
+  files: Array.isArray(dto.files)
+    ? dto.files.map((file) => ({
+        id: file.id,
+        name: file.fileName,
+        type: mapManagedFileType(file.fileType)
+      }))
+    : []
+});
+
 export async function createRouting(
   payload: CreateRoutingRequest
 ): Promise<CreateRoutingResponse> {
   const baseUrl = getApiBaseUrl();
+
+  const clientRequestId = createClientRoutingId();
 
   if (!baseUrl) {
     await delay(240);
@@ -37,7 +99,7 @@ export async function createRouting(
     return {
       success: true,
       routing: {
-        id: createClientRoutingId(),
+        id: clientRequestId,
         code: payload.code,
         status: payload.status,
         camRevision: payload.revisionCode,
@@ -53,48 +115,46 @@ export async function createRouting(
     };
   }
 
-  const response = await fetch(
-    `${baseUrl.replace(/\/$/, '')}/api/routing/groups/${payload.groupId}/routings`,
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      credentials: 'include',
-      body: JSON.stringify(payload)
-    }
-  );
+  const requestPayload: ServerCreateRoutingRequest = {
+    itemRevisionId: payload.revisionId,
+    routingCode: payload.code,
+    isPrimary: payload.status === 'Approved',
+    steps: [],
+    files: [],
+    requestedBy: payload.owner,
+    clientRequestId
+  };
 
-  if (!response.ok) {
-    throw new Error(`Failed to create routing (${response.status})`);
+  const response = await fetch(`${baseUrl.replace(/\/$/, '')}/api/routings`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    credentials: 'include',
+    body: JSON.stringify(requestPayload)
+  });
+
+  if (response.ok) {
+    const dto = (await response.json()) as RoutingDto;
+    return {
+      success: true,
+      routing: mapRoutingDtoToExplorer(dto, payload)
+    };
   }
 
-  const result = (await response.json()) as Partial<CreateRoutingResponse> & {
-    routing?: Partial<ExplorerRouting>;
-  };
+  if (response.status === 409) {
+    const payloadJson = await response.json().catch(() => null);
+    if (payloadJson?.routing) {
+      const dto = payloadJson.routing as RoutingDto;
+      return {
+        success: true,
+        routing: mapRoutingDtoToExplorer(dto, payload),
+        message: payloadJson?.message ?? 'Routing already exists; reused existing instance.'
+      };
+    }
 
-  const now = new Date().toISOString();
-  const routing: ExplorerRouting = {
-    id: result.routing?.id ?? createClientRoutingId(),
-    code: result.routing?.code ?? payload.code,
-    status: result.routing?.status ?? payload.status,
-    camRevision: result.routing?.camRevision ?? payload.revisionCode,
-    owner: result.routing?.owner ?? payload.owner,
-    notes: result.routing?.notes ?? payload.notes,
-    sharedDrivePath:
-      result.routing?.sharedDrivePath ?? payload.sharedDrivePath ?? payload.itemCode,
-    sharedDriveReady:
-      result.routing?.sharedDriveReady ?? payload.sharedDriveReady ?? false,
-    createdAt: result.routing?.createdAt ?? now,
-    updatedAt: result.routing?.updatedAt ?? now,
-    files: Array.isArray(result.routing?.files)
-      ? result.routing!.files!.map((file) => ({ ...file }))
-      : []
-  };
+    throw new Error(payloadJson?.message ?? `Routing conflict (${response.status}).`);
+  }
 
-  return {
-    success: result.success ?? true,
-    routing,
-    message: result.message
-  };
+  throw new Error(`Failed to create routing (${response.status})`);
 }

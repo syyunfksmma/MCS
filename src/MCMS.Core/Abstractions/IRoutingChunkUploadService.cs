@@ -11,5 +11,6 @@ public interface IRoutingChunkUploadService
 {
     Task<ChunkUploadSessionDto> StartSessionAsync(Guid routingId, StartChunkUploadRequest request, CancellationToken cancellationToken = default);
     Task AcceptChunkAsync(Guid routingId, Guid sessionId, int chunkIndex, Stream content, CancellationToken cancellationToken = default);
+    Task<ChunkUploadStatusDto> GetStatusAsync(Guid routingId, Guid sessionId, CancellationToken cancellationToken = default);
     Task<RoutingMetaDto> CompleteSessionAsync(Guid routingId, Guid sessionId, CompleteChunkUploadRequest request, CancellationToken cancellationToken = default);
 }
