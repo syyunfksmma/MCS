@@ -369,6 +369,16 @@ public class RoutingChunkUploadService : IRoutingChunkUploadService
         public SemaphoreSlim Gate { get; } = new(1, 1);
         public HashSet<int> ReceivedChunks { get; } = new();
 
+        public void MarkChunkReceived(int index)
+        {
+            if (index < 0 || index >= TotalChunks)
+            {
+                throw new ArgumentOutOfRangeException(nameof(index), index, "Chunk index is outside the session range.");
+            }
+
+            ReceivedChunks.Add(index);
+        }
+
         public IReadOnlyCollection<int> GetMissingChunks()
         {
             if (ReceivedChunks.Count == TotalChunks)

@@ -2,9 +2,20 @@ import React from 'react';
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import ExplorerShell from "@/components/explorer/ExplorerShell";
 import type { ExplorerResponse } from "@/types/explorer";
 import { vi } from "vitest";
+
+vi.mock("@/components/providers/AuthProvider", () => ({
+  useAuthContext: () => ({
+    isAuthenticated: true,
+    isLoading: false,
+    account: { username: 'test.user@example.com' },
+    roles: [],
+    error: undefined,
+    signIn: vi.fn(),
+    signOut: vi.fn()
+  })
+}));
 
 vi.mock("@/components/TreePanel", () => ({
   __esModule: true,
@@ -57,6 +68,17 @@ vi.mock("@/lib/featureFlags", () => ({
   isFeatureEnabled: () => true,
   setFeatureFlag: vi.fn()
 }));
+
+vi.mock("@/hooks/useNavigation", () => ({
+  useNavigation: () => ({
+    register: vi.fn(),
+    unregister: vi.fn(),
+    setActive: vi.fn(),
+    activeRoute: null
+  })
+}));
+
+import ExplorerShell from "@/components/explorer/ExplorerShell";
 
 const initialData: ExplorerResponse = {
   source: "mock",

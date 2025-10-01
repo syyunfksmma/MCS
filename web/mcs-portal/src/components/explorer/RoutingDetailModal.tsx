@@ -9,9 +9,16 @@ import {
   Timeline,
   Alert,
   Spin,
-  Button
+  Button,
+  Space,
+  Typography
 } from 'antd';
+
 import type { ExplorerRouting, RoutingDetailResponse } from '@/types/explorer';
+import type { RoutingVersion } from '@/types/routing';
+import RoutingVersionTable from '@/components/workspace/RoutingVersionTable';
+
+const { Paragraph, Text } = Typography;
 
 interface RoutingDetailModalProps {
   open: boolean;
@@ -23,17 +30,14 @@ interface RoutingDetailModalProps {
   onClose: () => void;
   onRetry?: () => void;
   onTabChange?: (tabKey: string) => void;
+  versions?: RoutingVersion[];
+  versionsLoading?: boolean;
+  canManageVersions?: boolean;
+  onPromoteVersion?: (versionId: string) => void;
+  onToggleLegacyVersion?: (versionId: string, hidden: boolean) => void;
 }
 
 const DEFAULT_TAB = 'summary';
-
-const formatTimestamp = (value: string) => {
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) {
-    return value;
-  }
-  return date.toLocaleString();
-};
 
 export default function RoutingDetailModal({
   open,
@@ -44,7 +48,12 @@ export default function RoutingDetailModal({
   activeTab,
   onClose,
   onRetry,
-  onTabChange
+  onTabChange,
+  versions = [],
+  versionsLoading = false,
+  canManageVersions = true,
+  onPromoteVersion,
+  onToggleLegacyVersion
 }: RoutingDetailModalProps) {
   const resolvedRouting = detail?.routing ?? routing;
 
@@ -59,8 +68,8 @@ export default function RoutingDetailModal({
       ];
     }
 
-    const history = detail?.history ?? [];
-    const files = resolvedRouting.files ?? [];
+    const historyItems = detail?.history ?? [];
+    const fileItems = resolvedRouting.files ?? [];
     const uploads = detail?.uploads ?? [];
 
     const summaryTab = {
@@ -68,24 +77,12 @@ export default function RoutingDetailModal({
       label: 'Summary',
       children: (
         <Descriptions bordered column={1} size="small">
-          <Descriptions.Item label="Routing Code">
-            {resolvedRouting.code}
-          </Descriptions.Item>
-          <Descriptions.Item label="Status">
-            {resolvedRouting.status}
-          </Descriptions.Item>
-          <Descriptions.Item label="CAM Revision">
-            {resolvedRouting.camRevision}
-          </Descriptions.Item>
-          <Descriptions.Item label="Owner">
-            {resolvedRouting.owner ?? '—'}
-          </Descriptions.Item>
-          <Descriptions.Item label="Shared Drive Ready">
-            {resolvedRouting.sharedDriveReady ? 'Yes' : 'No'}
-          </Descriptions.Item>
-          <Descriptions.Item label="Notes">
-            {resolvedRouting.notes ?? '—'}
-          </Descriptions.Item>
+          <Descriptions.Item label="Routing Code">{resolvedRouting.code}</Descriptions.Item>
+          <Descriptions.Item label="Status">{resolvedRouting.status}</Descriptions.Item>
+          <Descriptions.Item label="CAM Revision">{resolvedRouting.camRevision}</Descriptions.Item>
+          <Descriptions.Item label="Owner">{resolvedRouting.owner ?? '—'}</Descriptions.Item>
+          <Descriptions.Item label="Shared Drive Ready">{resolvedRouting.sharedDriveReady ? 'Yes' : 'No'}</Descriptions.Item>
+          <Descriptions.Item label="Notes">{resolvedRouting.notes ?? '—'}</Descriptions.Item>
         </Descriptions>
       )
     };
@@ -93,22 +90,16 @@ export default function RoutingDetailModal({
     const historyTab = {
       key: 'history',
       label: 'History',
-      children: history.length ? (
-        <Timeline>
-          {history.map((event) => (
+      children: historyItems.length ? (
+        <Timeline mode="left">
+          {historyItems.map((event) => (
             <Timeline.Item key={event.id} color="blue">
-              <div className="flex flex-col gap-1">
-                <span className="text-sm font-medium">
-                  {formatTimestamp(event.timestamp)}
-                </span>
-                <span className="text-sm">{event.action}</span>
-                <span className="text-xs text-gray-500">{event.actor}</span>
-                {event.description ? (
-                  <span className="text-xs text-gray-500">
-                    {event.description}
-                  </span>
-                ) : null}
-              </div>
+              <Space direction="vertical" size="small">
+                <Text strong>{new Date(event.timestamp).toLocaleString()}</Text>
+                <Text>{event.action}</Text>
+                <Text type="secondary">{event.actor}</Text>
+                {event.description ? <Paragraph className="mb-0">{event.description}</Paragraph> : null}
+              </Space>
             </Timeline.Item>
           ))}
         </Timeline>
@@ -120,9 +111,9 @@ export default function RoutingDetailModal({
     const filesTab = {
       key: 'files',
       label: 'Files',
-      children: files.length ? (
-        <ul className="list-disc pl-5">
-          {files.map((file) => (
+      children: fileItems.length ? (
+        <ul className="list-disc pl-5 text-sm">
+          {fileItems.map((file) => (
             <li key={file.id}>{file.name}</li>
           ))}
         </ul>
@@ -131,10 +122,32 @@ export default function RoutingDetailModal({
       )
     };
 
-    const items = [summaryTab, historyTab, filesTab];
+    const versionsTab = {
+      key: 'versions',
+      label: 'Versions',
+      children: (
+        <RoutingVersionTable
+          versions={versions}
+          loading={versionsLoading}
+          canManage={canManageVersions}
+          onPromote={
+            onPromoteVersion
+              ? (version) => onPromoteVersion(version.versionId)
+              : undefined
+          }
+          onToggleLegacy={
+            onToggleLegacyVersion
+              ? (version, hidden) => onToggleLegacyVersion(version.versionId, hidden)
+              : undefined
+          }
+        />
+      )
+    };
+
+    const tabsList = [summaryTab, historyTab, filesTab, versionsTab];
 
     if (uploads.length) {
-      items.push({
+      tabsList.push({
         key: 'uploads',
         label: 'Uploads',
         children: (
@@ -149,8 +162,8 @@ export default function RoutingDetailModal({
       });
     }
 
-    return items;
-  }, [detail, resolvedRouting]);
+    return tabsList;
+  }, [resolvedRouting, detail, versions, versionsLoading, canManageVersions, onPromoteVersion, onToggleLegacyVersion]);
 
   const handleTabChange = onTabChange ?? (() => undefined);
 

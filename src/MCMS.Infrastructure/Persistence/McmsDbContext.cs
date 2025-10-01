@@ -40,6 +40,7 @@ public class McmsDbContext(DbContextOptions<McmsDbContext> options) : DbContext(
             builder.HasIndex(x => new { x.ItemRevisionId, x.RoutingCode }).IsUnique();
             builder.Property(x => x.RoutingCode).HasMaxLength(64);
             builder.Property(x => x.CamRevision).HasMaxLength(32);
+            builder.Property(x => x.LegacyHiddenBy).HasMaxLength(64);
         });
 
         modelBuilder.Entity<RoutingStep>(builder =>

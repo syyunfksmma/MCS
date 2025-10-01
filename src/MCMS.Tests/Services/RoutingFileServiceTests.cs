@@ -1,3 +1,4 @@
+using System.IO.Compression;
 using System.Security.Cryptography;
 using System.Text;
 using MCMS.Core.Contracts.Requests;
@@ -166,10 +167,95 @@ public class RoutingFileServiceTests
             await context.DisposeAsync();
         }
     }
+
+
+[Fact]
+public async Task CreateBundleAsync_BuildsZipWithAllFiles()
+{
+    var (service, root, history, context, storage) = CreateService();
+    try
+    {
+        var routingId = await SeedRoutingAsync(context);
+        await using (var stream = new MemoryStream(Encoding.UTF8.GetBytes("G01"), writable: false))
+        {
+            await service.UploadAsync(new UploadRoutingFileRequest(
+                routingId,
+                stream,
+                "program.nc",
+                "nc",
+                true,
+                "tester"));
+        }
+
+        await using (var stream = new MemoryStream(Encoding.UTF8.GetBytes("Fixture"), writable: false))
+        {
+            await service.UploadAsync(new UploadRoutingFileRequest(
+                routingId,
+                stream,
+                "fixture.stl",
+                "stl",
+                false,
+                "tester"));
+        }
+
+        var result = await service.CreateBundleAsync(routingId, "tester");
+        using (var archive = new ZipArchive(result.Stream, ZipArchiveMode.Read, leaveOpen: true))
+        {
+            Assert.Equal(2, archive.Entries.Count);
+            Assert.Contains(archive.Entries, entry => entry.Name == "program.nc");
+            Assert.Contains(archive.Entries, entry => entry.Name == "fixture.stl");
+        }
+
+        result.Stream.Position = 0;
+        using var sha = SHA256.Create();
+        var hash = Convert.ToHexString(sha.ComputeHash(result.Stream)).ToLowerInvariant();
+        Assert.Equal(hash, result.Checksum);
+    }
+    finally
+    {
+        await storage.DisposeAsync();
+        if (Directory.Exists(root))
+        {
+            Directory.Delete(root, true);
+        }
+        await context.DisposeAsync();
+    }
 }
 
+[Fact]
+public async Task OpenFileAsync_ReturnsStream()
+{
+    var (service, root, history, context, storage) = CreateService();
+    try
+    {
+        var routingId = await SeedRoutingAsync(context);
+        await using (var stream = new MemoryStream(Encoding.UTF8.GetBytes("G01"), writable: false))
+        {
+            await service.UploadAsync(new UploadRoutingFileRequest(
+                routingId,
+                stream,
+                "program.nc",
+                "nc",
+                true,
+                "tester"));
+        }
 
-
-
-
-
+        var file = await context.RoutingFiles.AsNoTracking().FirstAsync();
+        var result = await service.OpenFileAsync(routingId, file.Id);
+        Assert.Equal(file.FileName, result.FileName);
+        Assert.Equal(file.Checksum, result.Checksum);
+        using var reader = new StreamReader(result.Stream, Encoding.UTF8, leaveOpen: false);
+        var contents = await reader.ReadToEndAsync();
+        Assert.Equal("G01", contents);
+    }
+    finally
+    {
+        await storage.DisposeAsync();
+        if (Directory.Exists(root))
+        {
+            Directory.Delete(root, true);
+        }
+        await context.DisposeAsync();
+    }
+}
+}

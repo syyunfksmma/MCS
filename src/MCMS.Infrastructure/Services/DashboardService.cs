@@ -10,17 +10,21 @@ using MCMS.Core.Domain.Entities;
 using MCMS.Core.Domain.Enums;
 using MCMS.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace MCMS.Infrastructure.Services;
 
 public class DashboardService : IDashboardService
 {
     private const int SlaTargetMilliseconds = 1500;
+    private static readonly TimeSpan SummaryCacheDuration = TimeSpan.FromSeconds(30);
     private readonly McmsDbContext _dbContext;
+    private readonly IMemoryCache _cache;
 
-    public DashboardService(McmsDbContext dbContext)
+    public DashboardService(McmsDbContext dbContext, IMemoryCache cache)
     {
         _dbContext = dbContext;
+        _cache = cache;
     }
 
     public async Task<DashboardSummaryDto> GetSummaryAsync(
@@ -28,7 +32,15 @@ public class DashboardService : IDashboardService
         CancellationToken cancellationToken = default)
     {
         var now = DateTimeOffset.UtcNow;
-        var (periodStart, periodEnd) = ResolvePeriod(request.Range, now);
+        var period = ResolvePeriod(request.Range, now);
+        var cacheKey = BuildCacheKey(request, period);
+
+        if (_cache.TryGetValue(cacheKey, out DashboardSummaryDto? cached) && cached is not null)
+        {
+            return cached;
+        }
+
+        var (periodStart, periodEnd) = period;
 
         var routings = await _dbContext.Routings
             .AsNoTracking()
@@ -93,9 +105,20 @@ public class DashboardService : IDashboardService
             breakdown = new DashboardBreakdownDto(ownerBreakdown, machineBreakdown);
         }
 
-        var period = new DashboardPeriodDto(request.Range, periodStart, periodEnd);
+        var periodDto = new DashboardPeriodDto(request.Range, periodStart, periodEnd);
+        var result = new DashboardSummaryDto(totals, sla, breakdown, periodDto);
 
-        return new DashboardSummaryDto(totals, sla, breakdown, period);
+        _cache.Set(cacheKey, result, new MemoryCacheEntryOptions
+        {
+            AbsoluteExpirationRelativeToNow = SummaryCacheDuration
+        });
+
+        return result;
+    }
+
+    private static string BuildCacheKey(DashboardSummaryRequest request, (DateTimeOffset Start, DateTimeOffset End) period)
+    {
+        return $"dashboard:summary:{request.Range}:{request.IncludeBreakdown}:{period.Start.UtcTicks}:{period.End.UtcTicks}";
     }
 
     private static int GetCount(IEnumerable<StatusCount> statusCounts, RoutingStatus status)
@@ -165,4 +188,3 @@ public class DashboardService : IDashboardService
 
     private readonly record struct StatusCount(RoutingStatus Status, int Count);
 }
-

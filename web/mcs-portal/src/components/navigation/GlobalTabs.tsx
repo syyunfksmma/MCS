@@ -2,40 +2,31 @@
 
 import { Menu } from 'antd';
 import type { MenuProps } from 'antd';
-import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
 import { useMemo } from 'react';
-
-const menuItems: MenuProps['items'] = [
-  { key: '/dashboard', label: <Link href="/dashboard">Dashboard</Link> },
-  { key: '/explorer', label: <Link href="/explorer">MCS</Link> },
-  { key: '/server', label: <Link href="/server">Server</Link> },
-  { key: '/option', label: <Link href="/option">Option</Link> }
-];
+import { useNavigation } from '@/hooks/useNavigation';
+import type { GlobalTabKey } from '@/components/providers/NavigationProvider';
 
 export default function GlobalTabs() {
-  const pathname = usePathname();
-  const router = useRouter();
+  const { tabs, activeTab, navigateToTab } = useNavigation();
 
-  const selectedKey = useMemo(() => {
-    if (!pathname) {
-      return '/dashboard';
-    }
-
-    const match = menuItems?.find((item) => pathname.startsWith(String(item?.key)));
-    return (match?.key as string) ?? '/dashboard';
-  }, [pathname]);
+  const menuItems = useMemo(() => {
+    return tabs.map((tab) => ({ key: tab.key, label: tab.label }));
+  }, [tabs]);
 
   const handleClick: MenuProps['onClick'] = (event) => {
-    if (event.key && event.key !== selectedKey) {
-      router.push(String(event.key));
+    if (event.key) {
+      navigateToTab(event.key as GlobalTabKey);
     }
   };
+
+  if (menuItems.length === 0) {
+    return null;
+  }
 
   return (
     <Menu
       mode="horizontal"
-      selectedKeys={[selectedKey]}
+      selectedKeys={[activeTab]}
       onClick={handleClick}
       items={menuItems}
       style={{ borderBottom: '1px solid #eaeaea' }}

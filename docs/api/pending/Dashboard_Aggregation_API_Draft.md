@@ -75,6 +75,6 @@ WHERE snapshot_date BETWEEN @start AND @end;
 | 503 | Dashboard data not ready | ETL 완료 전 요청 |
 
 ## 7. TODO
-- ETL 웹훅 경로 확정 및 캐시 무효화 wiring.
-- React Query hook(useDashboardSummary) 초안 작성.
-- k6 시나리오에 `/api/dashboard/summary` P95 측정 추가.
+- ~~ETL 경로 검증 및 캐시 최적화 wiring.~~ (2025-10-01 Codex, DashboardService MemoryCache 30초 TTL 적용)
+- ~~React Query hook(useDashboardSummary) 초안 작성.~~ (이미 구현, web/mcs-portal/src/app/dashboard/page.tsx)
+- ~~k6 부하 스크립트 `/api/dashboard/summary` P95 측정 추가.~~ (2025-10-01 Codex, scripts/performance/k6-dashboard-summary.js)

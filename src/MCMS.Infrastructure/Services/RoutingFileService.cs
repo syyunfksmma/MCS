@@ -3,7 +3,9 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -150,6 +152,72 @@ public class RoutingFileService : IRoutingFileService
         return await ScheduleMetaRefreshAsync(routingId, cancellationToken).ConfigureAwait(false);
     }
 
+
+public async Task<RoutingBundleStream> CreateBundleAsync(Guid routingId, string requestedBy, CancellationToken cancellationToken = default)
+{
+    var routing = await _dbContext.Routings
+        .Include(r => r.Files)
+        .FirstOrDefaultAsync(r => r.Id == routingId, cancellationToken)
+        ?? throw new KeyNotFoundException("Routing not found.");
+
+    if (routing.Files.Count == 0)
+    {
+        throw new InvalidOperationException("Routing does not contain any managed files to bundle.");
+    }
+
+    var memory = new MemoryStream();
+    using (var archive = new ZipArchive(memory, ZipArchiveMode.Create, leaveOpen: true))
+    {
+        foreach (var file in routing.Files)
+        {
+            var entryName = string.IsNullOrWhiteSpace(file.FileName)
+                ? file.Id + Path.GetExtension(file.RelativePath)
+                : file.FileName;
+
+            var entry = archive.CreateEntry(entryName, CompressionLevel.Fastest);
+            await using var entryStream = entry.Open();
+            await using var sourceStream = await _fileStorage.OpenReadAsync(file.RelativePath, cancellationToken).ConfigureAwait(false);
+            await sourceStream.CopyToAsync(entryStream, cancellationToken).ConfigureAwait(false);
+        }
+    }
+
+    memory.Position = 0;
+    string checksum;
+    using (var sha = SHA256.Create())
+    {
+        checksum = Convert.ToHexString(sha.ComputeHash(memory)).ToLowerInvariant();
+    }
+
+    memory.Position = 0;
+    var fileName = BuildBundleFileName(routing);
+
+    await _historyService.RecordAsync(new HistoryEntryDto(
+        Guid.NewGuid(),
+        routing.Id,
+        "RoutingBundleRequested",
+        null,
+        null,
+        fileName,
+        ApprovalOutcome.Pending,
+        DateTimeOffset.UtcNow,
+        requestedBy,
+        null), cancellationToken).ConfigureAwait(false);
+
+    return new RoutingBundleStream(memory, fileName, "application/zip", checksum);
+}
+
+public async Task<RoutingFileStream> OpenFileAsync(Guid routingId, Guid fileId, CancellationToken cancellationToken = default)
+{
+    var routingFile = await _dbContext.RoutingFiles
+        .AsNoTracking()
+        .FirstOrDefaultAsync(f => f.RoutingId == routingId && f.Id == fileId, cancellationToken)
+        ?? throw new KeyNotFoundException("Routing file not found.");
+
+    var stream = await _fileStorage.OpenReadAsync(routingFile.RelativePath, cancellationToken).ConfigureAwait(false);
+    var contentType = GetContentType(routingFile.FileType, routingFile.FileName);
+    return new RoutingFileStream(stream, routingFile.FileName, contentType, routingFile.Checksum);
+}
+
     private async Task<Routing> LoadRoutingAggregateAsync(Guid routingId, CancellationToken cancellationToken)
     {
         return await _dbContext.Routings
@@ -261,6 +329,67 @@ public class RoutingFileService : IRoutingFileService
     {
         _metaWorkItems.TryRemove(new KeyValuePair<Guid, RoutingMetaWorkItem>(routingId, workItem));
     }
+
+
+private static string BuildBundleFileName(Routing routing)
+{
+    var baseName = string.IsNullOrWhiteSpace(routing.RoutingCode)
+        ? routing.Id.ToString("N")
+        : routing.RoutingCode;
+
+    if (!string.IsNullOrWhiteSpace(routing.CamRevision))
+    {
+        baseName = $"{baseName}-rev-{routing.CamRevision}";
+    }
+
+    baseName = SanitizeFileName(baseName);
+    return baseName + ".zip";
+}
+
+private static string SanitizeFileName(string value)
+{
+    var invalid = Path.GetInvalidFileNameChars();
+    var buffer = value.ToCharArray();
+    var changed = false;
+    for (var i = 0; i < buffer.Length; i++)
+    {
+        var ch = buffer[i];
+        if (invalid.Contains(ch))
+        {
+            buffer[i] = '_';
+            changed = true;
+        }
+    }
+
+    return changed ? new string(buffer) : value;
+}
+
+private static string GetContentType(ManagedFileType type, string fileName)
+{
+    return type switch
+    {
+        ManagedFileType.Stl => "model/stl",
+        ManagedFileType.Esprit => "application/octet-stream",
+        ManagedFileType.Nc => "text/plain",
+        ManagedFileType.Meta => "application/json",
+        ManagedFileType.SolidWorks => "application/octet-stream",
+        _ => MapExtensionToContentType(fileName)
+    };
+}
+
+private static string MapExtensionToContentType(string fileName)
+{
+    var extension = Path.GetExtension(fileName).ToLowerInvariant();
+    return extension switch
+    {
+        ".zip" => "application/zip",
+        ".json" => "application/json",
+        ".txt" => "text/plain",
+        ".nc" => "text/plain",
+        ".stl" => "model/stl",
+        _ => "application/octet-stream"
+    };
+}
 
     private static string BuildRelativePath(Routing routing, string fileName)
     {

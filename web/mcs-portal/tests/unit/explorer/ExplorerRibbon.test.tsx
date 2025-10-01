@@ -36,7 +36,8 @@ const routing: ExplorerRouting = {
   status: 'Draft',
   camRevision: 'CAM-1',
   owner: 'operator.one',
-  files: []
+  files: [],
+  sharedDrivePath: '\\shared\routing\RT-011\model.sldasm'
 };
 
 describe('ExplorerRibbon', () => {
@@ -46,8 +47,10 @@ describe('ExplorerRibbon', () => {
     render(
       <ExplorerRibbon
         selectedRouting={null}
+        canOpenExplorer={true}
         onOpenSelected={onOpenSelected}
         onOpenWizard={vi.fn()}
+        onOpenExplorer={vi.fn()}
         onShowUploadPanel={vi.fn()}
         onDownloadSelected={vi.fn()}
         onShowAddinPanel={vi.fn()}
@@ -65,12 +68,15 @@ describe('ExplorerRibbon', () => {
     const onShowUploadPanel = vi.fn();
     const onDownloadSelected = vi.fn();
     const onShowAddinPanel = vi.fn();
+    const onOpenExplorer = vi.fn();
 
     render(
       <ExplorerRibbon
         selectedRouting={routing}
+        canOpenExplorer={true}
         onOpenSelected={onOpenSelected}
         onOpenWizard={onOpenWizard}
+        onOpenExplorer={onOpenExplorer}
         onShowUploadPanel={onShowUploadPanel}
         onDownloadSelected={onDownloadSelected}
         onShowAddinPanel={onShowAddinPanel}
@@ -82,12 +88,14 @@ describe('ExplorerRibbon', () => {
     await user.click(screen.getByRole('button', { name: 'Workspace 업로드로 이동' }));
     await user.click(screen.getByRole('button', { name: 'Routing 다운로드' }));
     await user.click(screen.getByRole('button', { name: 'Add-in 패널로 이동' }));
+    await user.click(screen.getByRole('button', { name: 'mcms-explorer 프로토콜로 열기' }));
 
     expect(onOpenSelected).toHaveBeenCalled();
     expect(onOpenWizard).toHaveBeenCalled();
     expect(onShowUploadPanel).toHaveBeenCalled();
     expect(onDownloadSelected).toHaveBeenCalled();
     expect(onShowAddinPanel).toHaveBeenCalled();
+    expect(onOpenExplorer).toHaveBeenCalled();
 
     expect(
       screen.getByText('선택', { selector: 'span' })

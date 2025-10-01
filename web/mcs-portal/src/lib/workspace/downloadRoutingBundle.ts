@@ -60,11 +60,13 @@ export async function downloadRoutingBundle({ routingId, signal }: DownloadBundl
     };
   }
 
+  const checksumHeader = response.headers.get('x-checksum-sha256') ?? undefined;
   const blob = await response.blob();
   const downloadUrl = URL.createObjectURL(blob);
   return {
     downloadUrl,
     fileName: `routing-${routingId}.zip`,
+    checksum: checksumHeader ?? undefined,
     revoke: () => URL.revokeObjectURL(downloadUrl)
   };
 }
