@@ -5,8 +5,12 @@ using MCMS.Core.Contracts.Dtos;
 using MCMS.Core.Contracts.Requests;
 using MCMS.Core.Domain.Entities;
 using MCMS.Core.Domain.Enums;
+using MCMS.Core.Exceptions;
 using MCMS.Core.Validation;
 using MCMS.Infrastructure.Persistence;
+using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
 
 namespace MCMS.Infrastructure.Services;
@@ -22,6 +26,11 @@ public class RoutingService : IRoutingService
     private readonly IHistoryService _historyService;
     private readonly ICommandQueue _commandQueue;
     private readonly IEspritAutomationService _espritAutomationService;
+    private readonly IMemoryCache _idempotencyCache;
+    private readonly ILogger<RoutingService> _logger;
+
+    private const string IdempotencyCacheKeyPrefix = "routing:create:";
+    private static readonly TimeSpan IdempotencyCacheTtl = TimeSpan.FromMinutes(10);
     private readonly CreateRoutingRequestValidator _createValidator = new();
     private readonly UpdateRoutingRequestValidator _updateValidator = new();
     private readonly ReviewRoutingRequestValidator _reviewValidator = new();
@@ -30,12 +39,16 @@ public class RoutingService : IRoutingService
         McmsDbContext dbContext,
         IHistoryService historyService,
         ICommandQueue commandQueue,
-        IEspritAutomationService espritAutomationService)
+        IEspritAutomationService espritAutomationService,
+        IMemoryCache idempotencyCache,
+        ILogger<RoutingService> logger)
     {
         _dbContext = dbContext;
         _historyService = historyService;
         _commandQueue = commandQueue;
         _espritAutomationService = espritAutomationService;
+        _idempotencyCache = idempotencyCache;
+        _logger = logger;
     }
 
     public async Task<RoutingDto> CreateRoutingAsync(CreateRoutingRequest request, CancellationToken cancellationToken = default)
@@ -113,6 +126,35 @@ public class RoutingService : IRoutingService
 
         return await GetRoutingAsync(entity.Id, cancellationToken)
             ?? throw new InvalidOperationException("Routing? ???? ?????.");
+    }
+
+    private static string? GetCacheKey(string? clientRequestId)
+    {
+        if (string.IsNullOrWhiteSpace(clientRequestId))
+        {
+            return null;
+        }
+
+        return string.Concat(IdempotencyCacheKeyPrefix, clientRequestId.Trim());
+    }
+
+    private async Task<Routing?> FindExistingRoutingAsync(Guid itemRevisionId, string routingCode, CancellationToken cancellationToken)
+    {
+        return await _dbContext.Routings
+            .Include(r => r.Steps)
+            .Include(r => r.Files)
+            .FirstOrDefaultAsync(r => r.ItemRevisionId == itemRevisionId && r.RoutingCode == routingCode, cancellationToken)
+            .ConfigureAwait(false);
+    }
+
+    private static bool IsUniqueConstraintViolation(DbUpdateException exception)
+    {
+        if (exception.InnerException is SqlException sqlException)
+        {
+            return sqlException.Number is 2601 or 2627;
+        }
+
+        return false;
     }
 
     public async Task<RoutingDto?> GetRoutingAsync(Guid routingId, CancellationToken cancellationToken = default)
@@ -353,6 +395,7 @@ public class RoutingService : IRoutingService
         };
     }
 }
+
 
 
 

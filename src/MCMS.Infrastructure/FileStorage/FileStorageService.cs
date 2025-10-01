@@ -120,6 +120,11 @@ public sealed class FileStorageService : IFileStorageService, IAsyncDisposable
             result = new FileSaveResult(relativePath, checksum, totalBytes);
         }, cancellationToken);
 
+        if (_options.EnableObjectStorageReplica)
+        {
+            ReplicateToObjectStorage(relativePath);
+        }
+
         if (content.CanSeek)
         {
             content.Seek(0, SeekOrigin.Begin);
@@ -149,6 +154,8 @@ public sealed class FileStorageService : IFileStorageService, IAsyncDisposable
             File.Delete(fullPath);
             InvalidateCache(fullPath);
         }
+
+        DeleteReplica(relativePath);
 
         return Task.CompletedTask;
     }
@@ -446,6 +453,7 @@ public sealed class FileStorageService : IFileStorageService, IAsyncDisposable
                 }
 
                 File.Move(tempFile, fullPath, true);
+                ReplicateToObjectStorage(relativePath);
                 UpdateCache(fullPath, payloadHash, payloadLength);
             }
             finally
@@ -463,6 +471,55 @@ public sealed class FileStorageService : IFileStorageService, IAsyncDisposable
                 }
             }
         }, cancellationToken).ConfigureAwait(false);
+    }
+
+    private void ReplicateToObjectStorage(string relativePath)
+    {
+        if (!_options.EnableObjectStorageReplica || string.IsNullOrWhiteSpace(_options.ObjectStorageReplicaPath))
+        {
+            return;
+        }
+
+        try
+        {
+            var sourcePath = GetFullPath(relativePath);
+            var replicaPath = GetReplicaPath(relativePath);
+
+            Directory.CreateDirectory(Path.GetDirectoryName(replicaPath)!);
+            File.Copy(sourcePath, replicaPath, overwrite: true);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Failed to replicate {RelativePath} to object storage replica.", relativePath);
+        }
+    }
+
+    private void DeleteReplica(string relativePath)
+    {
+        if (!_options.EnableObjectStorageReplica || string.IsNullOrWhiteSpace(_options.ObjectStorageReplicaPath))
+        {
+            return;
+        }
+
+        try
+        {
+            var replicaPath = GetReplicaPath(relativePath);
+            if (File.Exists(replicaPath))
+            {
+                File.Delete(replicaPath);
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Failed to delete replica for {RelativePath}", relativePath);
+        }
+    }
+
+    private string GetReplicaPath(string relativePath)
+    {
+        var normalized = relativePath.Replace('\\', '/').TrimStart('/');
+        var combined = Path.Combine(_options.ObjectStorageReplicaPath!, normalized.Replace('/', Path.DirectorySeparatorChar));
+        return Path.GetFullPath(combined);
     }
 
     private string GetFullPath(string relativePath)

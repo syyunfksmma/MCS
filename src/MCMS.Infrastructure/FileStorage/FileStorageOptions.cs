@@ -6,4 +6,6 @@ public class FileStorageOptions
     public int JsonWorkerCount { get; init; }
     public int MaxParallelJsonWrites { get; init; }
     public bool EnableMetaCaching { get; init; } = true;
+    public bool EnableObjectStorageReplica { get; init; }
+    public string? ObjectStorageReplicaPath { get; init; }
 }

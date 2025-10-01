@@ -8,7 +8,9 @@ public record RoutingMetaDto(
     string? CamRevision,
     string MetaPath,
     IReadOnlyCollection<RoutingMetaFileDto> Files,
-    Guid? LatestHistoryId);
+    Guid? LatestHistoryId,
+    bool RequiresResync = false,
+    IReadOnlyCollection<string>? MissingFiles = null);
 
 public record RoutingMetaFileDto(
     string FileName,

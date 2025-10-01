@@ -8,7 +8,8 @@ public record CreateRoutingRequest(
     bool IsPrimary,
     IEnumerable<RoutingStepWriteModel> Steps,
     IEnumerable<RoutingFileWriteModel> Files,
-    string RequestedBy);
+    string RequestedBy,
+    string? ClientRequestId = null);
 
 public record RoutingStepWriteModel(
     int Sequence,

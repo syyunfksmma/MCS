@@ -1,38 +1,8 @@
-# 절대 지령
-- 각 단계는 승인 후에만 진행한다.
-- 단계 착수 전 이번 단계 전체 범위를 리뷰하고 오류를 식별한다.
-- 오류 발견 시 수정 전에 승인 재요청한다.
-- 이전 단계 오류가 없음을 재확인한 뒤 다음 단계 승인을 요청한다.
-- 모든 단계 작업은 백그라운드 방식으로 수행한다.
-- 문서/웹뷰어 점검이 필요한 경우 반드시 승인 확인 후 진행한다.
-- 다음 단계 착수 전에 이전 단계 전반을 재점검하여 미해결 오류가 없는지 확인한다.
-- 만약 오류나 사용자의 지시로 task나 절대지령이 수정될시 취소선으로 기존 지시나 이력을 보존하고, 아래에 추가한다.
-- 모든 웹은 codex가 테스트 실시 후 이상 없을시 보고한다.
-- 1인 개발자와 codex가 같이 협업하며, 모든 산출물은 codex가 작업한다. 중간 중간 성능 향상이나 기능 향상을 위해 제안하는 것을 목표로한다.
-- 이 서비스는 사내 내부망으로 운영될 예정이며, 외부 서버나 클라우드 사용은 절대 금한다.
-- local 호스트 서버를 통해 PoC를 1인 개발자와 같이 진행하며, 테스트 완료시 1인 개발자 PC를 서버로하여 사내망에 릴리즈한다.
-- 코딩과 IT기술을 전혀 모르는 인원도 쉽게 PoC가 가능하도록 Docker나 기타 exe 형태로 배포할 방법을 검토하며 개발 진행한다.
-- 모든 스프린트 태스크는 전용 스프린트 Task List를 참조하고, docs/sprint 명세에 따른 영어 로그북 + 설명적 코드 주석을 남김.
 
 > PRD: docs/PRD_MCS.md  
 > Task Lists: docs/MCMS_TaskList.md, docs/Tasks_MCS.md, docs/Tasks_ML_Routing.md  
 > Remaining Tasks: 0
 
-## 절대 지령
-- 각 단계는 승인 후에만 진행한다.
-- 단계 착수 전 이번 단계 전체 범위를 리뷰하고 오류를 식별한다.
-- 오류 발견 시 수정 전에 승인 재요청한다.
-- 이전 단계 오류가 없음을 재확인한 뒤 다음 단계 승인을 요청한다.
-- 모든 단계 작업은 백그라운드 방식으로 수행한다.
-- 문서/웹뷰어 점검이 필요한 경우 반드시 승인 확인 후 진행한다.
-- 다음 단계 착수 전에 이전 단계 전반을 재점검하여 미해결 오류가 없는지 확인한다.
-- 만약 오류나 사용자의 지시로 task나 절대지령이 수정될시 취소선으로 기존 지시나 이력을 보존하고, 아래에 추가한다.
-- 모든 웹은 codex가 테스트 실시 후 이상 없을시 보고한다.
-- 1인 개발자와 codex가 같이 협업하며, 모든 산출물은 codex가 작업한다. 중간 중간 성능 향상이나 기능 향상을 위해 제안하는 것을 목표로한다.
-- 이 서비스는 사내 내부망으로 운영될 예정이며, 외부 서버나 클라우드 사용은 절대 금한다.
-- local 호스트 서버를 통해 PoC를 1인 개발자와 같이 진행하며, 테스트 완료시 1인 개발자 PC를 서버로하여 사내망에 릴리즈한다.
-- 코딩과 IT기술을 전혀 모르는 인원도 쉽게 PoC가 가능하도록 Docker나 기타 exe 형태로 배포할 방법을 검토하며 개발 진행한다.
-- 모든 스프린트 태스크는 전용 스프린트 Task List를 참조하고, docs/sprint 명세에 따른 영어 로그북 + 설명적 코드 주석을 남김.
 # MCS Portal (Next.js)
 
 이 프로젝트는 Manufacturing CAM Management System의 웹 포털 프런트엔드입니다. Next.js(App Router) + TypeScript + Ant Design을 사용합니다.
@@ -81,10 +51,6 @@ src/
 - API 연동 및 React Query 설정
 - 인증/권한 흐름 구현
 - 생산 관리자용 대시보드 추가
-
-## CI
-- GitHub Actions: `.github/workflows/ci.yml`
-- 작업: npm install → lint → prettier 체크 → build
 
 ## 참고 문서
 - Sprint1 API 계약: `docs/sprint/Sprint1_APIContract.md`
@@ -143,20 +109,11 @@ npx playwright install --dry-run              # 설치 시도만 수행
 ## 수동 배포 참고
 - 내부 배포 절차: `docs/ops/InternalManualDeployment.md`에서 단계별 체크리스트 확인.
 
-## Docker 배포
-- `Dockerfile` : node:20-alpine 기반 멀티스테이지 이미지(빌드/런타임 분리).
-- `docker-compose.yml` : `web`(Next.js) + `reverse-proxy`(Nginx) 서비스 예시.
-- 실행 예시
-```bash
-docker compose up --build
-```
-- 환경 변수는 `.env.production` 또는 compose 환경 섹션에서 주입할 수 있습니다.
+## Azure AD Single Sign-On 설정
 
-
-## 이미지 배포 정책
-- 기본 태깅: `ghcr.io/<org>/<repo>/mcs-portal:${commitSha}` (CI에서 자동 푸시).
-- 사내 레지스트리(Py) 사용 시: `docker tag mcs-portal-web registry.internal/mcs-portal/web:<tag>` → `docker push registry.internal/mcs-portal/web:<tag>`.
-- 로컬 테스트 레지스트리: `docker run -d --name mcs-registry --restart unless-stopped -p 5001:5000 -v mcs_registry_data:/var/lib/registry registry:2`.
-- 푸시 검증: `docker run --rm registry.internal/mcs-portal/web:<tag> node --version`.
-- 세부 정책: `docs/ops/RegistryPolicy.md` 참고.
-
+- `.env.production` 또는 `.env.local`에 다음 변수를 설정합니다.
+  - `NEXT_PUBLIC_AZURE_AD_CLIENT_ID`, `NEXT_PUBLIC_AZURE_AD_TENANT_ID`, `NEXT_PUBLIC_AZURE_AD_REDIRECT_URI`, `NEXT_PUBLIC_AZURE_AD_SCOPES`
+  - `NEXT_PUBLIC_MCMS_ALLOWED_ROLES` 값에 접근 허용 역할(예: `MCMS.Approver,MCMS.Admin`)을 쉼표로 구분해 입력합니다.
+- 프런트엔드는 MSAL을 사용하여 로그인/로그아웃을 처리하며, 필수 역할이 없는 계정은 접근이 차단됩니다.
+- 로컬 개발 중 AD 구성이 비어 있으면 기존 이메일 기반 모의 인증이 유지되며, 로그에 경고가 출력됩니다.
+- 역할 매핑과 그룹 정책은 `docs/frontend/ComponentLibrary_Selection.md` 및 `docs/security/AzureAD_SSO.md`(추가 예정)에 기록해 운영팀과 공유하세요.

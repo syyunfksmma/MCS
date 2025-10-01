@@ -1,0 +1,45 @@
+docs\frontend\Ribbon_Filter_Alignment.md:38:- [ ] ExplorerRibbon 버튼/그룹 재작성.
+docs\frontend\Ribbon_Filter_Alignment.md:39:- [ ] Approval/Add-in API 통합 및 토스트 처리.
+docs\frontend\Ribbon_Filter_Alignment.md:40:- [ ] SearchFilterRail ↔ ExplorerShell 상태 동기화.
+docs\frontend\Ribbon_Filter_Alignment.md:41:- [ ] IndexedDB recentRouting 캐시 구현.
+docs\frontend\Ribbon_Filter_Alignment.md:42:- [ ] 테마 토큰/스토리북 업데이트.
+docs\frontend\Ribbon_Filter_Alignment.md:43:- [ ] 접근성 리포트 작성.
+docs\frontend\Menu_Expansion_Implementation.md:55:- [ ] GlobalTabs + NavigationContext 생성.
+docs\frontend\Menu_Expansion_Implementation.md:56:- [ ] Dashboard 페이지 구성.
+docs\frontend\Menu_Expansion_Implementation.md:57:- [ ] ThreeViewer + Esprit UI 구현.
+docs\frontend\Menu_Expansion_Implementation.md:58:- [ ] Server/Option API 계약 최종화 및 프론트 통합.
+docs\frontend\Menu_Expansion_Implementation.md:59:- [ ] QA 시나리오 작성 및 Shakeout Log 업데이트.
+docs\api\pending\SignalR_Hub_Spec.md:65:- [ ] PresenceHub/TreeHub 클래스 생성.
+docs\api\pending\SignalR_Hub_Spec.md:66:- [ ] SignalR 인증 핸들러 with JWT.
+docs\api\pending\SignalR_Hub_Spec.md:67:- [ ] 프론트 훅 + 상태 배지 구현.
+docs\api\pending\SignalR_Hub_Spec.md:68:- [ ] QA: 연결 끊김 시나리오 녹화.
+docs\implementation\Wave2_Prep.md:27:- [ ] SolidWorks 샘플 파일 3종 확보(STEP, SLDDRW, STL).
+docs\implementation\Wave2_Prep.md:28:- [ ] Explorer Shell 프로토콜 테스트 환경 구성 (테스트 PC 레지스트리 스크립트).
+docs\implementation\Wave2_Prep.md:29:- [ ] 공유 드라이브 경로 정책 문서 초안(`docs/ops/Routing_SharedDrive_Decisions.md`)과 정합성 검토.
+docs\implementation\Wave2_Prep.md:30:- [ ] 번들 다운로드 API 응답 포맷 검증 (`zip + manifest.json`).
+docs\implementation\Wave1_G1G2_Notes.md:47:- [ ] Drag-and-drop mock 데이터 구성.
+docs\implementation\Wave1_G1G2_Notes.md:48:- [ ] Telemetry schema 정의 (reorder-success, reorder-fail, inline-edit-save, inline-edit-error).
+docs\implementation\Wave1_G1G2_Notes.md:49:- [ ] Undo timer UX 시나리오 프로토타입.
+docs\implementation\Wave1_G1G2_Notes.md:71:- [ ] Drag&Drop animation 세부값(FPS, easing) 확정.
+docs\implementation\Wave1_G1G2_Notes.md:72:- [ ] Soft Delete undo timer UX mock (Figma) 첨부.
+docs\implementation\Wave1_G1G2_Notes.md:73:- [ ] 동시 편집 충돌 시 재시도 정책 문서화.
+docs\implementation\Wave1_I1_Telemetry.md:41:- [ ] Telemetry helper (useRoutingUploadTelemetry.ts) 설계.
+docs\implementation\Wave1_I1_Telemetry.md:42:- [ ] Backend aggregation DTO 정의 (RoutingUploadLog).
+docs\implementation\Wave1_I1_Telemetry.md:43:- [ ] Loki 파이프라인 샘플 로그 작성.
+docs\implementation\Wave1_I1_Telemetry.md:44:- [ ] Alert 규칙 YAML 초안 (monitoring/alerts/mcms_routing_upload.yaml).
+docs\meetings\PoC_Review_Checklist.md:40:| 환경 구성 검증 | docs/setup/LocalDevEnvironment.md 기준 검토 | [ ] | Codex |
+docs\meetings\PoC_Review_Checklist.md:41:| DB 마이그레이션 확인 | DatabaseBootstrap 실행 로그 확인 | [ ] | API 리드 |
+docs\meetings\PoC_Review_Checklist.md:42:| 성능 테스트 결과 | Windows k6 p95 < 20s 확인 | [ ] | Ops |
+docs\meetings\PoC_Review_Checklist.md:43:| 계약/로그 문서화 | docs/api/logs/20250929_contract_confirmation.md 첨부 | [ ] | Codex |
+docs\meetings\PoC_Review_Checklist.md:44:| 공유 드라이브 ACL | SharedDrive_Structure 정책 적용 확인 | [ ] | Ops |
+docs\meetings\PoC_Review_Checklist.md:45:| 회의 로그 확정 | docs/api/logs/20250930.md 정식 배포 | [ ] | Codex |
+docs\training\Translation_Matrix.md:40:| MCMS_TrainingMaterials.md | 한국어 | [ ] 영어 번역 필요 | Training Lead |
+docs\training\Translation_Matrix.md:41:| Onboarding_Email_Template.md | 한국어 | [ ] 영어 버전 준비 | Comms |
+docs\training\Translation_Matrix.md:42:| Ops_Procedures.md | 한국어 | [ ] 영어 요약 | Ops |
+docs\training\Translation_Matrix.md:43:| Reporting_Plan.md | 한국어 | [ ] 영어 요약 | Codex |
+docs\testing\QA_Shakeout_Log.md:12:- [ ] Playwright smoke: `npm run test:e2e -- --grep @smoke` (2025-10-01 실패 - @smoke 태그 미정의로 실행 불가)
+docs\testing\QA_Shakeout_Log.md:13:- [ ] Vitest unit core: `npm run test:unit` (2025-10-01 실패 - jsdom `getComputedStyle` 미구현 및 clipboard mock 미호출)
+docs\testing\QA_Shakeout_Log.md:14:- [ ] k6 SLA check: `npm run perf:k6 -- --vus 50 --duration 2m` (2025-10-01 실패 - scripts/performance/k6-workspace.js 15:26 구문 오류)
+docs\testing\QA_Shakeout_Log.md:15:- [ ] Accessibility spot check: `npm run test:axe` (2025-10-01 실패 - Playwright 브라우저 다운로드 SSL 차단)
+docs\testing\QA_Shakeout_Log.md:16:- [ ] Review SignalR reconnect logs (devtools console)
+docs\sprint\Sprint6_Routing_TaskList.md:140:> 2025-09-26 Codex: Flow G/H tasks reverted to [ ] pending ExplorerShell integration.

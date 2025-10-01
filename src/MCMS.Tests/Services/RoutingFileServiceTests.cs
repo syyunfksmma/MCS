@@ -3,6 +3,7 @@ using System.Text;
 using MCMS.Core.Contracts.Requests;
 using MCMS.Core.Domain.Entities;
 using MCMS.Core.Domain.Enums;
+using MCMS.Core.Abstractions;
 using MCMS.Infrastructure.FileStorage;
 using Microsoft.Extensions.Logging.Abstractions;
 using MCMS.Infrastructure.Persistence;
@@ -61,7 +62,8 @@ public class RoutingFileServiceTests
         var root = Path.Combine(Path.GetTempPath(), "mcms-tests", Guid.NewGuid().ToString());
         Directory.CreateDirectory(root);
         var storage = new FileStorageService(Options.Create(new FileStorageOptions { RootPath = root }), NullLogger<FileStorageService>.Instance);
-        var service = new RoutingFileService(context, storage, history, NullLogger<RoutingFileService>.Instance);
+        var operationsAlert = new OperationsAlertService(NullLogger<OperationsAlertService>.Instance);
+        var service = new RoutingFileService(context, storage, history, NullLogger<RoutingFileService>.Instance, operationsAlert);
         return (service, root, history, context, storage);
     }
 
@@ -148,8 +150,10 @@ public class RoutingFileServiceTests
             var file = await context.RoutingFiles.AsNoTracking().FirstAsync();
 
             var meta = await service.DeleteAsync(routingId, file.Id, "operator", CancellationToken.None);
-
-            Assert.Empty(meta.Files);
+
+
+            Assert.Empty(meta.Files);
+
             // 파일 삭제는 후속 정리 프로세스에서 처리되므로 여기서는 메타 정보만 검증한다.
         }
         finally

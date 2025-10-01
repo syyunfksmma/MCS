@@ -34,21 +34,25 @@ public class RoutingFileService : IRoutingFileService
     private readonly IFileStorageService _fileStorage;
     private readonly IHistoryService _historyService;
     private readonly ILogger<RoutingFileService> _logger;
+    private readonly IOperationsAlertService _operationsAlertService;
     private readonly UploadRoutingFileRequestValidator _uploadValidator = new();
     private readonly ConcurrentDictionary<Guid, RoutingMetaWorkItem> _metaWorkItems = new();
     private const int MetaFingerprintHistorySize = 3;
     private readonly ConcurrentDictionary<Guid, RoutingMetaFingerprintHistory> _metaFingerprints = new();
+    private readonly ConcurrentDictionary<Guid, bool> _resyncState = new();
 
     public RoutingFileService(
         McmsDbContext dbContext,
         IFileStorageService fileStorage,
         IHistoryService historyService,
-        ILogger<RoutingFileService> logger)
+        ILogger<RoutingFileService> logger,
+        IOperationsAlertService operationsAlertService)
     {
         _dbContext = dbContext;
         _fileStorage = fileStorage;
         _historyService = historyService;
         _logger = logger;
+        _operationsAlertService = operationsAlertService;
     }
 
     public Task<RoutingMetaDto> GetAsync(Guid routingId, CancellationToken cancellationToken = default)
@@ -68,6 +72,14 @@ public class RoutingFileService : IRoutingFileService
 
         var relativePath = BuildRelativePath(routing, request.FileName);
         var saveResult = await _fileStorage.SaveAsync(request.Content, relativePath, cancellationToken).ConfigureAwait(false);
+
+        var duplicate = routing.Files.FirstOrDefault(f => string.Equals(f.Checksum, saveResult.Checksum, StringComparison.OrdinalIgnoreCase));
+        if (duplicate is not null)
+        {
+            await _fileStorage.DeleteAsync(saveResult.RelativePath, cancellationToken).ConfigureAwait(false);
+            _logger.LogInformation("Duplicate routing upload detected for {RoutingId}; reusing file {FileId}", routing.Id, duplicate.Id);
+            return await ScheduleMetaRefreshAsync(routing.Id, cancellationToken).ConfigureAwait(false);
+        }
 
         var entity = new RoutingFile
         {
@@ -156,6 +168,24 @@ public class RoutingFileService : IRoutingFileService
             .OrderByDescending(h => h.CreatedAt)
             .FirstOrDefault()?.Id;
 
+        var missingFiles = await DetectMissingFilesAsync(routing.Files, cancellationToken).ConfigureAwait(false);
+        var requiresResync = missingFiles.Count > 0;
+        var previousResync = _resyncState.TryGetValue(routing.Id, out var previousState) && previousState;
+
+        if (requiresResync && !previousResync)
+        {
+            var detail = string.Join(", ", missingFiles);
+            var message = $"Routing {routing.RoutingCode} ({routing.Id}) is missing {missingFiles.Count} file(s): {detail}";
+            await _operationsAlertService.PublishAsync("RoutingStorage", message, cancellationToken).ConfigureAwait(false);
+            _logger.LogWarning("Routing {RoutingId} requires resync ({MissingCount} missing files)", routing.Id, missingFiles.Count);
+        }
+        else if (!requiresResync && previousResync)
+        {
+            _logger.LogInformation("Routing {RoutingId} resync flag cleared", routing.Id);
+        }
+
+        _resyncState[routing.Id] = requiresResync;
+
         var files = routing.Files
             .OrderByDescending(f => f.CreatedAt)
             .Select(f => new RoutingMetaFileDto(
@@ -173,7 +203,9 @@ public class RoutingFileService : IRoutingFileService
             routing.CamRevision,
             metaPath,
             files,
-            latestHistoryId);
+            latestHistoryId,
+            requiresResync,
+            requiresResync ? missingFiles.AsReadOnly() : Array.Empty<string>());
 
         if (ShouldSkipMetaWrite(routing.Id, meta))
         {
@@ -257,6 +289,20 @@ public class RoutingFileService : IRoutingFileService
         };
     }
 
+    private async Task<List<string>> DetectMissingFilesAsync(IEnumerable<RoutingFile> files, CancellationToken cancellationToken)
+    {
+        var missing = new List<string>();
+        foreach (var file in files)
+        {
+            if (!await _fileStorage.ExistsAsync(file.RelativePath, cancellationToken).ConfigureAwait(false))
+            {
+                missing.Add(file.RelativePath);
+            }
+        }
+
+        return missing;
+    }
+
     private static void EnsureFileTypeIsSupported(string fileType)
     {
         if (!AllowedFileTypes.Contains(fileType))
@@ -316,6 +362,16 @@ public class RoutingFileService : IRoutingFileService
                        .Append(':')
                        .Append(file.IsPrimary ? '1' : '0')
                        .Append('|');
+            }
+
+            builder.Append(meta.RequiresResync ? '1' : '0').Append('|');
+
+            if (meta.MissingFiles is { Count: > 0 })
+            {
+                foreach (var missing in meta.MissingFiles.OrderBy(m => m, StringComparer.OrdinalIgnoreCase))
+                {
+                    builder.Append(missing).Append('|');
+                }
             }
 
             return new RoutingMetaFingerprint(latestHistoryId, builder.ToString());

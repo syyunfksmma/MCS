@@ -4,28 +4,59 @@
 
 :root {
   color-scheme: light;
-  --explorer-accent: #009999;
-  --explorer-neutral-bg: #f5f7fa;
-  --explorer-panel-border: #d8dfe8;
-  --explorer-ribbon-height: 64px;
-  --explorer-content-gutter: 24px;
-  --explorer-gap: 16px;
-  --explorer-font-heading: 600 16px/1.4 'Inter', 'Segoe UI', sans-serif;
-  --explorer-font-body: 400 14px/1.6 'Inter', 'Segoe UI', sans-serif;
-  --explorer-font-caption: 400 12px/1.4 'Inter', 'Segoe UI', sans-serif;
-  --explorer-shadow-level1: 0px 2px 8px rgba(24, 32, 68, 0.08);
+  --color-brand-primary: #0f4c81;
+  --color-brand-accent: #009999;
+  --color-brand-accent-contrast: #ffffff;
+  --color-brand-accent-muted: rgba(0, 153, 153, 0.12);
+  --color-brand-accent-strong: #006d6d;
+  --color-surface-canvas: #f5f7fa;
+  --color-surface-elevated: #ffffff;
+  --color-surface-muted: #e9edf5;
+  --color-border-subtle: #d8dfe8;
+  --color-border-strong: #b9c4d6;
+  --color-text-primary: #1b1f29;
+  --color-text-secondary: #516072;
+  --color-text-muted: #7b8499;
+  --color-status-approved: #0f9d58;
+  --color-status-pending: #d9a400;
+  --color-status-rejected: #c0392b;
+  --color-status-draft: #94a3b8;
+  --shadow-elevated-sm: 0px 2px 8px rgba(24, 32, 68, 0.08);
+  --shadow-elevated-md: 0px 8px 24px rgba(14, 36, 70, 0.12);
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --font-heading: 600 16px/1.4 'Segoe UI', 'Noto Sans KR', sans-serif;
+  --font-body: 400 14px/1.6 'Segoe UI', 'Noto Sans KR', sans-serif;
+  --font-caption: 500 12px/1.4 'Segoe UI', 'Noto Sans KR', sans-serif;
+  --layout-ribbon-height: 64px;
+  --layout-content-gutter: 24px;
+  --layout-column-gap: 16px;
+
+  /* Explorer aliases for backward compatibility */
+  --explorer-accent: var(--color-brand-accent);
+  --explorer-neutral-bg: var(--color-surface-canvas);
+  --explorer-panel-border: var(--color-border-subtle);
+  --explorer-ribbon-height: var(--layout-ribbon-height);
+  --explorer-content-gutter: var(--layout-content-gutter);
+  --explorer-gap: var(--layout-column-gap);
+  --explorer-font-heading: var(--font-heading);
+  --explorer-font-body: var(--font-body);
+  --explorer-font-caption: var(--font-caption);
+  --explorer-shadow-level1: var(--shadow-elevated-sm);
 }
 
 body {
   margin: 0;
   font-family:
+    'Segoe UI',
     'Noto Sans KR',
     -apple-system,
     BlinkMacSystemFont,
-    'Segoe UI',
     sans-serif;
-  background: #f5f7fa;
-  color: #333333;
+  font: var(--font-body);
+  background: var(--color-surface-canvas);
+  color: var(--color-text-primary);
+  -webkit-font-smoothing: antialiased;
 }
 
 a {
@@ -39,4 +70,12 @@ a {
 
 .ant-layout {
   min-height: 100vh;
+}
+
+.bg-surface-canvas {
+  background: var(--color-surface-canvas) !important;
+}
+
+.text-primary {
+  color: var(--color-text-primary) !important;
 }

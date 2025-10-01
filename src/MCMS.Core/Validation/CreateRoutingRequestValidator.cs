@@ -14,6 +14,8 @@ public class CreateRoutingRequestValidator : AbstractValidator<CreateRoutingRequ
         RuleFor(x => x.RequestedBy)
             .NotEmpty()
             .MaximumLength(64);
+        RuleFor(x => x.ClientRequestId)
+            .MaximumLength(64);
         RuleFor(x => x.Steps)
             .NotEmpty()
             .Must(steps => steps.Select(s => s.Sequence).Distinct().Count() == steps.Count())

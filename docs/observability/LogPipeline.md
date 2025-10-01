@@ -83,6 +83,7 @@
 - `mcs_smoke_failure_total`: Promtail LogQL `sum by(service)(count_over_time({app="run-smoke", status="FAIL"}[10m]))` → Alert `MCMSmokeFailures`.
 - `mcs_alert_notifications_total`: notify 로그에서 webhookStatus != "sent" 집계 → Alert Noise Gauge.
 - Worker 큐/Portal SLA 메트릭은 Prometheus exporter에서 직접 측정, 알람 라우팅은 `monitoring/alerts/mcms_core.yaml` 참고.
+- Routing CAS/meta mismatch 감지 시 `OperationsAlertService`가 즉시 경보(`RoutingStorage` 카테고리)를 로깅하고 Slack/Teams 통합 대상으로 전파하도록 확장 예정.
 
 ## 6. 검증 절차
 1. 로컬 환경에서 Promtail config dry-run (`promtail --config.file ... --dry-run`).

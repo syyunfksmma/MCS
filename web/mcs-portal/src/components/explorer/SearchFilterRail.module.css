@@ -5,11 +5,11 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
-  background: rgba(255, 255, 255, 0.92);
-  border: 1px solid var(--explorer-panel-border, #d8dfe8);
-  border-radius: 12px;
+  background: var(--color-surface-elevated);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-md);
   padding: 16px;
-  box-shadow: var(--explorer-shadow-level1, 0 2px 8px rgba(24, 32, 68, 0.08));
+  box-shadow: var(--shadow-elevated-sm);
   backdrop-filter: blur(6px);
 }
 
@@ -28,8 +28,8 @@
 
 .title {
   margin: 0;
-  font: 600 15px/1.4 'Siemens Sans', 'Inter', 'Segoe UI', sans-serif;
-  color: var(--explorer-title-color, #04324d);
+  font: var(--explorer-font-heading);
+  color: var(--color-text-primary);
   letter-spacing: 0.02em;
 }
 
@@ -39,7 +39,7 @@
 
 .resetButton {
   min-width: 0;
-  color: var(--explorer-accent, #0078a6);
+  color: var(--color-brand-accent);
 }
 
 .section {
@@ -53,13 +53,13 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: #516072;
+  color: var(--color-text-secondary);
 }
 
 .helper {
   display: block;
   font-size: 12px;
-  color: #5c6270;
+  color: var(--color-text-muted);
 }
 
 .quickActions {
@@ -71,7 +71,7 @@
   align-items: center;
   gap: 12px;
   font-size: 13px;
-  color: #1b1f29;
+  color: var(--color-text-primary);
 }
 
 .toggleRow span {
@@ -88,7 +88,7 @@
     position: static;
     border-radius: 10px;
     box-shadow: none;
-    background: rgba(255, 255, 255, 0.98);
+    background: var(--color-surface-elevated);
   }
 
   .header {
@@ -101,4 +101,3 @@
 .select {
   width: 100%;
 }
-

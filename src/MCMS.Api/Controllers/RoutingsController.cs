@@ -5,6 +5,7 @@ using MCMS.Api.Notifications;
 using MCMS.Core.Abstractions;
 using MCMS.Core.Contracts.Dtos;
 using MCMS.Core.Contracts.Requests;
+using MCMS.Core.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MCMS.Api.Controllers;
@@ -44,9 +45,23 @@ public class RoutingsController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<RoutingDto>> CreateAsync([FromBody] CreateRoutingRequest request, CancellationToken cancellationToken)
     {
-        var routing = await _routingService.CreateRoutingAsync(request, cancellationToken);
-        await _routingEvents.PublishRoutingUpdatedAsync(routing, cancellationToken);
-        return CreatedAtAction(nameof(GetAsync), new { routingId = routing.Id }, routing);
+        try
+        {
+            var routing = await _routingService.CreateRoutingAsync(request, cancellationToken);
+            await _routingEvents.PublishRoutingUpdatedAsync(routing, cancellationToken);
+            return CreatedAtAction(nameof(GetAsync), new { routingId = routing.Id }, routing);
+        }
+        catch (RoutingConflictException ex)
+        {
+            await _routingEvents.PublishRoutingUpdatedAsync(ex.ExistingRouting, cancellationToken);
+            var payload = new
+            {
+                message = ex.Message,
+                routing = ex.ExistingRouting,
+                idempotent = ex.FromIdempotencyKey
+            };
+            return Conflict(payload);
+        }
     }
 
     [HttpPut("{routingId:guid}")]
