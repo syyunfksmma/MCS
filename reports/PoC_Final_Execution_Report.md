@@ -40,3 +40,15 @@
 
 ## 5. 보고
 - 본 문서는 Sprint 8~10 PoC 실행을 위한 최종 설계 자료 집합이며, 남은 개발은 위 TODO에 따라 진행한다.
+
+## 6. 2025-10-01 실행 메모
+| 항목 | 결과 | 비고 |
+| --- | --- | --- |
+| Next.js 빌드 | 성공 | `npm run build` 통과, VerifyEmail/Explorer 세부 페이지 클라이언트 컴포넌트 분리 |
+| Storybook 빌드 | 성공 | `npm run build-storybook` 완료 (에셋 용량 경고만 확인) |
+| Playwright 회귀 | 실패 | 브라우저 다운로드가 사내 SSL 차단으로 중단 (`npx playwright install`) |
+| E2E Smoke (@smoke) | 실패 | 지정된 태그 테스트 미정의 → `No tests found` |
+| Vitest 유닛 | 실패 | jsdom `getComputedStyle`/clipboard mock 미비로 5개 케이스 실패 |
+| k6 SLA 스크립트 | 실패 | `scripts/performance/k6-workspace.js` 15:26 구문 오류 |
+| .NET 통합 (SignalR/DI) | 실패 | `dotnet test src/MCMS.Tests/MCMS.Tests.csproj` → DashboardService 쿼리 변환 오류 및 RoutingFileService 어설션 실패 |
+| UI 스크린샷 | 미수행 | Playwright 브라우저 설치 불가로 캡처 차단, 대체 패키지 필요 |

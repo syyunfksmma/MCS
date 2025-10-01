@@ -1,5 +1,5 @@
 using MCMS.Core.Contracts.Requests;
-using MCMS.Core.Domain.Entities;\nusing MCMS.Core.Domain.Enums;
+using MCMS.Core.Domain.Entities;
 using MCMS.Core.Domain.Enums;
 using MCMS.Infrastructure.Persistence;
 using MCMS.Infrastructure.Services;
@@ -107,7 +107,7 @@ public class DashboardServiceTests
 
         var job1 = new AddinJob
         {
-            Routing = routingApproved,
+            RoutingId = routingApproved.Id,
             StartedAt = DateTimeOffset.UtcNow.AddSeconds(-2),
             CompletedAt = DateTimeOffset.UtcNow,
             Status = AddinJobStatus.Completed
@@ -115,13 +115,15 @@ public class DashboardServiceTests
 
         var job2 = new AddinJob
         {
-            Routing = routingPending,
+            RoutingId = routingPending.Id,
             StartedAt = DateTimeOffset.UtcNow.AddSeconds(-3),
             CompletedAt = DateTimeOffset.UtcNow.AddSeconds(-1),
             Status = AddinJobStatus.Completed
         };
 
         context.Items.Add(item);
+        context.ItemRevisions.Add(revision);
+        context.Routings.AddRange(routingDraft, routingPending, routingApproved);
         context.RoutingSteps.AddRange(step1, step2, step3);
         context.AddinJobs.AddRange(job1, job2);
         await context.SaveChangesAsync();
@@ -140,3 +142,8 @@ public class DashboardServiceTests
         Assert.True(result.Sla.P95Ms >= 0);
     }
 }
+
+
+
+
+

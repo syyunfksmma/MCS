@@ -10,13 +10,8 @@ export function Modal(props: ModalProps) {
     <AntModal
       centered
       maskClosable={false}
-      styles={{
-        body: {
-          padding: designTokens.spacing.lg
-        },
-        header: {
-          padding: `${designTokens.spacing.md} ${designTokens.spacing.lg}`
-        }
+      bodyStyle={{
+        padding: designTokens.spacing.lg
       }}
       {...props}
     />

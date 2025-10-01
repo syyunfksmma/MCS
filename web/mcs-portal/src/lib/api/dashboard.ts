@@ -15,7 +15,7 @@ export async function fetchDashboardSummary(
     includeBreakdown: String(includeBreakdown)
   });
 
-  const response = await fetch(/api/dashboard/summary?, {
+  const response = await fetch(`/api/dashboard/summary?${params.toString()}`, {
     method: 'GET',
     cache: 'no-store'
   });

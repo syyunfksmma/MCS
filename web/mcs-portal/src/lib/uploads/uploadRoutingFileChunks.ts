@@ -24,7 +24,6 @@ export interface UploadRoutingFileChunksOptions {
 }
 
 const DEFAULT_CHUNK_SIZE = 256 * 1024;
-const STREAM_BUCKET_SIZE = 64 * 1024;
 const DEFAULT_MAX_CONCURRENT_UPLOADS = 3;
 
 function resolveApiUrl(path: string): string {
@@ -205,7 +204,7 @@ export async function uploadRoutingFileChunks(
 
   const { sessionId } = await startChunkSession(options, totalChunks);
   const reader = options.file
-    .stream({ highWaterMark: STREAM_BUCKET_SIZE })
+    .stream()
     .getReader();
   const inFlight = new Set<Promise<void>>();
   const hasher = createStreamingSha256();
@@ -312,3 +311,5 @@ export async function uploadRoutingFileChunks(
     reader.releaseLock();
   }
 }
+
+

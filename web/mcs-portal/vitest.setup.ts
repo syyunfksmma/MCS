@@ -21,20 +21,47 @@ if (!window.scrollTo) {
   window.scrollTo = vi.fn();
 }
 
-if (!Element.prototype.scrollIntoView) {
-  Element.prototype.scrollIntoView = vi.fn();
+Element.prototype.scrollIntoView = vi.fn();
+
+window.getComputedStyle = vi.fn().mockImplementation(() => ({
+  getPropertyValue: () => '',
+  getPropertyPriority: () => '',
+  item: () => '',
+  removeProperty: () => '',
+  setProperty: () => undefined,
+  length: 0,
+  parentRule: null
+})) as typeof window.getComputedStyle;
+
+if (!('ResizeObserver' in window)) {
+  class ResizeObserverMock {
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+  }
+  (window as unknown as { ResizeObserver: typeof ResizeObserver }).ResizeObserver = ResizeObserverMock as unknown as typeof ResizeObserver;
+}
+
+if (!navigator.clipboard) {
+  Object.defineProperty(navigator, 'clipboard', {
+    value: {
+      writeText: vi.fn().mockRejectedValue(new Error('clipboard unavailable')),
+      readText: vi.fn().mockResolvedValue(''),
+    },
+    configurable: true,
+  });
 }
 
 const generateStubUuid = () => `test-${Math.random().toString(16).slice(2)}`;
 
 if (!globalThis.crypto) {
-  Object.defineProperty(globalThis, "crypto", {
+  Object.defineProperty(globalThis, 'crypto', {
     value: {
-      randomUUID: generateStubUuid
-    }
+      randomUUID: generateStubUuid,
+    },
   });
-} else if (!("randomUUID" in globalThis.crypto)) {
-  Object.defineProperty(globalThis.crypto, "randomUUID", {
-    value: generateStubUuid
+} else if (!('randomUUID' in globalThis.crypto)) {
+  Object.defineProperty(globalThis.crypto, 'randomUUID', {
+    value: generateStubUuid,
   });
 }

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using MCMS.Core.Abstractions;
 using MCMS.Core.Contracts.Dtos;
 using MCMS.Core.Contracts.Requests;
+using MCMS.Core.Domain.Entities;
 using MCMS.Core.Domain.Enums;
 using MCMS.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -29,15 +30,16 @@ public class DashboardService : IDashboardService
         var now = DateTimeOffset.UtcNow;
         var (periodStart, periodEnd) = ResolvePeriod(request.Range, now);
 
-        var routingQuery = _dbContext.Routings
+        var routings = await _dbContext.Routings
             .AsNoTracking()
-            .Where(r => (r.UpdatedAt ?? r.CreatedAt) >= periodStart && (r.UpdatedAt ?? r.CreatedAt) <= periodEnd);
-
-        var statusCounts = await routingQuery
-            .GroupBy(r => r.Status)
-            .Select(g => new StatusCount(g.Key, g.Count()))
+            .Where(r => (r.UpdatedAt ?? r.CreatedAt) >= periodStart && (r.UpdatedAt ?? r.CreatedAt) <= periodEnd)
             .ToListAsync(cancellationToken)
             .ConfigureAwait(false);
+
+        var statusCounts = routings
+            .GroupBy(r => r.Status)
+            .Select(g => new StatusCount(g.Key, g.Count()))
+            .ToList();
 
         var totals = new DashboardTotalsDto(
             GetCount(statusCounts, RoutingStatus.Draft),
@@ -60,38 +62,33 @@ public class DashboardService : IDashboardService
         DashboardBreakdownDto? breakdown = null;
         if (request.IncludeBreakdown)
         {
-            var ownerBreakdown = await routingQuery
+            var ownerBreakdown = routings
                 .GroupBy(r => string.IsNullOrWhiteSpace(r.CreatedBy) ? "Unknown" : r.CreatedBy)
                 .Select(g => new DashboardBreakdownItemDto(g.Key!, g.Count()))
                 .OrderByDescending(x => x.Count)
                 .ThenBy(x => x.Key)
                 .Take(5)
-                .ToListAsync(cancellationToken)
-                .ConfigureAwait(false);
+                .ToList();
 
-            var routingIds = await routingQuery
+            var routingIds = routings
                 .Select(r => r.Id)
-                .ToListAsync(cancellationToken)
-                .ConfigureAwait(false);
+                .ToList();
 
-            List<DashboardBreakdownItemDto> machineBreakdown;
-            if (routingIds.Count == 0)
-            {
-                machineBreakdown = new List<DashboardBreakdownItemDto>();
-            }
-            else
-            {
-                machineBreakdown = await _dbContext.RoutingSteps
+            var steps = routingIds.Count == 0
+                ? new List<RoutingStep>()
+                : await _dbContext.RoutingSteps
                     .AsNoTracking()
                     .Where(step => routingIds.Contains(step.RoutingId))
-                    .GroupBy(step => string.IsNullOrWhiteSpace(step.Machine) ? "Unknown" : step.Machine)
-                    .Select(g => new DashboardBreakdownItemDto(g.Key!, g.Count()))
-                    .OrderByDescending(x => x.Count)
-                    .ThenBy(x => x.Key)
-                    .Take(5)
                     .ToListAsync(cancellationToken)
                     .ConfigureAwait(false);
-            }
+
+            var machineBreakdown = steps
+                .GroupBy(step => string.IsNullOrWhiteSpace(step.Machine) ? "Unknown" : step.Machine)
+                .Select(g => new DashboardBreakdownItemDto(g.Key!, g.Count()))
+                .OrderByDescending(x => x.Count)
+                .ThenBy(x => x.Key)
+                .Take(5)
+                .ToList();
 
             breakdown = new DashboardBreakdownDto(ownerBreakdown, machineBreakdown);
         }
@@ -168,3 +165,4 @@ public class DashboardService : IDashboardService
 
     private readonly record struct StatusCount(RoutingStatus Status, int Count);
 }
+

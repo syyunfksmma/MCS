@@ -1,3 +1,4 @@
+import React from 'react';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { vi } from 'vitest';
@@ -19,13 +20,12 @@ vi.mock('antd', () => {
     placeholder?: string;
   }) => (
     <select
-      aria-label={ariaLabel}
+      aria-label={ariaLabel ?? placeholder ?? 'select'}
       disabled={disabled}
-      data-placeholder={placeholder}
       value={value ?? ''}
       onChange={(event) => onChange?.(event.target.value)}
     >
-      <option value="">선택</option>
+      <option value="">{placeholder ?? '선택'}</option>
       {options.map((option) => (
         <option key={option.value} value={option.value}>
           {option.label}
@@ -54,10 +54,110 @@ vi.mock('antd', () => {
 
   const Space = ({ children }: { children: React.ReactNode }) => <div>{children}</div>;
 
+  const Badge = ({ text }: { text?: React.ReactNode }) => <span>{text}</span>;
+
+  const Switch = ({
+    checked,
+    onChange,
+    disabled,
+    'aria-label': ariaLabel
+  }: {
+    checked?: boolean;
+    onChange?: (next: boolean) => void;
+    disabled?: boolean;
+    'aria-label'?: string;
+  }) => (
+    <input
+      type="checkbox"
+      role="switch"
+      aria-label={ariaLabel}
+      checked={checked ?? false}
+      disabled={disabled}
+      onChange={(event) => onChange?.(event.target.checked)}
+    />
+  );
+
+  const Tag = ({ children }: { children: React.ReactNode }) => <span>{children}</span>;
+
+  const Typography = {
+    Title: ({ children }: { children: React.ReactNode }) => <h5>{children}</h5>,
+    Text: ({ children }: { children: React.ReactNode }) => <span>{children}</span>
+  };
+
+  const Input = ({
+    value,
+    onChange,
+    placeholder,
+    id,
+    disabled,
+    ...rest
+  }: {
+    value?: string;
+    onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+    placeholder?: string;
+    id?: string;
+    disabled?: boolean;
+  }) => (
+    <input
+      id={id}
+      value={value ?? ''}
+      onChange={(event) => onChange?.(event)}
+      placeholder={placeholder}
+      disabled={disabled}
+      {...rest}
+    />
+  );
+
+  Input.Search = ({
+    value,
+    onChange,
+    onSearch,
+    placeholder,
+    allowClear,
+    id,
+    disabled,
+    'aria-describedby': ariaDescribedBy,
+    enterButton
+  }: {
+    value?: string;
+    onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+    onSearch?: (value: string) => void;
+    placeholder?: string;
+    allowClear?: boolean;
+    id?: string;
+    disabled?: boolean;
+    'aria-describedby'?: string;
+    enterButton?: React.ReactNode;
+  }) => (
+    <div>
+      <input
+        id={id}
+        value={value ?? ''}
+        onChange={(event) => onChange?.(event)}
+        placeholder={placeholder}
+        disabled={disabled}
+        aria-describedby={ariaDescribedBy}
+      />
+      <button type="button" onClick={() => onSearch?.(value ?? '')} disabled={disabled}>
+        {enterButton ?? 'Search'}
+      </button>
+      {allowClear ? (
+        <button type="button" onClick={() => onChange?.({ target: { value: '' } } as unknown as React.ChangeEvent<HTMLInputElement>)}>
+          Clear
+        </button>
+      ) : null}
+    </div>
+  );
+
   return {
     Select,
     Button,
-    Space
+    Space,
+    Badge,
+    Switch,
+    Tag,
+    Typography,
+    Input
   };
 });
 
@@ -89,23 +189,17 @@ describe('SearchFilterRail', () => {
     );
 
     expect(
-      screen.getByRole('region', { name: '탐색 필터' })
+      screen.getByRole('complementary', { name: 'Explorer 필터' })
     ).toBeInTheDocument();
 
-    await user.selectOptions(
-      screen.getByLabelText('제품 코드 필터') as HTMLSelectElement,
-      'opt-2'
-    );
+    const productSelect = screen.getByRole('combobox', { name: '제품 코드 필터' });
+    const groupSelect = screen.getByRole('combobox', { name: 'Routing 그룹 필터' });
+    const statusSelect = screen.getByRole('combobox', { name: '상태 필터' });
 
-    await user.selectOptions(
-      screen.getByLabelText('Routing 그룹 필터') as HTMLSelectElement,
-      'opt-1'
-    );
+    await user.selectOptions(productSelect as HTMLSelectElement, 'opt-2');
+    await user.selectOptions(groupSelect as HTMLSelectElement, 'opt-1');
+    await user.selectOptions(statusSelect as HTMLSelectElement, 'opt-2');
 
-    await user.selectOptions(
-      screen.getByLabelText('상태 필터') as HTMLSelectElement,
-      'opt-2'
-    );
 
     await user.click(screen.getByRole('button', { name: '필터 초기화' }));
 
@@ -127,8 +221,8 @@ describe('SearchFilterRail', () => {
     );
 
     expect(screen.getByRole('button', { name: '필터 초기화' })).toBeDisabled();
-    expect(screen.getByLabelText('제품 코드 필터')).toBeDisabled();
-    expect(screen.getByLabelText('Routing 그룹 필터')).toBeDisabled();
-    expect(screen.getByLabelText('상태 필터')).toBeDisabled();
+    expect(screen.getByRole('combobox', { name: '제품 코드 필터' })).toBeDisabled();
+    expect(screen.getByRole('combobox', { name: 'Routing 그룹 필터' })).toBeDisabled();
+    expect(screen.getByRole('combobox', { name: '상태 필터' })).toBeDisabled();
   });
 });

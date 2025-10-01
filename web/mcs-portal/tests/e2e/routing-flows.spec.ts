@@ -6,7 +6,7 @@ const baseUrl = process.env.MCMS_E2E_BASE_URL ?? "http://localhost:3000";
 // They are tagged smoke so CI can schedule them independently.
 
 test.describe.parallel("Routing E2E smoke", () => {
-  test("product creation wizard to approval queue", async ({ page }) => {
+  test("@smoke product creation wizard to approval queue", async ({ page }) => {
     test.skip(process.env.CI !== "true", "Requires seeded Playwright Docker compose env");
 
     await page.goto(`${baseUrl}/products`);
@@ -21,7 +21,7 @@ test.describe.parallel("Routing E2E smoke", () => {
     await expect(page.getByRole("row", { name: /ITEM-E2E-001/i })).toBeVisible();
   });
 
-  test("routing upload legacy download + search filters", async ({ page }) => {
+  test("@smoke routing upload legacy download + search filters", async ({ page }) => {
     test.skip(process.env.CI !== "true", "Requires seeded Playwright Docker compose env");
 
     await page.goto(`${baseUrl}/explorer`);
@@ -41,3 +41,4 @@ test.describe.parallel("Routing E2E smoke", () => {
     await expect(page.getByRole("listitem", { name: /PendingApproval/i })).toBeVisible();
   });
 });
+
