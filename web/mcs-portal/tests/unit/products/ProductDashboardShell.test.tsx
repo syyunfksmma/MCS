@@ -5,6 +5,7 @@ import ProductDashboardShell from "@/components/products/ProductDashboardShell";
 import type { ProductDashboardResponse } from "@/types/products";
 import { message } from "antd";
 import { vi } from "vitest";
+import type { SpyInstance } from "vitest";
 
 vi.mock("next/link", () => ({
   __esModule: true,
@@ -17,7 +18,8 @@ describe("ProductDashboardShell", () => {
   const mockWarning = vi.fn();
   const mockSuccess = vi.fn();
   const mockError = vi.fn();
-  let clipboardWrite: ReturnType<typeof vi.fn>;
+  let clipboardWrite: SpyInstance;
+  let useMessageSpy: SpyInstance;
 
   const renderDashboard = (override?: Partial<ProductDashboardResponse>) => {
     const base: ProductDashboardResponse = {
@@ -64,7 +66,7 @@ describe("ProductDashboardShell", () => {
   };
 
   beforeEach(() => {
-    vi.spyOn(message, "useMessage").mockReturnValue([
+    useMessageSpy = vi.spyOn(message, "useMessage").mockReturnValue([
       {
         warning: mockWarning,
         success: mockSuccess,
@@ -73,18 +75,14 @@ describe("ProductDashboardShell", () => {
       <div data-testid="message-context" key="message" />
     ]);
 
-    clipboardWrite = vi.fn().mockResolvedValue(undefined);
-    Object.defineProperty(window.navigator, "clipboard", {
-      value: {
-        writeText: clipboardWrite
-      },
-      configurable: true,
-      writable: true
-    });
+    clipboardWrite = vi
+      .spyOn(navigator.clipboard, "writeText")
+      .mockResolvedValue(undefined);
   });
 
   afterEach(() => {
-    vi.restoreAllMocks();
+    useMessageSpy.mockRestore();
+    clipboardWrite.mockRestore();
     mockWarning.mockReset();
     mockSuccess.mockReset();
     mockError.mockReset();
@@ -137,4 +135,3 @@ describe("ProductDashboardShell", () => {
     expect(mockError).toHaveBeenCalledWith("Copy failed. Please copy manually.");
   });
 });
-

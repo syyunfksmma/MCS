@@ -1,32 +1,37 @@
-import { Divider, Typography, Checkbox } from 'antd';
+import { Divider, Typography, Checkbox } from "antd";
+import type { CheckboxOptionType } from "antd/es/checkbox";
 
 const { Title, Text } = Typography;
 
 interface FilterGroup {
   title: string;
-  options: { label: string; disabled?: boolean }[];
+  options: CheckboxOptionType[];
 }
 
 // NOTE: Static filter metadata keeps Sprint 5 scope focused on styling; actual filtering arrives with FR-9.
 const FILTER_GROUPS: FilterGroup[] = [
   {
-    title: 'Category',
-    options: [{ label: 'Parts' }, { label: 'Documents' }, { label: 'Changes' }]
-  },
-  {
-    title: 'Release Status',
+    title: "Category",
     options: [
-      { label: 'Approved' },
-      { label: 'In Work' },
-      { label: 'Obsolete' }
+      { label: "Parts", value: "parts" },
+      { label: "Documents", value: "documents" },
+      { label: "Changes", value: "changes" }
     ]
   },
   {
-    title: 'SolidWorks',
+    title: "Release Status",
     options: [
-      { label: '3DM Linked' },
-      { label: 'Missing 3DM' },
-      { label: 'Unknown', disabled: true }
+      { label: "Approved", value: "approved" },
+      { label: "In Work", value: "inWork" },
+      { label: "Obsolete", value: "obsolete" }
+    ]
+  },
+  {
+    title: "SolidWorks",
+    options: [
+      { label: "3DM Linked", value: "linked" },
+      { label: "Missing 3DM", value: "missing" },
+      { label: "Unknown", value: "unknown", disabled: true }
     ]
   }
 ];
@@ -39,8 +44,7 @@ export default function ProductFilterPanel() {
           Filters
         </Title>
         <Text type="secondary">
-          Benchmarks Teamcenter left rail styling; functionality lands with
-          FR-9.
+          Benchmarks Teamcenter left rail styling; functionality lands with FR-9.
         </Text>
       </header>
       {FILTER_GROUPS.map((group) => (
@@ -50,11 +54,7 @@ export default function ProductFilterPanel() {
               {group.title}
             </span>
           </Divider>
-          <Checkbox.Group
-            className="flex flex-col gap-2"
-            options={group.options}
-            disabled
-          />
+          <Checkbox.Group className="flex flex-col gap-2" options={group.options} disabled />
         </section>
       ))}
     </aside>

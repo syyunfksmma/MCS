@@ -32,6 +32,7 @@ interface ProductRevisionWorkspaceProps {
 interface RoutedColumn {
   id: string;
   title: string;
+  description?: string | null;
   routings: ExplorerRouting[];
 }
 
@@ -231,3 +232,4 @@ export default function ProductRevisionWorkspace({
     </div>
   );
 }
+

@@ -21,7 +21,7 @@ export default function ServerPage() {
   const groups = useMemo(
     () => ['Routing 로그', 'ETL 이벤트', '시스템 경고'].map((name, index) => ({
       title: name,
-      key: log-
+      key:  `log-${index}` 
     })),
     []
   );
@@ -137,3 +137,5 @@ export default function ServerPage() {
     </div>
   );
 }
+
+

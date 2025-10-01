@@ -1,6 +1,7 @@
 import React from 'react';
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import ExplorerShell from "@/components/explorer/ExplorerShell";
 import type { ExplorerResponse } from "@/types/explorer";
 import { vi } from "vitest";
@@ -93,19 +94,44 @@ const initialData: ExplorerResponse = {
 };
 
 describe("ExplorerShell routing card", () => {
-  it("shows quick-menu placeholder then renders routing details after selection", async () => {
+  let queryClient: QueryClient;
+  let fetchMock: ReturnType<typeof vi.fn>;
+
+  beforeEach(() => {
+    queryClient = new QueryClient();
+    fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({ routing: null, history: [], uploads: [] })
+    });
+    vi.stubGlobal("fetch", fetchMock);
+  });
+
+  afterEach(() => {
+    queryClient.clear();
+    vi.unstubAllGlobals();
+    vi.restoreAllMocks();
+  });
+
+  it("shows placeholder then renders routing details after selection", async () => {
     const user = userEvent.setup();
 
-    render(<ExplorerShell initialData={initialData} />);
+    render(
+      <QueryClientProvider client={queryClient}>
+        <ExplorerShell initialData={initialData} />
+      </QueryClientProvider>
+    );
 
     expect(
-      screen.getByText(/검색 결과가 여기 표시됩니다. SLA는 Sprint5\.1 로그에 누적 기록됩니다\./)
+      screen.getByText('Hover Quick Menu enabled')
     ).toBeInTheDocument();
 
     await user.click(screen.getByTestId("mock-tree"));
 
-    expect(screen.getByText("R-001")).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText("R-001")).toBeInTheDocument();
+    });
     expect(screen.getByText(/PendingApproval/)).toBeInTheDocument();
     expect(screen.getByText(/CAM-5/)).toBeInTheDocument();
+
   });
 });

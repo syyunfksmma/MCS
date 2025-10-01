@@ -590,9 +590,9 @@ export default function TreePanel({
           }}
           aria-label="Explorer routing tree"
           aria-describedby={instructionsId}
-          role="tree"
         />
       </div>
     </Card>
   );
 }
+

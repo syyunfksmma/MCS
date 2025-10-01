@@ -1,7 +1,6 @@
-import { Badge, Button, Checkbox, Input, Space, Switch, Tag, Typography } from 'antd';
-import type { CheckboxValueType } from 'antd/es/checkbox/Group';
-import { useMemo } from 'react';
-import styles from './SearchFilterRail.module.css';
+import { Badge, Button, Input, Select, Space, Switch, Tag, Typography } from "antd";
+import { useMemo } from "react";
+import styles from "./SearchFilterRail.module.css";
 
 export interface FilterOption {
   label: string;
@@ -14,82 +13,69 @@ export interface SlaBadgeValue {
 }
 
 interface SearchFilterRailProps {
-  searchValue: string;
-  onSearchChange: (value: string) => void;
+  searchValue?: string;
+  onSearchChange?: (value: string) => void;
   onSearchSubmit?: (value: string) => void;
+  productOptions: FilterOption[];
+  groupOptions: FilterOption[];
   statusOptions: FilterOption[];
-  revisionOptions: FilterOption[];
-  ownerOptions: FilterOption[];
-  selectedStatuses: string[];
-  selectedRevisions: string[];
-  selectedOwners: string[];
-  recentOnly: boolean;
-  slaOnly: boolean;
+  productValue?: string;
+  groupValue?: string;
+  statusValue?: string;
+  recentOnly?: boolean;
+  slaOnly?: boolean;
   slaBadge?: SlaBadgeValue | null;
   disabled?: boolean;
-  onStatusesChange: (next: string[]) => void;
-  onRevisionsChange: (next: string[]) => void;
-  onOwnersChange: (next: string[]) => void;
-  onToggleRecent: (next: boolean) => void;
-  onToggleSla: (next: boolean) => void;
+  onProductChange: (value: string | undefined) => void;
+  onGroupChange: (value: string | undefined) => void;
+  onStatusChange: (value: string | undefined) => void;
+  onToggleRecent?: (next: boolean) => void;
+  onToggleSla?: (next: boolean) => void;
   onReset?: () => void;
 }
 
 const { Title, Text } = Typography;
 
-function renderOptions(options: FilterOption[]) {
-  return options.map((option) => ({
-    label: option.label,
-    value: option.value
-  }));
+function toSelectOptions(options: FilterOption[]) {
+  return options.map((option) => ({ label: option.label, value: option.value }));
 }
 
 export default function SearchFilterRail({
   searchValue,
   onSearchChange,
   onSearchSubmit,
+  productOptions,
+  groupOptions,
   statusOptions,
-  revisionOptions,
-  ownerOptions,
-  selectedStatuses,
-  selectedRevisions,
-  selectedOwners,
+  productValue,
+  groupValue,
+  statusValue,
   recentOnly,
   slaOnly,
   slaBadge,
   disabled = false,
-  onStatusesChange,
-  onRevisionsChange,
-  onOwnersChange,
+  onProductChange,
+  onGroupChange,
+  onStatusChange,
   onToggleRecent,
   onToggleSla,
   onReset
 }: SearchFilterRailProps) {
-  const statusItems = useMemo(() => renderOptions(statusOptions), [statusOptions]);
-  const revisionItems = useMemo(() => renderOptions(revisionOptions), [revisionOptions]);
-  const ownerItems = useMemo(() => renderOptions(ownerOptions), [ownerOptions]);
+  const productSelectItems = useMemo(() => toSelectOptions(productOptions), [productOptions]);
+  const groupSelectItems = useMemo(() => toSelectOptions(groupOptions), [groupOptions]);
+  const statusSelectItems = useMemo(() => toSelectOptions(statusOptions), [statusOptions]);
 
   const badgeStatus = useMemo(() => {
     if (!slaBadge) return undefined;
-    return slaBadge.value > slaBadge.target ? 'error' : 'success';
+    return slaBadge.value > slaBadge.target ? "error" : "success";
   }, [slaBadge]);
 
-  const handleStatusChange = (values: CheckboxValueType[]) =>
-    onStatusesChange(values.map(String));
-
-  const handleRevisionChange = (values: CheckboxValueType[]) =>
-    onRevisionsChange(values.map(String));
-
-  const handleOwnerChange = (values: CheckboxValueType[]) =>
-    onOwnersChange(values.map(String));
+  const effectiveRecentOnly = recentOnly ?? false;
+  const effectiveSlaOnly = slaOnly ?? false;
+  const activeFilterCount = [productValue, groupValue, statusValue].filter(Boolean).length;
 
   return (
-    <aside
-      className={styles.rail}
-      role="complementary"
-      aria-label="Explorer 필터"
-      aria-live="polite"
-    >
+    <aside className={styles.rail} role="complementary" aria-label="Explorer 필터" aria-live="polite">
       <header className={styles.header}>
         <div className={styles.headerTitle}>
           <Title level={5} className={styles.title}>
@@ -98,7 +84,7 @@ export default function SearchFilterRail({
           {slaBadge ? (
             <Badge
               status={badgeStatus}
-              text={SLA  /  ms}
+              text={`SLA ${slaBadge.value} / ${slaBadge.target} ms`}
               className={styles.slaBadge}
             />
           ) : null}
@@ -117,54 +103,68 @@ export default function SearchFilterRail({
         ) : null}
       </header>
 
-      <section className={styles.section} aria-label="검색">
-        <label htmlFor="explorer-filter-search" className={styles.sectionLabel}>
-          검색
-        </label>
-        <Input.Search
-          id="explorer-filter-search"
-          placeholder="Routing 코드, 제품, 상태 검색"
-          value={searchValue}
-          onChange={(event) => onSearchChange(event.target.value)}
-          onSearch={onSearchSubmit}
-          enterButton
+      {onSearchChange ? (
+        <section className={styles.section} aria-label="검색">
+          <label htmlFor="explorer-filter-search" className={styles.sectionLabel}>
+            검색
+          </label>
+          <Input.Search
+            id="explorer-filter-search"
+            placeholder="Routing 코드, 제품, 상태 검색"
+            value={searchValue}
+            onChange={(event) => onSearchChange?.(event.target.value)}
+            onSearch={onSearchSubmit}
+            enterButton
+            allowClear
+            disabled={disabled}
+            aria-describedby={slaBadge ? "explorer-filter-sla-help" : undefined}
+          />
+          {slaBadge ? (
+            <Text id="explorer-filter-sla-help" type="secondary" className={styles.helper}>
+              목표 대비 {Math.round((slaBadge.value / Math.max(slaBadge.target, 1)) * 100)}%
+            </Text>
+          ) : null}
+        </section>
+      ) : null}
+
+      <section className={styles.section} aria-label="제품 필터">
+        <span className={styles.sectionLabel}>제품</span>
+        <Select
+          className={styles.select}
+          aria-label="제품 코드 필터"
           allowClear
+          placeholder="제품 선택"
+          options={productSelectItems}
+          value={productValue}
+          onChange={(value) => onProductChange(value as string | undefined)}
           disabled={disabled}
-          aria-describedby={slaBadge ? 'explorer-filter-sla-help' : undefined}
         />
-        {slaBadge ? (
-          <Text id="explorer-filter-sla-help" type="secondary" className={styles.helper}>
-            목표 대비 {Math.round((slaBadge.value / Math.max(slaBadge.target, 1)) * 100)}%
-          </Text>
-        ) : null}
       </section>
 
-      <section className={styles.section} aria-label="Routing 상태 필터">
+      <section className={styles.section} aria-label="그룹 필터">
+        <span className={styles.sectionLabel}>그룹</span>
+        <Select
+          className={styles.select}
+          aria-label="Routing 그룹 필터"
+          allowClear
+          placeholder="Routing 그룹"
+          options={groupSelectItems}
+          value={groupValue}
+          onChange={(value) => onGroupChange(value as string | undefined)}
+          disabled={disabled}
+        />
+      </section>
+
+      <section className={styles.section} aria-label="상태 필터">
         <span className={styles.sectionLabel}>상태</span>
-        <Checkbox.Group
-          options={statusItems}
-          value={selectedStatuses}
-          onChange={handleStatusChange}
-          disabled={disabled}
-        />
-      </section>
-
-      <section className={styles.section} aria-label="CAM Revision 필터">
-        <span className={styles.sectionLabel}>CAM Revision</span>
-        <Checkbox.Group
-          options={revisionItems}
-          value={selectedRevisions}
-          onChange={handleRevisionChange}
-          disabled={disabled}
-        />
-      </section>
-
-      <section className={styles.section} aria-label="Owner 필터">
-        <span className={styles.sectionLabel}>Owner</span>
-        <Checkbox.Group
-          options={ownerItems}
-          value={selectedOwners}
-          onChange={handleOwnerChange}
+        <Select
+          className={styles.select}
+          aria-label="상태 필터"
+          allowClear
+          placeholder="상태 선택"
+          options={statusSelectItems}
+          value={statusValue}
+          onChange={(value) => onStatusChange(value as string | undefined)}
           disabled={disabled}
         />
       </section>
@@ -174,8 +174,8 @@ export default function SearchFilterRail({
         <Space direction="vertical" className={styles.quickActions}>
           <label className={styles.toggleRow}>
             <Switch
-              checked={recentOnly}
-              onChange={onToggleRecent}
+              checked={effectiveRecentOnly}
+              onChange={(next) => onToggleRecent?.(next)}
               disabled={disabled}
               aria-label="최근 본 Routing만 보기"
             />
@@ -183,8 +183,8 @@ export default function SearchFilterRail({
           </label>
           <label className={styles.toggleRow}>
             <Switch
-              checked={slaOnly}
-              onChange={onToggleSla}
+              checked={effectiveSlaOnly}
+              onChange={(next) => onToggleSla?.(next)}
               disabled={disabled}
               aria-label="SLA 초과 Routing만 보기"
             />
@@ -194,7 +194,7 @@ export default function SearchFilterRail({
       </section>
 
       <footer className={styles.footer}>
-        <Tag color="default">필터 {selectedStatuses.length + selectedRevisions.length + selectedOwners.length}</Tag>
+        <Tag color="default">필터 {activeFilterCount}</Tag>
       </footer>
     </aside>
   );

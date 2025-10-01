@@ -12,15 +12,16 @@ export const options = {
 const BASE_URL = __ENV.BASE_URL || 'http://localhost:3000';
 
 export default function () {
-  const admin = http.get(${BASE_URL}/admin);
+  const admin = http.get(`${BASE_URL}/admin`);
   check(admin, {
     'admin responds 200': res => res.status === 200
   });
 
-  const explorer = http.get(${BASE_URL}/);
+  const explorer = http.get(`${BASE_URL}/`);
   check(explorer, {
     'landing responds 200': res => res.status === 200
   });
 
   sleep(1);
 }
+

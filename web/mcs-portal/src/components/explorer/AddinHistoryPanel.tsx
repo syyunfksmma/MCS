@@ -93,21 +93,23 @@ export default function AddinHistoryPanel({
         <Paragraph type="secondary">
           Add-in 실행 기록을 확인하고 실패 시 Ops에 즉시 알립니다.
         </Paragraph>
-        <Timeline
-          mode="left"
-          items={timeline.map((entry) => ({
-            color: STATUS_COLORS[entry.status].color,
-            dot: historyIconMap[entry.status],
-            children: (
+        <Timeline mode="left">
+          {timeline.map((entry) => (
+            <Timeline.Item
+              key={`${entry.title}-${entry.time}`}
+              color={STATUS_COLORS[entry.status].color}
+              dot={historyIconMap[entry.status]}
+            >
               <Space direction="vertical" size={2}>
                 <Text strong>{entry.title}</Text>
                 <Text type="secondary">{entry.description}</Text>
                 <Text type="secondary">{entry.time}</Text>
               </Space>
-            )
-          }))}
-        />
+            </Timeline.Item>
+          ))}
+        </Timeline>
       </Space>
     </Card>
   );
 }
+

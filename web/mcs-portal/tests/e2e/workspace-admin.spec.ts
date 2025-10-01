@@ -23,7 +23,7 @@ test.describe("Workspace & Admin smoke flows", () => {
     await page.goto(baseUrl);
   });
 
-  test("workspace upload placeholder", async ({ page }) => {
+  test("@smoke workspace upload placeholder", async ({ page }) => {
     await test.step("Explorer 진입", async () => {
       await expect(page).toHaveTitle(/MCMS Explorer/i);
     });
@@ -33,7 +33,7 @@ test.describe("Workspace & Admin smoke flows", () => {
     });
   });
 
-  test("admin feature flag placeholder", async ({ page }) => {
+  test("@smoke admin feature flag placeholder", async ({ page }) => {
     await test.step("Admin 메뉴 전환", async () => {
       const adminLink = page.getByRole("link", { name: /Admin/i });
       await adminLink.click();
@@ -45,3 +45,4 @@ test.describe("Workspace & Admin smoke flows", () => {
     });
   });
 });
+

@@ -150,15 +150,9 @@ export default function WorkspaceUploadPanel({
           options.onError?.(new Error('Upload cancelled'));
         };
 
-        if (options.signal?.aborted) {
-          abortListener();
-          reset();
-          return;
-        }
+        controller.signal.addEventListener('abort', abortListener);
 
-        options.signal?.addEventListener('abort', abortListener);
-
-        beginUpload({
+                        beginUpload({
           fileCount: 1,
           totalSize: file.size,
           userId: uploadedBy,
@@ -235,7 +229,7 @@ export default function WorkspaceUploadPanel({
           });
 
           message.success(`Upload complete: ${file.name}`);
-          options.onSuccess?.({}, file);
+          options.onSuccess?.({}, undefined);
         } catch (err) {
           if (controller.signal.aborted) {
             return;
@@ -269,7 +263,7 @@ export default function WorkspaceUploadPanel({
           options.onError?.(err as Error);
         } finally {
           reset();
-          options.signal?.removeEventListener('abort', abortListener);
+          controller.signal.removeEventListener('abort', abortListener);
         }
       }
     }),
@@ -366,3 +360,6 @@ export default function WorkspaceUploadPanel({
     </div>
   );
 }
+
+
+

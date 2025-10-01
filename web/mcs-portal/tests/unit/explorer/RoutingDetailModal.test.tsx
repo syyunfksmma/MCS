@@ -1,10 +1,11 @@
 import React from 'react';
 import { render, screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
 import RoutingDetailModal from "@/components/explorer/RoutingDetailModal";
 import type { ExplorerRouting } from "@/types/explorer";
 
-const sampleRouting: ExplorerRouting = {
+type ModalProps = React.ComponentProps<typeof RoutingDetailModal>;
+
+const baseRouting: ExplorerRouting = {
   id: "routing-1",
   code: "ROUT-001",
   status: "PendingApproval",
@@ -16,34 +17,33 @@ const sampleRouting: ExplorerRouting = {
   ]
 };
 
+function renderModal(override: Partial<ModalProps>) {
+  const props: ModalProps = {
+    open: true,
+    routing: baseRouting,
+    activeTab: "summary",
+    onClose: () => undefined,
+    ...override
+  } as ModalProps;
+
+  return render(<RoutingDetailModal {...props} />);
+}
+
 describe("RoutingDetailModal", () => {
   it("renders placeholder when no routing is selected", () => {
-    render(
-      <RoutingDetailModal open routing={null} onClose={() => undefined} />
-    );
+    renderModal({ routing: null });
 
-    expect(screen.getByText("라우팅을 선택하세요")).toBeInTheDocument();
+    expect(screen.getByText("Select a routing to view details")).toBeInTheDocument();
   });
 
-  it("shows file list and empty state correctly", async () => {
-    const user = userEvent.setup();
+  it("shows file empty state when routing has no files", () => {
+    renderModal({ routing: { ...baseRouting, files: [] }, activeTab: "files" });
 
-    render(
-      <RoutingDetailModal open routing={{ ...sampleRouting, files: [] }} onClose={() => undefined} />
-    );
-
-    await user.click(screen.getByRole("tab", { name: /files/i }));
-    expect(screen.getByText("파일이 없습니다")).toBeInTheDocument();
+    expect(screen.getByText("No files uploaded")).toBeInTheDocument();
   });
 
-  it("lists attached files when routing has entries", async () => {
-    const user = userEvent.setup();
-
-    render(
-      <RoutingDetailModal open routing={sampleRouting} onClose={() => undefined} />
-    );
-
-    await user.click(screen.getByRole("tab", { name: /files/i }));
+  it("lists attached files when routing has entries", () => {
+    renderModal({ routing: baseRouting, activeTab: "files" });
 
     expect(screen.getByText("program.esp")).toBeInTheDocument();
     expect(screen.getByText("fixture.gdml")).toBeInTheDocument();

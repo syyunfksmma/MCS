@@ -19,7 +19,8 @@
     "test:regression": "npm run test:data:reset && npm run test:data:seed && npm run test:e2e && npm run test:axe",
     "test:unit": "vitest run",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "playwright:install-offline": "node scripts/testing/install-playwright-offline.mjs"
   },
   "dependencies": {
     "@ant-design/icons": "5.3.4",
@@ -27,6 +28,9 @@
     "@tanstack/react-query": "5.52.0",
     "@tanstack/react-virtual": "^3.13.12",
     "antd": "4.24.16",
+    "@react-three/fiber": "8.15.10",
+    "@react-three/drei": "9.75.0",
+    "three": "0.157.0",
     "next": "^14.2.32",
     "react": "18.3.1",
     "react-dom": "18.3.1"

@@ -14,6 +14,8 @@ import type {
 } from '@/types/explorer';
 import type { RoutingSearchResult } from '@/types/search';
 
+type ExplorerSearchResult = RoutingSearchResult & { slaTargetMs?: number };
+
 export type ExplorerWizardContext = {
   item: ExplorerItem;
   revision: ExplorerRevision;
@@ -27,8 +29,8 @@ export type ExplorerLayoutState = {
   setSelectedRouting: Dispatch<SetStateAction<ExplorerRouting | null>>;
   searchTerm: string;
   setSearchTerm: Dispatch<SetStateAction<string>>;
-  searchResult: RoutingSearchResult | null;
-  setSearchResult: Dispatch<SetStateAction<RoutingSearchResult | null>>;
+  searchResult: ExplorerSearchResult | null;
+  setSearchResult: Dispatch<SetStateAction<ExplorerSearchResult | null>>;
   lastSearchError: string | null;
   setLastSearchError: Dispatch<SetStateAction<string | null>>;
   wizardContext: ExplorerWizardContext | null;
@@ -56,7 +58,7 @@ export function useExplorerLayout(
   const [selectedRouting, setSelectedRouting] =
     useState<ExplorerRouting | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
-  const [searchResult, setSearchResult] = useState<RoutingSearchResult | null>(
+  const [searchResult, setSearchResult] = useState<ExplorerSearchResult | null>(
     null
   );
   const [lastSearchError, setLastSearchError] = useState<string | null>(null);

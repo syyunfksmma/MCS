@@ -140,12 +140,12 @@ const findRoutingInCollection = (
 ): ExplorerRouting | null => {
   for (const item of collection) {
     for (const revision of item.revisions) {
-      const candidate = revision.routings.find(
-        (routing) => routing.id === routingId
-      );
+      for (const group of revision.routingGroups) {
+        const candidate = group.routings.find((routing) => routing.id === routingId);
 
-      if (candidate) {
-        return candidate;
+        if (candidate) {
+          return candidate;
+        }
       }
     }
   }
@@ -2059,7 +2059,7 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
                 <span className={styles.slaLabel}>결과 수</span>
                 <span className={styles.slaValue}>{filteredItems.length}</span>
                 <span className={styles.slaDelta}>
-                  총 {searchResult.total ?? filteredItems.length}건
+                  총 {(searchResult?.total ?? filteredItems.length)}건
                 </span>
               </div>
             </div>
@@ -2324,3 +2324,5 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
     </>
   );
 }
+
+
