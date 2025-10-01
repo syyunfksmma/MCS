@@ -12,6 +12,9 @@ public class Routing : AuditableEntity
     public RoutingStatus Status { get; set; } = RoutingStatus.Draft;
     public string? CamRevision { get; set; } = "1.0.0";
     public bool IsPrimary { get; set; }
+    public bool IsLegacyHidden { get; set; }
+    public DateTimeOffset? LegacyHiddenAt { get; set; }
+    public string? LegacyHiddenBy { get; set; }
     public ApprovalStatus ApprovalStatus { get; set; } = ApprovalStatus.None;
     public DateTimeOffset? ApprovalRequestedAt { get; set; }
     public string? ApprovalRequestedBy { get; set; }

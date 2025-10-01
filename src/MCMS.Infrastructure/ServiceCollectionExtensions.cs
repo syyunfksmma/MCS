@@ -47,6 +47,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IAddinJobService, AddinJobService>();
         services.AddScoped<IAddinKeyService, AddinKeyService>();
         services.AddScoped<IExplorerService, ExplorerService>();
+        services.AddScoped<ISolidWorksLinkService, SolidWorksLinkService>();
         services.AddSingleton<IFileStorageService, FileStorageService>();
         services.AddSingleton<ICommandQueue, InMemoryCommandQueue>();
         services.AddSingleton<IEspritAutomationService, EspritAutomationService>();

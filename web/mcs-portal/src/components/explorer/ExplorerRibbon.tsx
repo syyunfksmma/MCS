@@ -10,8 +10,10 @@ const composeClassNames = (...values: ClassValue[]) =>
 
 interface ExplorerRibbonProps {
   selectedRouting: ExplorerRouting | null;
+  canOpenExplorer: boolean;
   onOpenSelected: () => void;
   onOpenWizard: () => void;
+  onOpenExplorer: () => void;
   onShowUploadPanel: () => void;
   onDownloadSelected: () => void;
   onShowAddinPanel: () => void;
@@ -19,14 +21,18 @@ interface ExplorerRibbonProps {
 
 export default function ExplorerRibbon({
   selectedRouting,
+  canOpenExplorer,
   onOpenSelected,
   onOpenWizard,
+  onOpenExplorer,
   onShowUploadPanel,
   onDownloadSelected,
   onShowAddinPanel
 }: ExplorerRibbonProps) {
   const isRoutingSelected = Boolean(selectedRouting);
   const routingCode = selectedRouting?.code;
+  const sharedPath = selectedRouting?.sharedDrivePath;
+  const canLaunchExplorer = Boolean(sharedPath) && canOpenExplorer;
   const routingStatus = selectedRouting?.status ?? '대기';
 
   return (
@@ -85,6 +91,27 @@ export default function ExplorerRibbon({
               aria-label="Routing 다운로드"
             >
               다운로드
+            </Button>
+          </Tooltip>
+          <Tooltip
+            title={
+              !isRoutingSelected
+                ? 'Routing 선택 후 이용 가능합니다'
+                : !sharedPath
+                  ? 'Shared drive path unavailable'
+                  : canOpenExplorer
+                    ? 'Explorer 프로토콜 실행'
+                    : 'Explorer 실행 권한이 없습니다.'
+            }
+          >
+            <Button
+              type="text"
+              className={styles.actionButton}
+              disabled={!isRoutingSelected || !canLaunchExplorer}
+              onClick={onOpenExplorer}
+              aria-label="mcms-explorer 프로토콜로 열기"
+            >
+              Explorer 열기
             </Button>
           </Tooltip>
         </ActionGroup>

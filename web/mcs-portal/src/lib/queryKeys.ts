@@ -16,4 +16,14 @@ export const searchKeys = {
 export const espritKeys = {
   all: ['esprit'] as const,
   jobs: () => [...espritKeys.all, 'jobs'] as const
-};\nexport const routingVersionKeys = {\n  all: ['routing-versions'] as const,\n  list: (routingId: string) => [...routingVersionKeys.all, routingId] as const\n};\n
+};
+
+export const routingVersionKeys = {
+  all: ['routing-versions'] as const,
+  list: (routingId: string) => [...routingVersionKeys.all, routingId] as const
+};
+
+export const userKeys = {
+  all: ['user'] as const,
+  permissions: () => [...userKeys.all, 'permissions'] as const
+};

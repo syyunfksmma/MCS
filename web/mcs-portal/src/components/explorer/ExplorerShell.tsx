@@ -1,5 +1,7 @@
 'use client';
 
+import { useUserPermissions } from '@/hooks/useUserPermissions';
+
 import {
   Card,
   Tabs,
@@ -59,7 +61,7 @@ import { orderRoutingGroups } from '@/lib/routingGroups';
 import { logRoutingEvent } from '@/lib/telemetry/routing';
 import { downloadFromUrl } from '@/lib/downloads/browser';
 import { downloadRoutingBundle } from '@/lib/workspace/downloadRoutingBundle';
-import { setPrimaryRoutingVersion } from '@/lib/api/routingVersions';
+import { updateRoutingVersion } from '@/lib/api/routingVersions';
 import { getRoutingFileDownload } from '@/lib/workspace/getRoutingFileDownload';
 import { renameRoutingGroup } from '@/lib/workspace/renameRoutingGroup';
 import { createRouting } from '@/lib/workspace/createRouting';
@@ -402,8 +404,106 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
   const { setLastRoutingId } = useNavigation();
   const [espritKeyModalOpen, setEspritKeyModalOpen] = useState(false);
   const auth = useAuthContext();
-  const versionsQuery = useRoutingVersions(selectedRouting?.id);
+  const permissionsQuery = useUserPermissions();
+  const userPermissions = permissionsQuery.data ?? {
+    canOpenExplorer: true,
+    canReplaceSolidWorks: true,
+    canManageRoutingVersions: true
+  };
 
+  const versionsQuery = useRoutingVersions(selectedRouting?.id);
+const versionList = useMemo(() => versionsQuery.data ?? [], [versionsQuery.data]);
+const refetchVersions = versionsQuery.refetch;
+
+
+
+const handlePromoteVersion = useCallback(async (versionId: string) => {
+  if (!selectedRouting) {
+    return;
+  }
+
+  const version = versionList.find((entry) => entry.versionId === versionId);
+  if (!userPermissions.canManageRoutingVersions) {
+    message.warning('You do not have permission to manage routing versions.');
+    return;
+  }
+
+  try {
+    const requestedBy = auth.account?.username ?? 'workspace.user';
+    await updateRoutingVersion({
+      routingId: selectedRouting.id,
+      versionId,
+      requestedBy,
+      makePrimary: true,
+      currentIsPrimary: version?.isPrimary,
+      legacyHidden: version?.isLegacyHidden
+    });
+
+    setItemsState((prev) => {
+      const next = prev.map((item) => ({
+        ...item,
+        revisions: item.revisions.map((revision) => ({
+          ...revision,
+          routingGroups: revision.routingGroups.map((group) => ({
+            ...group,
+            routings: group.routings.map((routing) => {
+              if (routing.id === versionId) {
+                return { ...routing, isPrimary: true };
+              }
+              if (routing.isPrimary && routing.id !== versionId) {
+                return { ...routing, isPrimary: false };
+              }
+              return routing;
+            })
+          }))
+        }))
+      }));
+
+      const updated = next;
+      const promoted =
+        findRoutingInCollection(updated, versionId) ??
+        findRoutingInCollection(updated, selectedRouting.id);
+      setSelectedRouting(promoted ?? null);
+      return updated;
+    });
+
+    await refetchVersions();
+    message.success('Primary version updated.');
+  } catch (error) {
+    const detail = error instanceof Error ? error.message : 'Unknown error';
+    message.error(`Failed to update primary version: ${detail}`);
+  }
+}, [auth.account?.username, selectedRouting, setItemsState, setSelectedRouting, userPermissions.canManageRoutingVersions, versionList, refetchVersions]);
+
+const handleToggleLegacyVersion = useCallback(async (versionId: string, nextHidden: boolean) => {
+  if (!selectedRouting) {
+    return;
+  }
+
+  if (!userPermissions.canManageRoutingVersions) {
+    message.warning('You do not have permission to manage routing versions.');
+    return;
+  }
+
+  const version = versionList.find((entry) => entry.versionId === versionId);
+
+  try {
+    const requestedBy = auth.account?.username ?? 'workspace.user';
+    await updateRoutingVersion({
+      routingId: selectedRouting.id,
+      versionId,
+      requestedBy,
+      currentIsPrimary: version?.isPrimary,
+      legacyHidden: nextHidden
+    });
+
+    await refetchVersions();
+    message.success(nextHidden ? 'Legacy flag applied.' : 'Legacy flag removed.');
+  } catch (error) {
+    const detail = error instanceof Error ? error.message : 'Unknown error';
+    message.error(`Failed to update legacy visibility: ${detail}`);
+  }
+}, [auth.account?.username, selectedRouting, userPermissions.canManageRoutingVersions, versionList, refetchVersions]);
 
   const [latestEspritKey, setLatestEspritKey] = useState<CreateEspritApiKeyResponse | null>(null);
 
@@ -559,53 +659,55 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
     setDownloadError(null);
     setDownloadMeta(null);
   }, [selectedRouting, setDownloadModalOpen, setDownloadError, setDownloadMeta]);
-  const handlePromoteVersion = useCallback(async (versionId: string) => {
+
+  const handleOpenInExplorer = useCallback(async () => {
     if (!selectedRouting) {
+      message.warning('Select a routing before opening Explorer.');
       return;
     }
 
-    try {
-      const requestedBy = auth.account?.username ?? 'workspace.user';
-      await setPrimaryRoutingVersion({
-        routingId: selectedRouting.id,
-        versionId,
-        requestedBy
-      });
-
-      setItemsState((prev) => {
-        const next = prev.map((item) => ({
-          ...item,
-          revisions: item.revisions.map((revision) => ({
-            ...revision,
-            routingGroups: revision.routingGroups.map((group) => ({
-              ...group,
-              routings: group.routings.map((routing) => {
-                if (routing.id === versionId) {
-                  return { ...routing, isPrimary: true };
-                }
-                if (routing.isPrimary && routing.id !== versionId) {
-                  return { ...routing, isPrimary: false };
-                }
-                return routing;
-              })
-            }))
-          }))
-        }));
-
-        const updated = next;
-        const promoted = findRoutingInCollection(updated, versionId) ?? findRoutingInCollection(updated, selectedRouting.id);
-        setSelectedRouting(promoted ?? null);
-        return updated;
-      });
-
-      await versionsQuery.refetch();
-      message.success('Primary version updated.');
-    } catch (error) {
-      const detail = error instanceof Error ? error.message : 'Unknown error';
-      message.error(`Failed to update primary version: ${detail}`);
+    if (!userPermissions.canOpenExplorer) {
+      message.warning('You do not have permission to open Explorer.');
+      return;
     }
-  }, [auth.account?.username, selectedRouting, setItemsState, setSelectedRouting, versionsQuery]);
 
+    const sharedPath = selectedRouting.sharedDrivePath;
+    if (!sharedPath) {
+      message.warning('Shared drive path is not available for this routing.');
+      return;
+    }
+
+    const uri = `mcms-explorer://open?path=${encodeURIComponent(sharedPath)}`;
+    logRoutingEvent({
+      name: 'open_explorer_attempt',
+      properties: { routingId: selectedRouting.id, path: sharedPath }
+    });
+
+    try {
+      window.location.href = uri;
+      message.success('Explorer protocol invoked.');
+      logRoutingEvent({
+        name: 'open_explorer_success',
+        properties: { routingId: selectedRouting.id }
+      });
+    } catch (error) {
+      logRoutingEvent({
+        name: 'open_explorer_failure',
+        properties: {
+          routingId: selectedRouting.id,
+          reason: error instanceof Error ? error.message : String(error)
+        }
+      });
+      message.warning('Explorer launch may be blocked. Shared path copied to clipboard.');
+      try {
+        if (typeof navigator !== 'undefined' && navigator.clipboard) {
+          await navigator.clipboard.writeText(sharedPath);
+        }
+      } catch {
+        // ignore clipboard errors
+      }
+    }
+  }, [selectedRouting, userPermissions.canOpenExplorer]);
 
   const handleDownloadModalClose = useCallback(() => {
     setDownloadModalOpen(false);
@@ -2269,7 +2371,11 @@ const previewColumn = (
         bordered
         className={styles.previewCard}
       >
-        <WorkspaceUploadPanel routing={selectedRouting} />
+        <WorkspaceUploadPanel
+          routing={selectedRouting}
+          canReplaceSolidWorks={userPermissions.canReplaceSolidWorks}
+          permissionsLoading={permissionsQuery.isLoading}
+        />
       </Card>
       <Card
         id="three-viewer-card"
@@ -2308,8 +2414,10 @@ const previewColumn = (
   const layoutRibbon = (
     <ExplorerRibbon
       selectedRouting={selectedRouting}
+      canOpenExplorer={userPermissions.canOpenExplorer}
       onOpenSelected={handleRibbonOpenSelected}
       onOpenWizard={handleRibbonOpenWizard}
+      onOpenExplorer={handleOpenInExplorer}
       onShowUploadPanel={handleShowUploadPanel}
       onDownloadSelected={handleRibbonDownload}
       onShowAddinPanel={handleShowAddinPanel}
@@ -2407,9 +2515,11 @@ const previewColumn = (
         onTabChange={handleDetailTabChange}
         onClose={handleDetailModalClose}
         onRetry={routingDetailQuery.refetch}
-        versions={versionsQuery.data}
+        versions={versionList}
         versionsLoading={versionsQuery.isLoading || versionsQuery.isFetching}
+        canManageVersions={userPermissions.canManageRoutingVersions}
         onPromoteVersion={handlePromoteVersion}
+        onToggleLegacyVersion={handleToggleLegacyVersion}
       />
       {wizardContext ? (
         <RoutingCreationWizard

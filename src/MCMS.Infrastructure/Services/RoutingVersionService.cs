@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using MCMS.Core.Abstractions;
 using MCMS.Core.Contracts.Dtos;
 using MCMS.Core.Contracts.Requests;
@@ -60,38 +61,83 @@ public class RoutingVersionService : IRoutingVersionService
             throw new InvalidOperationException("Version belongs to a different revision.");
         }
 
-        if (!request.IsPrimary)
+        var historyEntries = new List<HistoryEntryDto>();
+        var now = DateTimeOffset.UtcNow;
+        var changesMade = false;
+
+        if (request.LegacyHidden is bool legacyHidden && target.IsLegacyHidden != legacyHidden)
         {
-            // No zero-primary state supported; ignore.
-            return MapVersion(target);
+            var previousLegacyValue = target.IsLegacyHidden;
+            target.IsLegacyHidden = legacyHidden;
+            target.LegacyHiddenAt = legacyHidden ? now : null;
+            target.LegacyHiddenBy = request.RequestedBy;
+            target.UpdatedAt = now;
+            target.UpdatedBy = request.RequestedBy;
+            changesMade = true;
+
+            historyEntries.Add(new HistoryEntryDto(
+                Guid.NewGuid(),
+                target.Id,
+                "RoutingVersionLegacyVisibilityChanged",
+                nameof(Routing.IsLegacyHidden),
+                previousLegacyValue.ToString(),
+                legacyHidden.ToString(),
+                ApprovalOutcome.Pending,
+                now,
+                request.RequestedBy,
+                request.Comment));
         }
 
-        var siblings = await _dbContext.Routings
-            .Where(r => r.ItemRevisionId == baseRouting.ItemRevisionId)
-            .ToListAsync(cancellationToken);
-
-        foreach (var sibling in siblings)
+        var wasPrimary = target.IsPrimary;
+        var shouldPromote = request.IsPrimary && !target.IsPrimary;
+        if (shouldPromote)
         {
-            sibling.IsPrimary = sibling.Id == target.Id;
-            sibling.UpdatedAt = DateTimeOffset.UtcNow;
-            sibling.UpdatedBy = request.RequestedBy;
+            var siblings = await _dbContext.Routings
+                .Where(r => r.ItemRevisionId == baseRouting.ItemRevisionId)
+                .ToListAsync(cancellationToken);
+
+            foreach (var sibling in siblings)
+            {
+                sibling.IsPrimary = sibling.Id == target.Id;
+                sibling.UpdatedAt = now;
+                sibling.UpdatedBy = request.RequestedBy;
+            }
+
+            changesMade = true;
+
+            historyEntries.Add(new HistoryEntryDto(
+                Guid.NewGuid(),
+                target.Id,
+                "RoutingVersionPromoted",
+                nameof(Routing.IsPrimary),
+                wasPrimary.ToString(),
+                true.ToString(),
+                ApprovalOutcome.Approved,
+                now,
+                request.RequestedBy,
+                request.Comment));
+        }
+
+        if (!changesMade)
+        {
+            return MapVersion(target);
         }
 
         await _dbContext.SaveChangesAsync(cancellationToken);
 
-        await _historyService.RecordAsync(new HistoryEntryDto(
-            Guid.NewGuid(),
-            target.Id,
-            "RoutingVersionPromoted",
-            nameof(Routing.IsPrimary),
-            null,
-            "true",
-            ApprovalOutcome.Approved,
-            DateTimeOffset.UtcNow,
-            request.RequestedBy,
-            request.Comment), cancellationToken);
+        foreach (var entry in historyEntries)
+        {
+            await _historyService.RecordAsync(entry, cancellationToken);
+        }
 
-        return MapVersion(target);
+        var refreshed = await _dbContext.Routings
+            .AsNoTracking()
+            .Include(r => r.Files)
+            .Include(r => r.HistoryEntries)
+            .FirstOrDefaultAsync(r => r.Id == target.Id, cancellationToken)
+            ?? target;
+
+        return MapVersion(refreshed);
     }
 
     private static RoutingVersionDto MapVersion(Routing routing)
@@ -114,6 +160,9 @@ public class RoutingVersionService : IRoutingVersionService
             routing.CamRevision ?? "1.0.0",
             routing.Status,
             routing.IsPrimary,
+            routing.IsLegacyHidden,
+            routing.LegacyHiddenAt,
+            routing.LegacyHiddenBy,
             routing.UpdatedBy ?? routing.CreatedBy,
             routing.CreatedAt,
             routing.UpdatedAt,

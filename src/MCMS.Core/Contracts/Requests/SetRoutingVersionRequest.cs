@@ -1,3 +1,3 @@
 namespace MCMS.Core.Contracts.Requests;
 
-public record SetRoutingVersionRequest(bool IsPrimary, string RequestedBy, string? Comment);
+public record SetRoutingVersionRequest(bool IsPrimary, string RequestedBy, string? Comment, bool? LegacyHidden = null);

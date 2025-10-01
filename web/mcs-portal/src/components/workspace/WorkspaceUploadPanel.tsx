@@ -2,11 +2,19 @@
 
 import { InboxOutlined } from '@ant-design/icons';
 import {
+  Alert,
   Button,
+  Card,
+  Divider,
   Empty,
+  Input,
   List,
   message,
+  Modal,
   Progress,
+  Space,
+  Spin,
+  Tooltip,
   Typography,
   Upload
 } from 'antd';
@@ -16,8 +24,12 @@ import {
   uploadRoutingFileChunks,
   type ChunkUploadProgress
 } from '@/lib/uploads/uploadRoutingFileChunks';
+import { useAuthContext } from '@/components/providers/AuthProvider';
 import { useRoutingUploadTelemetry } from '@/lib/telemetry/useRoutingUploadTelemetry';
+import { fetchSolidWorksLink, replaceSolidWorksLink } from '@/lib/api/solidworks';
+import { logRoutingEvent } from '@/lib/telemetry/routing';
 import type { ExplorerRouting } from '@/types/explorer';
+import type { SolidWorksLink } from '@/types/solidworks';
 
 const { Paragraph, Text } = Typography;
 
@@ -37,6 +49,8 @@ interface UploadEntry {
 
 interface WorkspaceUploadPanelProps {
   routing?: ExplorerRouting | null;
+  canReplaceSolidWorks: boolean;
+  permissionsLoading?: boolean;
 }
 
 const ALLOWED_EXTENSIONS = new Set([
@@ -76,11 +90,141 @@ const inferFileType = (fileName: string): string => {
 };
 
 export default function WorkspaceUploadPanel({
-  routing
+  routing,
+  canReplaceSolidWorks,
+  permissionsLoading = false
 }: WorkspaceUploadPanelProps) {
+  const auth = useAuthContext();
+  const [solidWorksLink, setSolidWorksLink] = useState<SolidWorksLink | null>(null);
+  const [modelPath, setModelPath] = useState('');
+  const [configuration, setConfiguration] = useState('');
+  const [solidWorksLoading, setSolidWorksLoading] = useState(false);
+  const [solidWorksError, setSolidWorksError] = useState<string | null>(null);
+  const [solidWorksFetching, setSolidWorksFetching] = useState(false);
+
   const [entries, setEntries] = useState<UploadEntry[]>([]);
   const { beginUpload, logChunk, logFailure, logComplete, reset } =
     useRoutingUploadTelemetry();
+
+  useEffect(() => {
+    if (!routing || !canReplaceSolidWorks) {
+      setSolidWorksLink(null);
+      setSolidWorksError(null);
+      if (!routing) {
+        setModelPath('');
+        setConfiguration('');
+      }
+      return;
+    }
+
+    let cancelled = false;
+    setSolidWorksFetching(true);
+    setSolidWorksError(null);
+
+    fetchSolidWorksLink(routing.id)
+      .then((link) => {
+        if (cancelled) {
+          return;
+        }
+        setSolidWorksLink(link);
+        setModelPath(link?.modelPath ?? '');
+        setConfiguration(link?.configuration ?? '');
+      })
+      .catch((error) => {
+        if (cancelled) {
+          return;
+        }
+        setSolidWorksError(
+          error instanceof Error
+            ? error.message
+            : 'Failed to load SolidWorks metadata.'
+        );
+      })
+      .finally(() => {
+        if (!cancelled) {
+          setSolidWorksFetching(false);
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [routing, canReplaceSolidWorks]);
+
+  const trimmedModelPath = modelPath.trim();
+  const trimmedConfiguration = configuration.trim();
+
+  const handleSolidWorksReplace = async () => {
+    if (!routing) {
+      message.warning('Select a routing before replacing the SolidWorks model.');
+      return;
+    }
+
+    if (!trimmedModelPath) {
+      message.warning('Enter a SolidWorks model path.');
+      return;
+    }
+
+    setSolidWorksLoading(true);
+    setSolidWorksError(null);
+
+    const requestedBy = auth.account?.username ?? 'workspace.user';
+
+    logRoutingEvent({
+      name: 'solidworks_replace_attempt',
+      properties: { routingId: routing.id, path: trimmedModelPath }
+    });
+
+    try {
+      const result = await replaceSolidWorksLink({
+        routingId: routing.id,
+        modelPath: trimmedModelPath,
+        requestedBy,
+        configuration: trimmedConfiguration ? trimmedConfiguration : undefined
+      });
+
+      setSolidWorksLink(result);
+      setModelPath(result.modelPath ?? trimmedModelPath);
+      setConfiguration(result.configuration ?? '');
+      message.success('SolidWorks model updated.');
+      logRoutingEvent({
+        name: 'solidworks_replace_success',
+        properties: { routingId: routing.id }
+      });
+    } catch (error) {
+      const detail = error instanceof Error ? error.message : 'Unknown error';
+      setSolidWorksError(detail);
+      message.error(`SolidWorks replace failed: ${detail}`);
+      logRoutingEvent({
+        name: 'solidworks_replace_failure',
+        properties: { routingId: routing?.id ?? 'unknown', reason: detail }
+      });
+    } finally {
+      setSolidWorksLoading(false);
+    }
+  };
+
+  const handleConfirmSolidWorksReplace = () => {
+    if (!routing) {
+      message.warning('Select a routing before replacing the SolidWorks model.');
+      return;
+    }
+
+    if (!trimmedModelPath) {
+      message.warning('Enter a SolidWorks model path.');
+      return;
+    }
+
+    Modal.confirm({
+      title: 'SolidWorks 모델 교체',
+      content: `경로: ${trimmedModelPath}${trimmedConfiguration ? `\nConfiguration: ${trimmedConfiguration}` : ''}`,
+      okText: '교체',
+      cancelText: '취소',
+      okButtonProps: { disabled: solidWorksLoading },
+      onOk: () => handleSolidWorksReplace()
+    });
+  };
+
 
   const clearCompleted = () => {
     setEntries((prev) => prev.filter((entry) => entry.status !== 'success'));
@@ -118,7 +262,7 @@ export default function WorkspaceUploadPanel({
 
         const id = file.uid;
         const controller = new AbortController();
-        const uploadedBy = 'workspace.user';
+        const uploadedBy = auth.account?.username ?? 'workspace.user';
         const uploadStartedAt = Date.now();
 
         setEntries((prev) => [
@@ -269,6 +413,7 @@ export default function WorkspaceUploadPanel({
     }),
     [
       routing,
+      auth.account?.username,
       beginUpload,
       logChunk,
       logFailure,
@@ -357,6 +502,77 @@ export default function WorkspaceUploadPanel({
           image={Empty.PRESENTED_IMAGE_SIMPLE}
         />
       )}
+      <Divider />
+      <Card size="small" title="SolidWorks 모델 관리">
+        {permissionsLoading ? (
+          <div className="flex justify-center py-4">
+            <Spin />
+          </div>
+        ) : !canReplaceSolidWorks ? (
+          <Alert
+            type="warning"
+            showIcon
+            message="SolidWorks replace is restricted."
+            description="권한이 없어 SolidWorks 모델 교체 기능을 사용할 수 없습니다."
+          />
+        ) : (
+          <Spin spinning={solidWorksFetching || solidWorksLoading}>
+            <Space direction="vertical" size="middle" className="w-full">
+              <div>
+                <Text strong>현재 경로:</Text>{' '}
+                {solidWorksLink?.modelPath ? (
+                  <code>{solidWorksLink.modelPath}</code>
+                ) : (
+                  <Text type="secondary">미지정</Text>
+                )}
+              </div>
+              {solidWorksLink?.lastSyncedAt ? (
+                <Text type="secondary">
+                  마지막 동기화: {new Date(solidWorksLink.lastSyncedAt).toLocaleString()}
+                  {solidWorksLink.updatedBy ? ` · ${solidWorksLink.updatedBy}` : ''}
+                </Text>
+              ) : null}
+              {solidWorksError ? (
+                <Alert
+                  type="error"
+                  showIcon
+                  message="SolidWorks 교체 오류"
+                  description={solidWorksError}
+                />
+              ) : null}
+              <Input
+                value={modelPath}
+                onChange={(event) => setModelPath(event.target.value)}
+                placeholder="\\SERVER\Share\Path\Model.sldasm"
+                disabled={solidWorksLoading || solidWorksFetching || !routing}
+              />
+              <Input
+                value={configuration}
+                onChange={(event) => setConfiguration(event.target.value)}
+                placeholder="Configuration (optional)"
+                disabled={solidWorksLoading || solidWorksFetching || !routing}
+              />
+              <Space>
+                <Tooltip title="Sync to PLM is disabled in this release">
+                  <Button disabled>Sync to PLM</Button>
+                </Tooltip>
+                <Button
+                  type="primary"
+                  onClick={handleConfirmSolidWorksReplace}
+                  loading={solidWorksLoading}
+                  disabled={
+                    !routing ||
+                    !canReplaceSolidWorks ||
+                    trimmedModelPath.length === 0
+                  }
+                >
+                  모델 교체
+                </Button>
+              </Space>
+            </Space>
+          </Spin>
+        )}
+      </Card>
     </div>
   );
 }
