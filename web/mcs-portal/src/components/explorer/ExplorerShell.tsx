@@ -24,14 +24,21 @@ import TreePanel, { TreePanelReorderPayload } from '@/components/TreePanel';
 import ExplorerHoverMenu from '@/components/explorer/ExplorerHoverMenu';
 
 import FeatureGate from '@/components/features/FeatureGate';
+import { useAuthContext } from '@/components/providers/AuthProvider';
 import { useHoverMenu } from '@/hooks/useHoverMenu';
+import { useRoutingVersions } from '@/hooks/useRoutingVersions';
 import { isFeatureEnabled } from '@/lib/featureFlags';
+import { useNavigation } from '@/hooks/useNavigation';
+import type { CreateEspritApiKeyResponse } from '@/lib/api/esprit';
 
 import RoutingCreationWizard, {
   type RoutingCreationInput
 } from '@/components/explorer/RoutingCreationWizard';
 
 import WorkspaceUploadPanel from '@/components/workspace/WorkspaceUploadPanel';
+import ThreeViewer from '@/components/mcs/ThreeViewer';
+import EspritJobPanel from '@/components/mcs/EspritJobPanel';
+import EspritKeyModal from '@/components/mcs/EspritKeyModal';
 
 import AddinHistoryPanel from './AddinHistoryPanel';
 
@@ -52,6 +59,7 @@ import { orderRoutingGroups } from '@/lib/routingGroups';
 import { logRoutingEvent } from '@/lib/telemetry/routing';
 import { downloadFromUrl } from '@/lib/downloads/browser';
 import { downloadRoutingBundle } from '@/lib/workspace/downloadRoutingBundle';
+import { setPrimaryRoutingVersion } from '@/lib/api/routingVersions';
 import { getRoutingFileDownload } from '@/lib/workspace/getRoutingFileDownload';
 import { renameRoutingGroup } from '@/lib/workspace/renameRoutingGroup';
 import { createRouting } from '@/lib/workspace/createRouting';
@@ -391,6 +399,14 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
     typeaheadTimeoutRef
   } = useExplorerLayout(items);
 
+  const { setLastRoutingId } = useNavigation();
+  const [espritKeyModalOpen, setEspritKeyModalOpen] = useState(false);
+  const auth = useAuthContext();
+  const versionsQuery = useRoutingVersions(selectedRouting?.id);
+
+
+  const [latestEspritKey, setLatestEspritKey] = useState<CreateEspritApiKeyResponse | null>(null);
+
   const [isDetailModalOpen, setDetailModalOpen] = useState(false);
   const [detailActiveTab, setDetailActiveTab] = useState('summary');
 
@@ -454,6 +470,10 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
       closeHoverMenu({ immediate: true });
     }
   }, [hoverMenuEnabled, isHoverMenuOpen, closeHoverMenu]);
+
+  useEffect(() => {
+    setLastRoutingId(selectedRouting?.id ?? null);
+  }, [selectedRouting?.id, setLastRoutingId]);
 
   useEffect(() => {
     if (!selectedRouting) {
@@ -539,6 +559,53 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
     setDownloadError(null);
     setDownloadMeta(null);
   }, [selectedRouting, setDownloadModalOpen, setDownloadError, setDownloadMeta]);
+  const handlePromoteVersion = useCallback(async (versionId: string) => {
+    if (!selectedRouting) {
+      return;
+    }
+
+    try {
+      const requestedBy = auth.account?.username ?? 'workspace.user';
+      await setPrimaryRoutingVersion({
+        routingId: selectedRouting.id,
+        versionId,
+        requestedBy
+      });
+
+      setItemsState((prev) => {
+        const next = prev.map((item) => ({
+          ...item,
+          revisions: item.revisions.map((revision) => ({
+            ...revision,
+            routingGroups: revision.routingGroups.map((group) => ({
+              ...group,
+              routings: group.routings.map((routing) => {
+                if (routing.id === versionId) {
+                  return { ...routing, isPrimary: true };
+                }
+                if (routing.isPrimary && routing.id !== versionId) {
+                  return { ...routing, isPrimary: false };
+                }
+                return routing;
+              })
+            }))
+          }))
+        }));
+
+        const updated = next;
+        const promoted = findRoutingInCollection(updated, versionId) ?? findRoutingInCollection(updated, selectedRouting.id);
+        setSelectedRouting(promoted ?? null);
+        return updated;
+      });
+
+      await versionsQuery.refetch();
+      message.success('Primary version updated.');
+    } catch (error) {
+      const detail = error instanceof Error ? error.message : 'Unknown error';
+      message.error(`Failed to update primary version: ${detail}`);
+    }
+  }, [auth.account?.username, selectedRouting, setItemsState, setSelectedRouting, versionsQuery]);
+
 
   const handleDownloadModalClose = useCallback(() => {
     setDownloadModalOpen(false);
@@ -2178,7 +2245,23 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
     </div>
   );
 
-  const previewColumn = (
+  const modelUrl = useMemo(() => {
+    if (!selectedRouting || !selectedRouting.files) {
+      return undefined;
+    }
+
+    const candidate = selectedRouting.files.find((file) =>
+      file.type === 'stl' || file.type === 'esprit'
+    );
+
+    if (!candidate) {
+      return undefined;
+    }
+
+    return `/api/workspace/models/${selectedRouting.id}/${candidate.id}`;
+  }, [selectedRouting]);
+
+const previewColumn = (
     <div className={styles.previewColumn}>
       <Card
         id="workspace-upload-card"
@@ -2187,6 +2270,17 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
         className={styles.previewCard}
       >
         <WorkspaceUploadPanel routing={selectedRouting} />
+      </Card>
+      <Card
+        id="three-viewer-card"
+        title="3D Preview"
+        bordered
+        className={styles.previewCard}
+      >
+        <ThreeViewer modelUrl={modelUrl} />
+        <Text type="secondary" style={{ display: 'block', marginTop: 12 }}>
+          {modelUrl ? '선택된 Routing과 연결된 모델을 불러왔습니다.' : '표시할 모델이 없으면 샘플 형상이 렌더링됩니다.'}
+        </Text>
       </Card>
       <Card
         id="addin-history-card"
@@ -2201,6 +2295,13 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
           jobs={resolved.addinJobs}
         />
       </Card>
+      <EspritJobPanel
+        className={styles.previewCard}
+        routingId={selectedRouting?.id ?? undefined}
+        routingCode={selectedRouting?.code ?? undefined}
+        onRequestApiKey={() => setEspritKeyModalOpen(true)}
+        lastGeneratedKey={latestEspritKey}
+      />
     </div>
   );
 
@@ -2222,6 +2323,14 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
         tree={treeColumn}
         main={mainColumn}
         aside={previewColumn}
+      />
+      <EspritKeyModal
+        open={espritKeyModalOpen}
+        onClose={() => setEspritKeyModalOpen(false)}
+        onCreated={(result) => {
+          setLatestEspritKey(result);
+          setEspritKeyModalOpen(false);
+        }}
       />
       <Modal
         open={downloadModalOpen}
@@ -2298,6 +2407,9 @@ export default function ExplorerShell({ initialData }: ExplorerShellProps) {
         onTabChange={handleDetailTabChange}
         onClose={handleDetailModalClose}
         onRetry={routingDetailQuery.refetch}
+        versions={versionsQuery.data}
+        versionsLoading={versionsQuery.isLoading || versionsQuery.isFetching}
+        onPromoteVersion={handlePromoteVersion}
       />
       {wizardContext ? (
         <RoutingCreationWizard

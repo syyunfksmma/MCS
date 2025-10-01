@@ -85,6 +85,26 @@ public class RoutingFilesController : ControllerBase
         }
     }
 
+    [HttpGet("{fileId:guid}")]
+    public async Task<IActionResult> DownloadAsync(Guid routingId, Guid fileId, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var result = await _routingFileService.OpenFileAsync(routingId, fileId, cancellationToken);
+            if (!string.IsNullOrWhiteSpace(result.Checksum))
+            {
+                Response.Headers["X-Checksum-Sha256"] = result.Checksum;
+            }
+
+            return File(result.Stream, result.ContentType, result.FileName);
+        }
+        catch (KeyNotFoundException)
+        {
+            return NotFound();
+        }
+    }
+
+
     public class UploadRoutingFileForm
     {
         public IFormFile? File { get; init; }

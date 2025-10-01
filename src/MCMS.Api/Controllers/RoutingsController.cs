@@ -17,15 +17,18 @@ public class RoutingsController : ControllerBase
     private readonly IRoutingService _routingService;
     private readonly IRoutingApprovalService _routingApprovalService;
     private readonly IRoutingEventPublisher _routingEvents;
+    private readonly IRoutingFileService _routingFileService;
 
     public RoutingsController(
         IRoutingService routingService,
         IRoutingApprovalService routingApprovalService,
-        IRoutingEventPublisher routingEvents)
+        IRoutingEventPublisher routingEvents,
+        IRoutingFileService routingFileService)
     {
         _routingService = routingService;
         _routingApprovalService = routingApprovalService;
         _routingEvents = routingEvents;
+        _routingFileService = routingFileService;
     }
 
     [HttpGet("by-revision/{revisionId:guid}")]
@@ -41,6 +44,31 @@ public class RoutingsController : ControllerBase
         var routing = await _routingService.GetRoutingAsync(routingId, cancellationToken);
         return routing is null ? NotFound() : Ok(routing);
     }
+
+
+[HttpPost("{routingId:guid}/bundle")]
+public async Task<IActionResult> CreateBundleAsync(Guid routingId, CancellationToken cancellationToken)
+{
+    var requestedBy = User?.Identity?.Name ?? "system";
+    try
+    {
+        var bundle = await _routingFileService.CreateBundleAsync(routingId, requestedBy, cancellationToken);
+        if (!string.IsNullOrWhiteSpace(bundle.Checksum))
+        {
+            Response.Headers["X-Checksum-Sha256"] = bundle.Checksum;
+        }
+
+        return File(bundle.Stream, bundle.ContentType, bundle.FileName);
+    }
+    catch (KeyNotFoundException)
+    {
+        return NotFound();
+    }
+    catch (InvalidOperationException ex)
+    {
+        return BadRequest(new { message = ex.Message });
+    }
+}
 
     [HttpPost]
     public async Task<ActionResult<RoutingDto>> CreateAsync([FromBody] CreateRoutingRequest request, CancellationToken cancellationToken)

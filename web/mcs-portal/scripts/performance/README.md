@@ -50,3 +50,12 @@ pm run build && npm run start to launch the Next.js server.
 - Restart the server while keeping clients connected to emulate process recycle.
 - Pair with k6 smoke to validate reconnection handling.
 
+## k6 Dashboard Summary
+Run `k6 run scripts/performance/k6-dashboard-summary.js` (requires the [k6](https://k6.io/) CLI).
+
+Environment knobs:
+- `BASE_URL` defaults to `http://localhost:5229`; point to another MCMS.Api host when needed.
+- `VUS` and `DURATION` override the default 25 virtual users over 2 minutes.
+- `INCLUDE_BREAKDOWN` toggles the heavy breakdown payload (defaults to `true`).
+
+The script records a custom `dashboard_summary_duration` trend for each range (daily/weekly/monthly) and enforces `p95 < 800 ms` thresholds to match the API SLA.

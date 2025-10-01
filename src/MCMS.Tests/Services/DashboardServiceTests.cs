@@ -4,6 +4,7 @@ using MCMS.Core.Domain.Enums;
 using MCMS.Infrastructure.Persistence;
 using MCMS.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using Xunit;
 
 namespace MCMS.Tests.Services;
@@ -22,7 +23,7 @@ public class DashboardServiceTests
     public async Task GetSummaryAsync_WhenNoData_ReturnsZeros()
     {
         await using var context = CreateContext();
-        var sut = new DashboardService(context);
+        var sut = new DashboardService(context, new MemoryCache(new MemoryCacheOptions()));
 
         var result = await sut.GetSummaryAsync(new DashboardSummaryRequest());
 
@@ -128,7 +129,7 @@ public class DashboardServiceTests
         context.AddinJobs.AddRange(job1, job2);
         await context.SaveChangesAsync();
 
-        var sut = new DashboardService(context);
+        var sut = new DashboardService(context, new MemoryCache(new MemoryCacheOptions()));
 
         var result = await sut.GetSummaryAsync(new DashboardSummaryRequest(DashboardRange.Daily, true));
 
@@ -142,6 +143,7 @@ public class DashboardServiceTests
         Assert.True(result.Sla.P95Ms >= 0);
     }
 }
+
 
 
 

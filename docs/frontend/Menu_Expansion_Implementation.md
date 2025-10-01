@@ -52,8 +52,8 @@
 - 성능: Lighthouse Dashboard 2초 이하.
 
 ## 7. TODO
-- [ ] GlobalTabs + NavigationContext 생성.
+- [x] GlobalTabs + NavigationContext 생성. (2025-10-01 Codex, NavigationProvider/useNavigation)
 - [ ] Dashboard 페이지 구성.
-- [ ] ThreeViewer + Esprit UI 구현.
+- [x] ThreeViewer + Esprit UI 구현. (2025-10-01 Codex, ExplorerShell preview column)
 - [ ] Server/Option API 계약 최종화 및 프론트 통합.
-- [ ] QA 시나리오 작성 및 Shakeout Log 업데이트.
+- [ ] QA 시나리오 작성 및 Shakeout Log 업데이트.\n> Follow-up decisions: see docs/workspace/Step3-5_TODO.md for unresolved actions on version table, SolidWorks replace, mcms-explorer protocol.\n\n
