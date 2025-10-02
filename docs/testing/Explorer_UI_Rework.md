@@ -67,7 +67,7 @@
 ## Sequential Automation Tasks
 1. Playwright @smoke 시나리오 구성
    - Explorer 기본 탐색, CAM replace, Routing Version promote 경로를 `@smoke` 태그로 묶습니다.
-   - 테스트 데이터는 `fixtures/explorer-smoke.json`으로 정리하고, 워크스페이스 전환 시 API 응답을 `routeFromHAR`로 고정합니다.
+   - 테스트 데이터는 `tests/fixtures/workspace-smoke.ts`으로 정리하고, 워크스페이스 전환 시 API 응답을 Playwright `context.route`로 고정합니다.
 2. Vitest DOM mock 기반 안정화
    - `RoutingDetailModal`과 `ProductDashboardShell` 테스트에 `happy-dom` 기반 mock을 적용하고, 포커스 이동 및 이벤트 타이머를 `@testing-library/user-event`로 일원화합니다.
    - 불안정한 타이머 의존 로직은 `vi.useFakeTimers()`로 고정하고 cleanup 헬퍼를 유틸 함수로 분리합니다.
@@ -79,4 +79,13 @@
    - 실패 시 안내 메시지와 수동 등록 절차 링크를 함께 출력합니다.
 5. CI 파이프라인 재정렬
    - 워크플로 순서를 lint → test:unit → test:axe → test:e2e(@smoke) → k6 smoke로 정리하고, 각 단계의 캐시 전략과 실패 시 롤백 절차를 정의합니다.
+
+### Smoke 실행 명령
+- `npm run ci:smoke`: Playwright @smoke 시나리오와 `web/mcs-portal/scripts/performance/k6-workspace.js` 스모크 프로필을 연속 실행합니다. 기본값은 `NEXT_PUBLIC_API_BASE_URL=MCMS_API_BASE_URL=http://127.0.0.1:3100`, `K6_BASE_URL=http://127.0.0.1:3000`이며 CI에서는 필요한 주소로 환경 변수를 재정의하세요.
+- Playwright 단독 실행
+  - PowerShell: `$env:PLAYWRIGHT_SMOKE="true"; $env:NEXT_PUBLIC_API_BASE_URL="http://127.0.0.1:3100"; $env:MCMS_API_BASE_URL=$env:NEXT_PUBLIC_API_BASE_URL; npx playwright test --grep "@smoke"`
+  - bash/zsh: `PLAYWRIGHT_SMOKE=true NEXT_PUBLIC_API_BASE_URL=http://127.0.0.1:3100 MCMS_API_BASE_URL=http://127.0.0.1:3100 npx playwright test --grep "@smoke"`
+- k6 스모크 단독 실행: `K6_PROFILE=smoke K6_BASE_URL=http://127.0.0.1:3000 k6 run web/mcs-portal/scripts/performance/k6-workspace.js`
+- 모든 실행 후 `scripts/performance/collect-smoke-artifacts.ps1`로 `artifacts/perf/history`에 요약 스냅샷을 남기고, Playwright 결과는 `artifacts/testing` 하위에서 관리합니다.
+
 
