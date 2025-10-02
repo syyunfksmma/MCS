@@ -97,6 +97,8 @@ export default function WorkspaceUploadPanel({
   const auth = useAuthContext();
   const [solidWorksLink, setSolidWorksLink] = useState<SolidWorksLink | null>(null);
   const [modelPath, setModelPath] = useState('');
+  const [solidWorksFile, setSolidWorksFile] = useState<File | null>(null);
+  const [solidWorksFileInputKey, setSolidWorksFileInputKey] = useState(0);
   const [configuration, setConfiguration] = useState('');
   const [solidWorksLoading, setSolidWorksLoading] = useState(false);
   const [solidWorksError, setSolidWorksError] = useState<string | null>(null);
@@ -160,36 +162,45 @@ export default function WorkspaceUploadPanel({
       return;
     }
 
-    if (!trimmedModelPath) {
-      message.warning('Enter a SolidWorks model path.');
-      return;
+  const hasFileSelected = Boolean(solidWorksFile);
+
+  if (!hasFileSelected && !trimmedModelPath) {
+    message.warning('Select a file or enter a SolidWorks model path.');
+    return;
+  }
+
+  setSolidWorksLoading(true);
+  setSolidWorksError(null);
+
+  const requestedBy = auth.account?.username ?? 'workspace.user';
+
+  logRoutingEvent({
+    name: 'solidworks_replace_attempt',
+    properties: {
+      routingId: routing.id,
+      mode: hasFileSelected ? 'file' : 'path',
+      path: hasFileSelected ? solidWorksFile?.name ?? 'unknown' : trimmedModelPath
     }
+  });
 
-    setSolidWorksLoading(true);
-    setSolidWorksError(null);
-
-    const requestedBy = auth.account?.username ?? 'workspace.user';
-
-    logRoutingEvent({
-      name: 'solidworks_replace_attempt',
-      properties: { routingId: routing.id, path: trimmedModelPath }
-    });
-
-    try {
+  try {
       const result = await replaceSolidWorksLink({
         routingId: routing.id,
-        modelPath: trimmedModelPath,
         requestedBy,
+        modelPath: hasFileSelected ? undefined : trimmedModelPath,
+        file: solidWorksFile ?? undefined,
         configuration: trimmedConfiguration ? trimmedConfiguration : undefined
       });
 
       setSolidWorksLink(result);
       setModelPath(result.modelPath ?? trimmedModelPath);
+      setSolidWorksFile(null);
+      setSolidWorksFileInputKey((prev) => prev + 1);
       setConfiguration(result.configuration ?? '');
       message.success('SolidWorks model updated.');
       logRoutingEvent({
         name: 'solidworks_replace_success',
-        properties: { routingId: routing.id }
+        properties: { routingId: routing.id, mode: hasFileSelected ? 'file' : 'path' }
       });
     } catch (error) {
       const detail = error instanceof Error ? error.message : 'Unknown error';
@@ -197,7 +208,11 @@ export default function WorkspaceUploadPanel({
       message.error(`SolidWorks replace failed: ${detail}`);
       logRoutingEvent({
         name: 'solidworks_replace_failure',
-        properties: { routingId: routing?.id ?? 'unknown', reason: detail }
+        properties: {
+          routingId: routing?.id ?? 'unknown',
+          reason: detail,
+          mode: hasFileSelected ? 'file' : 'path'
+        }
       });
     } finally {
       setSolidWorksLoading(false);
@@ -210,14 +225,19 @@ export default function WorkspaceUploadPanel({
       return;
     }
 
-    if (!trimmedModelPath) {
-      message.warning('Enter a SolidWorks model path.');
+    const hasFileSelected = Boolean(solidWorksFile);
+    if (!hasFileSelected && !trimmedModelPath) {
+      message.warning('Select a file or enter a SolidWorks model path.');
       return;
     }
 
+    const details = hasFileSelected
+      ? `파일: ${solidWorksFile?.name ?? '선택된 파일 없음'}${trimmedConfiguration ? `\nConfiguration: ${trimmedConfiguration}` : ''}`
+      : `경로: ${trimmedModelPath}${trimmedConfiguration ? `\nConfiguration: ${trimmedConfiguration}` : ''}`;
+
     Modal.confirm({
       title: 'SolidWorks 모델 교체',
-      content: `경로: ${trimmedModelPath}${trimmedConfiguration ? `\nConfiguration: ${trimmedConfiguration}` : ''}`,
+      content: details,
       okText: '교체',
       cancelText: '취소',
       okButtonProps: { disabled: solidWorksLoading },
@@ -540,6 +560,20 @@ export default function WorkspaceUploadPanel({
                   description={solidWorksError}
                 />
               ) : null}
+              <div className="flex flex-col gap-2">
+                <input
+                  key={solidWorksFileInputKey}
+                  type="file"
+                  accept=".3dm,.sldasm,.sldprt"
+                  disabled={solidWorksLoading || solidWorksFetching || !routing}
+                  onChange={(event) => setSolidWorksFile(event.target.files?.[0] ?? null)}
+                />
+                {solidWorksFile ? (
+                  <Text type="secondary">선택된 파일: {solidWorksFile.name}</Text>
+                ) : (
+                  <Text type="secondary">또는 네트워크 경로를 입력하세요.</Text>
+                )}
+              </div>
               <Input
                 value={modelPath}
                 onChange={(event) => setModelPath(event.target.value)}
@@ -563,7 +597,7 @@ export default function WorkspaceUploadPanel({
                   disabled={
                     !routing ||
                     !canReplaceSolidWorks ||
-                    trimmedModelPath.length === 0
+                    (!solidWorksFile && trimmedModelPath.length === 0)
                   }
                 >
                   모델 교체

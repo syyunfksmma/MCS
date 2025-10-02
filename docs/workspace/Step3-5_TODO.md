@@ -1,6 +1,7 @@
 # Workspace & QA Follow-up TODOs (2025-10-01)
 
 ## 3단계 (Workspace 고도화)
+- [x] ERP WorkOrder 기반 CAM 버튼 게이팅 연결 (완료 2025-10-02, Codex)
 - [ ] Version Table UI/백엔드 설계
   - 결정 필요: Routing 버전 데이터 모델 정의 (별도 테이블 여부, 기존 History 기반 파생 여부).
   - API 계약: `PATCH /api/routings/{routingId}/versions/{versionId}` 요청 본문 스키마, 응답 형태 확정.
@@ -21,7 +22,34 @@
 
 ## 5단계 (QA/자동화)
 - [ ] @smoke 태그 재구성: Playwright 스위트 구성/시나리오 정의 필요.
+  - [ ] Playwright @smoke 세부 작업
+    - [ ] Explorer Navigation 시나리오 구현
+    - [ ] CAM Replace & Version Promote 케이스 추가
+    - [ ] CI에서 @smoke만 실행하도록 설정
 - [ ] Vitest(jsdom) 오류 해결: 실패 케이스(RoutingDetailModal, ProductDashboardShell) 처리 전략 합의.
+  - [ ] Vitest(jsdom) 세부 작업
+    - [ ] DOM mock 유틸 추가
+    - [ ] 실패 케이스 리팩터링 및 스냅샷 갱신
+    - [ ] CI에서 jsdom 환경 변수 표준화
 - [ ] k6 스크립트 문법 오류 수정: `scripts/performance/k6-workspace.js` 라인 15 파라미터/환경 변수 처리 방식 확정.
+  - [ ] k6 스크립트 세부 작업
+    - [ ] 옵션 객체 리팩터링 및 ENV fallback 추가
+    - [ ] 테스트 데이터 시드 스크립트 작성
+    - [ ] 결과 리포트 템플릿 업데이트
 - [ ] 접근성 `npm run test:axe` SSL 문제: self-signed 인증서 처리 전략 결정.
+  - [ ] Axe SSL 세부 작업
+    - [ ] dev CA 신뢰 스크립트 작성
+    - [ ] Playwright/Axe 옵션에 인증서 무시 설정 추가
+    - [ ] 실패 로그 템플릿 갱신
 - [ ] 통합 파이프라인 설계: Playwright/e2e, 퍼포먼스, Axe 실행 순서 및 CI 통합 여부 합의.
+  - [ ] 통합 파이프라인 세부 작업
+    - [ ] GitHub Actions 워크플로 초안 작성
+    - [ ] 아티팩트 업로드/보존 정책 정의
+    - [ ] 실패 시 롤백 안내문 갱신
+
+
+
+
+
+
+

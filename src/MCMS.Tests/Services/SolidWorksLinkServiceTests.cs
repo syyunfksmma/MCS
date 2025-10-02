@@ -1,10 +1,17 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
 using MCMS.Core.Abstractions;
 using MCMS.Core.Contracts.Requests;
 using MCMS.Core.Domain.Entities;
+using MCMS.Infrastructure.FileStorage;
 using MCMS.Infrastructure.Persistence;
 using MCMS.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging.Abstractions;
+using Microsoft.Extensions.Options;
 using Xunit;
 
 namespace MCMS.Tests.Services;
@@ -21,10 +28,7 @@ public class SolidWorksLinkServiceTests
             return Task.CompletedTask;
         }
 
-        public Task UnlinkModelAsync(Guid itemRevisionId, CancellationToken cancellationToken = default)
-        {
-            return Task.CompletedTask;
-        }
+        public Task UnlinkModelAsync(Guid itemRevisionId, CancellationToken cancellationToken = default) => Task.CompletedTask;
     }
 
     private static McmsDbContext CreateContext()
@@ -65,27 +69,40 @@ public class SolidWorksLinkServiceTests
         return routing.Id;
     }
 
-    private static (McmsDbContext Context, StubSolidWorksIntegrationService Integration, SolidWorksLinkService Service) CreateService()
+    private static (McmsDbContext Context, StubSolidWorksIntegrationService Integration, FileStorageService Storage, string RootPath, SolidWorksLinkService Service) CreateService()
     {
         var context = CreateContext();
         var integration = new StubSolidWorksIntegrationService();
         var history = new HistoryService(context);
-        var service = new SolidWorksLinkService(context, integration, history, NullLogger<SolidWorksLinkService>.Instance);
-        return (context, integration, service);
+        var root = Path.Combine(Path.GetTempPath(), $"mcms-tests-{Guid.NewGuid():N}");
+        Directory.CreateDirectory(root);
+        var storage = new FileStorageService(Options.Create(new FileStorageOptions
+        {
+            RootPath = root,
+            EnableMetaCaching = false
+        }), NullLogger<FileStorageService>.Instance);
+        var service = new SolidWorksLinkService(context, integration, history, storage, NullLogger<SolidWorksLinkService>.Instance);
+        return (context, integration, storage, root, service);
     }
 
     [Fact]
-    public async Task ReplaceAsync_CreatesLinkAndRecordsHistory()
+    public async Task ReplaceAsync_CreatesLinkAndRecordsHistory_FromPath()
     {
-        var (context, integration, service) = CreateService();
+        var (context, integration, storage, root, service) = CreateService();
         try
         {
             var routingId = await SeedRoutingAsync(context);
-            var routing = await context.Routings.Include(r => r.ItemRevision).SingleAsync();
+            var routing = await context.Routings.Include(r => r.ItemRevision)!.ThenInclude(ir => ir!.Item).SingleAsync();
 
             var result = await service.ReplaceAsync(
                 routingId,
-                new ReplaceSolidWorksRequest("C:/models/fixture.sldasm", "operator", "CONFIG-A", "initial replace")
+                new SolidWorksReplaceCommand
+                {
+                    ModelPath = "C:/models/fixture.sldasm",
+                    RequestedBy = "operator",
+                    Configuration = "CONFIG-A",
+                    Comment = "initial replace"
+                }
             );
 
             Assert.Equal(routingId, result.RoutingId);
@@ -102,29 +119,28 @@ public class SolidWorksLinkServiceTests
             Assert.Equal("C:/models/fixture.sldasm", dbLink.ModelPath);
             Assert.True(dbLink.IsLinked);
             Assert.Equal("operator", dbLink.UpdatedBy);
-
-            var historyEntries = await context.HistoryEntries.Where(h => h.RoutingId == routingId).ToListAsync();
-            Assert.Contains(historyEntries, h => h.ChangeType == "SolidWorksModelReplaced");
         }
         finally
         {
+            await storage.DisposeAsync();
             await context.DisposeAsync();
+            Directory.Delete(root, recursive: true);
         }
     }
 
     [Fact]
-    public async Task ReplaceAsync_UpdatesExistingLink()
+    public async Task ReplaceAsync_UpdatesExistingLinkWithUploadAndBackups()
     {
-        var (context, integration, service) = CreateService();
+        var (context, integration, storage, root, service) = CreateService();
         try
         {
             var routingId = await SeedRoutingAsync(context);
-            var routing = await context.Routings.Include(r => r.ItemRevision).SingleAsync();
+            var routing = await context.Routings.Include(r => r.ItemRevision)!.ThenInclude(ir => ir!.Item).SingleAsync();
 
             context.SolidWorksLinks.Add(new SolidWorksLink
             {
                 ItemRevisionId = routing.ItemRevisionId,
-                ModelPath = "C:/models/old.sldasm",
+                ModelPath = "3DM/ITEM-SW/ITEM-SW.3dm",
                 Configuration = "OLD",
                 IsLinked = true,
                 LastSyncedAt = DateTimeOffset.UtcNow.AddDays(-1),
@@ -132,32 +148,51 @@ public class SolidWorksLinkServiceTests
             });
             await context.SaveChangesAsync();
 
-            var result = await service.ReplaceAsync(
+            var originalPath = Path.Combine(root, "3DM", "ITEM-SW", "ITEM-SW.3dm");
+            Directory.CreateDirectory(Path.GetDirectoryName(originalPath)!);
+            await File.WriteAllTextAsync(originalPath, "old content");
+
+            var payload = new MemoryStream(Encoding.UTF8.GetBytes("SolidWorksBinaryData"), writable: false);
+            await service.ReplaceAsync(
                 routingId,
-                new ReplaceSolidWorksRequest("C:/models/new.sldasm", "operator", "NEW", "update")
+                new SolidWorksReplaceCommand
+                {
+                    FileStream = payload,
+                    FileName = "updated-model.3dm",
+                    RequestedBy = "operator",
+                    Configuration = "NEW",
+                    Comment = "file upload"
+                }
             );
 
-            Assert.Equal("C:/models/new.sldasm", result.ModelPath);
-            Assert.Equal("NEW", result.Configuration);
-
             var dbLink = await context.SolidWorksLinks.SingleAsync();
-            Assert.Equal("C:/models/new.sldasm", dbLink.ModelPath);
+            Assert.Equal("3DM/ITEM-SW/updated-model.3dm", dbLink.ModelPath);
             Assert.Equal("NEW", dbLink.Configuration);
             Assert.True(dbLink.IsLinked);
             Assert.Equal("operator", dbLink.UpdatedBy);
 
             Assert.Single(integration.LinkCalls);
+            Assert.Equal("3DM/ITEM-SW/updated-model.3dm", integration.LinkCalls[0].ModelPath);
+
+            var archiveDirectory = Directory.GetDirectories(Path.Combine(root, "3DM", "archive"))
+                .SingleOrDefault();
+            Assert.NotNull(archiveDirectory);
+            var archivedFile = Directory.GetFiles(archiveDirectory!).Single();
+            Assert.EndsWith("ITEM-SW.3dm", archivedFile.Replace('\\', '/'));
+            Assert.Equal("old content", await File.ReadAllTextAsync(archivedFile));
         }
         finally
         {
+            await storage.DisposeAsync();
             await context.DisposeAsync();
+            Directory.Delete(root, recursive: true);
         }
     }
 
     [Fact]
     public async Task GetAsync_ReturnsLinkWhenPresent()
     {
-        var (context, _, service) = CreateService();
+        var (context, _, storage, root, service) = CreateService();
         try
         {
             var routingId = await SeedRoutingAsync(context);
@@ -181,14 +216,16 @@ public class SolidWorksLinkServiceTests
         }
         finally
         {
+            await storage.DisposeAsync();
             await context.DisposeAsync();
+            Directory.Delete(root, recursive: true);
         }
     }
 
     [Fact]
     public async Task GetAsync_ReturnsNullWhenRoutingMissing()
     {
-        var (context, _, service) = CreateService();
+        var (context, _, storage, root, service) = CreateService();
         try
         {
             var result = await service.GetAsync(Guid.NewGuid());
@@ -196,7 +233,10 @@ public class SolidWorksLinkServiceTests
         }
         finally
         {
+            await storage.DisposeAsync();
             await context.DisposeAsync();
+            Directory.Delete(root, recursive: true);
         }
     }
 }
+

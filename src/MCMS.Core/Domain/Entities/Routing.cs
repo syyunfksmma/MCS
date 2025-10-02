@@ -13,6 +13,10 @@ public class Routing : AuditableEntity
     public string? CamRevision { get; set; } = "1.0.0";
     public bool IsPrimary { get; set; }
     public bool IsLegacyHidden { get; set; }
+    public bool Is3DModeled { get; set; }
+    public DateTimeOffset? Last3DModeledAt { get; set; }
+    public bool IsPgCompleted { get; set; }
+    public DateTimeOffset? LastPgCompletedAt { get; set; }
     public DateTimeOffset? LegacyHiddenAt { get; set; }
     public string? LegacyHiddenBy { get; set; }
     public ApprovalStatus ApprovalStatus { get; set; } = ApprovalStatus.None;

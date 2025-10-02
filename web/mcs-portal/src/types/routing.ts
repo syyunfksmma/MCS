@@ -16,6 +16,10 @@ export interface RoutingVersion {
   status: RoutingStatus;
   isPrimary: boolean;
   isLegacyHidden: boolean;
+  is3DModeled: boolean;
+  isPgCompleted: boolean;
+  last3DModeledAt?: string | null;
+  lastPgCompletedAt?: string | null;
   legacyHiddenAt?: string | null;
   legacyHiddenBy?: string | null;
   owner?: string | null;
@@ -45,3 +49,4 @@ export interface RoutingMeta {
   requiresResync?: boolean;
   missingFiles?: string[] | null;
 }
+

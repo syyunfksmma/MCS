@@ -119,3 +119,13 @@
 - 각 단계 착수 전 Codex가 전체 범위 리뷰 및 오류 식별
 - 수정·기능 향상 제안을 중간중간 Codex가 능동 제시
 
+## 3D/CAM 선택 워크플로 업데이트 (2025-10-02)
+- ERP 뷰 `BI_OPERATION_VIEW`에서 CAM 작업 대상 8개 필드(WoNo, ProcSeq, ItemCd, OrderQty, JobCd, MachNm, OperStatusNm, StartYn)를 조회하는 전용 API `GET /api/erp/workorders`를 추가했다.
+  - 조회 시 `CamWorkStatus` 테이블과 조합해 3D 모델과 PG가 모두 완료된 항목은 자동 필터링한다.
+  - 감사 로그(AuditLogService)를 통해 호출자, 요청 시각, 반환 건수를 기록한다.
+- CAM/3D 버튼이 있는 화면에서는 `PATCH /api/cam/status`로 3D/PG 완료 여부를 갱신한다.
+  - 상태 업데이트 시 작업자 정보, 타임스탬프, 최근 완료 시각(Last3DModeledAt/LastPgCompletedAt)을 저장하고 감사 로그에 남긴다.
+  - 두 플래그가 모두 true가 되면 Explorer 목록과 Products 대시보드에서 선택이 비활성화된다.
+- CAM 상태 스키마: `CamWorkStatus(WoNo, ProcSeq, ItemCd, Is3DModeled, IsPgCompleted, Last3DModeledAt, LastPgCompletedAt, CreatedAt, CreatedBy, UpdatedAt, UpdatedBy)`.
+- PoC → 내부망 배포 단계에서도 위 API와 상태 테이블을 기본 구성으로 포함해야 하며, 설치형(MSI/EXE) 패키지에도 동일한 DB 마이그레이션 스크립트가 포함돼야 한다.
+

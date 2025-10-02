@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using MCMS.Core.Abstractions;
 using MCMS.Core.Contracts.Dtos;
 using MCMS.Core.Contracts.Requests;
@@ -42,9 +44,13 @@ public class RoutingVersionService : IRoutingVersionService
             .ToArray();
     }
 
-    public async Task<RoutingVersionDto> SetPrimaryVersionAsync(Guid routingId, Guid versionRoutingId, SetRoutingVersionRequest request, CancellationToken cancellationToken = default)
+    public async Task<RoutingVersionDto> UpdateVersionAsync(Guid routingId, Guid versionRoutingId, SetRoutingVersionRequest request, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(request);
+        if (string.IsNullOrWhiteSpace(request.RequestedBy))
+        {
+            throw new ArgumentException("RequestedBy is required.", nameof(request));
+        }
 
         var baseRouting = await _dbContext.Routings
             .Include(r => r.ItemRevision)
@@ -63,13 +69,13 @@ public class RoutingVersionService : IRoutingVersionService
             throw new InvalidOperationException("Version belongs to a different revision.");
         }
 
-        var historyEntries = new List<HistoryEntryDto>();
         var now = DateTimeOffset.UtcNow;
+        var historyEntries = new List<HistoryEntryDto>();
         var changesMade = false;
 
         if (request.LegacyHidden is bool legacyHidden && target.IsLegacyHidden != legacyHidden)
         {
-            var previousLegacyValue = target.IsLegacyHidden;
+            var previous = target.IsLegacyHidden;
             target.IsLegacyHidden = legacyHidden;
             target.LegacyHiddenAt = legacyHidden ? now : null;
             target.LegacyHiddenBy = request.RequestedBy;
@@ -82,7 +88,7 @@ public class RoutingVersionService : IRoutingVersionService
                 target.Id,
                 "RoutingVersionLegacyVisibilityChanged",
                 nameof(Routing.IsLegacyHidden),
-                previousLegacyValue.ToString(),
+                previous.ToString(),
                 legacyHidden.ToString(),
                 ApprovalOutcome.Pending,
                 now,
@@ -90,9 +96,27 @@ public class RoutingVersionService : IRoutingVersionService
                 request.Comment));
         }
 
-        var wasPrimary = target.IsPrimary;
-        var shouldPromote = request.IsPrimary && !target.IsPrimary;
-        if (shouldPromote)
+        if (!string.IsNullOrWhiteSpace(request.CamRevision) && !string.Equals(target.CamRevision, request.CamRevision, StringComparison.OrdinalIgnoreCase))
+        {
+            historyEntries.Add(new HistoryEntryDto(
+                Guid.NewGuid(),
+                target.Id,
+                "RoutingVersionCamRevisionChanged",
+                nameof(Routing.CamRevision),
+                target.CamRevision,
+                request.CamRevision,
+                ApprovalOutcome.Pending,
+                now,
+                request.RequestedBy,
+                request.Comment));
+
+            target.CamRevision = request.CamRevision;
+            target.UpdatedAt = now;
+            target.UpdatedBy = request.RequestedBy;
+            changesMade = true;
+        }
+
+        if (request.IsPrimary is true && !target.IsPrimary)
         {
             var siblings = await _dbContext.Routings
                 .Where(r => r.ItemRevisionId == baseRouting.ItemRevisionId)
@@ -105,19 +129,79 @@ public class RoutingVersionService : IRoutingVersionService
                 sibling.UpdatedBy = request.RequestedBy;
             }
 
-            changesMade = true;
-
             historyEntries.Add(new HistoryEntryDto(
                 Guid.NewGuid(),
                 target.Id,
                 "RoutingVersionPromoted",
                 nameof(Routing.IsPrimary),
-                wasPrimary.ToString(),
+                false.ToString(),
                 true.ToString(),
                 ApprovalOutcome.Approved,
                 now,
                 request.RequestedBy,
                 request.Comment));
+
+            changesMade = true;
+        }
+        else if (request.IsPrimary is false && target.IsPrimary)
+        {
+            target.IsPrimary = false;
+            target.UpdatedAt = now;
+            target.UpdatedBy = request.RequestedBy;
+            historyEntries.Add(new HistoryEntryDto(
+                Guid.NewGuid(),
+                target.Id,
+                "RoutingVersionDemoted",
+                nameof(Routing.IsPrimary),
+                true.ToString(),
+                false.ToString(),
+                ApprovalOutcome.Pending,
+                now,
+                request.RequestedBy,
+                request.Comment));
+            changesMade = true;
+        }
+
+        if (request.Is3DModeled is bool is3D && target.Is3DModeled != is3D)
+        {
+            var previous = target.Is3DModeled;
+            target.Is3DModeled = is3D;
+            target.Last3DModeledAt = is3D ? now : null;
+            target.UpdatedAt = now;
+            target.UpdatedBy = request.RequestedBy;
+            historyEntries.Add(new HistoryEntryDto(
+                Guid.NewGuid(),
+                target.Id,
+                "RoutingVersion3DStatusChanged",
+                nameof(Routing.Is3DModeled),
+                previous.ToString(),
+                is3D.ToString(),
+                ApprovalOutcome.Pending,
+                now,
+                request.RequestedBy,
+                request.Comment));
+            changesMade = true;
+        }
+
+        if (request.IsPgCompleted is bool isPg && target.IsPgCompleted != isPg)
+        {
+            var previous = target.IsPgCompleted;
+            target.IsPgCompleted = isPg;
+            target.LastPgCompletedAt = isPg ? now : null;
+            target.UpdatedAt = now;
+            target.UpdatedBy = request.RequestedBy;
+            historyEntries.Add(new HistoryEntryDto(
+                Guid.NewGuid(),
+                target.Id,
+                "RoutingVersionPgStatusChanged",
+                nameof(Routing.IsPgCompleted),
+                previous.ToString(),
+                isPg.ToString(),
+                ApprovalOutcome.Pending,
+                now,
+                request.RequestedBy,
+                request.Comment));
+            changesMade = true;
         }
 
         if (!changesMade)
@@ -164,6 +248,10 @@ public class RoutingVersionService : IRoutingVersionService
             routing.Status,
             routing.IsPrimary,
             routing.IsLegacyHidden,
+            routing.Is3DModeled,
+            routing.IsPgCompleted,
+            routing.Last3DModeledAt,
+            routing.LastPgCompletedAt,
             routing.LegacyHiddenAt,
             routing.LegacyHiddenBy,
             routing.UpdatedBy ?? routing.CreatedBy,
@@ -174,3 +262,7 @@ public class RoutingVersionService : IRoutingVersionService
             history);
     }
 }
+
+
+
+
