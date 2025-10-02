@@ -1,13 +1,16 @@
 import { test, expect } from "@playwright/test";
 
 const baseUrl = process.env.MCMS_E2E_BASE_URL ?? "http://localhost:3000";
+const allowSmoke =
+  process.env.CI === "true" ||
+  process.env.PLAYWRIGHT_SMOKE_ALLOW_LOCAL === "true";
 
 // NOTE: These flows assume seeded mock data (scripts/testing/seed-test-data.mjs).
 // They are tagged smoke so CI can schedule them independently.
 
 test.describe.parallel("Routing E2E smoke", () => {
   test("@smoke product creation wizard to approval queue", async ({ page }) => {
-    test.skip(process.env.CI !== "true", "Requires seeded Playwright Docker compose env");
+    test.skip(!allowSmoke, 'Requires seeded Playwright Docker compose env (set PLAYWRIGHT_SMOKE_ALLOW_LOCAL=true to override locally)');
 
     await page.goto(`${baseUrl}/products`);
     await page.getByRole("button", { name: /create product/i }).click();
@@ -22,7 +25,7 @@ test.describe.parallel("Routing E2E smoke", () => {
   });
 
   test("@smoke routing upload legacy download + search filters", async ({ page }) => {
-    test.skip(process.env.CI !== "true", "Requires seeded Playwright Docker compose env");
+    test.skip(!allowSmoke, 'Requires seeded Playwright Docker compose env (set PLAYWRIGHT_SMOKE_ALLOW_LOCAL=true to override locally)');
 
     await page.goto(`${baseUrl}/explorer`);
     await page.getByPlaceholder("Search item or routing").fill("ITEM-100");
