@@ -17,6 +17,7 @@ public static class ServiceCollectionExtensions
     {
         services.Configure<FileStorageOptions>(configuration.GetSection("FileStorage"));
         services.Configure<EspritAutomationOptions>(configuration.GetSection("EspritAutomation"));
+        services.Configure<ErpOptions>(configuration.GetSection("Erp"));
         services.AddMemoryCache();
 
         services.AddDbContext<McmsDbContext>(options =>
@@ -47,6 +48,8 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IAddinJobService, AddinJobService>();
         services.AddScoped<IAddinKeyService, AddinKeyService>();
         services.AddScoped<IExplorerService, ExplorerService>();
+        services.AddScoped<ICamWorkStatusService, CamWorkStatusService>();
+        services.AddScoped<IErpWorkOrderService, ErpWorkOrderService>();
         services.AddScoped<IRoutingVersionService, RoutingVersionService>();
         services.AddScoped<ISolidWorksLinkService, SolidWorksLinkService>();
         services.AddSingleton<IFileStorageService, FileStorageService>();
@@ -57,4 +60,5 @@ public static class ServiceCollectionExtensions
         return services;
     }
 }
+
 

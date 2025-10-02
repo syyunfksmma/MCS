@@ -112,3 +112,9 @@
 - 라우팅 선택 여부에 따른 배지 툴팁을 검증하고, SignalR 연동 전까지 HTTP-only 환경에서 표시되는 안내 문구를 추가.
 - 스크린샷: (추가 예정) explorer_addin_history_20250929.png — src/components/explorer/AddinHistoryPanel.tsx 기준 렌더링 확인.
 
+\
+- Wired ERP work order ingestion via  `IErpWorkOrderService` backed by MSSQL view access; created secure options binding and filtered out 3D+PG completed rows before response. 
+- Added  `CamWorkStatus` persistence + API endpoints (`GET /api/erp/workorders`, `PATCH /api/cam/status`) with audit logging to capture fetch/update events. 
+- Updated Products dashboard to surface the eight ERP fields, enforce CAM button gating, and call the status endpoint; lint suite now passes on the revised UI.
+- Configuration: introduced  `Erp__ConnectionString`/`Erp__WorkOrderViewName` env entries and documented defaults in appsettings templates. 
+- Validation:  `dotnet build src/MCMS.Api/MCMS.Api.csproj` (warns only) and `npm run lint` succeed after dependency bumps. 

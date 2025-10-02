@@ -17,6 +17,8 @@ public class McmsDbContext(DbContextOptions<McmsDbContext> options) : DbContext(
     public DbSet<AddinKey> AddinKeys => Set<AddinKey>();
     public DbSet<AddinJob> AddinJobs => Set<AddinJob>();
     public DbSet<AuditLogEntry> AuditLogEntries => Set<AuditLogEntry>();
+    public DbSet<CamWorkStatus> CamWorkStatuses => Set<CamWorkStatus>();
+
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -89,6 +91,15 @@ public class McmsDbContext(DbContextOptions<McmsDbContext> options) : DbContext(
             builder.Property(x => x.ResultStatus).HasMaxLength(64);
         });
 
+        modelBuilder.Entity<CamWorkStatus>(builder =>
+        {
+            builder.HasIndex(x => new { x.WoNo, x.ProcSeq }).IsUnique();
+            builder.Property(x => x.WoNo).HasMaxLength(32);
+            builder.Property(x => x.ProcSeq).HasMaxLength(32);
+            builder.Property(x => x.ItemCd).HasMaxLength(64);
+            builder.Property(x => x.UpdatedBy).HasMaxLength(64);
+        });
+
         modelBuilder.Entity<AuditLogEntry>(builder =>
         {
             builder.HasIndex(x => new { x.EventAt, x.Category });
@@ -103,3 +114,5 @@ public class McmsDbContext(DbContextOptions<McmsDbContext> options) : DbContext(
         });
     }
 }
+
+
