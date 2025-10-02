@@ -16,7 +16,8 @@ export default defineConfig({
   use: {
     baseURL: 'http://localhost:3000',
     headless: true,
-    channel: resolveChannel()
+    channel: resolveChannel(),
+    ignoreHTTPSErrors: true
   },
   webServer: {
     command: webServerCommand,
@@ -25,3 +26,4 @@ export default defineConfig({
     timeout: 180 * 1000
   }
 });
+

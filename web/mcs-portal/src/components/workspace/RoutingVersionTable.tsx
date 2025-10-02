@@ -61,7 +61,7 @@ export default function RoutingVersionTable({
     {
       title: 'Steps / Files',
       key: 'stats',
-      render: (_, record) => `${record.stepCount} / ${record.fileCount}`
+      render: (_, record) => [record.stepCount, record.fileCount].join(' / ')
     },
     {
       title: 'Legacy',
@@ -118,20 +118,21 @@ export default function RoutingVersionTable({
         dataSource={filteredVersions}
         expandable={{
           expandedRowRender: (record) => (
-            <Timeline
-              style={{ margin: '16px 0' }}
-              items={record.history.map((entry) => ({
-                color: entry.changeType?.toLowerCase().includes('approve') ? 'green' : undefined,
-                label: new Date(entry.recordedAt).toLocaleString(),
-                children: (
+            <Timeline style={{ margin: '16px 0' }}>
+              {record.history.map((entry) => (
+                <Timeline.Item
+                  key={entry.historyId}
+                  color={entry.changeType?.toLowerCase().includes('approve') ? 'green' : undefined}
+                  label={new Date(entry.recordedAt).toLocaleString()}
+                >
                   <Space direction="vertical" size="small">
                     <Text strong>{entry.actor}</Text>
                     <Text type="secondary">{entry.changeType}</Text>
                     {entry.comment ? <Text>{entry.comment}</Text> : null}
                   </Space>
-                )
-              }))}
-            />
+                </Timeline.Item>
+              ))}
+            </Timeline>
           )
         }}
         pagination={false}

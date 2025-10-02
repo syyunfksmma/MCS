@@ -48,7 +48,7 @@ jobs:
 
       - name: Install Playwright browsers
         working-directory: web/mcs-portal
-        run: npx playwright install --with-deps
+        run: npm run playwright:install-offline
 
       - name: Lint
         working-directory: web/mcs-portal
@@ -62,9 +62,45 @@ jobs:
         working-directory: web/mcs-portal
         run: npm run build
 
-      - name: End-to-end tests
+      - name: Playwright smoke tests
         working-directory: web/mcs-portal
-        run: npm run test:e2e
+        env:
+          PLAYWRIGHT_E2E: "true"
+        run: npm run test:e2e -- --grep "@smoke"
+
+      - name: Accessibility smoke tests
+        working-directory: web/mcs-portal
+        env:
+          PLAYWRIGHT_E2E: "true"
+        run: npm run test:axe
+
+      - name: Install k6
+        uses: grafana/setup-k6@v1
+
+      - name: Start Next.js server for performance smoke
+        working-directory: web/mcs-portal
+        shell: bash
+        run: |
+          npm run start -- --hostname 127.0.0.1 --port 3101 &
+          SERVER_PID=$!
+          echo $SERVER_PID > ../.perf-server.pid
+          npx wait-on http://127.0.0.1:3101
+
+      - name: k6 workspace smoke
+        working-directory: web/mcs-portal
+        env:
+          BASE_URL: http://127.0.0.1:3101
+        run: k6 run scripts/performance/k6-workspace.js --vus 10 --duration 45s
+
+      - name: Stop Next.js performance server
+        if: always()
+        working-directory: web/mcs-portal
+        shell: bash
+        run: |
+          if [ -f ../.perf-server.pid ]; then
+            kill $(cat ../.perf-server.pid) 2>/dev/null || true
+            rm ../.perf-server.pid
+          fi
 
       - name: Upload Playwright report
         if: always()

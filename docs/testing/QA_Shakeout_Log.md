@@ -34,3 +34,9 @@
 | 2025-10-01 | Vitest Core | jsdom `getComputedStyle` 미구현 및 clipboard mock 실패로 단위 테스트 실패 | 실패 | Codex | `npm run test:unit` → RoutingDetailModal, ProductDashboardShell 케이스 실패 |
 | 2025-10-01 | k6 SLA | k6 스크립트 문법 오류로 실행 불가 | 실패 | Codex | `npm run perf:k6 -- --vus 50 --duration 2m` → line 15:26 syntax error |
 | 2025-10-01 | Accessibility Axe | Playwright 브라우저 설치 SSL 차단 | 실패 | Codex | `npm run test:axe` → self-signed certificate 에러, `npx playwright install` 미완료 |
+
+### 2025-10-02 Day2
+| Date | Component | Issue | Status | Owner | Notes |
+| --- | --- | --- | --- | --- | --- |
+| 2025-10-02 | QA Automation | Playwright @smoke tagging, Vitest clipboard/getComputedStyle mocks, k6 workspace script fix | 완료 | Codex | vitest.setup.ts mocks, scripts/performance/k6-workspace.js, playwright config SSL bypass |
+| 2025-10-02 | Pipeline | Added smoke/axe/perf steps to CI manual workflow | 완료 | Codex | .github/workflows/ci.yml now runs Playwright smoke, axe, k6 smoke |

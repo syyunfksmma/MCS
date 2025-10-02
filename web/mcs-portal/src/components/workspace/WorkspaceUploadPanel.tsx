@@ -19,7 +19,7 @@ import {
   Upload
 } from 'antd';
 import type { RcFile, UploadProps } from 'antd/es/upload/interface';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   uploadRoutingFileChunks,
   type ChunkUploadProgress

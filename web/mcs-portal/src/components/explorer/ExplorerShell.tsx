@@ -450,7 +450,8 @@ const handlePromoteVersion = useCallback(async (versionId: string) => {
               if (routing.id === versionId) {
                 return { ...routing, isPrimary: true };
               }
-              if (routing.isPrimary && routing.id !== versionId) {
+              const routeIsPrimary = (routing as { isPrimary?: boolean }).isPrimary ?? false;
+              if (routeIsPrimary && routing.id !== versionId) {
                 return { ...routing, isPrimary: false };
               }
               return routing;
@@ -572,7 +573,9 @@ const handleToggleLegacyVersion = useCallback(async (versionId: string, nextHidd
   }, [hoverMenuEnabled, isHoverMenuOpen, closeHoverMenu]);
 
   useEffect(() => {
-    setLastRoutingId(selectedRouting?.id ?? null);
+    if (typeof setLastRoutingId === "function") {
+      setLastRoutingId(selectedRouting?.id ?? null);
+    }
   }, [selectedRouting?.id, setLastRoutingId]);
 
   useEffect(() => {
@@ -2546,5 +2549,9 @@ const previewColumn = (
     </>
   );
 }
+
+
+
+
 
 

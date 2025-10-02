@@ -23,9 +23,9 @@ export function DataTable<RecordType extends object>({
         ...pagination
       }}
       style={{
-        backgroundColor: designTokens.color.surface,
+        backgroundColor: designTokens.color.surfaceElevated,
         borderRadius: designTokens.radius.md,
-        border: `1px solid ${designTokens.color.border}`,
+        border: `1px solid ${designTokens.color.borderSubtle}`,
         ...style
       }}
       {...props}
