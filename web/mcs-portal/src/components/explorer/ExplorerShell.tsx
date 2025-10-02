@@ -435,7 +435,6 @@ const handlePromoteVersion = useCallback(async (versionId: string) => {
       versionId,
       requestedBy,
       makePrimary: true,
-      currentIsPrimary: version?.isPrimary,
       legacyHidden: version?.isLegacyHidden
     });
 
@@ -486,15 +485,12 @@ const handleToggleLegacyVersion = useCallback(async (versionId: string, nextHidd
     return;
   }
 
-  const version = versionList.find((entry) => entry.versionId === versionId);
-
   try {
     const requestedBy = auth.account?.username ?? 'workspace.user';
     await updateRoutingVersion({
       routingId: selectedRouting.id,
       versionId,
       requestedBy,
-      currentIsPrimary: version?.isPrimary,
       legacyHidden: nextHidden
     });
 
@@ -504,7 +500,7 @@ const handleToggleLegacyVersion = useCallback(async (versionId: string, nextHidd
     const detail = error instanceof Error ? error.message : 'Unknown error';
     message.error(`Failed to update legacy visibility: ${detail}`);
   }
-}, [auth.account?.username, selectedRouting, userPermissions.canManageRoutingVersions, versionList, refetchVersions]);
+}, [auth.account?.username, selectedRouting, userPermissions.canManageRoutingVersions, refetchVersions]);
 
   const [latestEspritKey, setLatestEspritKey] = useState<CreateEspritApiKeyResponse | null>(null);
 
@@ -2549,6 +2545,7 @@ const previewColumn = (
     </>
   );
 }
+
 
 
 

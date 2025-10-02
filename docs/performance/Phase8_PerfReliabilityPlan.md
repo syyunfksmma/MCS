@@ -54,3 +54,8 @@
 - Metric 수집 스크립트: `scripts/performance/track-cache-metrics.ps1` 작성 예정.
 - 타임라인: Wave16 S35~S37 기록.
 
+## Upcoming CAM SLA Actions (2025-10-02)
+- Adjust FileStorage:JsonWriteParallelism to expose configurable concurrency.
+- Prepare k6 script update (scripts/performance/k6-workspace.js) with ENV fallback and smoke profile.
+- Record baseline vs optimized P95 latency and append results to this document once tests run (target 2025-10-07).
+

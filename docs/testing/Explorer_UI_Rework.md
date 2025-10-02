@@ -63,3 +63,12 @@
 1. package.json에 lint/test 스크립트 추가하고 CI 워크플로우에 통합
 2. Search KPI 카드 값(서버/클라이언트 SLA)과 Dashboard KPI 정의 간 상호 참조 테이블 작성 (Sprint21 목표)
 3. 3D 뷰어 PoC(서버 메뉴) 시나리오를 위한 기술 스파이크 일정 수립
+
+## Upcoming Automation Tasks (2025-10-02)
+- Build Playwright @smoke suite covering Explorer navigation, CAM replace, routing version promote.
+- Introduce Vitest DOM mocks to stabilise RoutingDetailModal & ProductDashboardShell tests.
+- Update k6 workspace script with ENV-driven base URL and smoke profile.
+- Add dev certificate import script for 
+pm run test:axe to resolve SSL trust.
+- Align CI pipeline order: lint → test:unit → test:axe → test:e2e(@smoke) → k6 smoke.
+

@@ -35,16 +35,21 @@ public class RoutingVersionsController : ControllerBase
     [ProducesResponseType(typeof(RoutingVersionDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<RoutingVersionDto>> SetPrimaryAsync(Guid routingId, Guid versionId, [FromBody] SetRoutingVersionRequest request, CancellationToken cancellationToken)
+    public async Task<ActionResult<RoutingVersionDto>> UpdateAsync(Guid routingId, Guid versionId, [FromBody] SetRoutingVersionRequest request, CancellationToken cancellationToken)
     {
         if (request is null)
         {
             return BadRequest(new { message = "Request body is required." });
         }
 
+        if (string.IsNullOrWhiteSpace(request.RequestedBy))
+        {
+            return BadRequest(new { message = "requestedBy is required." });
+        }
+
         try
         {
-            var version = await _routingVersionService.SetPrimaryVersionAsync(routingId, versionId, request, cancellationToken);
+            var version = await _routingVersionService.UpdateVersionAsync(routingId, versionId, request, cancellationToken);
             return Ok(version);
         }
         catch (KeyNotFoundException)
@@ -57,4 +62,5 @@ public class RoutingVersionsController : ControllerBase
         }
     }
 }
+
 

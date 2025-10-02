@@ -43,6 +43,8 @@ public class McmsDbContext(DbContextOptions<McmsDbContext> options) : DbContext(
             builder.Property(x => x.RoutingCode).HasMaxLength(64);
             builder.Property(x => x.CamRevision).HasMaxLength(32);
             builder.Property(x => x.LegacyHiddenBy).HasMaxLength(64);
+            builder.Property(x => x.Last3DModeledAt);
+            builder.Property(x => x.LastPgCompletedAt);
         });
 
         modelBuilder.Entity<RoutingStep>(builder =>

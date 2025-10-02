@@ -43,9 +43,6 @@ public class RoutingVersionServiceTests
             CreatedBy = "seed"
         };
 
-        var routingAHistoryId = Guid.NewGuid();
-        var routingBHistoryId = Guid.NewGuid();
-
         var routingA = new Routing
         {
             ItemRevision = revision,
@@ -53,6 +50,10 @@ public class RoutingVersionServiceTests
             Status = RoutingStatus.Approved,
             CamRevision = "1.0",
             IsPrimary = true,
+            IsLegacyHidden = false,
+            Is3DModeled = true,
+            Last3DModeledAt = now.AddHours(-1),
+            IsPgCompleted = false,
             CreatedAt = now.AddHours(-2),
             UpdatedAt = now.AddHours(-1),
             CreatedBy = "seed",
@@ -80,7 +81,6 @@ public class RoutingVersionServiceTests
 
         routingA.HistoryEntries.Add(new HistoryEntry
         {
-            Id = routingAHistoryId,
             Routing = routingA,
             ChangeType = "RoutingCreated",
             Field = nameof(Routing.Status),
@@ -98,6 +98,9 @@ public class RoutingVersionServiceTests
             Status = RoutingStatus.PendingApproval,
             CamRevision = "1.1",
             IsPrimary = false,
+            IsLegacyHidden = false,
+            Is3DModeled = false,
+            IsPgCompleted = false,
             CreatedAt = now.AddHours(-3),
             UpdatedAt = now,
             CreatedBy = "seed",
@@ -111,7 +114,6 @@ public class RoutingVersionServiceTests
             ProcessDescription = "Turning",
             CreatedBy = "seed"
         });
-
         routingB.Steps.Add(new RoutingStep
         {
             Sequence = 2,
@@ -133,7 +135,6 @@ public class RoutingVersionServiceTests
 
         routingB.HistoryEntries.Add(new HistoryEntry
         {
-            Id = routingBHistoryId,
             Routing = routingB,
             ChangeType = "RoutingRevisionCreated",
             Field = nameof(Routing.CamRevision),
@@ -179,17 +180,22 @@ public class RoutingVersionServiceTests
     }
 
     [Fact]
-    public async Task SetPrimaryVersionAsync_PromotesTargetAndWritesHistory()
+    public async Task UpdateVersionAsync_PromotesTargetAndWritesHistory()
     {
         var (context, _, service) = CreateService();
         try
         {
             var (baseId, secondaryId) = await SeedRoutingsAsync(context);
 
-            var result = await service.SetPrimaryVersionAsync(
+            var result = await service.UpdateVersionAsync(
                 baseId,
                 secondaryId,
-                new SetRoutingVersionRequest(true, "approver", "promote secondary")
+                new SetRoutingVersionRequest
+                {
+                    RequestedBy = "approver",
+                    Comment = "promote secondary",
+                    IsPrimary = true
+                }
             );
 
             Assert.True(result.IsPrimary);
@@ -213,17 +219,22 @@ public class RoutingVersionServiceTests
     }
 
     [Fact]
-    public async Task SetPrimaryVersionAsync_TogglesLegacyHiddenAndRecordsHistory()
+    public async Task UpdateVersionAsync_TogglesLegacyHiddenAndRecordsHistory()
     {
         var (context, _, service) = CreateService();
         try
         {
             var (baseId, _) = await SeedRoutingsAsync(context);
 
-            var updated = await service.SetPrimaryVersionAsync(
+            var updated = await service.UpdateVersionAsync(
                 baseId,
                 baseId,
-                new SetRoutingVersionRequest(false, "auditor", "hide legacy", true)
+                new SetRoutingVersionRequest
+                {
+                    RequestedBy = "auditor",
+                    Comment = "hide legacy",
+                    LegacyHidden = true
+                }
             );
 
             Assert.True(updated.IsLegacyHidden);
@@ -245,5 +256,45 @@ public class RoutingVersionServiceTests
             await context.DisposeAsync();
         }
     }
-}
 
+    [Fact]
+    public async Task UpdateVersionAsync_UpdatesCamStatuses()
+    {
+        var (context, _, service) = CreateService();
+        try
+        {
+            var (baseId, secondaryId) = await SeedRoutingsAsync(context);
+
+            var updated = await service.UpdateVersionAsync(
+                baseId,
+                secondaryId,
+                new SetRoutingVersionRequest
+                {
+                    RequestedBy = "cam.tech",
+                    Comment = "mark ready",
+                    Is3DModeled = true,
+                    IsPgCompleted = true
+                }
+            );
+
+            Assert.True(updated.Is3DModeled);
+            Assert.True(updated.IsPgCompleted);
+            Assert.NotNull(updated.Last3DModeledAt);
+            Assert.NotNull(updated.LastPgCompletedAt);
+
+            var routing = await context.Routings.SingleAsync(r => r.Id == secondaryId);
+            Assert.True(routing.Is3DModeled);
+            Assert.True(routing.IsPgCompleted);
+
+            var historyEntries = await context.HistoryEntries
+                .Where(h => h.RoutingId == secondaryId)
+                .ToListAsync();
+            Assert.Contains(historyEntries, h => h.ChangeType == "RoutingVersion3DStatusChanged");
+            Assert.Contains(historyEntries, h => h.ChangeType == "RoutingVersionPgStatusChanged");
+        }
+        finally
+        {
+            await context.DisposeAsync();
+        }
+    }
+}

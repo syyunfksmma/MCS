@@ -10,6 +10,10 @@ public record RoutingVersionDto(
     RoutingStatus Status,
     bool IsPrimary,
     bool IsLegacyHidden,
+    bool Is3DModeled,
+    bool IsPgCompleted,
+    DateTimeOffset? Last3DModeledAt,
+    DateTimeOffset? LastPgCompletedAt,
     DateTimeOffset? LegacyHiddenAt,
     string? LegacyHiddenBy,
     string? Owner,
@@ -19,9 +23,11 @@ public record RoutingVersionDto(
     int FileCount,
     IReadOnlyCollection<RoutingVersionHistoryDto> History);
 
+
 public record RoutingVersionHistoryDto(
     Guid HistoryId,
     string ChangeType,
     string? Comment,
     string Actor,
     DateTimeOffset RecordedAt);
+

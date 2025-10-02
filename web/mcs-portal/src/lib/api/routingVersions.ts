@@ -11,9 +11,12 @@ export interface UpdateRoutingVersionOptions {
   requestedBy: string;
   comment?: string;
   makePrimary?: boolean;
-  currentIsPrimary?: boolean;
   legacyHidden?: boolean;
+  camRevision?: string;
+  is3DModeled?: boolean;
+  isPgCompleted?: boolean;
 }
+
 
 function normalizeBaseUrl(base: string): string {
   return base.endsWith('/') ? base.slice(0, -1) : base;
@@ -50,16 +53,37 @@ export async function updateRoutingVersion({
   requestedBy,
   comment,
   makePrimary,
-  currentIsPrimary,
-  legacyHidden
+  legacyHidden,
+  camRevision,
+  is3DModeled,
+  isPgCompleted
 }: UpdateRoutingVersionOptions): Promise<RoutingVersion> {
   const baseUrl = ensureBaseUrl();
-  const payload = {
-    isPrimary: makePrimary ?? currentIsPrimary ?? false,
+  const payload: Record<string, unknown> = {
     requestedBy,
-    comment,
-    legacyHidden
+    comment
   };
+
+  if (typeof makePrimary === "boolean") {
+    payload.isPrimary = makePrimary;
+  }
+
+  if (typeof legacyHidden === "boolean") {
+    payload.legacyHidden = legacyHidden;
+  }
+
+  if (typeof camRevision === "string" && camRevision.trim().length > 0) {
+    payload.camRevision = camRevision.trim();
+  }
+
+  if (typeof is3DModeled === "boolean") {
+    payload.is3DModeled = is3DModeled;
+  }
+
+  if (typeof isPgCompleted === "boolean") {
+    payload.isPgCompleted = isPgCompleted;
+  }
+
 
   const response = await fetch(`${baseUrl}/api/routings/${routingId}/versions/${versionId}`, {
     method: 'PATCH',
@@ -78,3 +102,5 @@ export async function updateRoutingVersion({
 
   return response.json() as Promise<RoutingVersion>;
 }
+
+
