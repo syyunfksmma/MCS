@@ -64,11 +64,19 @@
 2. Search KPI 카드 값(서버/클라이언트 SLA)과 Dashboard KPI 정의 간 상호 참조 테이블 작성 (Sprint21 목표)
 3. 3D 뷰어 PoC(서버 메뉴) 시나리오를 위한 기술 스파이크 일정 수립
 
-## Upcoming Automation Tasks (2025-10-02)
-- Build Playwright @smoke suite covering Explorer navigation, CAM replace, routing version promote.
-- Introduce Vitest DOM mocks to stabilise RoutingDetailModal & ProductDashboardShell tests.
-- Update k6 workspace script with ENV-driven base URL and smoke profile.
-- Add dev certificate import script for 
-pm run test:axe to resolve SSL trust.
-- Align CI pipeline order: lint → test:unit → test:axe → test:e2e(@smoke) → k6 smoke.
+## Sequential Automation Tasks
+1. Playwright @smoke 시나리오 구성
+   - Explorer 기본 탐색, CAM replace, Routing Version promote 경로를 `@smoke` 태그로 묶습니다.
+   - 테스트 데이터는 `fixtures/explorer-smoke.json`으로 정리하고, 워크스페이스 전환 시 API 응답을 `routeFromHAR`로 고정합니다.
+2. Vitest DOM mock 기반 안정화
+   - `RoutingDetailModal`과 `ProductDashboardShell` 테스트에 `happy-dom` 기반 mock을 적용하고, 포커스 이동 및 이벤트 타이머를 `@testing-library/user-event`로 일원화합니다.
+   - 불안정한 타이머 의존 로직은 `vi.useFakeTimers()`로 고정하고 cleanup 헬퍼를 유틸 함수로 분리합니다.
+3. k6 workspace smoke와 연동
+   - Playwright smoke 완료 후 `web/mcs-portal/scripts/performance/k6-workspace.js` 스모크 프로필을 호출해 UI와 API 흐름을 한 세션에서 검증합니다.
+   - 실행 요약을 `artifacts/testing/k6-integration.json`으로 저장하고, 실패 시 CI 주석으로 바로 노출합니다.
+4. Dev certificate import 자동화
+   - `scripts/testing/import-dev-cert.ps1`를 작성해 axe 실행 전 루트 인증서를 자동 등록하고, 반복 실행에도 안전하도록 합니다.
+   - 실패 시 안내 메시지와 수동 등록 절차 링크를 함께 출력합니다.
+5. CI 파이프라인 재정렬
+   - 워크플로 순서를 lint → test:unit → test:axe → test:e2e(@smoke) → k6 smoke로 정리하고, 각 단계의 캐시 전략과 실패 시 롤백 절차를 정의합니다.
 

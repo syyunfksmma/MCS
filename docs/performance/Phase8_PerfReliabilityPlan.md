@@ -54,8 +54,15 @@
 - Metric 수집 스크립트: `scripts/performance/track-cache-metrics.ps1` 작성 예정.
 - 타임라인: Wave16 S35~S37 기록.
 
-## Upcoming CAM SLA Actions (2025-10-02)
-- Adjust FileStorage:JsonWriteParallelism to expose configurable concurrency.
-- Prepare k6 script update (scripts/performance/k6-workspace.js) with ENV fallback and smoke profile.
-- Record baseline vs optimized P95 latency and append results to this document once tests run (target 2025-10-07).
+## Sequential CAM SLA Actions
+1. FileStorage JSON write 병렬성 튜닝
+   - `JsonWriteParallelism` 설정을 workspace 서비스 구성 파일과 배포 체크리스트에 명시하고, 환경 변수 `APP_FileStorage__JsonWriteParallelism`으로 재정의할 수 있도록 합니다.
+   - PoC 환경에서는 기본값 4에서 시작해 2·4·8 순으로 k6 smoke와 load 프로필을 실행하며, 장애 발생 시 즉시 원복하는 절차를 함께 기록합니다.
+   - Application Insights에 `FileStorage.JsonWriteLatency` 커스텀 메트릭을 추가하고 P95가 임계치를 초과하면 Slack 알림을 발송합니다.
+2. k6 워크스페이스 스크립트 스모크 프로필 확장
+   - `web/mcs-portal/scripts/performance/k6-workspace.js`에 `K6_BASE_URL` 환경 변수와 스모크 프로필 옵션(`--vus 5 --duration 5m`)을 처리하는 헬퍼를 추가합니다.
+   - 실행 결과를 `artifacts/perf/k6-smoke-latest.json`으로 내보내고, CI에서 자동 수집하도록 `scripts/performance/collect-smoke-artifacts.ps1`를 준비합니다.
+3. SLA 측정 결과 정리
+   - PoC, 튜닝, 안정화 단계별 P95·P99 지표와 오류율을 표로 정리하고 baseline 대비 개선 폭을 요약합니다.
+   - 측정이 끝나면 본 문서에 요약 표를 추가하고, 상세 raw 데이터 링크를 `artifacts/perf/README.md`에 연결합니다.
 
