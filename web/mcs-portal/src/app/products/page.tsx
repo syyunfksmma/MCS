@@ -1,5 +1,6 @@
 import ProductDashboardShell from '@/components/products/ProductDashboardShell';
 import { fetchProductDashboardData } from '@/lib/products';
+import { fetchErpWorkOrders } from '@/lib/erp';
 
 export const metadata = {
   title: 'Product Routing Dashboard',
@@ -8,7 +9,15 @@ export const metadata = {
 };
 
 export default async function ProductsPage() {
-  const dashboard = await fetchProductDashboardData();
+  const [dashboard, workOrders] = await Promise.all([
+    fetchProductDashboardData(),
+    fetchErpWorkOrders()
+  ]);
 
-  return <ProductDashboardShell initialData={dashboard} />;
+  return (
+    <ProductDashboardShell
+      initialData={dashboard}
+      initialWorkOrders={workOrders}
+    />
+  );
 }
