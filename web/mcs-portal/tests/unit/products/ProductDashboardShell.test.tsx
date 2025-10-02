@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, within } from "@testing-library/react";
+import { act, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import ProductDashboardShell from "@/components/products/ProductDashboardShell";
 import type { ProductDashboardResponse } from "@/types/products";
@@ -93,8 +93,10 @@ describe("ProductDashboardShell", () => {
     const user = userEvent.setup();
 
     const searchInput = screen.getByPlaceholderText("Search by product code or name");
-    await user.clear(searchInput);
-    await user.type(searchInput, "Z999");
+    await act(async () => {
+      await user.clear(searchInput);
+      await user.type(searchInput, "Z999");
+    });
 
     expect(
       await screen.findByText("No products match your search.")
@@ -109,7 +111,9 @@ describe("ProductDashboardShell", () => {
     expect(card).not.toBeNull();
     const copyButton = within(card as HTMLElement).getByRole("button", { name: /copy/i });
 
-    await user.click(copyButton);
+    await act(async () => {
+      await user.click(copyButton);
+    });
 
     expect(mockWarning).toHaveBeenCalledWith("SolidWorks path not provided yet.");
     expect(mockSuccess).not.toHaveBeenCalled();
@@ -123,14 +127,18 @@ describe("ProductDashboardShell", () => {
     expect(card).not.toBeNull();
     const copyButton = within(card as HTMLElement).getByRole("button", { name: /copy/i });
 
-    await user.click(copyButton);
+    await act(async () => {
+      await user.click(copyButton);
+    });
 
     expect(clipboardWrite).toHaveBeenCalledWith("\\\\MCMS_SHARE\\models\\ITEM-100\\REV02\\assembly.sldasm");
     expect(mockSuccess).toHaveBeenCalledWith("Copied SolidWorks shared path.");
 
     clipboardWrite.mockRejectedValueOnce(new Error("denied"));
 
-    await user.click(copyButton);
+    await act(async () => {
+      await user.click(copyButton);
+    });
 
     expect(mockError).toHaveBeenCalledWith("Copy failed. Please copy manually.");
   });
