@@ -44,3 +44,19 @@ scrape_configs:
           job: mcms-smoke
           env: internal
           __path__: "artifacts/offline/logs/smoke_*.log"
+  - job_name: mcms-meta
+    pipeline_stages:
+      - json:
+          expressions:
+            timestamp: timestamp
+            process_id: processId
+            counters: counters
+      - timestamp:
+          source: timestamp
+          format: RFC3339Nano
+    static_configs:
+      - targets: [localhost]
+        labels:
+          job: mcms-meta
+          env: internal
+          __path__: "logs/meta-json-counters.ndjson"

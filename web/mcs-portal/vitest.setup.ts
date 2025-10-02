@@ -18,7 +18,7 @@ if (!window.matchMedia) {
 }
 
 if (!window.scrollTo) {
-  window.scrollTo = vi.fn();
+  window.scrollTo = vi.fn((..._args: unknown[]) => undefined) as unknown as typeof window.scrollTo;
 }
 
 Element.prototype.scrollIntoView = vi.fn();
@@ -45,7 +45,7 @@ if (!('ResizeObserver' in window)) {
 if (!navigator.clipboard) {
   Object.defineProperty(navigator, 'clipboard', {
     value: {
-      writeText: vi.fn().mockRejectedValue(new Error('clipboard unavailable')),
+      writeText: vi.fn().mockResolvedValue(undefined),
       readText: vi.fn().mockResolvedValue(''),
     },
     configurable: true,
@@ -65,3 +65,4 @@ if (!globalThis.crypto) {
     value: generateStubUuid,
   });
 }
+

@@ -7,7 +7,7 @@ export type RoutingStatus =
 export interface ExplorerFile {
   id: string;
   name: string;
-  type: 'esprit' | 'nc' | 'meta' | 'other';
+  type: 'esprit' | 'nc' | 'meta' | 'stl' | 'document' | 'other';
 }
 
 export interface ExplorerRouting {
@@ -127,3 +127,5 @@ export interface RoutingDetailResponse {
   source: ExplorerSource | 'mock';
   slaMs?: number;
 }
+
+

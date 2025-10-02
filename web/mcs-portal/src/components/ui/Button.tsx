@@ -15,17 +15,26 @@ const variantMap: Record<ButtonVariant, AntButtonProps["type"]> = {
   danger: "primary"
 };
 
+const buttonPalette = {
+  primary: designTokens.color.brandPrimary,
+  danger: designTokens.status.rejected,
+  surface: designTokens.color.surfaceElevated,
+  text: designTokens.color.textPrimary
+} as const;
+
 export function Button({ variant = "primary", style, ...props }: ButtonProps) {
   const tokenColor =
-    variant === "danger" ? designTokens.color.danger : designTokens.color.primary;
+    variant === "danger" ? buttonPalette.danger : buttonPalette.primary;
+
   return (
     <AntButton
       type={variantMap[variant]}
       style={{
         borderRadius: designTokens.radius.md,
         boxShadow: variant === "ghost" ? "none" : designTokens.elevation.level1,
-        backgroundColor: variant === "ghost" ? designTokens.color.surface : tokenColor,
-        color: variant === "ghost" ? designTokens.color.text : designTokens.color.surface,
+        backgroundColor:
+          variant === "ghost" ? buttonPalette.surface : tokenColor,
+        color: variant === "ghost" ? buttonPalette.text : buttonPalette.surface,
         ...style
       }}
       {...props}

@@ -31,6 +31,7 @@ public class RoutingVersionService : IRoutingVersionService
         var siblings = await _dbContext.Routings
             .AsNoTracking()
             .Include(r => r.Files)
+            .Include(r => r.Steps)
             .Include(r => r.HistoryEntries)
             .Where(r => r.ItemRevisionId == routing.ItemRevisionId)
             .OrderByDescending(r => r.UpdatedAt ?? r.CreatedAt)
@@ -52,6 +53,7 @@ public class RoutingVersionService : IRoutingVersionService
 
         var target = await _dbContext.Routings
             .Include(r => r.Files)
+            .Include(r => r.Steps)
             .Include(r => r.HistoryEntries)
             .FirstOrDefaultAsync(r => r.Id == versionRoutingId, cancellationToken)
             ?? throw new KeyNotFoundException("Version routing not found.");
@@ -133,6 +135,7 @@ public class RoutingVersionService : IRoutingVersionService
         var refreshed = await _dbContext.Routings
             .AsNoTracking()
             .Include(r => r.Files)
+            .Include(r => r.Steps)
             .Include(r => r.HistoryEntries)
             .FirstOrDefaultAsync(r => r.Id == target.Id, cancellationToken)
             ?? target;

@@ -41,6 +41,7 @@ export default function EspritJobPanel({
 }: EspritJobPanelProps) {
   const { lastRoutingId } = useNavigation();
   const [form] = Form.useForm<JobFormValues>();
+  const initialRoutingId = useMemo(() => routingId ?? lastRoutingId ?? '', [routingId, lastRoutingId]);
   useEffect(() => {
     if (initialRoutingId) {
       form.setFieldsValue({ routingId: initialRoutingId });
@@ -67,8 +68,6 @@ export default function EspritJobPanel({
       message.error(error.message);
     }
   });
-
-  const initialRoutingId = useMemo(() => routingId ?? lastRoutingId ?? '', [routingId, lastRoutingId]);
 
   const handleSubmit = (values: JobFormValues) => {
     if (!values.routingId) {
@@ -161,7 +160,7 @@ export default function EspritJobPanel({
             <Input.TextArea rows={2} placeholder="운영팀 전달 사항" />
           </Form.Item>
           <Space>
-            <Button type="primary" htmlType="submit" loading={triggerMutation.isLoading}>
+            <Button type="primary" htmlType="submit" loading={triggerMutation.isPending}>
               EDGE 작업 실행
             </Button>
             <Button onClick={onRequestApiKey}>API 키 발급</Button>
@@ -207,3 +206,9 @@ export default function EspritJobPanel({
     </Card>
   );
 }
+
+
+
+
+
+

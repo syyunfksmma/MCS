@@ -223,7 +223,8 @@ public sealed class FileStorageService : IFileStorageService, IAsyncDisposable
             await _jsonWriteChannel.Writer.WriteAsync(request, cancellationToken).ConfigureAwait(false);
         }
 
-        Interlocked.Increment(ref _pendingJsonWrites);
+        var queued = Interlocked.Increment(ref _pendingJsonWrites);
+        FileStorageEventSource.Log.ReportQueueLength(queued);
     }
 
     private async Task ProcessJsonWriteQueueAsync(int workerId, CancellationToken cancellationToken)
@@ -296,7 +297,8 @@ public sealed class FileStorageService : IFileStorageService, IAsyncDisposable
             }
             finally
             {
-                Interlocked.Decrement(ref _pendingJsonWrites);
+                var remaining = Interlocked.Decrement(ref _pendingJsonWrites);
+                FileStorageEventSource.Log.ReportQueueLength(remaining);
                 linked?.Dispose();
             }
         }

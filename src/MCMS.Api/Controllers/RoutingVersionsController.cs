@@ -32,6 +32,9 @@ public class RoutingVersionsController : ControllerBase
     }
 
     [HttpPatch("{versionId:guid}")]
+    [ProducesResponseType(typeof(RoutingVersionDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<RoutingVersionDto>> SetPrimaryAsync(Guid routingId, Guid versionId, [FromBody] SetRoutingVersionRequest request, CancellationToken cancellationToken)
     {
         if (request is null)
@@ -54,3 +57,4 @@ public class RoutingVersionsController : ControllerBase
         }
     }
 }
+

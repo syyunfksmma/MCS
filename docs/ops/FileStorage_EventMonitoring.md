@@ -41,20 +41,20 @@
 - meta SLA 변화가 감지되면 Sprint6 로그(`docs/sprint/Sprint6_Routing_Log.md`)에 p95 추이를 기록한다.
 
 ## 구성 요소
-1. **Collector Script**: `scripts/performance/monitor-meta-json.ps1`
-   - `dotnet-counters monitor --format json`을 사용해 EventCounter를 스트리밍 수집.
-   - PID를 직접 지정하거나 기본값(`MCMS.API`) 프로세스를 자동 탐색.
-   - 키보드 `Q` 입력 또는 설정 시간(`-DurationSeconds`) 이후 자동 종료.
-   - 결과는 NDJSON (`timestamp`, `processId`, `counters`) 형태로 저장.
-
-2. **Uploader (선택)**
+1. **EventSource (MCMS.FileStorage)**
+   - Counters: meta-json-queue-length, meta-json-write-duration-ms, meta-json-queue-wait-ms, meta-json-writes-total.
+   - Queue length is emitted via PollingCounter; write duration and wait time use EventCounters per operation.
+2. **Collector Script**: scripts/performance/monitor-meta-json.ps1
+   - dotnet-counters monitor --format json을 사용해 EventCounter를 스트리밍 수집.
+   - PID를 직접 지정하거나 기본값(MCMS.API) 프로세스를 자동 탐색.
+   - 키보드 Q 입력 또는 설정 시간(-DurationSeconds) 이후 자동 종료.
+   - 결과는 NDJSON (	imestamp, processId, counters) 형태로 저장.
+3. **Uploader (선택)**
    - NDJSON 파일을 Promtail, Azure Monitor, Splunk 등의 수집 에이전트 경로로 이동.
-   - 예: Promtail에서 `pipeline_stages`를 사용해 `counters` 필드를 flatten한 후 Grafana Loki에 전송.
-
-3. **Dashboard Wiring**
-   - Grafana에서 `meta-json-queue-length`의 p50/p95/p99, `write-duration`의 이동 평균, `queue-wait`의 SLA 초과 건수를 패널로 작성.
-   - NDJSON이 Loki에 저장되어 있다면 `counters['MCMS.FileStorage']['meta-json-queue-length']['Mean']` 식으로 접근.
-
+   - 예: Promtail에서 pipeline_stages를 사용해 counters 필드를 flatten한 후 Grafana Loki에 전송.
+4. **Dashboard Wiring**
+   - Grafana에서 meta-json-queue-length의 p50/p95/p99, write-duration의 이동 평균, queue-wait의 SLA 초과 건수를 패널로 작성.
+   - NDJSON이 Loki에 저장되어 있다면 counters['MCMS.FileStorage']['meta-json-queue-length']['Mean'] 식으로 접근.
 ## 실행 절차
 ```powershell
 # 5분 동안 수집 (PID 자동 탐색)
@@ -82,4 +82,6 @@
 - CI 파이프라인에 `monitor-meta-json.ps1`를 1일 2회 크론으로 실행하도록 작업 스케줄러 등록
 - 장기 보관을 위해 NDJSON -> parquet 변환 Job을 추가 검토
 - dotnet-counters 실행 계정이 MCMS.API 프로세스에 attach할 수 있도록 관리자 권한/SeDebugPrivilege 준비
+
+
 
